@@ -150,5 +150,29 @@
         <INDEX NAME="material_idx" UNIQUE="false" FIELDS="materialid"/>
       </INDEXES>
     </TABLE>
+
+    <TABLE NAME="local_aiskillnav_tutor_sig" COMMENT="Tutor analytics signals">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="question" TYPE="text"/>
+        <FIELD NAME="sourcemode" TYPE="char" LENGTH="32" NOTNULL="true" DEFAULT="none"/>
+        <FIELD NAME="materials" TYPE="text"/>
+        <FIELD NAME="skill" TYPE="char" LENGTH="120" NOTNULL="true" DEFAULT="General"/>
+        <FIELD NAME="requesttype" TYPE="char" LENGTH="80" NOTNULL="true" DEFAULT="question"/>
+        <FIELD NAME="difficulty" TYPE="char" LENGTH="40" NOTNULL="true" DEFAULT="medium"/>
+        <FIELD NAME="answerpreview" TYPE="text"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="courseid_idx" UNIQUE="false" FIELDS="courseid"/>
+        <INDEX NAME="userid_idx" UNIQUE="false" FIELDS="userid"/>
+        <INDEX NAME="skill_idx" UNIQUE="false" FIELDS="skill"/>
+      </INDEXES>
+    </TABLE>
   </TABLES>
 </XMLDB>

@@ -15,9 +15,17 @@ class openai_compatible_ai_provider extends abstract_curl_ai_provider {
     }
 
     public function generate(string $prompt, int $maxtokens = 1200, string $systemprompt = ''): string {
-        $url = $this->ends_with($this->endpoint, '/chat/completions')
-            ? $this->endpoint
-            : $this->endpoint . '/chat/completions';
+        $baseurl = trim((string)$this->endpoint);
+
+        if ($baseurl === '') {
+            return 'AI provider endpoint is not configured. Set an endpoint such as https://openrouter.ai/api/v1, https://api.openai.com/v1, https://api.groq.com/openai/v1, or use Prototype/Ollama.';
+        }
+
+        $baseurl = rtrim($baseurl, '/');
+
+        $url = $this->ends_with($baseurl, '/chat/completions')
+            ? $baseurl
+            : $baseurl . '/chat/completions';
 
         $headers = ['Content-Type: application/json'];
 
@@ -26,7 +34,7 @@ class openai_compatible_ai_provider extends abstract_curl_ai_provider {
         }
 
         $payload = [
-            'model' => $this->model,
+            'model' => $this->model !== '' ? $this->model : 'default',
             'messages' => [
                 [
                     'role' => 'system',

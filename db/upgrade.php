@@ -325,6 +325,32 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
 
         upgrade_plugin_savepoint(true, 2026060401, 'local', 'aiskillnavigator');
     }
+    if ($oldversion < 2026060702) {
+        $table = new xmldb_table('local_aiskillnav_tutor_sig');
+
+        if (!$dbman->table_exists($table)) {
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $table->add_field('question', XMLDB_TYPE_TEXT, null, null, null, null, null);
+            $table->add_field('sourcemode', XMLDB_TYPE_CHAR, '32', null, XMLDB_NOTNULL, null, 'none');
+            $table->add_field('materials', XMLDB_TYPE_TEXT, null, null, null, null, null);
+            $table->add_field('skill', XMLDB_TYPE_CHAR, '120', null, XMLDB_NOTNULL, null, 'General');
+            $table->add_field('requesttype', XMLDB_TYPE_CHAR, '80', null, XMLDB_NOTNULL, null, 'question');
+            $table->add_field('difficulty', XMLDB_TYPE_CHAR, '40', null, XMLDB_NOTNULL, null, 'medium');
+            $table->add_field('answerpreview', XMLDB_TYPE_TEXT, null, null, null, null, null);
+            $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $table->add_index('courseid_idx', XMLDB_INDEX_NOTUNIQUE, ['courseid']);
+            $table->add_index('userid_idx', XMLDB_INDEX_NOTUNIQUE, ['userid']);
+            $table->add_index('skill_idx', XMLDB_INDEX_NOTUNIQUE, ['skill']);
+
+            $dbman->create_table($table);
+        }
+
+        upgrade_plugin_savepoint(true, 2026060702, 'local', 'aiskillnavigator');
+    }
 
     return true;
 }

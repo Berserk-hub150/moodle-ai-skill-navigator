@@ -7,7 +7,7 @@ global $DB, $PAGE, $OUTPUT, $USER;
 $courseid = optional_param('courseid', 0, PARAM_INT);
 
 if (!$courseid || $courseid <= SITEID) {
-    print_error('missingparam', 'error', '', 'courseid');
+    throw new moodle_exception('missingparam', 'error', '', 'courseid');
 }
 
 $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
