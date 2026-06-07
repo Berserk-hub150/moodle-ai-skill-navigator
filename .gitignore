@@ -1,0 +1,6 @@
+﻿# Local backup files
+*.bak*
+*.bak_*
+*.backup
+backup_*/
+**/backup_*/

@@ -1,0 +1,170 @@
+/* AISN_ANSWER_RENDERER_V3_STYLE_POLISH */
+
+.aisn-rendered-answer {
+    line-height: 1.78;
+    font-size: 1rem;
+    color: #0f172a;
+}
+
+.aisn-rendered-answer p {
+    margin: 0 0 18px;
+}
+
+.aisn-used-materials {
+    color: #64748b;
+    margin: 0 0 14px;
+}
+
+.aisn-table-wrap {
+    overflow-x: auto;
+    margin: 18px 0 22px;
+    border-radius: 16px;
+}
+
+.aisn-rendered-answer table {
+    border-collapse: collapse;
+    width: auto;
+    max-width: 100%;
+    background: #ffffff;
+    margin: 0;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.aisn-rendered-answer th,
+.aisn-rendered-answer td {
+    border: 1px solid #d0d7de;
+    padding: 11px 15px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.aisn-rendered-answer th {
+    background: #f6f8fa;
+    font-weight: 800;
+}
+
+.aisn-rendered-answer tr:nth-child(even) td {
+    background: #fbfbfb;
+}
+
+.aisn-rendered-answer ul,
+.aisn-rendered-answer ol {
+    margin: 10px 0 18px 28px;
+}
+
+.aisn-rendered-answer li {
+    margin-bottom: 8px;
+}
+
+.aisn-inline-code {
+    background: #eef2f7;
+    border-radius: 8px;
+    padding: 3px 8px;
+    font-family: Consolas, Monaco, "Courier New", monospace;
+    font-size: 0.92em;
+    color: #111827;
+}
+
+.aisn-code-editor {
+    margin: 24px 0 30px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #1f2430;
+    border: 1px solid #2f3848;
+    box-shadow: 0 18px 42px rgba(15, 23, 42, .18);
+}
+
+.aisn-code-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(180deg, #20242f 0%, #1a1e27 100%);
+    color: #ffffff;
+    padding: 15px 18px;
+    font-weight: 800;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.aisn-code-lang-label {
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 0.01em;
+    font-size: 1rem;
+}
+
+.aisn-copy-btn {
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.08);
+    color: #f8fafc;
+    border-radius: 10px;
+    padding: 7px 14px;
+    font-size: .88rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all .18s ease;
+}
+
+.aisn-copy-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+    transform: translateY(-1px);
+}
+
+.aisn-code-editor pre {
+    margin: 0 !important;
+    background: #f8fafc;
+    color: #0f172a;
+    padding: 28px 32px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    font-family: Consolas, Monaco, "Courier New", monospace;
+    font-size: .98rem;
+    line-height: 1.78;
+    white-space: pre;
+    border-top: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.aisn-code-editor code {
+    display: block;
+    background: transparent !important;
+    color: inherit !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    white-space: pre;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.aisn-math-block {
+    background: #f8fafc;
+    border: 1px solid #d0d7de;
+    border-left: 5px solid #0f6cbf;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin: 16px 0 20px;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+@media (max-width: 900px) {
+    .aisn-code-head {
+        padding: 12px 14px;
+    }
+
+    .aisn-code-lang-label {
+        font-size: 0.94rem;
+    }
+
+    .aisn-copy-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
+    .aisn-code-editor pre {
+        padding: 20px 18px !important;
+        font-size: 0.92rem;
+        line-height: 1.64;
+    }
+}

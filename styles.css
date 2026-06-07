@@ -1,0 +1,141 @@
+﻿
+/* AISN_TUTOR_ANSWER_STYLE_V1 */
+.aisn-tutor-answer-card {
+    border: 1px solid #dbe3ef;
+    border-radius: 22px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    padding: 28px 32px;
+    margin-top: 28px;
+    line-height: 1.75;
+}
+
+.aisn-tutor-answer-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 14px 0;
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: #071226;
+}
+
+.aisn-tutor-answer-title::before {
+    content: "AI";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #0f6fd9, #5aa7ff);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 900;
+    box-shadow: 0 10px 22px rgba(15, 111, 217, 0.22);
+}
+
+.aisn-used-materials {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+    margin: 4px 0 20px 0;
+    padding: 9px 13px;
+    border-radius: 999px;
+    background: #eef6ff;
+    color: #27496d;
+    border: 1px solid #cfe6ff;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.aisn-used-materials::before {
+    content: "📚";
+}
+
+.aisn-rendered-answer {
+    color: #101828;
+    font-size: 17px;
+}
+
+.aisn-rendered-answer h3 {
+    margin: 24px 0 10px 0;
+    font-size: 23px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: #071226;
+    border-left: 5px solid #0f6fd9;
+    padding-left: 12px;
+}
+
+.aisn-rendered-answer h4 {
+    margin: 18px 0 8px 0;
+    font-size: 19px;
+    font-weight: 900;
+    color: #111827;
+}
+
+.aisn-rendered-answer p {
+    margin: 12px 0;
+}
+
+.aisn-rendered-answer ul,
+.aisn-rendered-answer ol {
+    margin: 12px 0 18px 22px;
+    padding: 0;
+}
+
+.aisn-rendered-answer li {
+    margin: 8px 0;
+    padding-left: 4px;
+}
+
+.aisn-rendered-answer strong {
+    font-weight: 900;
+    color: #071226;
+}
+
+.aisn-rendered-answer code {
+    padding: 2px 6px;
+    border-radius: 7px;
+    background: #eef2f7;
+    color: #0f172a;
+    font-size: 0.92em;
+}
+
+.aisn-rendered-answer .aisn-keypoint {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-left: 5px solid #0f6fd9;
+    border-radius: 14px;
+    padding: 13px 15px;
+    margin: 12px 0;
+}
+
+.aisn-rendered-answer .aisn-summary {
+    margin-top: 18px;
+    padding: 15px 18px;
+    border-radius: 16px;
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    color: #064e3b;
+    font-weight: 700;
+}
+
+@media (max-width: 900px) {
+    .aisn-tutor-answer-card {
+        padding: 22px 20px;
+        border-radius: 18px;
+    }
+
+    .aisn-tutor-answer-title {
+        font-size: 26px;
+    }
+
+    .aisn-rendered-answer {
+        font-size: 16px;
+    }
+}
+

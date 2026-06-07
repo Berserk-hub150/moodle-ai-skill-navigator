@@ -1,0 +1,280 @@
+﻿/* AISN_TUTOR_DOM_BRIDGE_STYLE_V1 */
+
+/*
+   Fix vero:
+   la diagnosi browser ha mostrato:
+   - override CSS presente
+   - CARD padding = 0
+   - CARD BODY non trovato
+
+   Quindi stiliamo la card reale tramite classe aggiunta dal bridge JS.
+*/
+
+.aisn-tutor-dom-card {
+    box-sizing: border-box !important;
+    margin-top: 32px !important;
+    margin-bottom: 40px !important;
+    padding: 40px 48px 46px 48px !important;
+
+    border: 1px solid #dbe7f3 !important;
+    border-radius: 30px !important;
+    background:
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.10), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #f8fbff 100%) !important;
+    box-shadow: 0 24px 62px rgba(15, 23, 42, 0.11) !important;
+
+    overflow: visible !important;
+}
+
+/* Evita padding doppi se qualche renderer aggiunge .card-body */
+.aisn-tutor-dom-card > .card-body {
+    padding: 0 !important;
+}
+
+/* Titolo */
+.aisn-tutor-dom-title,
+.aisn-tutor-dom-card > h1:first-child,
+.aisn-tutor-dom-card > h2:first-child,
+.aisn-tutor-dom-card > h3:first-child {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+
+    margin: 0 0 22px 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+
+    color: #071226 !important;
+    font-size: 35px !important;
+    font-weight: 950 !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.045em !important;
+}
+
+/* Badge AI */
+.aisn-tutor-dom-title::before,
+.aisn-tutor-dom-card > h1:first-child::before,
+.aisn-tutor-dom-card > h2:first-child::before,
+.aisn-tutor-dom-card > h3:first-child::before {
+    content: "AI";
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-width: 46px !important;
+    height: 46px !important;
+    border-radius: 16px !important;
+
+    background: linear-gradient(135deg, #0f6fd9, #5aa7ff) !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 950 !important;
+    box-shadow: 0 12px 24px rgba(15, 111, 217, 0.26) !important;
+}
+
+/* Pill materiali */
+.aisn-tutor-dom-card .aisn-used-materials,
+.aisn-tutor-dom-card .text-muted {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+
+    max-width: 100% !important;
+    margin: 0 0 36px 0 !important;
+    padding: 13px 20px !important;
+
+    border-radius: 999px !important;
+    background: #eef6ff !important;
+    color: #27496d !important;
+    border: 1px solid #cfe6ff !important;
+
+    font-size: 14px !important;
+    font-weight: 850 !important;
+    line-height: 1.4 !important;
+
+    box-shadow: 0 8px 20px rgba(15, 111, 217, 0.08) !important;
+}
+
+/* Corpo risposta */
+.aisn-tutor-dom-body,
+.aisn-tutor-dom-card .aisn-answer,
+.aisn-tutor-dom-card .aisn-rendered-answer,
+.aisn-tutor-dom-card .aisn-tutor-answer-body {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: #0f172a !important;
+    font-size: 18px !important;
+    line-height: 1.86 !important;
+}
+
+/* Paragrafi */
+.aisn-tutor-dom-card p {
+    margin-top: 0 !important;
+    margin-bottom: 22px !important;
+}
+
+/* Titoli interni */
+.aisn-tutor-dom-card .aisn-rendered-answer h2,
+.aisn-tutor-dom-card .aisn-rendered-answer h3,
+.aisn-tutor-dom-card .aisn-rendered-answer h4,
+.aisn-tutor-dom-card .aisn-tutor-answer-body h2,
+.aisn-tutor-dom-card .aisn-tutor-answer-body h3,
+.aisn-tutor-dom-card .aisn-tutor-answer-body h4 {
+    margin-top: 34px !important;
+    margin-bottom: 16px !important;
+    padding-left: 16px !important;
+
+    border-left: 5px solid #0f6fd9 !important;
+    color: #071226 !important;
+
+    font-weight: 950 !important;
+    line-height: 1.22 !important;
+    letter-spacing: -0.03em !important;
+}
+
+.aisn-tutor-dom-card .aisn-rendered-answer h2 {
+    font-size: 28px !important;
+}
+
+.aisn-tutor-dom-card .aisn-rendered-answer h3 {
+    font-size: 24px !important;
+}
+
+.aisn-tutor-dom-card .aisn-rendered-answer h4 {
+    font-size: 20px !important;
+}
+
+/* Liste */
+.aisn-tutor-dom-card ul,
+.aisn-tutor-dom-card ol {
+    margin: 12px 0 26px 32px !important;
+    padding: 0 !important;
+}
+
+.aisn-tutor-dom-card li {
+    margin-bottom: 10px !important;
+    padding-left: 4px !important;
+}
+
+/* Inline code */
+.aisn-tutor-dom-card code,
+.aisn-tutor-dom-card .aisn-inline-code {
+    padding: 3px 8px !important;
+    border-radius: 8px !important;
+    background: #eef2f7 !important;
+    color: #111827 !important;
+    font-size: 0.92em !important;
+}
+
+/* Blocco codice */
+.aisn-tutor-dom-card .aisn-code-editor {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 28px 0 36px 0 !important;
+    border-radius: 22px !important;
+    overflow: hidden !important;
+
+    background: #1f2430 !important;
+    border: 1px solid #2f3848 !important;
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.18) !important;
+}
+
+.aisn-tutor-dom-card .aisn-code-head {
+    padding: 17px 22px !important;
+    background: linear-gradient(180deg, #20242f 0%, #1a1e27 100%) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.aisn-tutor-dom-card .aisn-code-lang-label {
+    font-size: 1rem !important;
+    font-weight: 900 !important;
+    color: #ffffff !important;
+}
+
+.aisn-tutor-dom-card .aisn-copy-btn {
+    padding: 8px 15px !important;
+    border-radius: 11px !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #f8fafc !important;
+
+    font-size: 0.88rem !important;
+    font-weight: 850 !important;
+}
+
+.aisn-tutor-dom-card .aisn-copy-btn:hover {
+    background: rgba(255, 255, 255, 0.16) !important;
+}
+
+.aisn-tutor-dom-card .aisn-code-editor pre {
+    margin: 0 !important;
+    padding: 30px 34px !important;
+
+    background: #f8fafc !important;
+    color: #0f172a !important;
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    font-family: Consolas, Monaco, "Courier New", monospace !important;
+    font-size: 0.98rem !important;
+    line-height: 1.78 !important;
+    white-space: pre !important;
+}
+
+.aisn-tutor-dom-card .aisn-code-editor pre code {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    color: inherit !important;
+
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    white-space: pre !important;
+}
+
+/* Se il code editor arriva troppo largo, lo limita */
+.aisn-tutor-dom-card .aisn-code-editor,
+.aisn-tutor-dom-card .aisn-code-editor pre {
+    min-width: 0 !important;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+    .aisn-tutor-dom-card {
+        padding: 26px 22px 30px 22px !important;
+        border-radius: 24px !important;
+    }
+
+    .aisn-tutor-dom-title,
+    .aisn-tutor-dom-card > h1:first-child,
+    .aisn-tutor-dom-card > h2:first-child,
+    .aisn-tutor-dom-card > h3:first-child {
+        font-size: 28px !important;
+    }
+
+    .aisn-tutor-dom-body,
+    .aisn-tutor-dom-card .aisn-answer,
+    .aisn-tutor-dom-card .aisn-rendered-answer,
+    .aisn-tutor-dom-card .aisn-tutor-answer-body {
+        font-size: 16px !important;
+        line-height: 1.74 !important;
+    }
+
+    .aisn-tutor-dom-card .aisn-code-editor pre {
+        padding: 22px 20px !important;
+        font-size: 0.92rem !important;
+        line-height: 1.64 !important;
+    }
+}
