@@ -27,7 +27,7 @@ foreach (glob(__DIR__ . '/material/*.php') as $materialhelper) {
 }
 
 class material_extractor {
-    private const MAX_BYTES = 160000000;
+    private const MAX_BYTES = 26214400;
     private const MAX_CHARS = 120000;
 
     private const ALLOWED_EXTENSIONS = [
@@ -68,7 +68,7 @@ class material_extractor {
         if ($size <= 0) { $size = (int)filesize($tmp); }
         if ($size <= 0) { return self::fail('Uploaded file is empty.', self::extension($name)); }
         if ($size > self::MAX_BYTES) {
-            return self::fail('Uploaded file is too large. Maximum supported size is 160 MB.', self::extension($name));
+            return self::fail('Uploaded file is too large. Maximum supported size is 25 MB.', self::extension($name));
         }
         return self::extract_from_path($tmp, $name);
     }

@@ -71,24 +71,6 @@ function local_aiskillnavigator_material_source_mode_from_request(int $defaultma
 
 
 
-if (!function_exists('local_aiskillnavigator_material_source_is_prompt_generated')) {
-    
-}
-
-if (!function_exists('local_aiskillnavigator_material_source_normalize_filename_key')) {
-    
-}
-
-if (!function_exists('local_aiskillnavigator_material_source_duplicate_key')) {
-    
-}
-
-
-
-
-
-
-
 function local_aiskillnavigator_material_source_is_prompt_generated(stdClass $material): bool {
     $title = strtolower((string)($material->title ?? ''));
 

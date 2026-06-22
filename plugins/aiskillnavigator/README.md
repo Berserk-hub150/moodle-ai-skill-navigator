@@ -1,300 +1,86 @@
 # AI Skill Navigator
 
-<p align="center">
-  <img src="assets/readme/hero-banner.png" alt="AI Skill Navigator banner" width="100%">
-</p>
+AI Skill Navigator is a Moodle plugin suite that adds course-aware AI learning tools for students and teachers.
 
-<p align="center">
-  AI-powered Moodle plugin for tutoring, quizzes, mind maps, XR scenarios and teacher analytics.
-</p>
+The package contains:
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Moodle-Plugin-orange" alt="Moodle Plugin">
-  <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-blue" alt="License: GPL-3.0-or-later">
-  <img src="https://img.shields.io/badge/PHP-8%2B-blue" alt="PHP 8+">
-  <img src="https://img.shields.io/badge/AI-DeepSeek%20API%20%7C%20OpenAI--compatible-green" alt="DeepSeek API | OpenAI-compatible">
-</p>
-AI Skill Navigator is an AI-powered Moodle local plugin developed a prototype for AI-supported learning inside a university LMS.
+- `local_aiskillnavigator`: the main local plugin with AI tutor, quiz generation, mind maps, assessments, material/RAG tools, learning-gap analysis, simulator suggestions and course-building helpers.
+- `block_aiskillnavigator`: an optional course block that links users to the tools available for their role.
 
-It adds tutoring, course-material-grounded assistance, quiz generation, mind map generation, XR scenario generation and teacher-oriented analytics to Moodle.
+## Production defaults
 
-> Academic prototype focused on Generative AI, RAG, Digital Twin, Virtual Worlds and educational technology.
+The plugin is designed to install safely with conservative defaults:
 
-## Highlights
+- The default AI provider is `prototype`, which performs no external AI calls.
+- External AI use for course materials is disabled until an administrator enables it.
+- Per-material approval is required before teacher materials can be sent to external providers.
+- Destructive AI Course Builder actions are disabled by default.
+- Automatic course-resource synchronisation on Moodle events is disabled by default.
+- Automatic block insertion into courses is disabled by default.
+- External MathJax CDN loading is disabled by default.
 
-- AI Tutor for open learning questions.
-- Course AI Tutor grounded on teacher materials.
-- Quiz Generator for formative micro-tests.
-- Mind Map Generator for concept visualisation.
-- XR Scenario Generator for Virtual Worlds learning activities.
-- Teacher Materials area for course knowledge management.
-- Student dashboard with learning progress indicators.
-- Teacher dashboard with weak-topic overview.
-- RAG-oriented support for selected course materials.
+Administrators can enable optional external services from the plugin settings.
 
-## Screenshots
+## Main features
 
-Add screenshots inside:
+- Course-aware AI Tutor.
+- AI Quiz Generator.
+- AI Mind Map Generator.
+- Initial and final assessments.
+- Adaptive review for weak skills.
+- Teacher dashboard and tutor analytics.
+- Course Materials / RAG management.
+- Learning-gap analysis.
+- AI Course Builder with production safety gates.
+- Simulator Finder and saved simulation activities.
 
-```text
-assets/screenshots/
-```
+## Installation
 
-Recommended files:
+Install the local plugin in:
 
 ```text
-dashboard.png
-ai-tutor.png
-quiz-generator.png
-mind-map-generator.png
-xr-scenario-generator.png
-teacher-materials.png
+local/aiskillnavigator
 ```
 
-## Demo flow
-
-1. Open the AI Skill Navigator dashboard.
-2. Ask a question to the AI Tutor.
-3. Generate a quiz from a topic or teacher materials.
-4. Generate a mind map.
-5. Generate an XR scenario.
-6. Explain the architecture: Strategy, Factory Method and Facade.
-
-## Architecture
-
-The plugin is organised around Moodle pages and service classes.
-
-The refactored AI layer contains:
-
-- AI provider strategies;
-- a provider factory;
-- a prompt builder;
-- a workflow facade;
-- backward-compatible Moodle page integrations.
-
-## Design patterns
-
-### Strategy
-
-The AI provider logic is abstracted through a common interface.
-
-Implemented strategies:
-
-- Ollama provider;
-- OpenAI-compatible provider;
-- prototype/demo provider.
-
-### Factory Method
-
-The provider factory creates the correct AI provider based on Moodle plugin settings.
-
-### Facade
-
-The AI workflow facade exposes high-level operations such as asking the tutor, generating quizzes, generating mind maps, generating XR scenarios and summarising materials.
-
-## SOLID principles
-
-| Principle | Application |
-|---|---|
-| Single Responsibility | Provider calls, prompt construction and workflow orchestration are separated. |
-| Open/Closed | New AI providers can be added by implementing the provider interface. |
-| Liskov Substitution | Provider implementations can be used interchangeably through the same contract. |
-| Interface Segregation | Pages depend on a small text-generation interface instead of concrete API classes. |
-| Dependency Inversion | High-level workflows depend on abstractions rather than concrete provider classes. |
-
-## Software quality attributes
-
-| Quality attribute | Improvement |
-|---|---|
-| Maintainability | Smaller service classes and clearer responsibilities. |
-| Reusability | AI services are reused by tutor, quiz, mind map and XR modules. |
-| Portability | Provider, endpoint and model are configurable. |
-| Robustness | Prototype mode keeps the demo usable without an external AI service. |
-| Verifiability | PHP files can be linted and tested independently. |
-| Comprehensibility | Documentation explains the role of each component. |
-| Interoperability | The plugin remains integrated with Moodle courses and pages. |
-
-## Local development
-
-Start Moodle:
-
-```powershell
-cd $env:USERPROFILE\Desktop\TESI-MOODLE
-docker compose up -d
-```
-
-Deploy plugin changes:
-
-```powershell
-.\plugins\aiskillnavigator\scripts\deploy-plugin.ps1
-```
-
-Run PHP lint checks:
-
-```powershell
-.\plugins\aiskillnavigator\scripts\lint-plugin.ps1
-```
-
-## Main plugin pages
+Install the optional block in:
 
 ```text
-http://localhost:8080/local/aiskillnavigator/index.php
-http://localhost:8080/local/aiskillnavigator/pages/tutor.php?courseid=1
-http://localhost:8080/local/aiskillnavigator/pages/quizgenerator.php?courseid=1
-http://localhost:8080/local/aiskillnavigator/pages/mindmapgenerator.php?courseid=1
-http://localhost:8080/local/aiskillnavigator/pages/scenariogenerator.php?courseid=1
+blocks/aiskillnavigator
 ```
 
-## AI provider configuration
-
-The current demo setup uses the **DeepSeek API**.
-
-DeepSeek is configured as a dedicated provider name, while internally it reuses the OpenAI-compatible provider strategy.
-
-Supported provider names include:
-
-- `deepseek`;
-- `openai`;
-- `openai_compatible`;
-- `openrouter`;
-- `groq`;
-- `ollama`;
-- `prototype`;
-- `mock`;
-- `demo`.
-
-Current demo configuration:
-
-| Setting | Value |
-|---|---|
-| Provider | `deepseek` |
-| Endpoint | `https://api.deepseek.com` |
-| Model | `deepseek-chat` |
-
-API keys are not stored in the repository. Credentials must be configured through Moodle/plugin settings or local environment configuration.
-
-Ollama remains supported as an optional local provider, but it is not the default provider for the current demo.
-
-
-
-## Plugin structure
-
-The root PHP files are lightweight Moodle-compatible wrappers.
-
-The main implementation is organised as follows:
+Then visit:
 
 ```text
-pages/
-  Moodle page implementations
-
-includes/
-  shared page helpers
-
-assets/css/
-  plugin stylesheets
-
-classes/service/
-  AI providers, prompt builders, workflow facade and services
+Site administration > Notifications
 ```
 
-This keeps public Moodle URLs stable while making the repository structure easier to navigate.
-## Project documentation
+## Configuration
 
-- [Roadmap](docs/ROADMAP.md)
-- [Release notes](docs/RELEASE_NOTES.md)
-- [Contributing guide](.github/CONTRIBUTING.md)
-
-## Plugin structure
-
-The root PHP files are lightweight Moodle-compatible wrappers.
-
-The main implementation is organised as follows:
+Open:
 
 ```text
-pages/
-  Moodle page implementations
-
-includes/
-  shared page helpers
-
-assets/css/
-  plugin stylesheets
-
-classes/service/
-  AI providers, prompt builders, workflow facade and services
+Site administration > Plugins > Local plugins > AI Skill Navigator
 ```
 
-This keeps public Moodle URLs stable while making the repository structure easier to navigate.
-## Roadmap
+Important production settings:
 
-- Add real screenshot gallery.
-- Add a short demo GIF.
-- Improve PDF material extraction.
-- Add JSON schema validation for XR blueprints.
-- Improve quiz difficulty calibration.
-- Add bilingual Italian/English UI strings.
-- Add automated tests for provider factory and prompt builder.
+- `Provider`: keep `prototype` for first installation checks.
+- `Approve external AI for teacher materials`: disabled by default.
+- `Allow destructive AI Course Builder actions`: disabled by default.
+- `Automatically sync course resources on Moodle events`: disabled by default.
+- `Automatically add the AI Skill Navigator block to courses`: disabled by default.
+- `Enable external MathJax CDN`: disabled by default.
 
+## Privacy
 
+The plugin stores course materials, quiz attempts, assessment attempts, saved simulations and tutor interaction signals. It implements Moodle's Privacy API for metadata, export and deletion of user data. External AI providers are optional and disabled for course materials unless explicitly approved.
 
-## Plugin structure
+## Requirements
 
-The root PHP files are lightweight Moodle-compatible wrappers.
-
-The main implementation is organised as follows:
-
-```text
-pages/
-  Moodle page implementations
-
-includes/
-  shared page helpers
-
-assets/css/
-  plugin stylesheets
-
-classes/service/
-  AI providers, prompt builders, workflow facade and services
-```
-
-This keeps public Moodle URLs stable while making the repository structure easier to navigate.
-## Project documentation
-
-- [Roadmap](docs/ROADMAP.md)
-- [Release notes](docs/RELEASE_NOTES.md)
-- [Contributing guide](.github/CONTRIBUTING.md)
-
-## Plugin structure
-
-The root PHP files are lightweight Moodle-compatible wrappers.
-
-The main implementation is organised as follows:
-
-```text
-pages/
-  Moodle page implementations
-
-includes/
-  shared page helpers
-
-assets/css/
-  plugin stylesheets
-
-classes/service/
-  AI providers, prompt builders, workflow facade and services
-```
-
-This keeps public Moodle URLs stable while making the repository structure easier to navigate.
-## Status
-
-This repository contains an academic thesis prototype focused on feasibility, architecture, extensibility and software quality improvements.
-
+- Moodle 4.4 or later.
+- PHP version supported by the target Moodle version.
+- Optional cURL support for external AI/search providers.
 
 ## License
 
-This project is licensed under the **GNU General Public License v3.0 or later**.
-
-See the [LICENSE](LICENSE) file for details.
-
-SPDX-License-Identifier: `GPL-3.0-or-later`
-
+GPL v3 or later.

@@ -126,13 +126,43 @@ if (!function_exists('local_aisn_prod_course_builder_destructive_enabled')) {
 if (!function_exists('local_aisn_prod_course_builder_action_allowed')) {
     function local_aisn_prod_course_builder_action_allowed(string $action): bool {
         $action = strtolower(trim($action));
-        if (local_aisn_prod_course_builder_destructive_enabled()) {
+
+        $safeactions = [
+            'create_section',
+            'attach_files',
+        ];
+
+        if (in_array($action, $safeactions, true)) {
             return true;
         }
-        return in_array($action, ['create_section', 'attach_files'], true);
+
+        $destructiveactions = [
+            'rename_section',
+            'update_section_html',
+            'update_summary',
+            'delete_section',
+            'delete_all_sections',
+            'clear_section_zero',
+            'clear_section_content',
+            'hide_section',
+            'show_section',
+            'duplicate_section',
+            'move_section',
+            'delete_material',
+            'move_material',
+            'rename_material',
+            'hide_material',
+            'show_material',
+            'set_material_visibility',
+        ];
+
+        if (in_array($action, $destructiveactions, true)) {
+            return local_aisn_prod_course_builder_destructive_enabled();
+        }
+
+        return false;
     }
 }
-
 if (!function_exists('local_aisn_prod_clean_request_text')) {
     function local_aisn_prod_clean_request_text(string $text, int $maxchars = 12000): string {
         $text = trim($text);

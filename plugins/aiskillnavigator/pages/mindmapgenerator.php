@@ -3,6 +3,7 @@
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/role_guard.php');
 require_once(__DIR__ . '/../includes/ai_output_formatter.php');
+require_once(__DIR__ . '/../includes/ai_output_helper.php');
 require_once(__DIR__ . '/../includes/back_to_course_helper.php');
 require_once(__DIR__ . '/../includes/ui_style_helper.php');
 require_once(__DIR__ . '/../includes/mojibake_guard.php');
@@ -26,6 +27,10 @@ $context = context_course::instance($courseid);
 
 local_aisn_require_student_area($context);
 require_capability('local/aiskillnavigator:viewstudent', $context);
+if ($generate) {
+    // AISN_HOTFIX_MINDMAP_GENERATE_SESSKEY_V2
+    require_sesskey();
+}
 
 if (function_exists('local_aiskillnavigator_sync_course_resources')) {
     local_aiskillnavigator_sync_course_resources((int)$courseid, (int)$USER->id, false);
@@ -62,31 +67,86 @@ function local_aiskillnavigator_mm_bad_score(string $label): int {
 }
 
 
-function local_aiskillnavigator_mm_clean_text($value): string {
+function local_aiskillnavigator_mm_clean_text($value, string $fallback = ''): string {
     $text = trim((string)$value);
+
     if ($text === '') {
-        return '';
+        return $fallback;
     }
 
     $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
-    $replacements = [
-        "ÃƒÆ’ " => "ÃƒÂ ", "ÃƒÆ’Ã‚Â¨" => "ÃƒÂ¨", "ÃƒÆ’Ã‚Â©" => "ÃƒÂ©", "ÃƒÆ’Ã‚Â¬" => "ÃƒÂ¬", "ÃƒÆ’Ã‚Â²" => "ÃƒÂ²", "ÃƒÆ’Ã‚Â¹" => "ÃƒÂ¹",
-        "ÃƒÆ’Ã¢â€šÂ¬" => "Ãƒâ‚¬", "ÃƒÆ’Ã‹â€ " => "ÃƒË†", "ÃƒÆ’Ã¢â‚¬Â°" => "Ãƒâ€°", "ÃƒÆ’Ã…â€™" => "ÃƒÅ’", "ÃƒÆ’Ã¢â‚¬â„¢" => "Ãƒâ€™", "ÃƒÆ’Ã¢â€žÂ¢" => "Ãƒâ„¢",
-        "ÃƒÆ’Ã†â€™Ãƒâ€š " => "ÃƒÂ ", "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨" => "ÃƒÂ¨", "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©" => "ÃƒÂ©", "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¬" => "ÃƒÂ¬", "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â²" => "ÃƒÂ²", "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹" => "ÃƒÂ¹",
-        "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€š " => "ÃƒÂ ", "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨" => "ÃƒÂ¨", "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©" => "ÃƒÂ©", "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬" => "ÃƒÂ¬", "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â²" => "ÃƒÂ²", "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¹" => "ÃƒÂ¹",
-        "Ãƒâ€šÃ‚Â·" => "Ã‚Â·", "ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â·" => "Ã‚Â·", "Ãƒâ€šÃ‚Â°" => "Ã‚Â°", "ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°" => "Ã‚Â°",
-        "â€™" => "'", "â€˜" => "'", "â€œ" => '"', "Ã¢â‚¬\u009d" => '"', "â€“" => "-", "â€”" => "-",
-        "â€™" => "'", "â€œ" => '"', "Ã¢â‚¬\u009d" => '"', "â€“" => "-",
-    ];
-    $text = strtr($text, $replacements);
+    // Prima usa il fix generale del plugin, se disponibile.
+    if (function_exists('local_aiskillnavigator_fix_mojibake')) {
+        $text = local_aiskillnavigator_fix_mojibake($text);
+    }
 
-    $text = preg_replace('/(?:Ãƒ|Ã‚|Ã‚|Ã¢â‚¬|â€™|â€œ|â€“|â€”|â€šÃ‚|Æ’Ã†)[\\s\\S]*/u', '', $text);
-    $text = preg_replace('/\\s+/u', ' ', trim($text));
+    // Fix specifico per mojibake ricorrente in output AI / estrazioni.
+    $map = [
+        'ÃƒÂ ' => 'à',
+        'ÃƒÂ¨' => 'è',
+        'ÃƒÂ©' => 'é',
+        'ÃƒÂ¬' => 'ì',
+        'ÃƒÂ²' => 'ò',
+        'ÃƒÂ¹' => 'ù',
+
+        'ÃƒÆ’ ' => 'à',
+        'ÃƒÆ’Ã‚Â¨' => 'è',
+        'ÃƒÆ’Ã‚Â©' => 'é',
+        'ÃƒÆ’Ã‚Â¬' => 'ì',
+        'ÃƒÆ’Ã‚Â²' => 'ò',
+        'ÃƒÆ’Ã‚Â¹' => 'ù',
+
+        'Ã ' => 'à',
+        'Ã¨' => 'è',
+        'Ã©' => 'é',
+        'Ã¬' => 'ì',
+        'Ã²' => 'ò',
+        'Ã¹' => 'ù',
+
+        'Ã€' => 'À',
+        'Ãˆ' => 'È',
+        'Ã‰' => 'É',
+        'ÃŒ' => 'Ì',
+        'Ã’' => 'Ò',
+        'Ã™' => 'Ù',
+
+        'â€™' => "'",
+        'â€˜' => "'",
+        'â€œ' => '"',
+        'â€' => '"',
+        'â€“' => '-',
+        'â€”' => '-',
+        'â€¦' => '...',
+        'Â«' => '«',
+        'Â»' => '»',
+        'Â°' => '°',
+        'Â' => '',
+        'Ã‚' => '',
+        'ï¿½' => '',
+    ];
+
+    for ($i = 0; $i < 3; $i++) {
+        $text = str_replace(array_keys($map), array_values($map), $text);
+    }
+
+    // Non taglia più tutto il testo dopo un carattere sospetto.
+    // Rimuove solo residui palesemente corrotti.
+    $text = preg_replace('/(?:Ãƒ|Ã‚|Ã¢â‚¬|â€šÃ‚|Æ’Ã†)/u', '', $text);
+    $text = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/u', ' ', $text);
+    $text = preg_replace('/\s+/u', ' ', trim((string)$text));
+
+    if ($text === '') {
+        return $fallback;
+    }
+
+    // Se resta ancora troppo mojibake, meglio fallback pulito che testo rotto.
+    if (function_exists('local_aiskillnavigator_mm_bad_score') && local_aiskillnavigator_mm_bad_score($text) >= 200 && $fallback !== '') {
+        return $fallback;
+    }
 
     return $text;
 }
-
 function local_aiskillnavigator_mm_clean_array($value, string $fallback = '') {
     if (is_string($value)) {
         return local_aiskillnavigator_mm_clean_text($value, $fallback);
@@ -272,7 +332,7 @@ function local_aiskillnavigator_mm_generate(array $materials, string $topic, str
     $topic = local_aiskillnavigator_mm_clean_text($topic, '');
     $context = local_aiskillnavigator_mm_material_context($materials);
 
-    $system = 'You generate clean UTF-8 JSON for a Moodle mind map. Return only valid JSON. No markdown. No code fences. Use normal Italian text. Avoid special smart quotes. Use only this schema: {"title":"...","subtitle":"...","center":"...","branches":[{"title":"...","summary":"...","children":[{"title":"...","summary":"..."}]}]}.';
+    $system = 'You generate clean UTF-8 JSON for a Moodle mind map. Use valid Italian accents directly, for example: è, à, ò, ù, ì. Do not output mojibake such as Ã, Â, â€™, â€œ. Return only valid JSON. No markdown. No code fences. Use normal Italian text. Avoid special smart quotes. Use only this schema: {"title":"...","subtitle":"...","center":"...","branches":[{"title":"...","summary":"...","children":[{"title":"...","summary":"..."}]}]}.';
 
     $prompt = "Crea una mappa mentale didattica in italiano.\n";
     $prompt .= "Difficolta: " . $difficulty . "\n";
@@ -709,9 +769,16 @@ if ($error !== '') {
 }
 
 echo html_writer::start_tag('form', [
-    'method' => 'get',
+    'method' => 'post',
     'action' => new moodle_url('/local/aiskillnavigator/pages/mindmapgenerator.php'),
 ]);
+
+echo html_writer::empty_tag('input', [
+    'type' => 'hidden',
+    'name' => 'sesskey',
+    'value' => sesskey(),
+]);
+
 
 echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'courseid', 'value' => $courseid]);
 echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'generate', 'value' => 1]);
@@ -1364,7 +1431,7 @@ HTML;
 }
 
 function local_aiskillnavigator_mindmap_live_web_assets(int $courseid): string {
-    $endpoint = new moodle_url('/local/aiskillnavigator/pages/mindmap_web_example.php', ['courseid' => $courseid]);
+    $endpoint = new moodle_url('/local/aiskillnavigator/pages/mindmap_web_example.php', ['courseid' => $courseid, 'sesskey' => sesskey()]);
     $endpointjson = json_encode($endpoint->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
     return <<<HTML
@@ -1506,5 +1573,6 @@ function local_aiskillnavigator_mindmap_live_web_assets(int $courseid): string {
 </script>
 HTML;
 }
+
 
 

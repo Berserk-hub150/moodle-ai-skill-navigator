@@ -9,12 +9,18 @@ global $DB, $USER;
 $courseid = required_param('courseid', PARAM_INT);
 $assessmentid = required_param('assessmentid', PARAM_INT);
 $format = optional_param('format', 'csv', PARAM_ALPHA);
+// AISN_PS1_EXPORT_FORMAT_COMPAT
+if ($format === 'googlecsv') {
+    $format = 'google';
+}
 
 $course = get_course($courseid);
 require_login($course);
 
 $context = context_course::instance($courseid);
 require_capability('local/aiskillnavigator:viewteacher', $context);
+// AISN_PS1_EXPORT_SESSKEY
+require_sesskey();
 
 $assessment = $DB->get_record('local_aiskillnav_assessment', [
     'id' => $assessmentid,

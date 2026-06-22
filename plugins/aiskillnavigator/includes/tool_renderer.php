@@ -4,7 +4,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/document_ocr_toggle_helper.php');
 
-function local_aiskillnavigator_tool_url(string $path, int $courseid): moodle_url {
+function local_aiskillnavigator_render_tool_url(string $path, int $courseid): moodle_url {
     $params = [];
 
     if ($courseid > SITEID) {
@@ -22,7 +22,7 @@ function local_aiskillnavigator_render_tool_card(array $tool, int $courseid): st
     $html .= html_writer::tag('p', s((string)$tool['description']), ['class' => 'text-muted']);
 
     $html .= html_writer::link(
-        local_aiskillnavigator_tool_url((string)$tool['path'], $courseid),
+        local_aiskillnavigator_render_tool_url((string)$tool['path'], $courseid),
         s((string)$tool['button']),
         ['class' => (string)$tool['cardclass']]
     );
@@ -35,7 +35,7 @@ function local_aiskillnavigator_render_tool_card(array $tool, int $courseid): st
 
 function local_aiskillnavigator_render_block_tool_button(array $tool, int $courseid): string {
     return html_writer::link(
-        local_aiskillnavigator_tool_url((string)$tool['path'], $courseid),
+        local_aiskillnavigator_render_tool_url((string)$tool['path'], $courseid),
         s((string)$tool['label']),
         ['class' => (string)$tool['blockclass']]
     );

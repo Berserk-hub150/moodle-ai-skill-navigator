@@ -218,11 +218,33 @@ $settings->add(new admin_setting_configcheckbox(
     0
 ));
 
+$settings->add(new admin_setting_configcheckbox(
+    'local_aiskillnavigator/autoblockcourses',
+    'Automatically add the AI Skill Navigator block to courses',
+    'If enabled, the plugin adds the AI Skill Navigator block to newly created or updated courses. Disabled by default for marketplace/production installations.',
+    0
+));
+
+$settings->add(new admin_setting_configcheckbox(
+    'local_aiskillnavigator/autosynccourseresources',
+    'Automatically sync course resources on Moodle events',
+    'If enabled, course resource changes are automatically indexed for AI materials. Disabled by default to avoid unexpected processing of teacher content.',
+    0
+));
+
+$settings->add(new admin_setting_configcheckbox(
+    'local_aiskillnavigator/enablemathjaxcdn',
+    'Enable external MathJax CDN',
+    'If enabled, tutor pages may load MathJax from jsDelivr to render equations. Disabled by default for privacy and offline production installations.',
+    0
+));
+
+
 $settings->add(new admin_setting_configtext(
     'local_aiskillnavigator/maxuploadbytes',
     'Maximum teacher material upload size in bytes',
     'Default production limit is 25 MB. Increase only if your PHP/Moodle upload limits and server memory allow it.',
-    '167772160',
+    '26214400',
     PARAM_INT
 ));
 

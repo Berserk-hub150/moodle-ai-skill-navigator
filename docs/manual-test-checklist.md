@@ -1,11 +1,11 @@
-﻿# Manual test checklist
+# Manual test checklist
 
-Use this checklist before a thesis demo.
+Use this checklist before a thesis demo or a marketplace release test.
 
 ## General checks
 
 - Start Docker containers.
-- Open Moodle.
+- Run Moodle upgrade.
 - Run Moodle cache purge.
 - Run PHP lint checks.
 - Open the plugin dashboard.
@@ -13,18 +13,21 @@ Use this checklist before a thesis demo.
 ## Teacher tools
 
 - Open AI Course Builder.
-- Create or modify a course section.
-- Insert formatted text.
+- Create a section.
+- Try a destructive action while destructive mode is disabled and verify it is blocked.
 - Open Course Materials / RAG.
 - Open Teacher Dashboard.
 - Open Tutor Analytics.
+- Generate initial/final assessments.
+- Export CSV and Google Forms CSV.
 
 ## Student tools
 
 - Open AI Tutor.
-- Ask a question based on course materials.
-- Generate or complete an assessment.
-- Open adaptive review if available.
+- Ask a course-aware question.
+- Generate and complete an AI quiz.
+- Generate a mind map.
+- Open adaptive review after quiz/assessment data exists.
 
 ## Simulator workflow
 
@@ -36,6 +39,9 @@ Use this checklist before a thesis demo.
 - Open the simulation detail page.
 - Check that links are clickable.
 
-## Final expected result
+## Privacy and production checks
 
-The plugin should be usable for a live academic demo without manual database edits or command-line work during the presentation.
+- Verify that external AI material usage is disabled by default.
+- Verify that each Moodle material has an explicit AI access policy.
+- Verify that Privacy API classes are present.
+- Verify that no .bak, backup, zip, tar.gz, env, log or development scripts are included in plugin folders.

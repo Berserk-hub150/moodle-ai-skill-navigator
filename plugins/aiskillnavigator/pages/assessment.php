@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/role_guard.php');
@@ -36,7 +36,7 @@ function local_aiskillnavigator_assessment_type_label(string $type): string {
         return 'Initial diagnostic quiz';
     }
 
-    if ($type === 'final' || $type === 'posttest') {
+    if ($type === 'final' || $type === 'post' || $type === 'posttest') {
         return 'Final test';
     }
 
@@ -119,7 +119,7 @@ function local_aiskillnavigator_assessment_card(stdClass $assessment, ?stdClass 
         $meta[] = 'Focus: ' . $focus;
     }
 
-    $html .= html_writer::tag('p', s(implode(' Â· ', $meta)), ['class' => 'text-muted']);
+    $html .= html_writer::tag('p', s(implode(' | ', $meta)), ['class' => 'text-muted']);
 
     if ($attempt) {
         $html .= html_writer::div(
@@ -354,3 +354,4 @@ echo html_writer::end_div();
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
 if (function_exists('local_aisn_ai_output_formatter_assets')) { echo local_aisn_ai_output_formatter_assets(); }
 echo $OUTPUT->footer();
+

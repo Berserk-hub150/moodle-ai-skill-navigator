@@ -4,6 +4,8 @@ namespace local_aiskillnavigator\service;
 
 defined('MOODLE_INTERNAL') || die();
 
+// AISN_SECURITY_HTTP_HARDENING_V2
+// Hardened HTTP client for optional external Search APIs.
 class web_search_service {
     private string $provider;
     private string $apikey;
@@ -148,6 +150,13 @@ class web_search_service {
     }
 
     private function post_json(string $url, array $payload, array $headers): array {
+        $validation = $this->validate_url($url);
+
+        if ($validation !== '') {
+            debugging('AI Skill Navigator search endpoint blocked: ' . $validation, DEBUG_DEVELOPER);
+            return ['ok' => false, 'error' => $validation];
+        }
+
         $json = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         if ($json === false) {
@@ -160,6 +169,8 @@ class web_search_service {
             return ['ok' => false, 'error' => 'Cannot initialize cURL.'];
         }
 
+        $headers = $this->normalise_headers($headers, true);
+
         curl_setopt_array($curl, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
@@ -168,17 +179,30 @@ class web_search_service {
             CURLOPT_CONNECTTIMEOUT => 12,
             CURLOPT_TIMEOUT => 35,
             CURLOPT_USERAGENT => 'Moodle local_aiskillnavigator web_search_service',
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_MAXREDIRS => 0,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
         ]);
 
         return $this->exec_json($curl);
     }
 
     private function get_json(string $url, array $headers): array {
+        $validation = $this->validate_url($url);
+
+        if ($validation !== '') {
+            debugging('AI Skill Navigator search endpoint blocked: ' . $validation, DEBUG_DEVELOPER);
+            return ['ok' => false, 'error' => $validation];
+        }
+
         $curl = curl_init($url);
 
         if ($curl === false) {
             return ['ok' => false, 'error' => 'Cannot initialize cURL.'];
         }
+
+        $headers = $this->normalise_headers($headers, false);
 
         curl_setopt_array($curl, [
             CURLOPT_RETURNTRANSFER => true,
@@ -187,6 +211,10 @@ class web_search_service {
             CURLOPT_CONNECTTIMEOUT => 12,
             CURLOPT_TIMEOUT => 35,
             CURLOPT_USERAGENT => 'Moodle local_aiskillnavigator web_search_service',
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_MAXREDIRS => 0,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
         ]);
 
         return $this->exec_json($curl);
@@ -204,17 +232,91 @@ class web_search_service {
 
         curl_close($curl);
 
+        if ($status < 200 || $status >= 300) {
+            return ['ok' => false, 'status' => $status, 'error' => 'HTTP error.'];
+        }
+
         $json = json_decode((string)$raw, true);
 
         if (!is_array($json)) {
-            return ['ok' => false, 'status' => $status, 'error' => 'Invalid JSON response.', 'raw' => $raw];
+            return ['ok' => false, 'status' => $status, 'error' => 'Invalid JSON response.'];
         }
 
         return [
-            'ok' => $status >= 200 && $status < 300,
+            'ok' => true,
             'status' => $status,
             'json' => $json,
         ];
+    }
+
+    private function normalise_headers(array $headers, bool $jsonbody): array {
+        $out = [];
+        $hascontenttype = false;
+
+        foreach ($headers as $header) {
+            $header = trim((string)$header);
+
+            if ($header === '') {
+                continue;
+            }
+
+            if (stripos($header, 'Content-Type:') === 0) {
+                $hascontenttype = true;
+            }
+
+            $out[] = $header;
+        }
+
+        if ($jsonbody && !$hascontenttype) {
+            $out[] = 'Content-Type: application/json';
+        }
+
+        return $out;
+    }
+
+    private function validate_url(string $url): string {
+        $url = trim($url);
+
+        if ($url === '') {
+            return 'Endpoint URL is empty.';
+        }
+
+        $parts = parse_url($url);
+
+        if (!is_array($parts) || empty($parts['scheme']) || empty($parts['host'])) {
+            return 'Invalid endpoint URL.';
+        }
+
+        $scheme = strtolower((string)$parts['scheme']);
+        $host = strtolower((string)$parts['host']);
+
+        if ($scheme !== 'https') {
+            return 'Only HTTPS search endpoints are allowed.';
+        }
+
+        if (filter_var($host, FILTER_VALIDATE_IP)) {
+            return $this->is_public_ip($host) ? '' : 'Private, reserved or internal IP endpoints are not allowed.';
+        }
+
+        $resolved = @gethostbynamel($host);
+
+        if (is_array($resolved)) {
+            foreach ($resolved as $ip) {
+                if (!$this->is_public_ip((string)$ip)) {
+                    return 'Endpoint resolves to a private, reserved or internal IP.';
+                }
+            }
+        }
+
+        return '';
+    }
+
+    private function is_public_ip(string $ip): bool {
+        return filter_var(
+            $ip,
+            FILTER_VALIDATE_IP,
+            FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+        ) !== false;
     }
 
     private function clean_results(array $rows, int $limit): array {
@@ -224,7 +326,7 @@ class web_search_service {
         foreach ($rows as $row) {
             $url = trim((string)($row['url'] ?? ''));
 
-            if ($url === '' || isset($seen[$url])) {
+            if (!$this->is_safe_result_url($url) || isset($seen[$url])) {
                 continue;
             }
 
@@ -250,5 +352,15 @@ class web_search_service {
         }
 
         return $clean;
+    }
+
+    private function is_safe_result_url(string $url): bool {
+        $parts = parse_url(trim($url));
+
+        if (!is_array($parts) || empty($parts['scheme']) || empty($parts['host'])) {
+            return false;
+        }
+
+        return in_array(strtolower((string)$parts['scheme']), ['https', 'http'], true);
     }
 }

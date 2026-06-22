@@ -20,11 +20,11 @@ if (!function_exists('local_aisn_tutor_ai_format_rules_clean_v2')) {
             . "Regole di risposta obbligatorie:\n"
             . "- Rispondi in italiano.\n"
             . "- Usa Markdown pulito e ben strutturato.\n"
-            . "- Usa titoli brevi con ## quando la risposta contiene piÃ¹ parti.\n"
+            . "- Usa titoli brevi con ## quando la risposta contiene piÃƒÂ¹ parti.\n"
             . "- Usa elenchi puntati per caratteristiche, vantaggi, esempi, differenze e casi d'uso.\n"
             . "- Se mostri codice o comandi, scegli tu il linguaggio corretto del blocco markdown in base al contenuto.\n"
-            . "- Non etichettare un blocco come javascript se non Ã¨ realmente JavaScript applicativo.\n"
-            . "- Per comandi database usa il linguaggio piÃ¹ adatto se lo riconosci, ad esempio sql, mongodb, cql, cypher, redis, oppure text se non sei sicuro.\n"
+            . "- Non etichettare un blocco come javascript se non ÃƒÂ¨ realmente JavaScript applicativo.\n"
+            . "- Per comandi database usa il linguaggio piÃƒÂ¹ adatto se lo riconosci, ad esempio sql, mongodb, cql, cypher, redis, oppure text se non sei sicuro.\n"
             . "- Non iniziare ripetendo il nome del file materiale.\n"
             . "- Non scrivere tutto in un unico paragrafo lungo.\n"
             . "- Chiudi con una breve sezione ## In sintesi quando utile.\n";
@@ -38,11 +38,11 @@ if (!function_exists('local_aisn_tutor_ai_format_rules_clean')) {
             . "Regole di risposta obbligatorie:\n"
             . "- Rispondi in italiano.\n"
             . "- Usa Markdown pulito e ben strutturato.\n"
-            . "- Usa titoli brevi con ## quando la risposta contiene piÃ¹ parti.\n"
+            . "- Usa titoli brevi con ## quando la risposta contiene piÃƒÂ¹ parti.\n"
             . "- Usa elenchi puntati per caratteristiche, vantaggi, esempi, differenze e casi d'uso.\n"
             . "- Se mostri codice o comandi, scegli tu il linguaggio corretto del blocco markdown in base al contenuto.\n"
-            . "- Non etichettare un blocco come javascript se non Ã¨ realmente JavaScript applicativo.\n"
-            . "- Per comandi database usa il linguaggio piÃ¹ adatto se lo riconosci, ad esempio sql, mongodb, cql, cypher, redis, oppure text se non sei sicuro.\n"
+            . "- Non etichettare un blocco come javascript se non ÃƒÂ¨ realmente JavaScript applicativo.\n"
+            . "- Per comandi database usa il linguaggio piÃƒÂ¹ adatto se lo riconosci, ad esempio sql, mongodb, cql, cypher, redis, oppure text se non sei sicuro.\n"
             . "- Non iniziare ripetendo il nome del file materiale.\n"
             . "- Non scrivere tutto in un unico paragrafo lungo.\n"
             . "- Chiudi con una breve sezione ## In sintesi quando utile.\n";
@@ -70,21 +70,28 @@ $PAGE->set_title('AI Tutor');
 $PAGE->set_heading('AI Tutor');
 if (!function_exists('local_aisn_tutor_formatting_suffix')) {
     function local_aisn_tutor_formatting_suffix(): string {
-        return "\n\nAISN_TUTOR_FORMATTING_SUFFIX_V3\n"
+        return "\n\nAISN_TUTOR_FORMATTING_SUFFIX_V5\n"
             . "Regole obbligatorie per la risposta del tutor:\n"
-            . "- Rispondi in italiano.\n"
+            . "- Rispondi sempre in italiano, salvo richiesta esplicita dello studente in un'altra lingua.\n"
+            . "- Usa PRIMA i materiali selezionati del corso. Non comportarti come un chatbot generico.\n"
+            . "- Se una parte della risposta deriva da conoscenza generale non presente nei materiali, scrivilo chiaramente con una breve sezione: ## Nota esterna.\n"
+            . "- Se i materiali non contengono abbastanza informazioni, dillo chiaramente e poi aggiungi solo una spiegazione generale breve e separata.\n"
+            . "- Non inventare nomi di slide, pagine, file, definizioni o fonti non presenti nel contesto.\n"
+            . "- Non chiudere con frasi tipo: Se vuoi posso..., Fammi sapere..., Posso fornirti..., Dimmi se vuoi....\n"
             . "- Usa Markdown pulito e ben strutturato.\n"
-            . "- Usa titoli con ## per sezioni come Definizione, Esempio, Spiegazione, Quando si usa, In sintesi.\n"
-            . "- Usa elenchi puntati per caratteristiche, vantaggi, esempi, passaggi e casi d'uso.\n"
-            . "- Non scrivere tutto in un unico paragrafo lungo.\n"
-            . "- Non iniziare ripetendo il nome del file materiale.\n"
-            . "- Se mostri codice o comandi, scegli tu il linguaggio corretto del blocco Markdown in base al contenuto.\n"
-            . "- Non etichettare un blocco come javascript se non Ã¨ realmente JavaScript applicativo.\n"
-            . "- Per comandi database usa il linguaggio piÃ¹ adatto se lo riconosci, ad esempio sql, mongodb, cql, cypher, redis, oppure text se non sei sicuro.\n"
-            . "- Chiudi con una breve sezione ## In sintesi quando utile.\n";
+            . "- Usa titoli brevi con ##, ad esempio: Concetto, Esempio, Quando si usa, In sintesi.\n"
+            . "- Se mostri codice o comandi, usa il linguaggio corretto del blocco Markdown.\n"
+            . "- Per comandi MongoDB shell/mongosh usa ```mongodb oppure ```mongosh, MAI ```javascript.\n"
+            . "- Esempi MongoDB come use nomeDatabase, db.createCollection(...), db.collezione.insertOne(...) NON sono JavaScript applicativo: etichettali come mongodb o mongosh.\n"
+            . "- Per Cassandra usa ```cql, non ```sql.\n"
+            . "- Per Neo4j usa ```cypher.\n"
+            . "- Per Redis usa ```redis oppure ```text.\n"
+            . "- Se non sei sicuro del linguaggio, usa ```text.\n"
+            . "- Evita blocchi di codice se non sono necessari.\n"
+            . "- Mantieni la risposta adatta a uno studente universitario: chiara, sintetica e collegata al corso.\n"
+            . "- Chiudi, quando utile, con una breve sezione ## In sintesi.\n";
     }
 }
-
 
 function local_aiskillnavigator_tutor_limit_context(string $text, int $limit = 9000): string {
     $text = local_aiskillnavigator_fix_mojibake(trim($text));
@@ -96,6 +103,29 @@ function local_aiskillnavigator_tutor_limit_context(string $text, int $limit = 9
     return $text;
 }
 
+
+function local_aisn_tutor_cleanup_answer(string $answer): string {
+    $answer = trim($answer);
+
+    $patterns = [
+        '/\n?\s*Se vuoi,?\s+posso\s+.*$/ius',
+        '/\n?\s*Fammi sapere\s+.*$/ius',
+        '/\n?\s*Posso fornirti\s+.*$/ius',
+        '/\n?\s*Dimmi se vuoi\s+.*$/ius',
+        '/\n?\s*Se ti serve,?\s+posso\s+.*$/ius',
+    ];
+
+    foreach ($patterns as $pattern) {
+        $answer = preg_replace($pattern, '', $answer);
+    }
+
+    // Correzioni leggere di formule ricorrenti brutte.
+    $answer = str_replace('Quando si usa Nei database', 'Quando si usa nei database', $answer);
+    $answer = str_replace('SQL Copy', 'CQL', $answer);
+    $answer = str_replace('JavaScript Copy', 'JavaScript', $answer);
+
+    return trim($answer);
+}
 function local_aiskillnavigator_tutor_call_ai(string $prompt, string $systemprompt): string {
     try {
         if (class_exists('\local_aiskillnavigator\service\ai_provider_factory')) {
@@ -165,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         local_aiskillnavigator_tutor_limit_context((string)$material->content);
                 }
 
-                $systemprompt = 'You are a Moodle AI tutor. Use only the selected course materials as grounding context. If the selected materials do not contain enough information, say it clearly. Do not invent sources. Answer in the same language as the student.';
+                $systemprompt = 'You are AI Skill Navigator, a Moodle course-aware tutor. Your primary source is the selected Moodle course material provided in the prompt. Answer as a university teaching assistant, not as a generic chatbot. If the material is sufficient, answer using it directly. If the material is incomplete, say clearly that the selected material does not contain enough information and then provide a short clearly separated general explanation only when useful. Do not invent sources, slide numbers, file contents or citations. Avoid final follow-up offers. Answer in the same language as the student, preferably Italian.';
 
                 $prompt =
                     "Selected course materials:\n\n" .
@@ -174,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $question;
             }
 
-            $answer = local_aiskillnavigator_fix_mojibake(local_aiskillnavigator_tutor_call_ai($prompt, $systemprompt . local_aisn_tutor_formatting_suffix()));
+            $answer = local_aisn_tutor_cleanup_answer(local_aiskillnavigator_fix_mojibake(local_aiskillnavigator_tutor_call_ai($prompt, $systemprompt . local_aisn_tutor_formatting_suffix())));
         }
     }
 }
@@ -303,7 +333,9 @@ window.MathJax = {
     svg: { fontCache: "global" }
 };
 </script>';
-echo '<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>';
+if ((string)get_config('local_aiskillnavigator', 'enablemathjaxcdn') === '1') {
+    echo '<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>';
+}
 echo '<script src="' . (new moodle_url('/local/aiskillnavigator/assets/aisn_answer_renderer_v3.js', ['v' => time()]))->out(false) . '"></script>';
 echo html_writer::tag('style', file_get_contents(__DIR__ . '/../assets/aisn_tutor_visual_override.css'));
 // AISN_TUTOR_VISUAL_OVERRIDE_LOAD_V4
@@ -452,5 +484,7 @@ function local_aiskillnavigator_tutor_signal_capture_assets(int $courseid): stri
 </script>
 HTML;
 }
+
+
 
 

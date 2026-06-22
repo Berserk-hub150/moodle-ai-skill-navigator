@@ -7,7 +7,6 @@ require_once(__DIR__ . '/../includes/back_to_course_helper.php');
 require_once(__DIR__ . '/../includes/tutor_signal_helper.php');
 require_once(__DIR__ . '/../includes/ui_style_helper.php');
 require_once(__DIR__ . '/../includes/course_resource_sync.php');
-require_once(__DIR__ . '/../includes/callisto_real_features.php');
 
 global $PAGE, $OUTPUT, $DB;
 
@@ -403,27 +402,6 @@ echo html_writer::div(
 echo html_writer::end_div();
 
 
-// BEGIN CALLISTO_REAL_FEATURES
-if (function_exists('local_aiskillnavigator_render_course_builder_panel') && isset($courseid)) {
-    local_aiskillnavigator_render_course_builder_panel((int)$courseid);
-}
-
-if (function_exists('local_aiskillnavigator_render_external_baseline_panel')) {
-}
-// END CALLISTO_REAL_FEATURES
-echo html_writer::tag('script', "
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('h1,h2,h3,h4').forEach(function (h) {
-        var txt = (h.textContent || '').trim().toLowerCase();
-        if (txt.indexOf('ai course builder from website/material') !== -1) {
-            var card = h.closest('.card') || h.closest('section') || h.parentElement;
-            if (card) {
-                card.remove();
-            }
-        }
-    });
-});
-");
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
 if (function_exists('local_aisn_ai_output_formatter_assets')) { echo local_aisn_ai_output_formatter_assets(); }
 echo $OUTPUT->footer();

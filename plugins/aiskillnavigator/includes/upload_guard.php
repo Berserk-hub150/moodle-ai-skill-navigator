@@ -17,7 +17,7 @@ function local_aisn_upload_max_bytes(): int {
         return $configured;
     }
 
-    return 160 * 1024 * 1024;
+    return 25 * 1024 * 1024;
 }
 
 function local_aisn_upload_error_message(int $error): string {

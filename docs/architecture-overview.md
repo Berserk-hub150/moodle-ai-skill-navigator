@@ -1,6 +1,6 @@
-﻿# Architecture overview
+# Architecture overview
 
-AI Skill Navigator is a Moodle local plugin prototype that integrates Generative AI into course activities.
+AI Skill Navigator is a Moodle local plugin that integrates Generative AI into course activities.
 
 The plugin is organised into four main areas:
 

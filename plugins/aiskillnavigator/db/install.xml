@@ -174,5 +174,69 @@
         <INDEX NAME="skill_idx" UNIQUE="false" FIELDS="skill"/>
       </INDEXES>
     </TABLE>
+
+    <TABLE NAME="local_aisn_kg_concept" COMMENT="AI Skill Navigator knowledge graph concepts">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT=""/>
+        <FIELD NAME="normalizedname" TYPE="char" LENGTH="191" NOTNULL="true" DEFAULT=""/>
+        <FIELD NAME="description" TYPE="text"/>
+        <FIELD NAME="confidence" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="courseid_ix" UNIQUE="false" FIELDS="courseid"/>
+        <INDEX NAME="norm_ix" UNIQUE="false" FIELDS="normalizedname"/>
+      </INDEXES>
+    </TABLE>
+
+    <TABLE NAME="local_aisn_kg_source" COMMENT="AI Skill Navigator knowledge graph evidence sources">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="conceptid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="materialid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="chunkid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="evidence" TYPE="text"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="concept_ix" UNIQUE="false" FIELDS="conceptid"/>
+        <INDEX NAME="material_ix" UNIQUE="false" FIELDS="materialid"/>
+        <INDEX NAME="chunk_ix" UNIQUE="false" FIELDS="chunkid"/>
+      </INDEXES>
+    </TABLE>
+
+    <TABLE NAME="local_aisn_kg_relation" COMMENT="AI Skill Navigator knowledge graph relations">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="sourceconceptid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="targetconceptid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="relationtype" TYPE="char" LENGTH="40" NOTNULL="true" DEFAULT="related_to"/>
+        <FIELD NAME="confidence" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="materialid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="chunkid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+        <FIELD NAME="evidence" TYPE="text"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="course_ix" UNIQUE="false" FIELDS="courseid"/>
+        <INDEX NAME="source_ix" UNIQUE="false" FIELDS="sourceconceptid"/>
+        <INDEX NAME="target_ix" UNIQUE="false" FIELDS="targetconceptid"/>
+        <INDEX NAME="material_ix" UNIQUE="false" FIELDS="materialid"/>
+      </INDEXES>
+    </TABLE>
+
   </TABLES>
 </XMLDB>

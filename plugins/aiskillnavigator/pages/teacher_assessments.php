@@ -1122,7 +1122,7 @@ echo html_writer::link(new moodle_url('/local/aiskillnavigator/pages/teacher_ass
         foreach ([
             'json' => 'JSON',
             'gift' => 'Moodle GIFT',
-            'googlecsv' => 'Google Forms CSV',
+            'google' => 'Google Forms CSV',
             'csv' => 'Generic CSV'
         ] as $format => $label) {
             echo html_writer::link(

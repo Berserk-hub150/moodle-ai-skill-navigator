@@ -1,12 +1,14 @@
-<?php
+﻿<?php
+// This file is part of Moodle - https://moodle.org/
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin = new stdClass();
 
 $plugin->component = 'block_aiskillnavigator';
-$plugin->version = 2026052203;
-$plugin->requires = 2022112800;
-$plugin->maturity = MATURITY_BETA;
-$plugin->release = '0.9.1-university-test';
+$plugin->version = 2026061299;
+$plugin->requires = 2024042200;
+$plugin->maturity = MATURITY_STABLE;
+$plugin->release = '1.0.3';
 $plugin->cron = 0;
+

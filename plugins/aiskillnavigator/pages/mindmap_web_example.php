@@ -14,6 +14,7 @@ $topic = optional_param('topic', '', PARAM_TEXT);
 
 $course = get_course($courseid);
 require_login($course);
+require_sesskey();
 
 $context = context_course::instance($courseid);
 

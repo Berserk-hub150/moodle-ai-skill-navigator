@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
     if (window.aisnUnifiedAnswerRendererLoaded) {
         return;
     }
@@ -677,3 +677,4 @@
         subtree: true
     });
 })();
+

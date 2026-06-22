@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/role_guard.php');
@@ -13,6 +13,8 @@ $topic = optional_param('topic', '', PARAM_TEXT);
 
 $course = get_course($courseid);
 require_login($course);
+// AISN_FINAL_QUIZ_VIDEO_SESSKEY
+require_sesskey();
 
 $context = context_course::instance($courseid);
 
