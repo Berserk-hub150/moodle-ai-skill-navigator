@@ -1,6 +1,15 @@
-﻿# Local backup files
+# Local backup files
 *.bak*
 *.bak_*
 *.backup
 backup_*/
 **/backup_*/
+_aisn_fix_backup_*/
+.env
+*.log
+node_modules/
+vendor/
+coverage/
+_aisn_*backup*/
+*.zip
+*.tar.gz

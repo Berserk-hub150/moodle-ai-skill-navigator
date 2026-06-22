@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // This file is part of Moodle - https://moodle.org/
 
 require_once(__DIR__ . '/../../../config.php');
@@ -48,6 +48,10 @@ $materialid = optional_param('materialid', -1, PARAM_INT);
 
 $generate = optional_param('generate', 0, PARAM_BOOL);
 $action = optional_param('action', '', PARAM_ALPHA);
+if ($generate && $action !== 'grade') {
+    // AISN_HOTFIX_QUIZ_GENERATE_SESSKEY_V2
+    require_sesskey();
+}
 
 $result = '';
 $quiz = null;
@@ -307,6 +311,8 @@ if ($action === 'grade') {
         $savedmessage = 'Quiz attempt saved in the student profile.';
     }
 } else if ($generate) {
+    // AISN_PS1_QUIZ_GENERATE_SESSKEY
+    require_sesskey();
     $selectedmaterials = local_aiskillnavigator_material_source_selected_materials($readablematerials, $sourcemode, $selectedmaterialids);
 
     $kgcontext = function_exists('local_aisn_kg_prompt_context')
@@ -429,7 +435,7 @@ echo html_writer::start_div('card-body');
 echo html_writer::tag('h3', 'Generate a new test');
 
 echo html_writer::start_tag('form', [
-    'method' => 'get',
+    'method' => 'post',
     'action' => new moodle_url('/local/aiskillnavigator/pages/quizgenerator.php'),
 ]);
 
@@ -438,6 +444,13 @@ echo html_writer::empty_tag('input', [
     'name' => 'generate',
     'value' => '1',
 ]);
+
+echo html_writer::empty_tag('input', [
+    'type' => 'hidden',
+    'name' => 'sesskey',
+    'value' => sesskey(),
+]);
+
 
 echo html_writer::empty_tag('input', [
     'type' => 'hidden',
@@ -719,6 +732,8 @@ echo html_writer::empty_tag('input', [
                 'difficulty' => $difficulty,
                 'materialid' => $materialid,
                 'courseid' => $courseid,
+                // AISN_FINAL_GENERATE_ANOTHER_SESSKEY
+                'sesskey' => sesskey(),
             ]),
             'Generate another test',
             ['class' => 'btn btn-primary mt-3']
@@ -754,7 +769,7 @@ echo $OUTPUT->footer();
 
 
 function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): string {
-    $endpoint = new moodle_url('/local/aiskillnavigator/pages/quiz_error_video.php', ['courseid' => $courseid]);
+    $endpoint = new moodle_url('/local/aiskillnavigator/pages/quiz_error_video.php', ['courseid' => $courseid, 'sesskey' => sesskey()]);
     $endpointjson = json_encode($endpoint->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
     return <<<HTML
@@ -1175,7 +1190,7 @@ HTML;
 
 
 function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string {
-    $endpoint = new moodle_url('/local/aiskillnavigator/pages/quiz_error_video.php', ['courseid' => $courseid]);
+    $endpoint = new moodle_url('/local/aiskillnavigator/pages/quiz_error_video.php', ['courseid' => $courseid, 'sesskey' => sesskey()]);
     $endpointjson = json_encode($endpoint->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
     return <<<HTML
@@ -1405,7 +1420,7 @@ HTML;
 
 
 function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $courseid): string {
-    $endpoint = new moodle_url('/local/aiskillnavigator/pages/quiz_error_video.php', ['courseid' => $courseid]);
+    $endpoint = new moodle_url('/local/aiskillnavigator/pages/quiz_error_video.php', ['courseid' => $courseid, 'sesskey' => sesskey()]);
     $endpointjson = json_encode($endpoint->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
     return <<<HTML

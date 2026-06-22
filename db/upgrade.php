@@ -352,5 +352,64 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026060702, 'local', 'aiskillnavigator');
     }
 
+
+    if ($oldversion < 2026061201) {
+        $concept = new xmldb_table('local_aisn_kg_concept');
+
+        if (!$dbman->table_exists($concept)) {
+            $concept->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $concept->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $concept->add_field('name', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, '');
+            $concept->add_field('normalizedname', XMLDB_TYPE_CHAR, '191', null, XMLDB_NOTNULL, null, '');
+            $concept->add_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null);
+            $concept->add_field('confidence', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0');
+            $concept->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $concept->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $concept->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $concept->add_index('courseid_ix', XMLDB_INDEX_NOTUNIQUE, ['courseid']);
+            $concept->add_index('norm_ix', XMLDB_INDEX_NOTUNIQUE, ['normalizedname']);
+            $dbman->create_table($concept);
+        }
+
+        $source = new xmldb_table('local_aisn_kg_source');
+
+        if (!$dbman->table_exists($source)) {
+            $source->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $source->add_field('conceptid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $source->add_field('materialid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $source->add_field('chunkid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $source->add_field('evidence', XMLDB_TYPE_TEXT, null, null, null, null, null);
+            $source->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $source->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $source->add_index('concept_ix', XMLDB_INDEX_NOTUNIQUE, ['conceptid']);
+            $source->add_index('material_ix', XMLDB_INDEX_NOTUNIQUE, ['materialid']);
+            $source->add_index('chunk_ix', XMLDB_INDEX_NOTUNIQUE, ['chunkid']);
+            $dbman->create_table($source);
+        }
+
+        $relation = new xmldb_table('local_aisn_kg_relation');
+
+        if (!$dbman->table_exists($relation)) {
+            $relation->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $relation->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $relation->add_field('sourceconceptid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $relation->add_field('targetconceptid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $relation->add_field('relationtype', XMLDB_TYPE_CHAR, '40', null, XMLDB_NOTNULL, null, 'related_to');
+            $relation->add_field('confidence', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0');
+            $relation->add_field('materialid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $relation->add_field('chunkid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $relation->add_field('evidence', XMLDB_TYPE_TEXT, null, null, null, null, null);
+            $relation->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            $relation->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $relation->add_index('course_ix', XMLDB_INDEX_NOTUNIQUE, ['courseid']);
+            $relation->add_index('source_ix', XMLDB_INDEX_NOTUNIQUE, ['sourceconceptid']);
+            $relation->add_index('target_ix', XMLDB_INDEX_NOTUNIQUE, ['targetconceptid']);
+            $relation->add_index('material_ix', XMLDB_INDEX_NOTUNIQUE, ['materialid']);
+            $dbman->create_table($relation);
+        }
+
+        upgrade_plugin_savepoint(true, 2026061201, 'local', 'aiskillnavigator');
+    }
+
     return true;
 }

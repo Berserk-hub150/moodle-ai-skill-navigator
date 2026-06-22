@@ -206,7 +206,14 @@ if (!function_exists('local_aisn_mistral_ocr_extract_path')) {
             ],
             CURLOPT_POSTFIELDS => json_encode($payload),
             CURLOPT_RETURNTRANSFER => true,
+            // AISN_MISTRAL_CURL_HARDENING_V2
+            CURLOPT_CONNECTTIMEOUT => 15,
             CURLOPT_TIMEOUT => local_aisn_mistral_ocr_timeout(),
+            CURLOPT_USERAGENT => 'Moodle local_aiskillnavigator mistral OCR client',
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_MAXREDIRS => 0,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
         ]);
 
         $response = curl_exec($curl);

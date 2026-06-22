@@ -5,6 +5,7 @@ require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/role_guard.php');
 require_once(__DIR__ . '/../includes/back_to_course_helper.php');
 require_once(__DIR__ . '/../includes/ui_style_helper.php');
+require_once(__DIR__ . '/../includes/document_ocr_toggle_helper.php');
 
 global $PAGE, $OUTPUT, $USER;
 
@@ -42,6 +43,43 @@ function local_aisn_index_card(
     return $html;
 }
 
+
+function local_aisn_index_ocr_card(int $courseid): string {
+    if (!function_exists('local_aisn_document_ocr_user_can_toggle') ||
+        !function_exists('local_aisn_document_ocr_course_enabled') ||
+        !function_exists('local_aisn_document_ocr_toggle_url')) {
+        return '';
+    }
+
+    if (!local_aisn_document_ocr_user_can_toggle($courseid)) {
+        return '';
+    }
+
+    $enabled = local_aisn_document_ocr_course_enabled($courseid);
+    $url = local_aisn_document_ocr_toggle_url($courseid, $enabled);
+
+    $description = $enabled
+        ? 'OCR attivo per questo corso. Premi il pulsante per disattivarlo.'
+        : 'OCR disattivato per questo corso. Premi il pulsante per attivarlo sui documenti.';
+
+    $html = '';
+    $html .= html_writer::start_div('col-md-4 mb-3');
+    $html .= html_writer::start_div('card h-100 shadow-sm border-success');
+    $html .= html_writer::start_div('card-body');
+    $html .= html_writer::span('OCR', 'badge badge-success mb-2');
+    $html .= html_writer::tag('h4', 'OCR documenti', ['class' => 'card-title']);
+    $html .= html_writer::tag('p', $description, ['class' => 'card-text text-muted']);
+    $html .= html_writer::link(
+        $url,
+        $enabled ? 'Disattiva OCR' : 'Attiva OCR',
+        ['class' => $enabled ? 'btn btn-outline-danger' : 'btn btn-outline-success']
+    );
+    $html .= html_writer::end_div();
+    $html .= html_writer::end_div();
+    $html .= html_writer::end_div();
+
+    return $html;
+}
 function local_aisn_index_user_courses(): array {
     global $DB;
 

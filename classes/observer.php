@@ -8,27 +8,45 @@ class observer {
     public static function course_created(\core\event\course_created $event): void {
         $courseid = (int)($event->courseid ?: $event->objectid);
 
-        self::ensure_course_block($courseid);
-        self::sync_course_resources($courseid, (int)$event->userid);
+        if (self::auto_block_enabled()) {
+            self::ensure_course_block($courseid);
+        }
+
+        if (self::auto_sync_enabled()) {
+            self::sync_course_resources($courseid, (int)$event->userid);
+        }
     }
 
     public static function course_updated(\core\event\course_updated $event): void {
         $courseid = (int)($event->courseid ?: $event->objectid);
 
-        self::ensure_course_block($courseid);
-        self::sync_course_resources($courseid, (int)$event->userid);
+        if (self::auto_block_enabled()) {
+            self::ensure_course_block($courseid);
+        }
+
+        if (self::auto_sync_enabled()) {
+            self::sync_course_resources($courseid, (int)$event->userid);
+        }
     }
 
     public static function course_module_created(\core\event\course_module_created $event): void {
-        self::sync_course_resources((int)$event->courseid, (int)$event->userid);
+        if (self::auto_sync_enabled()) {
+            self::sync_course_resources((int)$event->courseid, (int)$event->userid);
+        }
     }
 
     public static function course_module_updated(\core\event\course_module_updated $event): void {
-        self::sync_course_resources((int)$event->courseid, (int)$event->userid);
+        if (self::auto_sync_enabled()) {
+            self::sync_course_resources((int)$event->courseid, (int)$event->userid);
+        }
     }
 
     public static function course_module_deleted(\core\event\course_module_deleted $event): void {
         global $DB;
+
+        if (!self::auto_sync_enabled()) {
+            return;
+        }
 
         $courseid = (int)$event->courseid;
         $cmid = (int)$event->objectid;
@@ -100,6 +118,14 @@ class observer {
         } catch (\Throwable $e) {
             debugging('AI Skill Navigator block auto-install failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
+    }
+
+    private static function auto_block_enabled(): bool {
+        return (string)get_config('local_aiskillnavigator', 'autoblockcourses') === '1';
+    }
+
+    private static function auto_sync_enabled(): bool {
+        return (string)get_config('local_aiskillnavigator', 'autosynccourseresources') === '1';
     }
 
     private static function sync_course_resources(int $courseid, int $userid): void {

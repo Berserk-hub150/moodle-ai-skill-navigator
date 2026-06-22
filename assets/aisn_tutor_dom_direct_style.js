@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
     "use strict";
 
     if (window.aisnTutorDomDirectStyleLoaded) {
@@ -280,10 +280,6 @@
             });
         });
 
-        console.log("AISN direct style applied", {
-            cardClass: card.className,
-            padding: getComputedStyle(card).padding
-        });
     }
 
     if (document.readyState === "loading") {

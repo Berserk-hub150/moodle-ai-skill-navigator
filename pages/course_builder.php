@@ -7,6 +7,7 @@ require_once($CFG->dirroot . '/mod/resource/lib.php');
 require_once($CFG->libdir . '/filelib.php');
 require_once(__DIR__ . '/../includes/ui_style_helper.php');
 require_once(__DIR__ . '/../includes/upload_guard.php');
+require_once(__DIR__ . '/../includes/production_guard.php');
 require_once(__DIR__ . '/../includes/course_resource_sync.php');
 require_once(__DIR__ . '/../classes/service/ai_provider_interface.php');
 require_once(__DIR__ . '/../classes/service/ai_provider_factory.php');
@@ -2885,6 +2886,12 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
     }
 
     if (preg_match('/rinomina\s+(?:la\s+)?sezione\s+["“”\'«»]?([^"“”\'«»]+)["“”\'«»]?\s+(?:in|come|a)\s+["“”\'«»]?([^"“”\'«»\r\n]+)["“”\'«»]?/iu', $prompt, $m)) {
+        // AISN_PS1_DIRECT_RENAME_GUARD
+        if (function_exists('local_aisn_prod_course_builder_action_allowed') &&
+            !local_aisn_prod_course_builder_action_allowed('rename_section')) {
+            return ['Azione diretta bloccata dalle impostazioni di sicurezza: rename_section.'];
+        }
+
         $old = local_aisn_cb_section_text((string)$m[1]);
 
         $newraw = (string)$m[2];
@@ -4038,6 +4045,13 @@ function local_aisn_cb_execute_ai_actions(int $courseid, int $userid, array $act
 
         $type = local_aisn_cb_low((string)($a['action'] ?? ''));
 
+        // AISN_PS1_DESTRUCTIVE_ACTION_GUARD
+        if (function_exists('local_aisn_prod_course_builder_action_allowed') &&
+            !local_aisn_prod_course_builder_action_allowed($type)) {
+            $logs[] = 'AI: azione bloccata dalle impostazioni di sicurezza: ' . $type . '.';
+            continue;
+        }
+
         if ($type === 'delete_all_sections') {
             $logs = array_merge($logs, local_aisn_cb_delete_all_sections($courseid));
             $lastsection = null;
@@ -4175,20 +4189,6 @@ function local_aisn_cb_execute_ai_actions(int $courseid, int $userid, array $act
                 $logs[] = 'AI: sezione da spostare non trovata: ' . (string)($a['target'] ?? '');
             }
 
-            continue;
-        }
-
-        // AISN_AI_DELETE_MATERIAL_EXECUTOR_V1
-        if ($type === 'delete_material') {
-            $sectiontarget = (string)($a['target'] ?? '');
-            $materialname = (string)($a['material'] ?? $a['file'] ?? $a['filename'] ?? $a['name'] ?? '');
-
-            if (trim($materialname) === '') {
-                $logs[] = 'AI: delete_material senza nome materiale.';
-                continue;
-            }
-
-            $logs[] = 'AI: ' . local_aisn_cb_ai_delete_material($courseid, $sectiontarget, $materialname);
             continue;
         }
         // AISN_AI_MATERIAL_ACTIONS_FULL_EXECUTOR_V1
@@ -4422,7 +4422,7 @@ echo html_writer::start_tag('form', [
 
 echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
 echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'build']);
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'MAX_FILE_SIZE', 'value' => 512 * 1024 * 1024]);
+echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'MAX_FILE_SIZE', 'value' => local_aisn_upload_max_bytes()]);
 
 echo html_writer::tag('label', 'Prompt docente', ['for' => 'prompt']);
 echo html_writer::tag('textarea', s($prompt), [

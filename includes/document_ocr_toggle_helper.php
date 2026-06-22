@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -107,11 +107,10 @@ if (!function_exists('local_aisn_render_sidebar_ocr_toggle_button')) {
             : 'border-color:#15803d;color:#166534;background:#f0fdf4;';
 
         $html = '';
-
-        $html .= '<div style="margin-top:14px;">';
-        $html .= '<div style="font-weight:800;font-size:12px;color:#111827;margin-bottom:7px;">DOCUMENT OCR</div>';
-        $html .= '<a href="' . $url->out(false) . '" style="display:block;text-align:center;padding:9px 12px;border:1px solid;border-radius:8px;text-decoration:none;font-size:14px;' . $buttonstyle . '">' . s($label) . '</a>';
-        $html .= '<div style="font-size:11px;color:#64748b;margin-top:6px;line-height:1.35;">' . s($status) . '</div>';
+        $html .= '<div id="aisn-ocr-sidebar-toggle" style="margin-top:14px;">';
+        $html .= '<div class="aisn-ocr-title" style="font-weight:800;font-size:12px;color:#111827;margin-bottom:7px;text-transform:uppercase;">DOCUMENT OCR</div>';
+        $html .= '<a class="aisn-ocr-btn" href="' . $url->out(false) . '" style="display:block;text-align:center;padding:9px 12px;border:1px solid;border-radius:8px;text-decoration:none;font-size:14px;' . $buttonstyle . '">' . s($label) . '</a>';
+        $html .= '<div class="aisn-ocr-status" style="font-size:11px;color:#64748b;margin-top:6px;line-height:1.35;">' . s($status) . '</div>';
         $html .= '</div>';
 
         return $html;

@@ -1,4 +1,4 @@
-/* AI Skill Navigator - unified UI v3 */
+﻿/* AI Skill Navigator - unified UI v3 */
 :root {
     --aisn-primary: #0f6cbf;
     --aisn-primary-2: #2563eb;
@@ -530,3 +530,118 @@ body.path-local-aiskillnavigator select + .btn {
         min-width: 0 !important;
     }
 }
+/* Force the old full-width OCR bar into a compact floating card. */
+body.path-local-aiskillnavigator #aisn-ocr-sidebar-toggle,
+body#page-local-aiskillnavigator-pages-index #aisn-ocr-sidebar-toggle {
+    position: fixed !important;
+    right: 86px !important;
+    bottom: 24px !important;
+    left: auto !important;
+    top: auto !important;
+    width: 292px !important;
+    max-width: calc(100vw - 120px) !important;
+    min-width: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 14px !important;
+    box-sizing: border-box !important;
+    z-index: 2147483000 !important;
+    border-radius: 18px !important;
+    border: 1px solid #dbeafe !important;
+    background: rgba(255,255,255,.98) !important;
+    box-shadow: 0 18px 42px rgba(15,23,42,.16), 0 4px 14px rgba(15,23,42,.08) !important;
+    backdrop-filter: blur(10px) !important;
+    overflow: hidden !important;
+}
+
+body.path-local-aiskillnavigator #aisn-ocr-sidebar-toggle div,
+body#page-local-aiskillnavigator-pages-index #aisn-ocr-sidebar-toggle div {
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    text-align: left !important;
+}
+
+body.path-local-aiskillnavigator #aisn-ocr-sidebar-toggle div:first-child,
+body#page-local-aiskillnavigator-pages-index #aisn-ocr-sidebar-toggle div:first-child {
+    margin-bottom: 9px !important;
+    font-size: 13px !important;
+    font-weight: 850 !important;
+    color: #0f172a !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+
+body.path-local-aiskillnavigator #aisn-ocr-sidebar-toggle div:first-child::before,
+body#page-local-aiskillnavigator-pages-index #aisn-ocr-sidebar-toggle div:first-child::before {
+    content: "OCR" !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 34px !important;
+    height: 34px !important;
+    margin-right: 10px !important;
+    border-radius: 12px !important;
+    background: #eff6ff !important;
+    border: 1px solid #bfdbfe !important;
+    color: #0f172a !important;
+    font-size: 11px !important;
+    font-weight: 900 !important;
+    vertical-align: middle !important;
+}
+
+body.path-local-aiskillnavigator #aisn-ocr-sidebar-toggle a,
+body#page-local-aiskillnavigator-pages-index #aisn-ocr-sidebar-toggle a {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 8px 13px !important;
+    border-radius: 999px !important;
+    border: 1px solid #15803d !important;
+    background: #f0fdf4 !important;
+    color: #166534 !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    line-height: 1.25 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    box-shadow: 0 2px 8px rgba(21,128,61,.12) !important;
+}
+
+body.path-local-aiskillnavigator #aisn-ocr-sidebar-toggle a:hover,
+body#page-local-aiskillnavigator-pages-index #aisn-ocr-sidebar-toggle a:hover {
+    transform: translateY(-1px) !important;
+    text-decoration: none !important;
+}
+
+body.path-local-aiskillnavigator #aisn-ocr-sidebar-toggle small,
+body.path-local-aiskillnavigator #aisn-ocr-sidebar-toggle p,
+body#page-local-aiskillnavigator-pages-index #aisn-ocr-sidebar-toggle small,
+body#page-local-aiskillnavigator-pages-index #aisn-ocr-sidebar-toggle p {
+    display: block !important;
+    margin: 8px 0 0 0 !important;
+    padding: 0 !important;
+    font-size: 11px !important;
+    color: #64748b !important;
+    line-height: 1.35 !important;
+}
+
+@media (max-width: 720px) {
+    body.path-local-aiskillnavigator #aisn-ocr-sidebar-toggle,
+    body#page-local-aiskillnavigator-pages-index #aisn-ocr-sidebar-toggle {
+        left: 14px !important;
+        right: 14px !important;
+        bottom: 18px !important;
+        width: auto !important;
+        max-width: none !important;
+    }
+}
+
+
