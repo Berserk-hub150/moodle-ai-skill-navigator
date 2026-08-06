@@ -12,7 +12,13 @@ class embedding_searcher {
         $this->config = $config;
     }
 
-    public function search(string $query, int $courseid, int $topk, int $materialid): array {
+    public function search(
+        string $query,
+        int $courseid,
+        int $topk,
+        int $materialid,
+        bool $generateembedding = true
+    ): array {
         $query = trim($query) !== '' ? trim($query) : 'course material concepts learning objectives';
         $topk = $topk > 0 ? $topk : 5;
         $chunks = (new chunk_repository())->load($courseid, $materialid);
@@ -21,7 +27,9 @@ class embedding_searcher {
             return [];
         }
 
-        $queryembedding = (new embedding_client($this->config))->generate($query);
+        $queryembedding = $generateembedding
+            ? (new embedding_client($this->config))->generate($query)
+            : null;
         $scored = [];
 
         foreach ($chunks as $chunk) {

@@ -333,12 +333,77 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
         }
 
         list($sql, $params) = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'aisnmat');
+        $conceptids = [];
+
+        if (self::table_exists('local_aisn_kg_source')) {
+            $conceptids = $DB->get_fieldset_select(
+                'local_aisn_kg_source',
+                'conceptid',
+                'materialid ' . $sql,
+                $params
+            );
+        }
 
         foreach (['local_aiskillnav_chunk', 'local_aisn_kg_source', 'local_aisn_kg_relation'] as $table) {
             if (self::table_exists($table)) {
                 $DB->delete_records_select($table, 'materialid ' . $sql, $params);
             }
         }
+
+        self::delete_orphan_concepts($conceptids);
+    }
+
+    private static function delete_orphan_concepts(array $conceptids): void {
+        global $DB;
+
+        $conceptids = array_values(array_unique(array_filter(array_map('intval', $conceptids))));
+
+        if (empty($conceptids) ||
+            !self::table_exists('local_aisn_kg_concept') ||
+            !self::table_exists('local_aisn_kg_source')) {
+            return;
+        }
+
+        list($sql, $params) = $DB->get_in_or_equal($conceptids, SQL_PARAMS_NAMED, 'aisnconcept');
+        $orphans = $DB->get_fieldset_sql(
+            "SELECT c.id
+               FROM {local_aisn_kg_concept} c
+          LEFT JOIN {local_aisn_kg_source} s ON s.conceptid = c.id
+              WHERE c.id {$sql}
+                AND s.id IS NULL",
+            $params
+        );
+
+        if (empty($orphans)) {
+            return;
+        }
+
+        list($orphansql, $orphanparams) = $DB->get_in_or_equal(
+            $orphans,
+            SQL_PARAMS_NAMED,
+            'aisnorph'
+        );
+
+        if (self::table_exists('local_aisn_kg_relation')) {
+            list($sourcesql, $sourceparams) = $DB->get_in_or_equal(
+                $orphans,
+                SQL_PARAMS_NAMED,
+                'aisnsrc'
+            );
+            list($targetsql, $targetparams) = $DB->get_in_or_equal(
+                $orphans,
+                SQL_PARAMS_NAMED,
+                'aisntgt'
+            );
+
+            $DB->delete_records_select(
+                'local_aisn_kg_relation',
+                'sourceconceptid ' . $sourcesql . ' OR targetconceptid ' . $targetsql,
+                array_merge($sourceparams, $targetparams)
+            );
+        }
+
+        $DB->delete_records_select('local_aisn_kg_concept', 'id ' . $orphansql, $orphanparams);
     }
 
     private static function table_exists(string $table): bool {

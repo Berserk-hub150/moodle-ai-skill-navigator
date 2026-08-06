@@ -44,10 +44,6 @@ class observer {
     public static function course_module_deleted(\core\event\course_module_deleted $event): void {
         global $DB;
 
-        if (!self::auto_sync_enabled()) {
-            return;
-        }
-
         $courseid = (int)$event->courseid;
         $cmid = (int)$event->objectid;
 
@@ -55,15 +51,19 @@ class observer {
             return;
         }
 
+        unset_config('cm_external_ai_' . $cmid, 'local_aiskillnavigator');
+
         try {
             if (!self::table_exists('local_aiskillnav_material')) {
                 return;
             }
 
-            $select = 'courseid = :courseid AND materialtype = :materialtype AND ' . $DB->sql_like('title', ':title', false, false);
+            $select = 'courseid = :courseid AND materialtype = :materialtype'
+                . ' AND (sourcecmid = :sourcecmid OR ' . $DB->sql_like('title', ':title', false, false) . ')';
             $params = [
                 'courseid' => $courseid,
                 'materialtype' => 'course_resource',
+                'sourcecmid' => $cmid,
                 'title' => '%cm #' . $cmid . ']%',
             ];
 
@@ -275,4 +275,3 @@ class observer {
         }
     }
 }
-

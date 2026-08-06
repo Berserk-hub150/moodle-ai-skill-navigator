@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -92,6 +92,17 @@ function local_aiskillnavigator_coursemodule_edit_post_actions($data, $course) {
         return $data;
     }
 
+    $modname = trim((string)($data->modulename ?? $data->modname ?? ''));
+
+    if ($modname === '') {
+        $cm = get_coursemodule_from_id('', (int)$data->coursemodule, 0, false, IGNORE_MISSING);
+        $modname = $cm && !empty($cm->modname) ? (string)$cm->modname : '';
+    }
+
+    if ($modname === '' || !in_array($modname, local_aiskillnavigator_ai_policy_supported_modnames(), true)) {
+        return $data;
+    }
+
     $cmid = (int)$data->coursemodule;
     $allowed = !empty($data->local_aiskillnavigator_external_ai);
 
@@ -103,7 +114,9 @@ function local_aiskillnavigator_coursemodule_edit_post_actions($data, $course) {
 
     $syncfile = $CFG->dirroot . '/local/aiskillnavigator/includes/course_resource_sync.php';
 
-    if (file_exists($syncfile)) {
+    $autosyncenabled = (string)get_config('local_aiskillnavigator', 'autosynccourseresources') === '1';
+
+    if ($autosyncenabled && file_exists($syncfile)) {
         require_once($syncfile);
 
         if (function_exists('local_aiskillnavigator_sync_course_resources')) {
@@ -149,7 +162,9 @@ function local_aiskillnavigator_apply_cm_ai_policy_to_material(
     foreach ($materials as $material) {
         $title = (string)($material->title ?? '');
 
-        if (!str_starts_with($title, $prefix)) {
+        $sourcecmid = isset($material->sourcecmid) ? (int)$material->sourcecmid : 0;
+
+        if ($sourcecmid !== $cmid && !str_starts_with($title, $prefix)) {
             continue;
         }
 
@@ -170,4 +185,3 @@ function local_aiskillnavigator_apply_cm_ai_policy_to_material(
 function local_aiskillnavigator_before_footer(): string {
     return '';
 }
-

@@ -1,5 +1,7 @@
 # AI Skill Navigator
 
+[![Plugin CI](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml/badge.svg)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml)
+
 AI Skill Navigator is a Moodle plugin suite that adds course-aware AI learning tools for students and teachers.
 
 The package contains:
@@ -80,6 +82,14 @@ The plugin stores course materials, quiz attempts, assessment attempts, saved si
 - Moodle 4.4 or later.
 - PHP version supported by the target Moodle version.
 - Optional cURL support for external AI/search providers.
+
+## Development validation
+
+The repository includes automated checks for PHP 8.1–8.3, XMLDB parsing, JavaScript syntax, UTF-8 BOM regressions, RAG API compatibility, and safe embedding defaults. See [CONTRIBUTING.md](CONTRIBUTING.md) for the local commands and `docs/manual-test-checklist.md` for Moodle runtime scenarios.
+
+## Packaging
+
+For a Moodle installation package, place `plugins/aiskillnavigator` at `local/aiskillnavigator` and `plugins/block_aiskillnavigator` at `blocks/aiskillnavigator`. Do not package the repository root as a single Moodle plugin directory.
 
 ## License
 

@@ -157,6 +157,10 @@ class web_search_service {
             return ['ok' => false, 'error' => $validation];
         }
 
+        if (!function_exists('curl_init')) {
+            return ['ok' => false, 'error' => 'PHP cURL extension is not available.'];
+        }
+
         $json = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         if ($json === false) {
@@ -194,6 +198,10 @@ class web_search_service {
         if ($validation !== '') {
             debugging('AI Skill Navigator search endpoint blocked: ' . $validation, DEBUG_DEVELOPER);
             return ['ok' => false, 'error' => $validation];
+        }
+
+        if (!function_exists('curl_init')) {
+            return ['ok' => false, 'error' => 'PHP cURL extension is not available.'];
         }
 
         $curl = curl_init($url);

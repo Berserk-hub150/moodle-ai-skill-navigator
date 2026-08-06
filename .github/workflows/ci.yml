@@ -1,0 +1,62 @@
+name: Plugin CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  php-quality:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2', '8.3']
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, dom, json, libxml, mbstring, simplexml, zip
+          coverage: none
+
+      - name: Lint PHP files
+        run: find plugins tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Validate XMLDB schema
+        run: php tests/xmldb_schema_test.php
+
+      - name: Run embedding configuration tests
+        run: php tests/embedding_config_test.php
+
+      - name: Run RAG API contract tests
+        run: php tests/embedding_contract_test.php
+
+      - name: Run RAG indexing regression tests
+        run: php tests/rag_indexing_test.php
+
+      - name: Reject UTF-8 BOM in PHP files
+        run: php tests/php_bom_test.php
+
+  javascript-quality:
+    name: JavaScript syntax
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check JavaScript syntax
+        run: find plugins -type f -name '*.js' -print0 | xargs -0 -n1 node --check

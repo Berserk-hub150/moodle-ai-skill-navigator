@@ -14,7 +14,7 @@ class embedding_client {
     public function generate(string $text): ?array {
         $text = trim($text);
 
-        if ($text === '') {
+        if ($text === '' || $this->config->is_keyword_only()) {
             return null;
         }
 
@@ -37,13 +37,24 @@ class embedding_client {
     }
 
     private function openai(string $text): ?array {
-        $endpoint = preg_replace('#/v1$#', '', preg_replace('#/embeddings$#', '', preg_replace('#/chat/completions$#', '', rtrim($this->config->endpoint, '/'))));
         $headers = $this->config->apikey !== '' ? ['Authorization: Bearer ' . $this->config->apikey] : [];
-        $body = (new embedding_http_client())->post($endpoint . '/v1/embeddings', ['model' => $this->config->model, 'input' => $text], $headers);
+        $body = (new embedding_http_client())->post(
+            $this->openai_url(),
+            ['model' => $this->config->model, 'input' => $text],
+            $headers
+        );
 
         return isset($body['data'][0]['embedding']) && is_array($body['data'][0]['embedding'])
             ? $body['data'][0]['embedding']
             : null;
+    }
+
+    private function openai_url(): string {
+        $endpoint = rtrim($this->config->endpoint, '/');
+        $endpoint = preg_replace('#/(?:chat/completions|embeddings)$#', '', $endpoint);
+        $endpoint = preg_replace('#/v1$#', '', (string)$endpoint);
+
+        return rtrim((string)$endpoint, '/') . '/v1/embeddings';
     }
 
     private function custom(string $text): ?array {
