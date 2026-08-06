@@ -272,7 +272,7 @@ function local_aisn_tm_delete_material(stdClass $material): void {
             debugging('AI Skill Navigator material duplicate lookup failed before delete: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
 
-        // Questa Ã¨ la parte che mancava: elimina davvero la risorsa/attivitÃ  dal corso Moodle.
+        // Elimina anche la risorsa o attività corrispondente dal corso Moodle.
         try {
             $cm = get_coursemodule_from_id('', $cmid, $courseid, false, IGNORE_MISSING);
 
@@ -520,4 +520,3 @@ if (function_exists('local_aiskillnavigator_mojibake_guard')) {
     echo local_aiskillnavigator_mojibake_guard();
 }
 echo $OUTPUT->footer();
-

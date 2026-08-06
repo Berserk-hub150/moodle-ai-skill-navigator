@@ -237,7 +237,7 @@ function local_aiskillnavigator_mm_fallback(string $topic): array {
                 'summary' => 'Mostra casi pratici e situazioni in cui il concetto viene applicato.',
                 'children' => [
                     ['title' => 'Caso semplice', 'summary' => 'Un esempio introduttivo utile per iniziare.'],
-                    ['title' => 'Caso avanzato', 'summary' => 'Un esempio piÃ¹ completo per approfondire.'],
+                    ['title' => 'Caso avanzato', 'summary' => 'Un esempio più completo per approfondire.'],
                 ],
             ],
             [
@@ -1573,6 +1573,5 @@ function local_aiskillnavigator_mindmap_live_web_assets(int $courseid): string {
 </script>
 HTML;
 }
-
 
 

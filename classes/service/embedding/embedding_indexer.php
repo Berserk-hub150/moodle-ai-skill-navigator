@@ -12,7 +12,13 @@ class embedding_indexer {
         $this->config = $config;
     }
 
-    public function index(int $materialid, int $courseid, string $title, string $content): array {
+    public function index(
+        int $materialid,
+        int $courseid,
+        string $title,
+        string $content,
+        bool $generateembeddings = true
+    ): array {
         $content = trim($content);
 
         if ($content === '') {
@@ -27,23 +33,40 @@ class embedding_indexer {
             return ['success' => false, 'chunks' => 0, 'message' => 'No chunks generated from this material.'];
         }
 
-        return $this->store($repo, $chunks, $materialid, $courseid, $title);
+        return $this->store($repo, $chunks, $materialid, $courseid, $title, $generateembeddings);
     }
 
-    private function store(chunk_repository $repo, array $chunks, int $materialid, int $courseid, string $title): array {
+    private function store(
+        chunk_repository $repo,
+        array $chunks,
+        int $materialid,
+        int $courseid,
+        string $title,
+        bool $generateembeddings
+    ): array {
         $indexed = 0; $failed = 0;
         $client = new embedding_client($this->config);
         $recordbuilder = new embedding_chunk_record($this->config);
 
         foreach ($chunks as $index => $chunktext) {
-            $embedding = $client->generate($chunktext);
-            $failed += $embedding === null ? 1 : 0;
+            $embedding = $generateembeddings ? $client->generate($chunktext) : null;
+
+            if ($generateembeddings && $embedding === null) {
+                $failed++;
+            }
+
             $repo->insert($recordbuilder->make($materialid, $courseid, $title, $index, $chunktext, $embedding ?? []));
             $indexed++;
         }
 
         $message = "Indexed {$indexed} chunks from \"{$title}\".";
-        $message .= $failed > 0 ? " {$failed} chunks were saved without embeddings and will use keyword fallback." : '';
+
+        if (!$generateembeddings) {
+            $message .= ' Embeddings were skipped; keyword fallback is active.';
+        } else if ($failed > 0) {
+            $message .= " {$failed} chunks were saved without embeddings and will use keyword fallback.";
+        }
+
         return ['success' => true, 'chunks' => $indexed, 'message' => $message];
     }
 }

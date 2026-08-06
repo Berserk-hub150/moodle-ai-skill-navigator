@@ -20,11 +20,11 @@ if (!function_exists('local_aisn_tutor_ai_format_rules_clean_v2')) {
             . "Regole di risposta obbligatorie:\n"
             . "- Rispondi in italiano.\n"
             . "- Usa Markdown pulito e ben strutturato.\n"
-            . "- Usa titoli brevi con ## quando la risposta contiene piÃƒÂ¹ parti.\n"
+            . "- Usa titoli brevi con ## quando la risposta contiene più parti.\n"
             . "- Usa elenchi puntati per caratteristiche, vantaggi, esempi, differenze e casi d'uso.\n"
             . "- Se mostri codice o comandi, scegli tu il linguaggio corretto del blocco markdown in base al contenuto.\n"
-            . "- Non etichettare un blocco come javascript se non ÃƒÂ¨ realmente JavaScript applicativo.\n"
-            . "- Per comandi database usa il linguaggio piÃƒÂ¹ adatto se lo riconosci, ad esempio sql, mongodb, cql, cypher, redis, oppure text se non sei sicuro.\n"
+            . "- Non etichettare un blocco come javascript se non è realmente JavaScript applicativo.\n"
+            . "- Per comandi database usa il linguaggio più adatto se lo riconosci, ad esempio sql, mongodb, cql, cypher, redis, oppure text se non sei sicuro.\n"
             . "- Non iniziare ripetendo il nome del file materiale.\n"
             . "- Non scrivere tutto in un unico paragrafo lungo.\n"
             . "- Chiudi con una breve sezione ## In sintesi quando utile.\n";
@@ -38,11 +38,11 @@ if (!function_exists('local_aisn_tutor_ai_format_rules_clean')) {
             . "Regole di risposta obbligatorie:\n"
             . "- Rispondi in italiano.\n"
             . "- Usa Markdown pulito e ben strutturato.\n"
-            . "- Usa titoli brevi con ## quando la risposta contiene piÃƒÂ¹ parti.\n"
+            . "- Usa titoli brevi con ## quando la risposta contiene più parti.\n"
             . "- Usa elenchi puntati per caratteristiche, vantaggi, esempi, differenze e casi d'uso.\n"
             . "- Se mostri codice o comandi, scegli tu il linguaggio corretto del blocco markdown in base al contenuto.\n"
-            . "- Non etichettare un blocco come javascript se non ÃƒÂ¨ realmente JavaScript applicativo.\n"
-            . "- Per comandi database usa il linguaggio piÃƒÂ¹ adatto se lo riconosci, ad esempio sql, mongodb, cql, cypher, redis, oppure text se non sei sicuro.\n"
+            . "- Non etichettare un blocco come javascript se non è realmente JavaScript applicativo.\n"
+            . "- Per comandi database usa il linguaggio più adatto se lo riconosci, ad esempio sql, mongodb, cql, cypher, redis, oppure text se non sei sicuro.\n"
             . "- Non iniziare ripetendo il nome del file materiale.\n"
             . "- Non scrivere tutto in un unico paragrafo lungo.\n"
             . "- Chiudi con una breve sezione ## In sintesi quando utile.\n";
@@ -484,7 +484,6 @@ function local_aiskillnavigator_tutor_signal_capture_assets(int $courseid): stri
 </script>
 HTML;
 }
-
 
 
 

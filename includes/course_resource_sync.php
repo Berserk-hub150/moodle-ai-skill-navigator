@@ -957,25 +957,24 @@ if (!function_exists('local_aiskillnavigator_try_index_synced_materials')) {
             return;
         }
 
-        try {
-            $service = new \local_aiskillnavigator\service\embedding_service();
+        $service = new \local_aiskillnavigator\service\embedding_service();
 
-            foreach ($materialids as $materialid) {
-                if (!local_aisn_crs_get_records(['id' => (int)$materialid])) {
+        foreach ($materialids as $materialid) {
+            try {
+                $records = local_aisn_crs_get_records(['id' => (int)$materialid]);
+
+                if (empty($records)) {
                     continue;
                 }
 
-                if (method_exists($service, 'index_material')) {
-                    $service->index_material((int)$materialid);
-                } else if (method_exists($service, 'index_material_by_id')) {
-                    $service->index_material_by_id((int)$materialid);
-                } else if (method_exists($service, 'index_teacher_material')) {
-                    $service->index_teacher_material((int)$materialid);
-                }
+                $service->index_material((int)$materialid, $courseid);
+            } catch (Throwable $e) {
+                debugging(
+                    'AI Skill Navigator course material auto-index skipped for material '
+                        . (int)$materialid . ': ' . $e->getMessage(),
+                    DEBUG_DEVELOPER
+                );
             }
-        } catch (Throwable $e) {
-            debugging('AI Skill Navigator course material auto-index skipped: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
     }
 }
-

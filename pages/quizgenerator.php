@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // This file is part of Moodle - https://moodle.org/
 
 require_once(__DIR__ . '/../../../config.php');
@@ -931,12 +931,12 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
                 return;
             }
 
-            const label = data.isvideo ? "Video consigliato dopo lâ€™errore" : "Risorsa consigliata dopo lâ€™errore";
+            const label = data.isvideo ? "Video consigliato dopo l'errore" : "Risorsa consigliata dopo l'errore";
 
             box.className = "aisn-video-remediation-card";
             box.innerHTML =
                 '<span class="aisn-video-remediation-chip">' + escapeHtml(label) + '</span>' +
-                '<h4>Recupero adattivo guidato dallâ€™errore</h4>' +
+                "<h4>Recupero adattivo guidato dall'errore</h4>" +
                 '<p><strong>Ability to improve:</strong> ' + escapeHtml(skill) + '</p>' +
                 '<p><a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(data.title || data.url) + '</a></p>' +
                 (data.snippet ? '<p>' + escapeHtml(data.snippet) + '</p>' : '') +
@@ -1628,7 +1628,5 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
 </script>
 HTML;
 }
-
-
 
 
