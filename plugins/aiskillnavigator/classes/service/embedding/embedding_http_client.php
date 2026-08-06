@@ -14,6 +14,11 @@ class embedding_http_client {
             return null;
         }
 
+        if (!function_exists('curl_init')) {
+            debugging('AI Skill Navigator embeddings skipped: PHP cURL extension is not available.', DEBUG_DEVELOPER);
+            return null;
+        }
+
         $json = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         if ($json === false) {

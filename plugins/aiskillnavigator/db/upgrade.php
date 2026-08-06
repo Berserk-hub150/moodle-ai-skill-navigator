@@ -411,5 +411,114 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026061201, 'local', 'aiskillnavigator');
     }
 
+    if ($oldversion < 2026080600) {
+        $table = new xmldb_table('local_aiskillnav_material');
+
+        if ($dbman->table_exists($table)) {
+            $field = new xmldb_field(
+                'aipolicy',
+                XMLDB_TYPE_CHAR,
+                '32',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                'local_only',
+                'externalaiallowed'
+            );
+
+            if ($dbman->field_exists($table, $field)) {
+                $DB->execute("UPDATE {local_aiskillnav_material}
+                                SET aipolicy = CASE
+                                    WHEN externalaiallowed = 1 THEN 'external_allowed'
+                                    ELSE 'local_only'
+                                END
+                              WHERE aipolicy IS NULL OR aipolicy = ''");
+                $dbman->change_field_type($table, $field);
+                $dbman->change_field_notnull($table, $field);
+                $dbman->change_field_default($table, $field);
+            }
+        }
+
+        $table = new xmldb_table('local_aiskillnav_chunk');
+
+        if ($dbman->table_exists($table)) {
+            $field = new xmldb_field(
+                'embeddingmodel',
+                XMLDB_TYPE_CHAR,
+                '255',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                '',
+                'embedding'
+            );
+
+            if ($dbman->field_exists($table, $field)) {
+                $DB->execute("UPDATE {local_aiskillnav_chunk}
+                                SET embeddingmodel = ''
+                              WHERE embeddingmodel IS NULL");
+                $dbman->change_field_type($table, $field);
+                $dbman->change_field_notnull($table, $field);
+                $dbman->change_field_default($table, $field);
+            }
+        }
+
+        $table = new xmldb_table('local_aiskillnav_attempt');
+
+        if ($dbman->table_exists($table)) {
+            $index = new xmldb_index('topic_ix', XMLDB_INDEX_NOTUNIQUE, ['topic']);
+
+            if (!$dbman->index_exists($table, $index)) {
+                $dbman->add_index($table, $index);
+            }
+        }
+
+        $table = new xmldb_table('local_aiskillnav_assessment');
+
+        if ($dbman->table_exists($table)) {
+            $index = new xmldb_index('userid_ix', XMLDB_INDEX_NOTUNIQUE, ['userid']);
+
+            if (!$dbman->index_exists($table, $index)) {
+                $dbman->add_index($table, $index);
+            }
+        }
+
+        $table = new xmldb_table('local_aiskillnav_sim');
+
+        if ($dbman->table_exists($table)) {
+            $field = new xmldb_field(
+                'source',
+                XMLDB_TYPE_CHAR,
+                '40',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                'ai_generated',
+                'description'
+            );
+
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->change_field_default($table, $field);
+            }
+
+            $field = new xmldb_field(
+                'url',
+                XMLDB_TYPE_TEXT,
+                null,
+                null,
+                null,
+                null,
+                null,
+                'title'
+            );
+
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->change_field_notnull($table, $field);
+            }
+        }
+
+        upgrade_plugin_savepoint(true, 2026080600, 'local', 'aiskillnavigator');
+    }
+
     return true;
 }

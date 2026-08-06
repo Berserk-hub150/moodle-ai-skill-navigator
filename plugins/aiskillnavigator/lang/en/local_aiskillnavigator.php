@@ -30,6 +30,7 @@ $string['embeddingmodel_desc'] = 'Model used for generating RAG embeddings. For 
 $string['local/aiskillnavigator:viewstudent'] = 'Use student AI tools';
 $string['local/aiskillnavigator:viewteacher'] = 'Use teacher AI tools';
 $string['local/aiskillnavigator:managematerials'] = 'Manage teacher AI materials';
+$string['local/aiskillnavigator:manageassessments'] = 'Manage AI assessments';
 $string['privacy:metadata:configured_ai_provider'] = 'Optional external AI provider configured by the site administrator.';
 $string['privacy:metadata:local_aiskillnav_material'] = 'Course materials stored for AI-assisted learning.';
 $string['privacy:metadata:local_aiskillnav_attempt'] = 'Student AI quiz attempts.';

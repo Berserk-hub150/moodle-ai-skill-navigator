@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/role_guard.php');
@@ -354,4 +354,3 @@ echo html_writer::end_div();
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
 if (function_exists('local_aisn_ai_output_formatter_assets')) { echo local_aisn_ai_output_formatter_assets(); }
 echo $OUTPUT->footer();
-

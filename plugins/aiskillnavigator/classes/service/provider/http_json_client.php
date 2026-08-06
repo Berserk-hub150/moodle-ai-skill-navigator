@@ -19,6 +19,16 @@ class http_json_client {
             ];
         }
 
+        if (!function_exists('curl_init')) {
+            return [
+                'ok' => false,
+                'status' => 0,
+                'error' => 'PHP cURL extension is not available.',
+                'raw' => '',
+                'body' => null,
+            ];
+        }
+
         $json = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         if ($json === false) {

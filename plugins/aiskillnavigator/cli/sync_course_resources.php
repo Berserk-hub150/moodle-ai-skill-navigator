@@ -55,14 +55,14 @@ function local_aisn_cli_print_sync_result(int $courseid, array $result): void {
     echo "Updated: " . (int)($result['updated'] ?? 0) . "\n";
     echo "Skipped: " . (int)($result['skipped'] ?? 0) . "\n";
 
-    if (array_key_exists('deletedduplicates', $result)) {
-        echo "Deleted duplicates: " . (int)$result['deletedduplicates'] . "\n";
+    if (array_key_exists('duplicatesdeleted', $result)) {
+        echo "Deleted duplicates: " . (int)$result['duplicatesdeleted'] . "\n";
     }
 }
 
 if (!empty($options['all'])) {
     $courseids = $DB->get_fieldset_select('course', 'id', 'id <> ?', [SITEID]);
-    $total = ['created' => 0, 'updated' => 0, 'skipped' => 0, 'deletedduplicates' => 0];
+    $total = ['created' => 0, 'updated' => 0, 'skipped' => 0, 'duplicatesdeleted' => 0];
 
     foreach ($courseids as $id) {
         $courseid = (int)$id;
@@ -78,7 +78,7 @@ if (!empty($options['all'])) {
     echo "Total created: {$total['created']}\n";
     echo "Total updated: {$total['updated']}\n";
     echo "Total skipped: {$total['skipped']}\n";
-    echo "Total deleted duplicates: {$total['deletedduplicates']}\n";
+    echo "Total deleted duplicates: {$total['duplicatesdeleted']}\n";
     exit(0);
 }
 
