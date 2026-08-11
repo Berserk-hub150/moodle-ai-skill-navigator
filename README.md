@@ -1,3 +1,31 @@
+<!-- BEGINNER-CONTRIBUTION-START -->
+
+## First open-source contribution? Start here
+
+New to GitHub or open source? You are welcome here.
+
+AI Skill Navigator maintains small and well-scoped issues for first-time contributors in PHP, JavaScript, Moodle, accessibility, documentation, translations, testing, and the Flashcards learning-tool initiative.
+
+1. Star our repo.
+2. Fork the repository.
+3. Browse the open good first issue tasks.
+4. Read BEGINNER_CONTRIBUTING.md.
+5. Pick one issue and open your first Pull Request.
+
+Useful links:
+
+- Good First Issues: https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
+- Beginner guide: BEGINNER_CONTRIBUTING.md
+- Flashcards area: community/flashcards/
+
+Small beginner Pull Requests are prioritized for review.
+
+### Contributors
+
+Merged contributions are credited through GitHub contributor history.
+
+<!-- BEGINNER-CONTRIBUTION-END -->
+
 # AI Skill Navigator
 
 [![Plugin CI](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml/badge.svg)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml)
@@ -85,7 +113,7 @@ The plugin stores course materials, quiz attempts, assessment attempts, saved si
 
 ## Development validation
 
-The repository includes automated checks for PHP 8.1–8.3, XMLDB parsing, JavaScript syntax, UTF-8 BOM regressions, RAG API compatibility, and safe embedding defaults. See [CONTRIBUTING.md](CONTRIBUTING.md) for the local commands and `docs/manual-test-checklist.md` for Moodle runtime scenarios.
+The repository includes automated checks for PHP 8.1â€“8.3, XMLDB parsing, JavaScript syntax, UTF-8 BOM regressions, RAG API compatibility, and safe embedding defaults. See [CONTRIBUTING.md](CONTRIBUTING.md) for the local commands and `docs/manual-test-checklist.md` for Moodle runtime scenarios.
 
 ## Packaging
 

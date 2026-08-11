@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Skill Navigator Flashcard Deck",
+  "type": "object",
+  "required": ["title", "cards"],
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "cards": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["question", "answer"],
+        "additionalProperties": false,
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "answer": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1500
+          }
+        }
+      }
+    }
+  }
+}
