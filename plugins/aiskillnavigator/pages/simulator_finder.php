@@ -15,7 +15,13 @@ $action = optional_param('action', '', PARAM_ALPHA);
 $topic = optional_param('topic', '', PARAM_TEXT);
 $level = optional_param('level', 'medium', PARAM_ALPHA);
 $notes = optional_param('notes', '', PARAM_RAW_TRIMMED);
-
+//Reset
+if ($action === 'reset') {
+    $topic = '';
+    $level = 'medium';
+    $notes = '';
+    $action = '';
+}   
 $course = get_course($courseid);
 
 require_login($course);
@@ -570,6 +576,17 @@ echo html_writer::empty_tag('input', [
     'class' => 'btn btn-primary',
     'value' => 'Generate exercise and simulator',
 ]);
+
+echo ' ';
+
+echo html_writer::link(
+    new moodle_url('/local/aiskillnavigator/pages/simulator_finder.php', [
+        'courseid' => $courseid,
+        'action' => 'reset'
+    ]),
+    'Reset',
+    ['class' => 'btn btn-outline-secondary']
+);
 
 echo ' ';
 
