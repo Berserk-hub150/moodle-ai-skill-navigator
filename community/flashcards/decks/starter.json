@@ -1,0 +1,18 @@
+{
+  "title": "AI Skill Navigator starter deck",
+  "description": "Example deck for first-time contributors.",
+  "cards": [
+    {
+      "question": "What is Moodle?",
+      "answer": "An open-source learning management system."
+    },
+    {
+      "question": "What does RAG stand for?",
+      "answer": "Retrieval-Augmented Generation."
+    },
+    {
+      "question": "What is a good first issue?",
+      "answer": "A small and well-scoped task for a new contributor."
+    }
+  ]
+}
