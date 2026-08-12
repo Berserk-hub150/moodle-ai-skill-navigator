@@ -123,9 +123,6 @@ The repository includes automated checks for PHP 8.1-8.3, XMLDB parsing, JavaScr
 
 For a Moodle installation package, place `plugins/aiskillnavigator` at `local/aiskillnavigator` and `plugins/block_aiskillnavigator` at `blocks/aiskillnavigator`. Do not package the repository root as a single Moodle plugin directory.
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=Berserk-hub150/moodle-ai-skill-navigator&type=Date)](https://star-history.com/#Berserk-hub150/moodle-ai-skill-navigator&Date)
 
 ## License
 
