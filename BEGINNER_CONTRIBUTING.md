@@ -77,7 +77,7 @@ Open a Pull Request and include:
 - Do not add unrelated refactors.
 - Never commit API keys or credentials.
 - Never commit real student data.
-- Never upload private course material.
+- Never upload screenshots, fixtures, logs, or decks containing private course material.
 - Ask questions in the issue if anything is unclear.
 
 ## Maintainer goal

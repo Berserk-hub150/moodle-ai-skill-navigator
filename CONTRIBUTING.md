@@ -28,7 +28,7 @@ Also run the Moodle upgrade and the scenarios in `docs/manual-test-checklist.md`
 
 ## Security and privacy
 
-- Never commit API keys, credentials, student data, or exported course materials.
+- Never commit API keys, credentials, student data, or exported course materials. Screenshots, fixtures, logs, and decks must not contain this information.
 - External AI access must remain opt-in globally and per material.
 - Destructive Course Builder actions must remain disabled by default.
 - Use Moodle capabilities, `require_login()`, and sesskey validation for every protected action.
