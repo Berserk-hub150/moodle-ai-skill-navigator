@@ -1,10 +1,16 @@
-﻿# AI Skill Navigator
+# AI Skill Navigator
+
+<p align="center">
+  <img src="assets/readme/hero-banner.png" alt="AI Skill Navigator - AI-powered Moodle learning tools" width="100%">
+</p>
+
 
 <!-- MICRO-CONTRIBUTIONS-START -->
 
 [![GitHub stars](https://img.shields.io/github/stars/Berserk-hub150/moodle-ai-skill-navigator?style=social)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/Berserk-hub150/moodle-ai-skill-navigator?style=social)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/forks)
 [![Good First Issues](https://img.shields.io/github/issues-search/Berserk-hub150/moodle-ai-skill-navigator?query=is%3Aopen%20label%3A%22good%20first%20issue%22&label=good%20first%20issues)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+[![CodeTriage](https://www.codetriage.com/berserk-hub150/moodle-ai-skill-navigator/badges/users.svg)](https://www.codetriage.com/Berserk-hub150/moodle-ai-skill-navigator)
 
 > AI-powered Moodle learning tools: course-aware tutoring, quizzes, mind maps, assessment, adaptive review, RAG, analytics and course-building helpers.
 
@@ -111,14 +117,16 @@ The plugin stores course materials, quiz attempts, assessment attempts, saved si
 
 ## Development validation
 
-The repository includes automated checks for PHP 8.1Ã¢â‚¬â€œ8.3, XMLDB parsing, JavaScript syntax, UTF-8 BOM regressions, RAG API compatibility, and safe embedding defaults. See [CONTRIBUTING.md](CONTRIBUTING.md) for the local commands and `docs/manual-test-checklist.md` for Moodle runtime scenarios.
+The repository includes automated checks for PHP 8.1-8.3, XMLDB parsing, JavaScript syntax, UTF-8 BOM regressions, RAG API compatibility, and safe embedding defaults. See [CONTRIBUTING.md](CONTRIBUTING.md) for the local commands and `docs/manual-test-checklist.md` for Moodle runtime scenarios.
 
 ## Packaging
 
 For a Moodle installation package, place `plugins/aiskillnavigator` at `local/aiskillnavigator` and `plugins/block_aiskillnavigator` at `blocks/aiskillnavigator`. Do not package the repository root as a single Moodle plugin directory.
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Berserk-hub150/moodle-ai-skill-navigator&type=Date)](https://star-history.com/#Berserk-hub150/moodle-ai-skill-navigator&Date)
+
 ## License
 
 GPL v3 or later.
-
-

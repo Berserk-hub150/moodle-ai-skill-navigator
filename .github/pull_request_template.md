@@ -1,4 +1,4 @@
-﻿## What changed?
+## What changed?
 
 Describe the change in a few sentences.
 
@@ -31,3 +31,8 @@ If this PR closes a `micro-contribution` issue:
 
 <!-- MICRO-PR-END -->
 
+
+## Support the project
+
+If you enjoyed contributing or find AI Skill Navigator useful, consider starring the repository.
+A star is appreciated, but it is never required for review or merge.
