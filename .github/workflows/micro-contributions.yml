@@ -1,0 +1,27 @@
+﻿name: Micro Contributions
+
+on:
+  pull_request:
+    paths:
+      - "community/micro-contributions/**"
+      - "tests/validate_micro_contributions.php"
+      - ".github/workflows/micro-contributions.yml"
+  push:
+    branches: [main]
+    paths:
+      - "community/micro-contributions/**"
+      - "tests/validate_micro_contributions.php"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+      - name: Validate micro-contribution JSON
+        run: php tests/validate_micro_contributions.php

@@ -1,32 +1,30 @@
-<!-- BEGINNER-CONTRIBUTION-START -->
+﻿# AI Skill Navigator
 
-## First open-source contribution? Start here
+<!-- MICRO-CONTRIBUTIONS-START -->
 
-New to GitHub or open source? You are welcome here.
+[![GitHub stars](https://img.shields.io/github/stars/Berserk-hub150/moodle-ai-skill-navigator?style=social)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Berserk-hub150/moodle-ai-skill-navigator?style=social)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/forks)
+[![Good First Issues](https://img.shields.io/github/issues-search/Berserk-hub150/moodle-ai-skill-navigator?query=is%3Aopen%20label%3A%22good%20first%20issue%22&label=good%20first%20issues)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 
-AI Skill Navigator maintains small and well-scoped issues for first-time contributors in PHP, JavaScript, Moodle, accessibility, documentation, translations, testing, and the Flashcards learning-tool initiative.
+> AI-powered Moodle learning tools: course-aware tutoring, quizzes, mind maps, assessment, adaptive review, RAG, analytics and course-building helpers.
 
-1. Star our repo.
-2. Fork the repository.
-3. Browse the open good first issue tasks.
-4. Read BEGINNER_CONTRIBUTING.md.
-5. Pick one issue and open your first Pull Request.
+## 🚀 Make your first open-source PR in 2–5 minutes
 
-Useful links:
+New to open source? Start with a **browser-only micro-contribution**.
 
-- Good First Issues: https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
-- Beginner guide: BEGINNER_CONTRIBUTING.md
-- Flashcards area: community/flashcards/
+- ✅ No Moodle installation.
+- ✅ No local development setup.
+- ✅ No coding required for many tasks.
+- ✅ One tiny JSON file per issue.
+- ✅ Small first-time-contributor PRs are prioritized.
 
-Small beginner Pull Requests are prioritized for review.
+**[Browse 2–5 minute issues](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3Amicro-contribution)**
 
-### Contributors
+**Pick an issue → Fork → Create one tiny file → Pull Request → Contributor**
 
-Merged contributions are credited through GitHub contributor history.
+⭐ If the project is useful to you, a star helps other Moodle developers discover it. Stars are appreciated, never required.
 
-<!-- BEGINNER-CONTRIBUTION-END -->
-
-# AI Skill Navigator
+<!-- MICRO-CONTRIBUTIONS-END -->
 
 [![Plugin CI](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml/badge.svg)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml)
 
@@ -113,7 +111,7 @@ The plugin stores course materials, quiz attempts, assessment attempts, saved si
 
 ## Development validation
 
-The repository includes automated checks for PHP 8.1â€“8.3, XMLDB parsing, JavaScript syntax, UTF-8 BOM regressions, RAG API compatibility, and safe embedding defaults. See [CONTRIBUTING.md](CONTRIBUTING.md) for the local commands and `docs/manual-test-checklist.md` for Moodle runtime scenarios.
+The repository includes automated checks for PHP 8.1Ã¢â‚¬â€œ8.3, XMLDB parsing, JavaScript syntax, UTF-8 BOM regressions, RAG API compatibility, and safe embedding defaults. See [CONTRIBUTING.md](CONTRIBUTING.md) for the local commands and `docs/manual-test-checklist.md` for Moodle runtime scenarios.
 
 ## Packaging
 
@@ -122,3 +120,5 @@ For a Moodle installation package, place `plugins/aiskillnavigator` at `local/ai
 ## License
 
 GPL v3 or later.
+
+

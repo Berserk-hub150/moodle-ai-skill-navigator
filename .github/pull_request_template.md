@@ -1,4 +1,4 @@
-## What changed?
+﻿## What changed?
 
 Describe the change in a few sentences.
 
@@ -17,3 +17,17 @@ Closes #
 ## First contribution?
 
 Welcome. Small good first issue Pull Requests are prioritized for review.
+
+<!-- MICRO-PR-START -->
+
+### Micro-contribution checklist
+
+If this PR closes a `micro-contribution` issue:
+
+- [ ] I changed only the requested tiny file.
+- [ ] I replaced all placeholders.
+- [ ] The content is original and contains no private data or secrets.
+- [ ] I linked the issue with `Closes #...`.
+
+<!-- MICRO-PR-END -->
+

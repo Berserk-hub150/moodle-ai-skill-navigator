@@ -1,4 +1,13 @@
-# Contributing
+﻿# Contributing
+
+<!-- MICRO-CONTRIB-LINK-START -->
+
+## First PR in 2–5 minutes
+
+New contributors can start with browser-only tasks in `community/micro-contributions/`.
+Look for issues labelled `micro-contribution`, `good first issue`, and `beginner-friendly`.
+
+<!-- MICRO-CONTRIB-LINK-END -->
 
 Thanks for improving AI Skill Navigator.
 
@@ -32,3 +41,4 @@ Also run the Moodle upgrade and the scenarios in `docs/manual-test-checklist.md`
 - External AI access must remain opt-in globally and per material.
 - Destructive Course Builder actions must remain disabled by default.
 - Use Moodle capabilities, `require_login()`, and sesskey validation for every protected action.
+

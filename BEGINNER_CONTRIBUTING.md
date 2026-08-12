@@ -1,4 +1,26 @@
-# Beginner Contributing Guide
+﻿# Beginner Contributing Guide
+
+<!-- MICRO-GUIDE-START -->
+
+## Fastest first contribution: 2–5 minutes
+
+For the smallest browser-only contribution:
+
+1. Open the issues labelled `micro-contribution`.
+2. Pick one unassigned task.
+3. Fork the repository.
+4. Create the exact JSON file requested by the issue using GitHub's web interface.
+5. Replace the placeholder with your own concise content.
+6. Commit in your fork.
+7. Open a Pull Request with `Closes #ISSUE_NUMBER`.
+
+No Moodle installation, PHP setup or local clone is needed for these tasks.
+
+A star is appreciated if the project is useful to you, but it is never required for review or merge.
+
+See `community/micro-contributions/README.md` for the content rules.
+
+<!-- MICRO-GUIDE-END -->
 
 Welcome to AI Skill Navigator.
 
