@@ -1,0 +1,192 @@
+name: Micro Contribution Auto-Merge
+
+on:
+  workflow_run:
+    workflows:
+      - "Micro Contributions"
+      - "Plugin CI"
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: micro-automerge-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+
+jobs:
+  auto-merge:
+    name: Validate and squash merge
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Validate PR and merge
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const run = context.payload.workflow_run;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const sha = run.head_sha;
+
+            async function resolvePr() {
+              const direct = (run.pull_requests || []).find(
+                item => item && item.number
+              );
+
+              if (direct) {
+                return direct.number;
+              }
+
+              const { data } =
+                await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                  owner,
+                  repo,
+                  commit_sha: sha,
+                });
+
+              const match = (data || []).find(
+                pr =>
+                  pr.state === "open" &&
+                  pr.head &&
+                  pr.head.sha === sha
+              );
+
+              return match ? match.number : null;
+            }
+
+            async function workflowPassed(workflowId) {
+              const response = await github.request(
+                "GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs",
+                {
+                  owner,
+                  repo,
+                  workflow_id: workflowId,
+                  head_sha: sha,
+                  event: "pull_request",
+                  per_page: 20,
+                }
+              );
+
+              const runs = (response.data.workflow_runs || [])
+                .filter(item => item.head_sha === sha)
+                .sort(
+                  (a, b) =>
+                    new Date(b.created_at).getTime() -
+                    new Date(a.created_at).getTime()
+                );
+
+              if (runs.length === 0) {
+                core.info(`No ${workflowId} run found for ${sha}`);
+                return false;
+              }
+
+              core.info(
+                `${workflowId}: status=${runs[0].status}, conclusion=${runs[0].conclusion}`
+              );
+
+              return (
+                runs[0].status === "completed" &&
+                runs[0].conclusion === "success"
+              );
+            }
+
+            const prNumber = await resolvePr();
+
+            if (!prNumber) {
+              core.info(`No open PR associated with ${sha}`);
+              return;
+            }
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner,
+              repo,
+              pull_number: prNumber,
+            });
+
+            if (pr.state !== "open") {
+              core.info(`PR #${prNumber} is not open`);
+              return;
+            }
+
+            if (pr.draft) {
+              core.info(`PR #${prNumber} is a draft`);
+              return;
+            }
+
+            if (pr.base.ref !== "main") {
+              core.info(`PR #${prNumber} does not target main`);
+              return;
+            }
+
+            if (!pr.head || pr.head.sha !== sha) {
+              core.info(`PR #${prNumber} head SHA changed; skipping stale run`);
+              return;
+            }
+
+            const files = await github.paginate(
+              github.rest.pulls.listFiles,
+              {
+                owner,
+                repo,
+                pull_number: prNumber,
+                per_page: 100,
+              }
+            );
+
+            if (files.length !== 1) {
+              core.info(
+                `PR #${prNumber} changes ${files.length} files; exactly 1 is required`
+              );
+              return;
+            }
+
+            const file = files[0];
+
+            if (
+              !file.filename.startsWith("community/micro-contributions/") ||
+              !file.filename.endsWith(".json") ||
+              file.status !== "added"
+            ) {
+              core.info(
+                `PR #${prNumber} is not a single newly-added micro-contribution JSON`
+              );
+              return;
+            }
+
+            const microGreen = await workflowPassed("micro-contributions.yml");
+            const ciGreen = await workflowPassed("ci.yml");
+
+            if (!microGreen || !ciGreen) {
+              core.info(
+                `Both required workflows are not green yet; another workflow_run event will retry`
+              );
+              return;
+            }
+
+            const mergeResult = await github.rest.pulls.merge({
+              owner,
+              repo,
+              pull_number: prNumber,
+              merge_method: "squash",
+              sha,
+            });
+
+            if (!mergeResult.data.merged) {
+              core.setFailed(
+                `GitHub did not merge PR #${prNumber}: ${mergeResult.data.message}`
+              );
+              return;
+            }
+
+            core.notice(
+              `Automatically squash-merged micro contribution PR #${prNumber}`
+            );
