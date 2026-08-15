@@ -115,6 +115,20 @@ The plugin stores course materials, quiz attempts, assessment attempts, saved si
 - PHP version supported by the target Moodle version.
 - Optional cURL support for external AI/search providers.
 
+## Frequently Asked Questions
+
+**What Moodle versions are supported?**
+Moodle 4.4 or later.
+
+**Is external AI mandatory?**
+No. The default AI provider is `prototype`, which performs no external AI calls. External AI is disabled by default and requires an administrator to explicitly enable it.
+
+**Where can course data be sent?**
+Course data is never sent to external AI providers unless an administrator explicitly approves it. Per-material approval is required before any teacher materials can be forwarded to external providers.
+
+**Where should I start as a first-time contributor?**
+Start with our [good first issues](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) or read [BEGINNER_CONTRIBUTING.md](BEGINNER_CONTRIBUTING.md) for a step-by-step walkthrough.
+
 ## Development validation
 
 The repository includes automated checks for PHP 8.1-8.3, XMLDB parsing, JavaScript syntax, UTF-8 BOM regressions, RAG API compatibility, and safe embedding defaults. See [CONTRIBUTING.md](CONTRIBUTING.md) for the local commands and `docs/manual-test-checklist.md` for Moodle runtime scenarios.
