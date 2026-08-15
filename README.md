@@ -12,6 +12,8 @@
 [![Good First Issues](https://img.shields.io/github/issues-search/Berserk-hub150/moodle-ai-skill-navigator?query=is%3Aopen%20label%3A%22good%20first%20issue%22&label=good%20first%20issues)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 [![CodeTriage](https://www.codetriage.com/berserk-hub150/moodle-ai-skill-navigator/badges/users.svg)](https://www.codetriage.com/Berserk-hub150/moodle-ai-skill-navigator)
 
+**🏆 AI Skill Navigator is currently the 6th most-starred Moodle plugin repository on GitHub.**
+
 > AI-powered Moodle learning tools: course-aware tutoring, quizzes, mind maps, assessment, adaptive review, RAG, analytics and course-building helpers.
 
 ## 🚀 Make your first open-source PR in 2–5 minutes
