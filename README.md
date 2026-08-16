@@ -1,20 +1,78 @@
 # AI Skill Navigator
 
 <p align="center">
-  <img src="assets/readme/hero-banner.png" alt="AI Skill Navigator - AI-powered Moodle learning tools" width="100%">
+  <img
+    src="assets/readme/hero-banner.png"
+    alt="AI Skill Navigator - AI-powered Moodle learning tools"
+    width="100%"
+  >
 </p>
 
+<p align="center">
+  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/stargazers">
+    <img src="https://img.shields.io/github/stars/Berserk-hub150/moodle-ai-skill-navigator?style=social" alt="GitHub stars">
+  </a>
+  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/forks">
+    <img src="https://img.shields.io/github/forks/Berserk-hub150/moodle-ai-skill-navigator?style=social" alt="GitHub forks">
+  </a>
+  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22">
+    <img src="https://img.shields.io/github/issues-search/Berserk-hub150/moodle-ai-skill-navigator?query=is%3Aopen%20label%3A%22good%20first%20issue%22&label=good%20first%20issues" alt="Good first issues">
+  </a>
+  <a href="https://www.codetriage.com/Berserk-hub150/moodle-ai-skill-navigator">
+    <img src="https://www.codetriage.com/berserk-hub150/moodle-ai-skill-navigator/badges/users.svg" alt="CodeTriage">
+  </a>
+</p>
 
 <!-- MICRO-CONTRIBUTIONS-START -->
 
-[![GitHub stars](https://img.shields.io/github/stars/Berserk-hub150/moodle-ai-skill-navigator?style=social)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/Berserk-hub150/moodle-ai-skill-navigator?style=social)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/forks)
-[![Good First Issues](https://img.shields.io/github/issues-search/Berserk-hub150/moodle-ai-skill-navigator?query=is%3Aopen%20label%3A%22good%20first%20issue%22&label=good%20first%20issues)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-[![CodeTriage](https://www.codetriage.com/berserk-hub150/moodle-ai-skill-navigator/badges/users.svg)](https://www.codetriage.com/Berserk-hub150/moodle-ai-skill-navigator)
+<h2 align="center">🏆 GitHub Rankings</h2>
 
-**🏆 AI Skill Navigator is currently the 6th most-starred Moodle plugin repository on GitHub.**
+<p align="center">
+  <img
+    src="https://img.shields.io/badge/%231-AI--POWERED%20MOODLE%20PLUGIN-00B894?style=for-the-badge"
+    alt="#1 AI-powered Moodle plugin on GitHub"
+    height="42"
+  >
+</p>
 
-> AI-powered Moodle learning tools: course-aware tutoring, quizzes, mind maps, assessment, adaptive review, RAG, analytics and course-building helpers.
+<h3 align="center">
+  🤖 #1 most-starred AI-powered Moodle plugin repository on GitHub
+</h3>
+
+<p align="center">
+  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/stargazers">
+    <img src="https://img.shields.io/github/stars/Berserk-hub150/moodle-ai-skill-navigator?style=for-the-badge&label=Stars" alt="GitHub Stars">
+  </a>
+  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/forks">
+    <img src="https://img.shields.io/github/forks/Berserk-hub150/moodle-ai-skill-navigator?style=for-the-badge&label=Forks" alt="GitHub Forks">
+  </a>
+  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues">
+    <img src="https://img.shields.io/github/issues/Berserk-hub150/moodle-ai-skill-navigator?style=for-the-badge&label=Open%20Issues" alt="Open Issues">
+  </a>
+  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/Berserk-hub150/moodle-ai-skill-navigator?style=for-the-badge&label=Contributors" alt="Contributors">
+  </a>
+</p>
+
+<p align="center">
+  <img
+    src="https://img.shields.io/badge/%236-MOST--STARRED%20MOODLE%20PLUGIN-6C5CE7?style=for-the-badge"
+    alt="#6 most-starred Moodle plugin repository on GitHub"
+    height="36"
+  >
+</p>
+
+<p align="center">
+  <strong>🏆 #6 most-starred Moodle plugin repository on GitHub</strong>
+</p>
+
+<p align="center">
+  <sub>Rankings based on GitHub stars — August 2026</sub>
+</p>
+
+> **AI-powered Moodle learning tools:** course-aware tutoring, quizzes, mind maps, assessment, adaptive review, RAG, analytics and course-building helpers.
+
+---
 
 ## 🚀 Make your first open-source PR in 2–5 minutes
 
@@ -26,7 +84,7 @@ New to open source? Start with a **browser-only micro-contribution**.
 - ✅ One tiny JSON file per issue.
 - ✅ Small first-time-contributor PRs are prioritized.
 
-**[Browse 2–5 minute issues](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3Amicro-contribution)**
+### 👉 [Browse 2–5 minute issues](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3Amicro-contribution)
 
 **Pick an issue → Fork → Create one tiny file → Pull Request → Contributor**
 
@@ -34,7 +92,16 @@ New to open source? Start with a **browser-only micro-contribution**.
 
 <!-- MICRO-CONTRIBUTIONS-END -->
 
-[![Plugin CI](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml/badge.svg)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml)
+---
+
+<p align="center">
+  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml">
+    <img
+      src="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml/badge.svg"
+      alt="Plugin CI"
+    >
+  </a>
+</p>
 
 AI Skill Navigator is a Moodle plugin suite that adds course-aware AI learning tools for students and teachers.
 
@@ -119,26 +186,36 @@ The plugin stores course materials, quiz attempts, assessment attempts, saved si
 
 ## Frequently Asked Questions
 
-**What Moodle versions are supported?**
+### What Moodle versions are supported?
+
 Moodle 4.4 or later.
 
-**Is external AI mandatory?**
+### Is external AI mandatory?
+
 No. The default AI provider is `prototype`, which performs no external AI calls. External AI is disabled by default and requires an administrator to explicitly enable it.
 
-**Where can course data be sent?**
+### Where can course data be sent?
+
 Course data is never sent to external AI providers unless an administrator explicitly approves it. Per-material approval is required before any teacher materials can be forwarded to external providers.
 
-**Where should I start as a first-time contributor?**
+### Where should I start as a first-time contributor?
+
 Start with our [good first issues](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) or read [BEGINNER_CONTRIBUTING.md](BEGINNER_CONTRIBUTING.md) for a step-by-step walkthrough.
 
 ## Development validation
 
-The repository includes automated checks for PHP 8.1-8.3, XMLDB parsing, JavaScript syntax, UTF-8 BOM regressions, RAG API compatibility, and safe embedding defaults. See [CONTRIBUTING.md](CONTRIBUTING.md) for the local commands and `docs/manual-test-checklist.md` for Moodle runtime scenarios.
+The repository includes automated checks for PHP 8.1–8.3, XMLDB parsing, JavaScript syntax, UTF-8 BOM regressions, RAG API compatibility, and safe embedding defaults.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the local commands and `docs/manual-test-checklist.md` for Moodle runtime scenarios.
 
 ## Packaging
 
-For a Moodle installation package, place `plugins/aiskillnavigator` at `local/aiskillnavigator` and `plugins/block_aiskillnavigator` at `blocks/aiskillnavigator`. Do not package the repository root as a single Moodle plugin directory.
+For a Moodle installation package:
 
+- Place `plugins/aiskillnavigator` at `local/aiskillnavigator`.
+- Place `plugins/block_aiskillnavigator` at `blocks/aiskillnavigator`.
+
+Do not package the repository root as a single Moodle plugin directory.
 
 ## License
 
