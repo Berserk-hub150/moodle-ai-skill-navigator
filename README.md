@@ -84,7 +84,7 @@ New to open source? Start with a **browser-only micro-contribution**.
 - ✅ One tiny JSON file per issue.
 - ✅ Small first-time-contributor PRs are prioritized.
 
-### 👉 [Browse 2–5 minute issues](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3Amicro-contribution)
+### 👉 [Browse 2-5 minute issues](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3Amicro-contribution)
 
 **Pick an issue → Fork → Create one tiny file → Pull Request → Contributor**
 
