@@ -1,18 +1,19 @@
-﻿# Beginner Contributing Guide
+# Beginner Contributing Guide
 
 <!-- MICRO-GUIDE-START -->
 
-## Fastest first contribution: 2–5 minutes
+## Fastest first contribution: about 2 minutes
 
-For the smallest browser-only contribution:
+For the shortest browser-only path, start with **[FIRST-CONTRIBUTION.md](FIRST-CONTRIBUTION.md)**.
 
-1. Open the issues labelled `micro-contribution`.
-2. Pick one unassigned task.
-3. Fork the repository.
-4. Create the exact JSON file requested by the issue using GitHub's web interface.
-5. Replace the placeholder with your own concise content.
-6. Commit in your fork.
-7. Open a Pull Request with `Closes #ISSUE_NUMBER`.
+In short:
+
+1. Open an unassigned issue labelled `micro-contribution`.
+2. Fork the repository.
+3. Create the exact JSON file requested by the issue using GitHub's web interface.
+4. Replace the placeholder with your own concise content.
+5. Commit in your fork.
+6. Open a Pull Request with `Closes #ISSUE_NUMBER`, using the issue number you selected.
 
 No Moodle installation, PHP setup or local clone is needed for these tasks.
 
@@ -28,26 +29,24 @@ This guide is designed for people making their first open-source contribution. Y
 
 ## Start here
 
-1. Star our repo.
-2. Fork the repository.
-3. Pick an open issue labelled good first issue.
-4. Comment on the issue if you want to work on it.
-5. Make the requested change.
-6. Open a Pull Request that links the issue.
+1. Pick an open issue labelled `good first issue` or `micro-contribution`.
+2. Comment on the issue if you want to work on it.
+3. Fork the repository.
+4. Make the requested change.
+5. Open a Pull Request that links the issue.
 
-The maintainer workflow does not automatically verify stars. Pull Requests are reviewed on the submitted change.
+The maintainer workflow does not verify stars. Pull Requests are reviewed on the submitted change.
 
 ## Browser-only contribution
 
-Some documentation, translation, and Flashcards content tasks can be completed from GitHub without installing Moodle.
+Some documentation, glossary, prompt, flashcard and use-case tasks can be completed entirely on GitHub without installing Moodle.
 
-1. Open the file linked from the issue.
-2. Click the edit button.
-3. GitHub can create a fork for you.
-4. Make the requested change.
-5. Commit it to your fork.
-6. Open a Pull Request.
-7. Put Closes #ISSUE_NUMBER in the PR description.
+1. Open the exact path specified in the issue.
+2. Use GitHub's web interface to create or edit the requested file in your fork.
+3. Make only the requested change.
+4. Commit it to your fork.
+5. Open a Pull Request.
+6. Put `Closes #ISSUE_NUMBER` in the PR description, using the issue number you selected.
 
 ## Local contribution
 
