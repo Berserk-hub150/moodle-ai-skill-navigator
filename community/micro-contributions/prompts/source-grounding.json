@@ -1,0 +1,4 @@
+{
+  "name": "Source grounding",
+  "prompt": "Please answer the question based on the provided course material. If the answer cannot be found or supported by the course material, clearly state that the information is not available in the provided sources."
+}
