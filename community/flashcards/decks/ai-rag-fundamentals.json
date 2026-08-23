@@ -1,0 +1,66 @@
+{
+  "title": "AI and RAG fundamentals",
+  "description": "A provider-neutral introduction to language models, embeddings, retrieval, and retrieval-augmented generation.",
+  "cards": [
+    {
+      "question": "What is a large language model (LLM)?",
+      "answer": "A machine learning model trained on large amounts of text to predict and generate sequences of language."
+    },
+    {
+      "question": "What is a prompt?",
+      "answer": "The instructions, context, and input supplied to a language model to guide its response."
+    },
+    {
+      "question": "What is a token in language-model processing?",
+      "answer": "A unit of text, such as part of a word, a whole word, punctuation, or whitespace, used by a model to process input and output."
+    },
+    {
+      "question": "What is an embedding?",
+      "answer": "A numerical vector that represents the meaning or other useful properties of an item, such as text."
+    },
+    {
+      "question": "Why are embeddings useful for search?",
+      "answer": "Items with similar meanings tend to have nearby vectors, allowing a system to find semantically related content even when the words differ."
+    },
+    {
+      "question": "What is a vector database?",
+      "answer": "A database or index designed to store vectors and retrieve the vectors that are most similar to a query vector."
+    },
+    {
+      "question": "What is information retrieval?",
+      "answer": "The process of finding relevant documents or passages in a collection for a user's query."
+    },
+    {
+      "question": "What does RAG stand for?",
+      "answer": "Retrieval-Augmented Generation. It combines retrieving relevant information with generating a response from a language model."
+    },
+    {
+      "question": "What is the basic flow of a RAG system?",
+      "answer": "The system embeds or searches a query, retrieves relevant passages, places them in the model context, and generates a response."
+    },
+    {
+      "question": "What is a chunk in a RAG pipeline?",
+      "answer": "A smaller passage created by splitting a larger document so it can be indexed and retrieved as a manageable unit."
+    },
+    {
+      "question": "Why can chunk size affect RAG quality?",
+      "answer": "Very small chunks may lose context, while very large chunks may contain unrelated information or leave less room for other retrieved passages."
+    },
+    {
+      "question": "What is context in a language-model request?",
+      "answer": "The information available to the model for the current response, including instructions, conversation history, and retrieved passages."
+    },
+    {
+      "question": "What is grounding in a RAG response?",
+      "answer": "Constraining or supporting a response with retrieved source material so the answer is connected to evidence rather than only the model's learned patterns."
+    },
+    {
+      "question": "What is a hallucination in generative AI?",
+      "answer": "A response that sounds plausible but contains unsupported, inaccurate, or invented information."
+    },
+    {
+      "question": "How can a RAG system be evaluated?",
+      "answer": "Test retrieval relevance and answer correctness separately, then check whether responses are supported by the provided sources and meet the user's needs."
+    }
+  ]
+}
