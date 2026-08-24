@@ -1,0 +1,30 @@
+name: Publish Marketplace source branch
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'plugins/aiskillnavigator/**'
+      - '.github/workflows/marketplace-dist.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish-plugin-only-branch:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out full repository history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build plugin-only history
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git subtree split --prefix=plugins/aiskillnavigator -b marketplace-dist-build
+          git push origin marketplace-dist-build:marketplace-dist --force
