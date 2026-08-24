@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
+// You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -1552,6 +1552,9 @@ if (!function_exists('local_aisn_mindmap_polish_prof')) {
  * Esc helper.
  */
 // phpcs:ignore moodle.Files.LineLength
+/**
+ * Esc helper.
+ */
 function esc(s){return String(s||'').replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m];});}
 /**
  * Parse helper.
@@ -1568,6 +1571,9 @@ function esc(s){return String(s||'').replace(/[&<>"']/g,function(m){return {'&':
  */
 // phpcs:ignore moodle.Files.LineLength
 // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
+/**
+ * Parse helper.
+ */
 function parse(t){t=(t||'').trim();if(!t||t.indexOf('{')<0||t.indexOf('branches')<0)return null;t=t.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();try{var d=JSON.parse(t);return d&&d.branches?d:null;}catch(e){return null;}}
 /**
  * Render helper.
@@ -1581,6 +1587,9 @@ function parse(t){t=(t||'').trim();if(!t||t.indexOf('{')<0||t.indexOf('branches'
  * Render helper.
  */
 // phpcs:ignore moodle.Files.LineLength
+/**
+ * Render helper.
+ */
 function render(d){var h='<div class="aisn-mm-rendered">';h+='<h3 class="aisn-mm-title">'+esc(d.title||d.central_topic||'Mind map')+'</h3>';if(d.summary)h+='<p class="aisn-mm-summary">'+esc(d.summary)+'</p>';h+='<div class="aisn-mm-central"><strong>'+esc(d.central_topic||d.title||'Tema centrale')+'</strong><span>'+esc(d.central_description||'')+'</span></div>';h+='<div class="aisn-mm-grid">';(d.branches||[]).forEach(function(b){h+='<div class="aisn-mm-branch"><h4>'+esc(b.title||'Ramo')+'</h4>';if(b.description)h+='<p>'+esc(b.description)+'</p>';(b.children||[]).forEach(function(c){h+='<div class="aisn-mm-child"><strong>'+esc(c.title||'Nodo')+'</strong><span>'+esc(c.description||'')+'</span></div>';});h+='</div>';});h+='</div></div>';return h;}
 // phpcs:ignore moodle.Files.LineLength
 document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('pre').forEach(function(pre){var d=parse(pre.textContent);if(!d)return;var div=document.createElement('div');div.innerHTML=render(d);pre.classList.add('aisn-mm-json-hidden');pre.parentNode.insertBefore(div.firstElementChild,pre);});});

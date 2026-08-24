@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
+// You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -506,6 +506,9 @@ function local_aiskillnavigator_material_source_selected_ids_from_request(array 
  * Local aiskillnavigator material source selected materials helper.
  */
 // phpcs:ignore moodle.Files.LineLength
+/**
+ * Local aiskillnavigator material source selected materials helper.
+ */
 function local_aiskillnavigator_material_source_selected_materials(array $readablematerials, string $sourcemode, array $selectedmaterialids): array {
     if ($sourcemode === 'manual') {
         return [];
@@ -616,6 +619,9 @@ function local_aisn_prod_filter_rag_results_by_ai_policy(array $results, int $co
  * Local aiskillnavigator material source search helper.
  */
 // phpcs:ignore moodle.Files.LineLength
+/**
+ * Local aiskillnavigator material source search helper.
+ */
 function local_aiskillnavigator_material_source_search($embeddingservice, string $query, int $courseid, int $limit, string $sourcemode, array $selectedmaterialids): array {
     if ($sourcemode === 'manual') {
         return [];

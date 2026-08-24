@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
+// You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -53,9 +53,18 @@ foreach (glob(__DIR__ . '/material/*.php') as $materialhelper) {
  * Material extractor implementation.
  */
 class material_extractor {
+    /**
+     * Max bytes.
+     */
     private const MAX_BYTES = 26214400;
+    /**
+     * Max chars.
+     */
     private const MAX_CHARS = 120000;
 
+    /**
+     * Allowed extensions.
+     */
     private const ALLOWED_EXTENSIONS = [
         'txt', 'md', 'csv', 'json', 'xml', 'html', 'htm',
         'css', 'js', 'ts', 'sql', 'cs', 'java', 'py', 'cpp', 'c',

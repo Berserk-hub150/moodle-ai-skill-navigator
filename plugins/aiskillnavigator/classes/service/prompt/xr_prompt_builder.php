@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
+// You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -31,6 +31,9 @@ defined('MOODLE_INTERNAL') || die();
  * Xr prompt builder implementation.
  */
 class xr_prompt_builder extends base_prompt_helper {
+    /**
+     * Material limit.
+     */
     private const MATERIAL_LIMIT = 3200;
     /** @var xr_intro Intro. */
     private xr_intro $intro;

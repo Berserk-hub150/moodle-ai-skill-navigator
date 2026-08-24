@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
+// You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -719,6 +719,9 @@ if (!function_exists('local_aiskillnavigator_extract_files_from_area')) {
      * Local aiskillnavigator extract files from area helper.
      */
     // phpcs:ignore moodle.Files.LineLength
+    /**
+     * Local aiskillnavigator extract files from area helper.
+     */
     function local_aiskillnavigator_extract_files_from_area(int $contextid, string $component, string $filearea, int $cmid = 0): string {
         $fs = get_file_storage();
         $files = $fs->get_area_files($contextid, $component, $filearea, false, 'filename', false);
@@ -768,12 +771,12 @@ if (!function_exists('local_aiskillnavigator_extract_stored_file_text')) {
             }
         }
 
-        $rawtextExtensions = [
+        $rawtextextensions = [
             'txt', 'md', 'csv', 'json', 'xml', 'html', 'htm',
             'php', 'js', 'css', 'sql', 'cs', 'java', 'py', 'cpp', 'c',
         ];
 
-        if (in_array($extension, $rawtextExtensions, true)) {
+        if (in_array($extension, $rawtextextensions, true)) {
             return local_aiskillnavigator_limit_material_text((string)$file->get_content());
         }
 
