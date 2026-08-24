@@ -8,6 +8,7 @@ on:
       - 'plugins/aiskillnavigator/**'
       - 'tools/marketplace_hardening.py'
       - 'tools/localise_page_chrome.py'
+      - 'tools/moodle_quality_autofix.py'
       - '.github/workflows/marketplace-hardening.yml'
   workflow_dispatch:
 
@@ -58,6 +59,9 @@ jobs:
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
           exit 0
 
+      - name: Apply Moodle quality autofix
+        run: python3 tools/moodle_quality_autofix.py
+
       - name: Auto-fix Moodle coding style
         shell: bash
         run: |
@@ -74,8 +78,8 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add plugins/aiskillnavigator tools/marketplace_hardening.py tools/localise_page_chrome.py
-          git commit -m "fix: apply Moodle Marketplace coding standards"
+          git add plugins/aiskillnavigator tools/marketplace_hardening.py tools/localise_page_chrome.py tools/moodle_quality_autofix.py
+          git commit -m "fix: resolve Moodle coding-standard blockers"
           git push origin HEAD:marketplace-readiness
 
       - name: Require no direct request superglobals
