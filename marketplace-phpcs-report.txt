@@ -1,7 +1,7 @@
  RUN  Moodle CodeSniffer standard on local_aiskillnavigator
-......W.....E.....EE.E....E................E........EEE.....  60 / 141 (43%)
-.E...E....................E.................E.....E.E...W..E 120 / 141 (85%)
-...E.EEWE....E......W                                        141 / 141 (100%)
+......W.....E.....WE.E....E.................................  60 / 141 (43%)
+..................................................E.E...W..E 120 / 141 (85%)
+...W.EWWE....E.......                                        141 / 141 (100%)
 
 
 
@@ -30,9 +30,9 @@ FOUND 1 ERROR AND 7 WARNINGS AFFECTING 8 LINES
 
 FILE: /home/runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/pages/course_builder.php
 ----------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AFFECTING 1 LINE
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
 ----------------------------------------------------------------------------------------------------------------------------------
- 4402 | ERROR | Missing docblock for function local_aisn_cb_ai_move_material (moodle.Commenting.MissingDocblock.Function)
+ 4405 | WARNING | Line exceeds 132 characters; contains 135 characters (moodle.Files.LineLength.TooLong)
 ----------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -44,14 +44,14 @@ FOUND 4 ERRORS AND 8 WARNINGS AFFECTING 12 LINES
  1302 | WARNING | Line exceeds 132 characters; contains 137 characters (moodle.Files.LineLength.TooLong)
  1485 | ERROR   | Line exceeds maximum limit of 180 characters; contains 197 characters (moodle.Files.LineLength.MaxExceeded)
  1530 | WARNING | Line exceeds 132 characters; contains 179 characters (moodle.Files.LineLength.TooLong)
- 1555 | WARNING | Line exceeds 132 characters; contains 144 characters (moodle.Files.LineLength.TooLong)
- 1571 | ERROR   | Line exceeds maximum limit of 180 characters; contains 256 characters (moodle.Files.LineLength.MaxExceeded)
- 1584 | ERROR   | Line exceeds maximum limit of 180 characters; contains 753 characters (moodle.Files.LineLength.MaxExceeded)
- 1586 | ERROR   | Line exceeds maximum limit of 180 characters; contains 317 characters (moodle.Files.LineLength.MaxExceeded)
- 1710 | WARNING | Line exceeds 132 characters; contains 141 characters (moodle.Files.LineLength.TooLong)
- 1718 | WARNING | Line exceeds 132 characters; contains 147 characters (moodle.Files.LineLength.TooLong)
- 1725 | WARNING | Line exceeds 132 characters; contains 139 characters (moodle.Files.LineLength.TooLong)
- 1733 | WARNING | Line exceeds 132 characters; contains 154 characters (moodle.Files.LineLength.TooLong)
+ 1558 | WARNING | Line exceeds 132 characters; contains 144 characters (moodle.Files.LineLength.TooLong)
+ 1577 | ERROR   | Line exceeds maximum limit of 180 characters; contains 256 characters (moodle.Files.LineLength.MaxExceeded)
+ 1593 | ERROR   | Line exceeds maximum limit of 180 characters; contains 753 characters (moodle.Files.LineLength.MaxExceeded)
+ 1595 | ERROR   | Line exceeds maximum limit of 180 characters; contains 317 characters (moodle.Files.LineLength.MaxExceeded)
+ 1719 | WARNING | Line exceeds 132 characters; contains 141 characters (moodle.Files.LineLength.TooLong)
+ 1727 | WARNING | Line exceeds 132 characters; contains 147 characters (moodle.Files.LineLength.TooLong)
+ 1734 | WARNING | Line exceeds 132 characters; contains 139 characters (moodle.Files.LineLength.TooLong)
+ 1742 | WARNING | Line exceeds 132 characters; contains 154 characters (moodle.Files.LineLength.TooLong)
 ------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -87,83 +87,10 @@ FOUND 1 ERROR AFFECTING 1 LINE
 ------------------------------------------------------------------------------------------------------------------------------------
 
 
-FILE: ...moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/classes/service/embedding/length_chunker.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 2 ERRORS AFFECTING 2 LINES
-------------------------------------------------------------------------------------------------------------------------------------
- 35 | ERROR | Missing docblock for constant length_chunker::SIZE (moodle.Commenting.MissingDocblock.Constant)
- 36 | ERROR | Missing docblock for constant length_chunker::OVERLAP (moodle.Commenting.MissingDocblock.Constant)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: ...e-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/classes/service/prompt/mindmap_prompt_builder.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 34 | ERROR | Missing docblock for constant mindmap_prompt_builder::MATERIAL_LIMIT (moodle.Commenting.MissingDocblock.Constant)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: ...odle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/classes/service/prompt/quiz_prompt_builder.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 34 | ERROR | Missing docblock for constant quiz_prompt_builder::MATERIAL_LIMIT (moodle.Commenting.MissingDocblock.Constant)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: ...e-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/classes/service/prompt/summary_prompt_builder.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 34 | ERROR | Missing docblock for constant summary_prompt_builder::MATERIAL_LIMIT (moodle.Commenting.MissingDocblock.Constant)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: ...moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/classes/service/prompt/xr_prompt_builder.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 34 | ERROR | Missing docblock for constant xr_prompt_builder::MATERIAL_LIMIT (moodle.Commenting.MissingDocblock.Constant)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: ...dle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/classes/service/prompt/tutor_prompt_builder.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 34 | ERROR | Missing docblock for constant tutor_prompt_builder::MATERIAL_LIMIT (moodle.Commenting.MissingDocblock.Constant)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: .../work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/classes/service/material_extractor.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 3 ERRORS AFFECTING 3 LINES
-------------------------------------------------------------------------------------------------------------------------------------
- 56 | ERROR | Missing docblock for constant material_extractor::MAX_BYTES (moodle.Commenting.MissingDocblock.Constant)
- 57 | ERROR | Missing docblock for constant material_extractor::MAX_CHARS (moodle.Commenting.MissingDocblock.Constant)
- 59 | ERROR | Missing docblock for constant material_extractor::ALLOWED_EXTENSIONS (moodle.Commenting.MissingDocblock.Constant)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: ...ome/runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/classes/privacy/provider.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 44 | ERROR | Missing docblock for constant provider::USER_TABLES (moodle.Commenting.MissingDocblock.Constant)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
 FILE: .../runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/mistral_ocr_helper.php
 ------------------------------------------------------------------------------------------------------------------------------------
-FOUND 4 ERRORS AFFECTING 4 LINES
+FOUND 1 ERROR AFFECTING 1 LINE
 ------------------------------------------------------------------------------------------------------------------------------------
- 28 | ERROR | Variable "aisnDocumentOcrHelper" must be all lower-case
-    |       | (moodle.NamingConventions.ValidVariableName.VariableNameLowerCase)
- 29 | ERROR | Variable "aisnDocumentOcrHelper" must be all lower-case
-    |       | (moodle.NamingConventions.ValidVariableName.VariableNameLowerCase)
- 30 | ERROR | Variable "aisnDocumentOcrHelper" must be all lower-case
-    |       | (moodle.NamingConventions.ValidVariableName.VariableNameLowerCase)
  33 | ERROR | Inline doc block comments are not allowed; use "// Comment." instead (moodle.Commenting.InlineComment.DocBlock)
 ------------------------------------------------------------------------------------------------------------------------------------
 
@@ -194,12 +121,10 @@ FOUND 1 ERROR AFFECTING 1 LINE
 
 FILE: ...ner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/material_source_helper.php
 ------------------------------------------------------------------------------------------------------------------------------------
-FOUND 2 ERRORS AFFECTING 2 LINES
+FOUND 0 ERRORS AND 2 WARNINGS AFFECTING 2 LINES
 ------------------------------------------------------------------------------------------------------------------------------------
- 509 | ERROR | Missing docblock for function local_aiskillnavigator_material_source_selected_materials
-     |       | (moodle.Commenting.MissingDocblock.Function)
- 619 | ERROR | Missing docblock for function local_aiskillnavigator_material_source_search
-     |       | (moodle.Commenting.MissingDocblock.Function)
+ 512 | WARNING | Line exceeds 132 characters; contains 149 characters (moodle.Files.LineLength.TooLong)
+ 625 | WARNING | Line exceeds 132 characters; contains 172 characters (moodle.Files.LineLength.TooLong)
 ------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -213,14 +138,9 @@ FOUND 1 ERROR AFFECTING 1 LINE
 
 FILE: ...unner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/course_resource_sync.php
 ------------------------------------------------------------------------------------------------------------------------------------
-FOUND 3 ERRORS AFFECTING 3 LINES
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
 ------------------------------------------------------------------------------------------------------------------------------------
- 722 | ERROR | Missing docblock for function local_aiskillnavigator_extract_files_from_area
-     |       | (moodle.Commenting.MissingDocblock.Function)
- 771 | ERROR | Variable "rawtextExtensions" must be all lower-case
-     |       | (moodle.NamingConventions.ValidVariableName.VariableNameLowerCase)
- 776 | ERROR | Variable "rawtextExtensions" must be all lower-case
-     |       | (moodle.NamingConventions.ValidVariableName.VariableNameLowerCase)
+ 725 | WARNING | Line exceeds 132 characters; contains 137 characters (moodle.Files.LineLength.TooLong)
 ------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -249,15 +169,6 @@ FOUND 1 ERROR AND 1 WARNING AFFECTING 2 LINES
  756 | ERROR   | Inline doc block comments are not allowed; use "// Comment." instead (moodle.Commenting.InlineComment.DocBlock)
 ------------------------------------------------------------------------------------------------------------------------------------
 
-
-FILE: /home/runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/index.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 25 | WARNING | Expected login check (require_login, require_course_login, require_admin, admin_externalpage_setup) following
-    |         | config inclusion. None found. (moodle.Files.RequireLogin.Missing)
-------------------------------------------------------------------------------------------------------------------------------------
-
-Time: 2 secs; Memory: 40MB
+Time: 1.59 secs; Memory: 40MB
 
 PHPCS exit code: 1
