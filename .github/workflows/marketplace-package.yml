@@ -1,0 +1,63 @@
+name: Build Moodle Marketplace package
+
+on:
+  push:
+    branches:
+      - main
+      - marketplace-readiness
+    paths:
+      - 'plugins/aiskillnavigator/**'
+      - '.github/workflows/marketplace-package.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Read release from version.php
+        id: version
+        shell: bash
+        run: |
+          RELEASE=$(php -r '$s=file_get_contents("plugins/aiskillnavigator/version.php"); preg_match("/\\$plugin->release\\s*=\\s*\x27([^\x27]+)\x27/", $s, $m); echo $m[1] ?? "dev";')
+          echo "release=$RELEASE" >> "$GITHUB_OUTPUT"
+
+      - name: Build installable ZIP
+        shell: bash
+        run: |
+          rm -rf build-marketplace
+          mkdir -p build-marketplace/aiskillnavigator
+          rsync -a \
+            --exclude='.gitignore' \
+            --exclude='*.bak*' \
+            --exclude='*.log' \
+            --exclude='*.zip' \
+            plugins/aiskillnavigator/ build-marketplace/aiskillnavigator/
+          cd build-marketplace
+          zip -qr "../local_aiskillnavigator-${{ steps.version.outputs.release }}.zip" aiskillnavigator
+
+      - name: Verify ZIP root and required files
+        shell: bash
+        run: |
+          ZIP="local_aiskillnavigator-${{ steps.version.outputs.release }}.zip"
+          unzip -l "$ZIP" | grep -q 'aiskillnavigator/version.php'
+          unzip -l "$ZIP" | grep -q 'aiskillnavigator/db/install.xml'
+          unzip -l "$ZIP" | grep -q 'aiskillnavigator/lang/en/local_aiskillnavigator.php'
+          if unzip -l "$ZIP" | grep -q 'block_aiskillnavigator'; then
+            echo 'Block plugin leaked into local plugin package.'
+            exit 1
+          fi
+
+      - name: Upload Marketplace ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: local_aiskillnavigator-${{ steps.version.outputs.release }}
+          path: local_aiskillnavigator-${{ steps.version.outputs.release }}.zip
+          if-no-files-found: error
