@@ -1,5 +1,28 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/production_guard.php');
 
@@ -7,6 +30,9 @@ require_once(__DIR__ . '/material_ai_policy.php');
 require_once(__DIR__ . '/material_exclusion_helper.php');
 
 if (!function_exists('local_aiskillnavigator_current_ai_is_local')) {
+    /**
+     * Local aiskillnavigator current ai is local helper.
+     */
     function local_aiskillnavigator_current_ai_is_local(): bool {
         $provider = strtolower(trim((string)get_config('local_aiskillnavigator', 'provider')));
         $endpoint = strtolower(trim((string)get_config('local_aiskillnavigator', 'endpoint')));
@@ -27,6 +53,9 @@ if (!function_exists('local_aiskillnavigator_current_ai_is_local')) {
 }
 
 if (!function_exists('local_aiskillnavigator_material_external_allowed')) {
+    /**
+     * Local aiskillnavigator material external allowed helper.
+     */
     function local_aiskillnavigator_material_external_allowed(stdClass $material): bool {
         if (isset($material->externalaiallowed)) {
             return ((int)$material->externalaiallowed) === 1;
@@ -41,6 +70,9 @@ if (!function_exists('local_aiskillnavigator_material_external_allowed')) {
 }
 
 if (!function_exists('local_aiskillnavigator_material_can_be_sent_to_current_ai')) {
+    /**
+     * Local aiskillnavigator material can be sent to current ai helper.
+     */
     function local_aiskillnavigator_material_can_be_sent_to_current_ai(stdClass $material): bool {
         return local_aiskillnavigator_current_ai_is_local()
             || local_aiskillnavigator_material_external_allowed($material);
@@ -48,6 +80,9 @@ if (!function_exists('local_aiskillnavigator_material_can_be_sent_to_current_ai'
 }
 
 if (!function_exists('local_aiskillnavigator_ai_policy_label')) {
+    /**
+     * Local aiskillnavigator ai policy label helper.
+     */
     function local_aiskillnavigator_ai_policy_label(stdClass $material): string {
         return local_aiskillnavigator_material_external_allowed($material)
             ? 'Allowed for external AI'
@@ -56,6 +91,9 @@ if (!function_exists('local_aiskillnavigator_ai_policy_label')) {
 }
 
 if (!function_exists('local_aiskillnavigator_ai_policy_badge_class')) {
+    /**
+     * Local aiskillnavigator ai policy badge class helper.
+     */
     function local_aiskillnavigator_ai_policy_badge_class(stdClass $material): string {
         return local_aiskillnavigator_material_external_allowed($material)
             ? 'badge badge-success'
@@ -63,6 +101,9 @@ if (!function_exists('local_aiskillnavigator_ai_policy_badge_class')) {
     }
 }
 
+/**
+ * Local aiskillnavigator material source mode from request helper.
+ */
 function local_aiskillnavigator_material_source_mode_from_request(int $defaultmaterialid = -1): string {
     // The plugin is now material-grounded by default.
     // Free "question/topic only" mode is intentionally disabled.
@@ -71,6 +112,9 @@ function local_aiskillnavigator_material_source_mode_from_request(int $defaultma
 
 
 
+/**
+ * Local aiskillnavigator material source is prompt generated helper.
+ */
 function local_aiskillnavigator_material_source_is_prompt_generated(stdClass $material): bool {
     $title = strtolower((string)($material->title ?? ''));
 
@@ -78,6 +122,9 @@ function local_aiskillnavigator_material_source_is_prompt_generated(stdClass $ma
         || strpos($title, 'prompt to moodle') !== false;
 }
 
+/**
+ * Local aiskillnavigator material source clean course title helper.
+ */
 function local_aiskillnavigator_material_source_clean_course_title(string $title): string {
     $title = trim($title);
     $title = preg_replace('/^\[Course #[0-9]+ \/ cm #[0-9]+\]\s*/u', '', $title);
@@ -90,6 +137,9 @@ function local_aiskillnavigator_material_source_clean_course_title(string $title
     return trim((string)$title);
 }
 
+/**
+ * Local aiskillnavigator material source filename key helper.
+ */
 function local_aiskillnavigator_material_source_filename_key(stdClass $material): string {
     $title = local_aiskillnavigator_material_source_clean_course_title((string)($material->title ?? ''));
     $content = (string)($material->content ?? '');
@@ -105,9 +155,13 @@ function local_aiskillnavigator_material_source_filename_key(stdClass $material)
     return '';
 }
 
+/**
+ * Local aiskillnavigator material source body key helper.
+ */
 function local_aiskillnavigator_material_source_body_key(stdClass $material): string {
     $content = (string)($material->content ?? '');
     $content = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    // phpcs:ignore moodle.Files.LineLength
     $content = preg_replace('/^\s*File\s*[:\-]?\s*[^\r\n]+\.(?:txt|md|csv|json|xml|html|htm|pdf|docx|pptx)\b[^\r\n]*[\r\n]*/iu', '', $content);
     $content = preg_replace('/\s+/u', ' ', trim((string)$content));
 
@@ -118,6 +172,9 @@ function local_aiskillnavigator_material_source_body_key(stdClass $material): st
     return sha1(strtolower(substr($content, 0, 12000)));
 }
 
+/**
+ * Local aiskillnavigator material source duplicate key helper.
+ */
 function local_aiskillnavigator_material_source_duplicate_key(stdClass $material): string {
     $filename = local_aiskillnavigator_material_source_filename_key($material);
     $body = local_aiskillnavigator_material_source_body_key($material);
@@ -134,6 +191,9 @@ function local_aiskillnavigator_material_source_duplicate_key(stdClass $material
 }
 
 if (!function_exists('local_aiskillnavigator_material_source_clean_title')) {
+    /**
+     * Local aiskillnavigator material source clean title helper.
+     */
     function local_aiskillnavigator_material_source_clean_title(stdClass $material): string {
         if (function_exists('local_aiskillnavigator_material_source_clean_course_title')) {
             $title = local_aiskillnavigator_material_source_clean_course_title((string)($material->title ?? 'Course material'));
@@ -152,6 +212,9 @@ if (!function_exists('local_aiskillnavigator_material_source_clean_title')) {
 }
 
 if (!function_exists('local_aiskillnavigator_material_source_normalize_title_for_dedupe')) {
+    /**
+     * Local aiskillnavigator material source normalize title for dedupe helper.
+     */
     function local_aiskillnavigator_material_source_normalize_title_for_dedupe(string $title): string {
         if (function_exists('local_aiskillnavigator_material_source_clean_course_title')) {
             return local_aiskillnavigator_material_source_clean_course_title($title);
@@ -168,6 +231,9 @@ if (!function_exists('local_aiskillnavigator_material_source_normalize_title_for
     }
 }
 
+/**
+ * Local aisn matlist is prompt helper.
+ */
 function local_aisn_matlist_is_prompt(stdClass $material): bool {
     $title = strtolower((string)($material->title ?? ''));
 
@@ -175,6 +241,9 @@ function local_aisn_matlist_is_prompt(stdClass $material): bool {
         || strpos($title, 'prompt to moodle') !== false;
 }
 
+/**
+ * Local aisn matlist clean title helper.
+ */
 function local_aisn_matlist_clean_title(string $title): string {
     $title = trim($title);
     $title = preg_replace('/^\[Course #[0-9]+ \/ cm #[0-9]+\]\s*/u', '', $title);
@@ -187,6 +256,9 @@ function local_aisn_matlist_clean_title(string $title): string {
     return trim((string)$title);
 }
 
+/**
+ * Local aisn matlist filename helper.
+ */
 function local_aisn_matlist_filename(stdClass $material): string {
     $title = local_aisn_matlist_clean_title((string)($material->title ?? ''));
     $content = (string)($material->content ?? '');
@@ -202,9 +274,13 @@ function local_aisn_matlist_filename(stdClass $material): string {
     return '';
 }
 
+/**
+ * Local aisn matlist body hash helper.
+ */
 function local_aisn_matlist_body_hash(stdClass $material): string {
     $content = (string)($material->content ?? '');
     $content = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    // phpcs:ignore moodle.Files.LineLength
     $content = preg_replace('/^\s*File\s*[:\-]?\s*[^\r\n]+\.(?:txt|md|csv|json|xml|html|htm|pdf|docx|pptx)\b[^\r\n]*[\r\n]*/iu', '', $content);
     $content = preg_replace('/^\s*\[Prompt-to-Moodle\]\s*/iu', '', $content);
     $content = preg_replace('/^\s*\[Section\s+[0-9]+\]\s*/iu', '', $content);
@@ -218,6 +294,9 @@ function local_aisn_matlist_body_hash(stdClass $material): string {
 }
 
 
+/**
+ * Local aisn matlist cmid helper.
+ */
 function local_aisn_matlist_cmid(stdClass $material): int {
     if (isset($material->sourcecmid) && (int)$material->sourcecmid > 0) {
         return (int)$material->sourcecmid;
@@ -234,6 +313,9 @@ function local_aisn_matlist_cmid(stdClass $material): int {
     return 0;
 }
 
+/**
+ * Local aisn matlist key helper.
+ */
 function local_aisn_matlist_key(stdClass $material): string {
     $cmid = local_aisn_matlist_cmid($material);
     if ($cmid > 0) {
@@ -258,6 +340,9 @@ function local_aisn_matlist_key(stdClass $material): string {
     return 'id:' . (int)($material->id ?? 0);
 }
 
+/**
+ * Local aisn matlist better helper.
+ */
 function local_aisn_matlist_better(stdClass $current, stdClass $candidate): stdClass {
     $currentprompt = local_aisn_matlist_is_prompt($current);
     $candidateprompt = local_aisn_matlist_is_prompt($candidate);
@@ -276,6 +361,9 @@ function local_aisn_matlist_better(stdClass $current, stdClass $candidate): stdC
     return ((int)($candidate->id ?? 0) < (int)($current->id ?? 0)) ? $candidate : $current;
 }
 
+/**
+ * Local aisn matlist dedupe helper.
+ */
 function local_aisn_matlist_dedupe($materials): array {
     if (!is_array($materials)) {
         return [];
@@ -312,6 +400,9 @@ function local_aisn_matlist_dedupe($materials): array {
     return $deduped;
 }
 
+/**
+ * Local aiskillnavigator material source get readable materials helper.
+ */
 function local_aiskillnavigator_material_source_get_readable_materials(int $courseid, bool $includeall = true): array {
     global $DB, $CFG;
 
@@ -385,6 +476,9 @@ function local_aiskillnavigator_material_source_get_readable_materials(int $cour
 }
 
 
+/**
+ * Local aiskillnavigator material source selected ids from request helper.
+ */
 function local_aiskillnavigator_material_source_selected_ids_from_request(array $readablematerials): array {
     $ids = optional_param_array('materialids', [], PARAM_INT);
     $legacy = optional_param('materialid', -1, PARAM_INT);
@@ -395,11 +489,19 @@ function local_aiskillnavigator_material_source_selected_ids_from_request(array 
 
     $ids = array_values(array_unique(array_map('intval', $ids)));
 
-    return array_values(array_filter($ids, function($id) use ($readablematerials) {
+    return array_values(array_filter($ids, function ($id) use ($readablematerials) {
         return isset($readablematerials[$id]);
     }));
 }
 
+/**
+ * Local aiskillnavigator material source selected materials helper.
+ */
+// phpcs:ignore moodle.Files.LineLength
+/**
+ * Local aiskillnavigator material source selected materials helper.
+ */
+// phpcs:ignore moodle.Files.LineLength
 function local_aiskillnavigator_material_source_selected_materials(array $readablematerials, string $sourcemode, array $selectedmaterialids): array {
     if ($sourcemode === 'manual') {
         return [];
@@ -423,11 +525,14 @@ function local_aiskillnavigator_material_source_selected_materials(array $readab
         $selected = local_aisn_matlist_dedupe($selected);
     }
 
-    return array_values(array_filter($selected, function($material) {
+    return array_values(array_filter($selected, function ($material) {
         return local_aiskillnavigator_material_can_be_sent_to_current_ai($material);
     }));
 }
 
+/**
+ * Local aiskillnavigator material source legacy materialid helper.
+ */
 function local_aiskillnavigator_material_source_legacy_materialid(string $sourcemode, array $selectedmaterialids): int {
     if ($sourcemode === 'all') {
         return 0;
@@ -442,10 +547,17 @@ function local_aiskillnavigator_material_source_legacy_materialid(string $source
 
 
 
+/**
+ * Local aiskillnavigator material source short title helper.
+ */
 function local_aiskillnavigator_material_source_short_title(stdClass $material): string {
+    // phpcs:ignore moodle.Files.LineLength
     return local_aiskillnavigator_material_source_clean_title($material) . ' (' . strlen((string)($material->content ?? '')) . ' chars)';
 }
 
+/**
+ * Local aiskillnavigator material source excerpt helper.
+ */
 function local_aiskillnavigator_material_source_excerpt(string $text, int $limit = 170): string {
     if (function_exists('local_aiskillnavigator_fix_mojibake')) {
         $text = local_aiskillnavigator_fix_mojibake($text);
@@ -461,6 +573,9 @@ function local_aiskillnavigator_material_source_excerpt(string $text, int $limit
 }
 
 
+/**
+ * Local aisn prod filter rag results by ai policy helper.
+ */
 function local_aisn_prod_filter_rag_results_by_ai_policy(array $results, int $courseid): array {
     if (empty($results)) {
         return [];
@@ -479,12 +594,20 @@ function local_aisn_prod_filter_rag_results_by_ai_policy(array $results, int $co
         return [];
     }
 
-    return array_values(array_filter($results, static function($result) use ($allowed): bool {
+    return array_values(array_filter($results, static function ($result) use ($allowed): bool {
         $materialid = isset($result->materialid) ? (int)$result->materialid : 0;
         return $materialid > 0 && isset($allowed[$materialid]);
     }));
 }
 
+/**
+ * Local aiskillnavigator material source search helper.
+ */
+// phpcs:ignore moodle.Files.LineLength
+/**
+ * Local aiskillnavigator material source search helper.
+ */
+// phpcs:ignore moodle.Files.LineLength
 function local_aiskillnavigator_material_source_search($embeddingservice, string $query, int $courseid, int $limit, string $sourcemode, array $selectedmaterialids): array {
     if ($sourcemode === 'manual') {
         return [];
@@ -538,19 +661,22 @@ function local_aiskillnavigator_material_source_search($embeddingservice, string
     if ($sourcemode === 'selected' && !empty($selectedmaterialids)) {
         $selected = array_map('intval', $selectedmaterialids);
 
-        $results = array_values(array_filter($results, function($result) use ($selected) {
+        $results = array_values(array_filter($results, function ($result) use ($selected) {
             $materialid = isset($result->materialid) ? (int)$result->materialid : 0;
             return in_array($materialid, $selected, true);
         }));
     }
 
-    usort($results, function($a, $b) {
+    usort($results, function ($a, $b) {
         return ((float)($b->similarity ?? 0)) <=> ((float)($a->similarity ?? 0));
     });
 
     return array_slice($results, 0, $limit);
 }
 
+/**
+ * Local aiskillnavigator material source search rag helper.
+ */
 function local_aiskillnavigator_material_source_search_rag(
     $embeddingservice,
     string $query,
@@ -569,6 +695,9 @@ function local_aiskillnavigator_material_source_search_rag(
     );
 }
 
+/**
+ * Local aiskillnavigator material source hidden fields helper.
+ */
 function local_aiskillnavigator_material_source_hidden_fields(string $sourcemode, array $materialids): string {
     $html = '';
 
@@ -589,10 +718,16 @@ function local_aiskillnavigator_material_source_hidden_fields(string $sourcemode
     return $html;
 }
 
+/**
+ * Local aiskillnavigator material source hidden inputs helper.
+ */
 function local_aiskillnavigator_material_source_hidden_inputs(string $sourcemode, array $materialids): string {
     return local_aiskillnavigator_material_source_hidden_fields($sourcemode, $materialids);
 }
 
+/**
+ * Local aiskillnavigator material source selector html helper.
+ */
 function local_aiskillnavigator_material_source_selector_html(
     array $readablematerials,
     $embeddingservice,
@@ -603,7 +738,7 @@ function local_aiskillnavigator_material_source_selector_html(
     string $help = ''
 ): string {
     $readablematerials = local_aisn_matlist_dedupe($readablematerials);
-    $selectedmaterialids = array_values(array_filter($selectedmaterialids, function($id) use ($readablematerials) {
+    $selectedmaterialids = array_values(array_filter($selectedmaterialids, function ($id) use ($readablematerials) {
         return isset($readablematerials[(int)$id]);
     }));
 
@@ -843,6 +978,9 @@ function local_aiskillnavigator_material_source_selector_html(
     const rows = Array.from(root.querySelectorAll("[data-aisn-material-row]"));
     const boxes = Array.from(root.querySelectorAll("[data-aisn-material-checkbox]:not(:disabled)"));
 
+    /**
+     * Refreshsummary helper.
+     */
     function refreshSummary() {
         const selected = boxes.filter(function(box) { return box.checked; }).length;
         summary.textContent = selected > 0
@@ -894,6 +1032,9 @@ function local_aiskillnavigator_material_source_selector_html(
 }
 
 
+/**
+ * Local aiskillnavigator material source render controls helper.
+ */
 function local_aiskillnavigator_material_source_render_controls(
     array $readablematerials,
     $embeddingservice,
@@ -917,10 +1058,16 @@ function local_aiskillnavigator_material_source_render_controls(
     );
 }
 
+/**
+ * Local aiskillnavigator material source footer script helper.
+ */
 function local_aiskillnavigator_material_source_footer_script(): string {
     return '';
 }
 
+/**
+ * Local aiskillnavigator material source count chunks helper.
+ */
 function local_aiskillnavigator_material_source_count_chunks(
     $embeddingservice,
     int $courseid,

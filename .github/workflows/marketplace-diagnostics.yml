@@ -1,0 +1,88 @@
+name: Marketplace PHPCS diagnostics
+
+on:
+  push:
+    branches:
+      - marketplace-readiness
+    paths:
+      - 'plugins/aiskillnavigator/**'
+      - '.github/workflows/marketplace-diagnostics.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  phpcs-report:
+    runs-on: ubuntu-24.04
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: marketplace-readiness
+
+      - name: Stage only local_aiskillnavigator
+        run: |
+          rm -rf plugin
+          mkdir plugin
+          cp -R plugins/aiskillnavigator/. plugin/
+          rm -f plugin/.gitignore
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pgsql, mysqli, curl, dom, gd, intl, json, libxml, mbstring, simplexml, soap, xml, zip
+          ini-values: max_input_vars=5000, opcache.enable_cli=1
+          coverage: none
+
+      - name: Initialise moodle-plugin-ci
+        run: |
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
+          echo "$(cd ci/bin; pwd)" >> "$GITHUB_PATH"
+          echo "$(cd ci/vendor/bin; pwd)" >> "$GITHUB_PATH"
+          sudo locale-gen en_AU.UTF-8
+          echo "NVM_DIR=$HOME/.nvm" >> "$GITHUB_ENV"
+
+      - name: Install Moodle test environment
+        env:
+          DB: pgsql
+          MOODLE_BRANCH: MOODLE_405_STABLE
+        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+
+      - name: Capture PHPCS diagnostics
+        shell: bash
+        run: |
+          set +e
+          moodle-plugin-ci phpcs --max-warnings 0 > marketplace-phpcs-report.txt 2>&1
+          STATUS=$?
+          echo "PHPCS exit code: $STATUS" >> marketplace-phpcs-report.txt
+          exit 0
+
+      - name: Commit diagnostic report
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add marketplace-phpcs-report.txt
+          if git diff --cached --quiet; then
+            echo "Diagnostic report unchanged."
+            exit 0
+          fi
+          git commit -m "ci: update Marketplace PHPCS diagnostics"
+          git push origin HEAD:marketplace-readiness

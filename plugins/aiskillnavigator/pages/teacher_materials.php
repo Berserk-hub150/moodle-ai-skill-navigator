@@ -1,4 +1,26 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot . '/course/lib.php');
@@ -25,13 +47,19 @@ require_capability('local/aiskillnavigator:managematerials', $context);
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/teacher_materials.php', ['courseid' => $courseid]));
-$PAGE->set_title('Course materials / RAG');
-$PAGE->set_heading('Course materials / RAG');
+$PAGE->set_title(get_string('page_teacher_materials_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_teacher_materials_heading', 'local_aiskillnavigator'));
+/**
+ * Local aisn tm table exists helper.
+ */
 function local_aisn_tm_table_exists(string $name): bool {
     global $DB;
     return $DB->get_manager()->table_exists(new xmldb_table($name));
 }
 
+/**
+ * Local aisn tm get material helper.
+ */
 function local_aisn_tm_get_material(int $materialid, int $courseid): stdClass {
     global $DB;
 
@@ -47,6 +75,9 @@ function local_aisn_tm_get_material(int $materialid, int $courseid): stdClass {
     return $material;
 }
 
+/**
+ * Local aisn tm visible course materials helper.
+ */
 function local_aisn_tm_visible_course_materials(int $courseid): array {
     global $DB;
 
@@ -100,6 +131,9 @@ function local_aisn_tm_visible_course_materials(int $courseid): array {
 }
 
 
+/**
+ * Local aisn tm cm id from title helper.
+ */
 function local_aisn_tm_cm_id_from_title(string $title): int {
     if (preg_match('/^\[Course #[0-9]+ \/ cm #([0-9]+)\]/', $title, $matches)) {
         return (int)$matches[1];
@@ -108,11 +142,17 @@ function local_aisn_tm_cm_id_from_title(string $title): int {
     return 0;
 }
 
+/**
+ * Local aisn tm clean course title helper.
+ */
 function local_aisn_tm_clean_course_title(string $title): string {
     $title = preg_replace('/^\[Course #[0-9]+ \/ cm #[0-9]+\]\s*/', '', $title);
     return trim((string)$title);
 }
 
+/**
+ * Local aisn tm excerpt helper.
+ */
 function local_aisn_tm_excerpt(string $content, int $max = 600): string {
     $content = trim(preg_replace('/\s+/u', ' ', strip_tags($content)));
 
@@ -123,6 +163,9 @@ function local_aisn_tm_excerpt(string $content, int $max = 600): string {
     return $content;
 }
 
+/**
+ * Local aisn tm chunk counts helper.
+ */
 function local_aisn_tm_chunk_counts(array $materials): array {
     global $DB;
 
@@ -131,7 +174,7 @@ function local_aisn_tm_chunk_counts(array $materials): array {
     }
 
     $ids = array_keys($materials);
-    list($insql, $params) = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'mid');
+    [$insql, $params] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'mid');
 
     $sql = "SELECT materialid, COUNT(1) AS chunks
               FROM {local_aiskillnav_chunk}
@@ -149,6 +192,9 @@ function local_aisn_tm_chunk_counts(array $materials): array {
 }
 
 
+/**
+ * Local aisn tm material policy external allowed helper.
+ */
 function local_aisn_tm_material_policy_external_allowed(stdClass $material): bool {
     if (function_exists('local_aiskillnavigator_material_external_allowed')) {
         return local_aiskillnavigator_material_external_allowed($material);
@@ -165,6 +211,9 @@ function local_aisn_tm_material_policy_external_allowed(stdClass $material): boo
     return false;
 }
 
+/**
+ * Local aisn tm set policy helper.
+ */
 function local_aisn_tm_set_policy(stdClass $material, bool $externalallowed): void {
     global $DB;
 
@@ -193,6 +242,9 @@ function local_aisn_tm_set_policy(stdClass $material, bool $externalallowed): vo
     }
 }
 
+/**
+ * Local aisn tm material cmid helper.
+ */
 function local_aisn_tm_material_cmid(stdClass $material): int {
     if (isset($material->sourcecmid) && (int)$material->sourcecmid > 0) {
         return (int)$material->sourcecmid;
@@ -217,6 +269,9 @@ function local_aisn_tm_material_cmid(stdClass $material): int {
     return 0;
 }
 
+/**
+ * Local aisn tm delete material helper.
+ */
 function local_aisn_tm_delete_material(stdClass $material): void {
     global $DB;
 
@@ -255,6 +310,7 @@ function local_aisn_tm_delete_material(stdClass $material): void {
                     }
                 }
 
+                // phpcs:ignore moodle.Files.LineLength
                 $select = 'courseid = :courseid AND materialtype = :materialtype AND ' . $DB->sql_like('title', ':title', false, false);
                 $params = [
                     'courseid' => $courseid,
@@ -296,12 +352,12 @@ function local_aisn_tm_delete_material(stdClass $material): void {
     }
 
     if (!empty($materialids) && local_aisn_tm_table_exists('local_aiskillnav_chunk')) {
-        list($insql, $params) = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mid');
+        [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mid');
         $DB->delete_records_select('local_aiskillnav_chunk', 'materialid ' . $insql, $params);
     }
 
     if (!empty($materialids) && local_aisn_tm_table_exists('local_aiskillnav_material')) {
-        list($insql, $params) = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mat');
+        [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mat');
         $DB->delete_records_select('local_aiskillnav_material', 'id ' . $insql, $params);
     }
 
@@ -366,21 +422,25 @@ echo html_writer::start_div('container-fluid aisn-material-policy-page');
 
 if (empty($materials)) {
     echo html_writer::div(
+        // phpcs:ignore moodle.Files.LineLength
         'No visible course resources found. Add a file/page/resource in Moodle Edit mode or create material through AI Course Builder; this page will synchronize automatically.',
         'alert alert-warning'
     );
 
     echo html_writer::end_div();
-echo $OUTPUT->footer();
+    echo $OUTPUT->footer();
     exit;
 }
 
 
-if (function_exists('local_aisn_prod_current_ai_is_local')
+if (
+    function_exists('local_aisn_prod_current_ai_is_local')
     && function_exists('local_aisn_prod_external_ai_globally_enabled')
     && !local_aisn_prod_current_ai_is_local()
-    && !local_aisn_prod_external_ai_globally_enabled()) {
+    && !local_aisn_prod_external_ai_globally_enabled()
+) {
     echo html_writer::div(
+        // phpcs:ignore moodle.Files.LineLength
         'AISN_EXTERNAL_GLOBAL_GATE_NOTICE: External AI provider detected, but the global admin approval is disabled. Materials can still be marked as Allowed here, but they will not be sent to external AI until the admin enables Approve external AI for teacher materials.',
         'alert alert-warning'
     );
@@ -408,7 +468,7 @@ echo html_writer::empty_tag('input', [
     'type' => 'search',
     'id' => 'aisn-material-search',
     'class' => 'form-control aisn-material-search',
-    'placeholder' => 'Search by title, filename, text or AI policy...'
+    'placeholder' => 'Search by title, filename, text or AI policy...',
 ]);
 echo html_writer::end_div();
 
@@ -464,7 +524,7 @@ foreach ($materials as $material) {
     ]);
 
     echo html_writer::start_div('mt-3');
-if ($externalallowed) {
+    if ($externalallowed) {
         echo html_writer::link(
             new moodle_url('/local/aiskillnavigator/pages/teacher_materials.php', [
                 'courseid' => $courseid,

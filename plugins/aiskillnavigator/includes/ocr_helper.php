@@ -1,7 +1,34 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 if (!function_exists('local_aisn_ocr_clean_text')) {
+    /**
+     * Local aisn ocr clean text helper.
+     */
     function local_aisn_ocr_clean_text(string $text): string {
         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $text = str_replace(["\r\n", "\r"], "\n", $text);
@@ -13,6 +40,9 @@ if (!function_exists('local_aisn_ocr_clean_text')) {
 }
 
 if (!function_exists('local_aisn_ocr_tool_path')) {
+    /**
+     * Local aisn ocr tool path helper.
+     */
     function local_aisn_ocr_tool_path(string $tool): string {
         $tool = preg_replace('/[^a-zA-Z0-9_\-]/', '', $tool);
         if ($tool === '') {
@@ -23,6 +53,9 @@ if (!function_exists('local_aisn_ocr_tool_path')) {
 }
 
 if (!function_exists('local_aisn_ocr_enabled')) {
+    /**
+     * Local aisn ocr enabled helper.
+     */
     function local_aisn_ocr_enabled(): bool {
         $value = get_config('local_aiskillnavigator', 'enablelocalocr');
         if ($value === false || $value === null || $value === '') {
@@ -33,6 +66,9 @@ if (!function_exists('local_aisn_ocr_enabled')) {
 }
 
 if (!function_exists('local_aisn_ocr_max_images')) {
+    /**
+     * Local aisn ocr max images helper.
+     */
     function local_aisn_ocr_max_images(): int {
         $configured = (int)get_config('local_aiskillnavigator', 'ocrmaximages');
         if ($configured > 0) {
@@ -43,6 +79,9 @@ if (!function_exists('local_aisn_ocr_max_images')) {
 }
 
 if (!function_exists('local_aisn_ocr_max_image_bytes')) {
+    /**
+     * Local aisn ocr max image bytes helper.
+     */
     function local_aisn_ocr_max_image_bytes(): int {
         $configured = (int)get_config('local_aiskillnavigator', 'ocrmaximagebytes');
         if ($configured > 0) {
@@ -53,12 +92,18 @@ if (!function_exists('local_aisn_ocr_max_image_bytes')) {
 }
 
 if (!function_exists('local_aisn_ocr_available')) {
+    /**
+     * Local aisn ocr available helper.
+     */
     function local_aisn_ocr_available(): bool {
         return local_aisn_ocr_enabled() && local_aisn_ocr_tool_path('tesseract') !== '';
     }
 }
 
 if (!function_exists('local_aisn_ocr_status_text')) {
+    /**
+     * Local aisn ocr status text helper.
+     */
     function local_aisn_ocr_status_text(): string {
         $tesseract = local_aisn_ocr_tool_path('tesseract');
         $pdftoppm = local_aisn_ocr_tool_path('pdftoppm');
@@ -70,6 +115,9 @@ if (!function_exists('local_aisn_ocr_status_text')) {
 }
 
 if (!function_exists('local_aisn_ocr_image_path')) {
+    /**
+     * Local aisn ocr image path helper.
+     */
     function local_aisn_ocr_image_path(string $imagepath, string $label = ''): string {
         if (!local_aisn_ocr_available()) {
             return '';
@@ -104,6 +152,9 @@ if (!function_exists('local_aisn_ocr_image_path')) {
 }
 
 if (!function_exists('local_aisn_zip_extract_entry_to_temp')) {
+    /**
+     * Local aisn zip extract entry to temp helper.
+     */
     function local_aisn_zip_extract_entry_to_temp(ZipArchive $zip, int $index, string $tmpdir): string {
         $entry = (string)$zip->getNameIndex($index);
         $ext = strtolower(pathinfo($entry, PATHINFO_EXTENSION));
@@ -122,6 +173,9 @@ if (!function_exists('local_aisn_zip_extract_entry_to_temp')) {
 }
 
 if (!function_exists('local_aisn_extract_pptx_xml_text_from_path')) {
+    /**
+     * Local aisn extract pptx xml text from path helper.
+     */
     function local_aisn_extract_pptx_xml_text_from_path(string $path): string {
         if (!class_exists('ZipArchive') || !is_readable($path)) {
             return '';
@@ -159,6 +213,9 @@ if (!function_exists('local_aisn_extract_pptx_xml_text_from_path')) {
 }
 
 if (!function_exists('local_aisn_extract_pptx_chart_text_from_path')) {
+    /**
+     * Local aisn extract pptx chart text from path helper.
+     */
     function local_aisn_extract_pptx_chart_text_from_path(string $path): string {
         if (!class_exists('ZipArchive') || !is_readable($path)) {
             return '';
@@ -205,6 +262,9 @@ if (!function_exists('local_aisn_extract_pptx_chart_text_from_path')) {
 }
 
 if (!function_exists('local_aisn_ocr_zip_images_from_path')) {
+    /**
+     * Local aisn ocr zip images from path helper.
+     */
     function local_aisn_ocr_zip_images_from_path(string $path, string $prefix, string $label): string {
         if (!class_exists('ZipArchive') || !is_readable($path) || !local_aisn_ocr_available()) {
             return '';
@@ -245,18 +305,27 @@ if (!function_exists('local_aisn_ocr_zip_images_from_path')) {
 }
 
 if (!function_exists('local_aisn_ocr_pptx_images_from_path')) {
+    /**
+     * Local aisn ocr pptx images from path helper.
+     */
     function local_aisn_ocr_pptx_images_from_path(string $path): string {
         return local_aisn_ocr_zip_images_from_path($path, 'ppt/media/', 'PPTX embedded image');
     }
 }
 
 if (!function_exists('local_aisn_ocr_docx_images_from_path')) {
+    /**
+     * Local aisn ocr docx images from path helper.
+     */
     function local_aisn_ocr_docx_images_from_path(string $path): string {
         return local_aisn_ocr_zip_images_from_path($path, 'word/media/', 'DOCX embedded image');
     }
 }
 
 if (!function_exists('local_aisn_extract_docx_xml_text_from_path')) {
+    /**
+     * Local aisn extract docx xml text from path helper.
+     */
     function local_aisn_extract_docx_xml_text_from_path(string $path): string {
         if (!class_exists('ZipArchive') || !is_readable($path)) {
             return '';

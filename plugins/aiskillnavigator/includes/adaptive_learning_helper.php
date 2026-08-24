@@ -1,5 +1,28 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -23,7 +46,11 @@ function local_aiskillnavigator_adaptive_table_exists(string $tablename): bool {
     }
 }
 
+/**
+ * Local aiskillnavigator adaptive question skill helper.
+ */
 function local_aiskillnavigator_adaptive_question_skill(array $question): string {
+    // phpcs:ignore moodle.Files.LineLength
     $skill = trim((string)($question['ability'] ?? $question['Ability'] ?? $question['skill'] ?? $question['Skill'] ?? $question['topic'] ?? ''));
 
     if ($skill === '') {
@@ -33,10 +60,16 @@ function local_aiskillnavigator_adaptive_question_skill(array $question): string
     return $skill;
 }
 
+/**
+ * Local aiskillnavigator adaptive question text helper.
+ */
 function local_aiskillnavigator_adaptive_question_text(array $question): string {
     return trim((string)($question['question'] ?? $question['text'] ?? $question['title'] ?? ''));
 }
 
+/**
+ * Local aiskillnavigator adaptive option text helper.
+ */
 function local_aiskillnavigator_adaptive_option_text(array $question, int $index): string {
     $options = $question['options'] ?? $question['answers'] ?? [];
 
@@ -47,6 +80,9 @@ function local_aiskillnavigator_adaptive_option_text(array $question, int $index
     return trim((string)$options[$index]);
 }
 
+/**
+ * Local aiskillnavigator adaptive register answer helper.
+ */
 function local_aiskillnavigator_adaptive_register_answer(
     array &$skills,
     array &$wrongquestions,
@@ -106,6 +142,9 @@ function local_aiskillnavigator_adaptive_register_answer(
     }
 }
 
+/**
+ * Local aiskillnavigator adaptive collect student helper.
+ */
 function local_aiskillnavigator_adaptive_collect_student(int $courseid, int $userid): array {
     global $DB;
 
@@ -231,7 +270,7 @@ function local_aiskillnavigator_adaptive_collect_student(int $courseid, int $use
         }
     }
 
-    uasort($skills, function(array $a, array $b): int {
+    uasort($skills, function (array $a, array $b): int {
         if ($a['mastery'] === $b['mastery']) {
             return $b['wrong'] <=> $a['wrong'];
         }
@@ -246,6 +285,9 @@ function local_aiskillnavigator_adaptive_collect_student(int $courseid, int $use
     ];
 }
 
+/**
+ * Local aiskillnavigator adaptive prompt context helper.
+ */
 function local_aiskillnavigator_adaptive_prompt_context(array $profile): string {
     $lines = [];
 

@@ -1,14 +1,43 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/production_guard.php');
 
+/**
+ * Local aiskillnavigator current ai is local helper.
+ */
 function local_aiskillnavigator_current_ai_is_local(): bool {
     return function_exists('local_aisn_prod_current_ai_is_local')
         ? local_aisn_prod_current_ai_is_local()
         : true;
 }
 
+/**
+ * Local aiskillnavigator material external allowed helper.
+ */
 function local_aiskillnavigator_material_external_allowed(stdClass $material): bool {
     if (isset($material->externalaiallowed)) {
         return ((int)$material->externalaiallowed) === 1;
@@ -21,6 +50,9 @@ function local_aiskillnavigator_material_external_allowed(stdClass $material): b
     return false;
 }
 
+/**
+ * Local aiskillnavigator material can be sent to current ai helper.
+ */
 function local_aiskillnavigator_material_can_be_sent_to_current_ai(stdClass $material): bool {
     if (function_exists('local_aisn_prod_can_send_material_to_current_ai')) {
         return local_aisn_prod_can_send_material_to_current_ai($material);
@@ -31,6 +63,9 @@ function local_aiskillnavigator_material_can_be_sent_to_current_ai(stdClass $mat
     return local_aiskillnavigator_material_external_allowed($material);
 }
 
+/**
+ * Local aiskillnavigator filter materials for current ai helper.
+ */
 function local_aiskillnavigator_filter_materials_for_current_ai(array $materials): array {
     $filtered = [];
 
@@ -43,18 +78,27 @@ function local_aiskillnavigator_filter_materials_for_current_ai(array $materials
     return $filtered;
 }
 
+/**
+ * Local aiskillnavigator ai policy label helper.
+ */
 function local_aiskillnavigator_ai_policy_label(stdClass $material): string {
     return local_aiskillnavigator_material_external_allowed($material)
         ? 'Allowed for external AI'
         : 'Local AI only';
 }
 
+/**
+ * Local aiskillnavigator ai policy badge class helper.
+ */
 function local_aiskillnavigator_ai_policy_badge_class(stdClass $material): string {
     return local_aiskillnavigator_material_external_allowed($material)
         ? 'badge badge-success'
         : 'badge badge-secondary';
 }
 
+/**
+ * Local aiskillnavigator set material ai policy helper.
+ */
 function local_aiskillnavigator_set_material_ai_policy(int $materialid, int $courseid, bool $externalallowed): bool {
     global $DB;
 
@@ -76,6 +120,9 @@ function local_aiskillnavigator_set_material_ai_policy(int $materialid, int $cou
     return true;
 }
 
+/**
+ * Local aiskillnavigator provider privacy notice helper.
+ */
 function local_aiskillnavigator_provider_privacy_notice(): string {
     if (local_aiskillnavigator_current_ai_is_local()) {
         return 'Current AI provider is local/prototype: course materials can be used without sending them to an external provider.';

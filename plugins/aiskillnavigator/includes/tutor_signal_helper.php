@@ -1,7 +1,33 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Local aiskillnavigator tutor signal ensure table helper.
+ */
 function local_aiskillnavigator_tutor_signal_ensure_table(): void {
     global $DB, $CFG;
 
@@ -34,6 +60,9 @@ function local_aiskillnavigator_tutor_signal_ensure_table(): void {
     $dbman->create_table($table);
 }
 
+/**
+ * Local aiskillnavigator tutor signal contains helper.
+ */
 function local_aiskillnavigator_tutor_signal_contains(string $text, array $needles): bool {
     $text = core_text::strtolower($text);
 
@@ -46,6 +75,9 @@ function local_aiskillnavigator_tutor_signal_contains(string $text, array $needl
     return false;
 }
 
+/**
+ * Local aiskillnavigator tutor signal classify skill helper.
+ */
 function local_aiskillnavigator_tutor_signal_classify_skill(string $question, string $answer): string {
     $text = $question . ' ' . $answer;
 
@@ -68,7 +100,11 @@ function local_aiskillnavigator_tutor_signal_classify_skill(string $question, st
     return 'General question';
 }
 
+/**
+ * Local aiskillnavigator tutor signal classify type helper.
+ */
 function local_aiskillnavigator_tutor_signal_classify_type(string $question): string {
+    // phpcs:ignore moodle.Files.LineLength
     if (local_aiskillnavigator_tutor_signal_contains($question, ['non capisco', 'non ho capito', 'perche ho sbagliato', 'perchè ho sbagliato', 'dove sbaglio'])) {
         return 'doubt/error';
     }
@@ -88,9 +124,13 @@ function local_aiskillnavigator_tutor_signal_classify_type(string $question): st
     return 'question';
 }
 
+/**
+ * Local aiskillnavigator tutor signal classify difficulty helper.
+ */
 function local_aiskillnavigator_tutor_signal_classify_difficulty(string $question, string $answer): string {
     $text = $question . ' ' . $answer;
 
+    // phpcs:ignore moodle.Files.LineLength
     if (local_aiskillnavigator_tutor_signal_contains($text, ['non capisco', 'confuso', 'sbaglio', 'errore', 'difficile', 'non riesco'])) {
         return 'high';
     }
@@ -102,6 +142,9 @@ function local_aiskillnavigator_tutor_signal_classify_difficulty(string $questio
     return 'medium';
 }
 
+/**
+ * Local aiskillnavigator tutor signal store helper.
+ */
 function local_aiskillnavigator_tutor_signal_store(
     int $courseid,
     int $userid,
@@ -137,6 +180,9 @@ function local_aiskillnavigator_tutor_signal_store(
     }
 }
 
+/**
+ * Local aiskillnavigator tutor signal teacher panel helper.
+ */
 function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): string {
     global $DB, $OUTPUT;
 
@@ -183,6 +229,7 @@ function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): strin
     $html .= html_writer::tag('h3', 'Tutor-as-Sensor analytics');
     $html .= html_writer::tag(
         'p',
+        // phpcs:ignore moodle.Files.LineLength
         'Le domande fatte dagli studenti al tutor diventano segnali didattici: competenze richieste, dubbi ricorrenti e argomenti da rinforzare.',
         ['class' => 'text-muted']
     );
@@ -270,8 +317,10 @@ function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): strin
     } else {
         $html .= html_writer::start_tag('div', ['class' => 'table-responsive']);
         $html .= html_writer::start_tag('table', ['class' => 'table table-sm']);
-        $html .= html_writer::tag('thead',
-            html_writer::tag('tr',
+        $html .= html_writer::tag(
+            'thead',
+            html_writer::tag(
+                'tr',
                 html_writer::tag('th', 'Time') .
                 html_writer::tag('th', 'Student') .
                 html_writer::tag('th', 'Skill') .
@@ -285,7 +334,8 @@ function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): strin
             $user = $DB->get_record('user', ['id' => $r->userid], 'id,firstname,lastname', IGNORE_MISSING);
             $student = $user ? fullname($user) : ('User #' . (int)$r->userid);
 
-            $html .= html_writer::tag('tr',
+            $html .= html_writer::tag(
+                'tr',
                 html_writer::tag('td', userdate((int)$r->timecreated, '%d/%m %H:%M')) .
                 html_writer::tag('td', s($student)) .
                 html_writer::tag('td', s((string)$r->skill)) .

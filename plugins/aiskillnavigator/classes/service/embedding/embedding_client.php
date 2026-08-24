@@ -1,16 +1,49 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace local_aiskillnavigator\service\embedding;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Embedding client implementation.
+ */
 class embedding_client {
+    /** @var embedding_config Config. */
     private embedding_config $config;
 
+    /**
+     * Construct helper.
+     */
     public function __construct(embedding_config $config) {
         $this->config = $config;
     }
 
+    /**
+     * Generate helper.
+     */
     public function generate(string $text): ?array {
         $text = trim($text);
 
@@ -29,6 +62,9 @@ class embedding_client {
         return $this->openai($text);
     }
 
+    /**
+     * Ollama helper.
+     */
     private function ollama(string $text): ?array {
         $url = rtrim($this->config->endpoint, '/') . '/api/embeddings';
         $body = (new embedding_http_client())->post($url, ['model' => $this->config->model, 'prompt' => $text], []);
@@ -36,6 +72,9 @@ class embedding_client {
         return isset($body['embedding']) && is_array($body['embedding']) ? $body['embedding'] : null;
     }
 
+    /**
+     * Openai helper.
+     */
     private function openai(string $text): ?array {
         $headers = $this->config->apikey !== '' ? ['Authorization: Bearer ' . $this->config->apikey] : [];
         $body = (new embedding_http_client())->post(
@@ -49,6 +88,9 @@ class embedding_client {
             : null;
     }
 
+    /**
+     * Openai url helper.
+     */
     private function openai_url(): string {
         $endpoint = rtrim($this->config->endpoint, '/');
         $endpoint = preg_replace('#/(?:chat/completions|embeddings)$#', '', $endpoint);
@@ -57,6 +99,9 @@ class embedding_client {
         return rtrim((string)$endpoint, '/') . '/v1/embeddings';
     }
 
+    /**
+     * Custom helper.
+     */
     private function custom(string $text): ?array {
         if ($this->config->endpoint === '') {
             return null;
@@ -94,6 +139,9 @@ class embedding_client {
         return null;
     }
 
+    /**
+     * Render template helper.
+     */
     private function render_template(string $template, array $values): string {
         foreach ($values as $key => $value) {
             $template = str_replace('{{' . $key . '}}', $this->escape_json_string((string) $value), $template);
@@ -102,6 +150,9 @@ class embedding_client {
         return $template;
     }
 
+    /**
+     * Escape json string helper.
+     */
     private function escape_json_string(string $value): string {
         $encoded = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
@@ -112,6 +163,9 @@ class embedding_client {
         return substr($encoded, 1, -1);
     }
 
+    /**
+     * Build headers helper.
+     */
     private function build_headers(): array {
         $headers = [];
         $decoded = json_decode($this->config->headersjson, true);
@@ -138,6 +192,9 @@ class embedding_client {
         return $headers;
     }
 
+    /**
+     * Value by path helper.
+     */
     private function value_by_path(array $data, string $path) {
         $path = trim($path) !== '' ? trim($path) : 'data.0.embedding';
         $current = $data;

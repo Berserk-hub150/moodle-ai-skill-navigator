@@ -1,4 +1,27 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/back_to_course_helper.php');
 require_once($CFG->dirroot . '/course/lib.php');
@@ -27,13 +50,19 @@ require_capability('moodle/course:manageactivities', $context);
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/course_builder.php', ['courseid' => $courseid]));
-$PAGE->set_title('AI Course Builder');
-$PAGE->set_heading('AI Course Builder');
+$PAGE->set_title(get_string('page_course_builder_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_course_builder_heading', 'local_aiskillnavigator'));
 
+/**
+ * Local aisn cb low helper.
+ */
 function local_aisn_cb_low(string $text): string {
     return core_text::strtolower(trim($text));
 }
 
+/**
+ * Local aisn cb clean helper.
+ */
 function local_aisn_cb_clean(string $text, int $max = 800): string {
     $text = trim(strip_tags($text));
     $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -52,6 +81,9 @@ function local_aisn_cb_clean(string $text, int $max = 800): string {
     return $text;
 }
 
+/**
+ * Local aisn cb section text helper.
+ */
 function local_aisn_cb_section_text(string $text): string {
     $text = strip_tags($text);
     $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -70,6 +102,9 @@ function local_aisn_cb_section_text(string $text): string {
     return trim((string)$text);
 }
 
+/**
+ * Local aisn cb section key helper.
+ */
 function local_aisn_cb_section_key(string $text): string {
     $text = local_aisn_cb_low(local_aisn_cb_section_text($text));
     $text = preg_replace('/[^\p{L}\p{N}]+/u', '', (string)$text);
@@ -77,6 +112,9 @@ function local_aisn_cb_section_key(string $text): string {
     return trim((string)$text);
 }
 
+/**
+ * Local aisn cb section tokens helper.
+ */
 function local_aisn_cb_section_tokens(string $text): array {
     $text = local_aisn_cb_low(local_aisn_cb_section_text($text));
     $text = preg_replace('/[^\p{L}\p{N}]+/u', ' ', (string)$text);
@@ -87,6 +125,9 @@ function local_aisn_cb_section_tokens(string $text): array {
     }));
 }
 
+/**
+ * Local aisn cb all tokens match helper.
+ */
 function local_aisn_cb_all_tokens_match(array $needles, string $haystack): bool {
     if (empty($needles)) {
         return false;
@@ -103,6 +144,9 @@ function local_aisn_cb_all_tokens_match(array $needles, string $haystack): bool 
     return true;
 }
 
+/**
+ * Local aisn cb clean section title helper.
+ */
 function local_aisn_cb_clean_section_title(string $title, int $max = 120): string {
     $title = local_aisn_cb_section_text($title);
 
@@ -117,6 +161,9 @@ function local_aisn_cb_clean_section_title(string $title, int $max = 120): strin
     return trim($title);
 }
 
+/**
+ * Local aisn cb next section helper.
+ */
 function local_aisn_cb_next_section(int $courseid): int {
     global $DB;
     $max = $DB->get_field_sql('SELECT MAX(section) FROM {course_sections} WHERE course = ?', [$courseid]);
@@ -124,12 +171,18 @@ function local_aisn_cb_next_section(int $courseid): int {
     return ((int)$max) + 1;
 }
 
+/**
+ * Local aisn cb get section helper.
+ */
 function local_aisn_cb_get_section(int $courseid, int $sectionnum): ?stdClass {
     global $DB;
 
     return $DB->get_record('course_sections', ['course' => $courseid, 'section' => $sectionnum]) ?: null;
 }
 
+/**
+ * Local aisn cb find section helper.
+ */
 function local_aisn_cb_find_section(int $courseid, string $ref): ?stdClass {
     global $DB;
 
@@ -146,7 +199,7 @@ function local_aisn_cb_find_section(int $courseid, string $ref): ?stdClass {
     $reflow = local_aisn_cb_low($ref);
 
     // Moodle/Boost often shows the general section as "Highlights" even when
-    // course_sections.name is empty. Treat those words as section 0.
+    // Course_sections.name is empty. Treat those words as section 0.
     if (local_aisn_cb_is_section_zero_alias($ref)) {
         return local_aisn_cb_get_section($courseid, 0);
     }
@@ -184,8 +237,10 @@ function local_aisn_cb_find_section(int $courseid, string $ref): ?stdClass {
             continue;
         }
 
-        if (core_text::strlen($refkey) >= 3 &&
-            (str_contains($namekey, $refkey) || str_contains($refkey, $namekey))) {
+        if (
+            core_text::strlen($refkey) >= 3 &&
+            (str_contains($namekey, $refkey) || str_contains($refkey, $namekey))
+        ) {
             return $section;
         }
 
@@ -197,6 +252,9 @@ function local_aisn_cb_find_section(int $courseid, string $ref): ?stdClass {
     return null;
 }
 
+/**
+ * Local aisn cb create section helper.
+ */
 function local_aisn_cb_create_section(int $courseid, string $title, string $summary = ''): stdClass {
     global $DB;
 
@@ -235,6 +293,9 @@ function local_aisn_cb_create_section(int $courseid, string $title, string $summ
     return $DB->get_record('course_sections', ['id' => $section->id], '*', MUST_EXIST);
 }
 
+/**
+ * Local aisn cb ensure section helper.
+ */
 function local_aisn_cb_ensure_section(int $courseid, string $title, string $summary = ''): stdClass {
     $section = local_aisn_cb_find_section($courseid, $title);
 
@@ -245,6 +306,9 @@ function local_aisn_cb_ensure_section(int $courseid, string $title, string $summ
     return local_aisn_cb_create_section($courseid, $title, $summary);
 }
 
+/**
+ * Local aisn cb update section helper.
+ */
 function local_aisn_cb_update_section(stdClass $section, string $title = '', string $summary = ''): void {
     global $DB;
 
@@ -262,6 +326,9 @@ function local_aisn_cb_update_section(stdClass $section, string $title = '', str
     rebuild_course_cache((int)$section->course, true);
 }
 
+/**
+ * Local aisn cb set visibility helper.
+ */
 function local_aisn_cb_set_visibility(stdClass $section, bool $visible): void {
     global $DB;
 
@@ -271,6 +338,9 @@ function local_aisn_cb_set_visibility(stdClass $section, bool $visible): void {
     rebuild_course_cache((int)$section->course, true);
 }
 
+/**
+ * Local aisn cb is section zero alias helper.
+ */
 function local_aisn_cb_is_section_zero_alias(string $text): bool {
     $key = local_aisn_cb_section_key($text);
 
@@ -292,6 +362,9 @@ function local_aisn_cb_is_section_zero_alias(string $text): bool {
     ], true);
 }
 
+/**
+ * Local aisn cb delete modules in section helper.
+ */
 function local_aisn_cb_delete_modules_in_section(int $courseid, int $sectionnum): int {
     global $DB;
 
@@ -316,6 +389,7 @@ function local_aisn_cb_delete_modules_in_section(int $courseid, int $sectionnum)
             course_delete_module((int)$cm->id);
             $deleted++;
         } catch (Throwable $e) {
+            // phpcs:ignore moodle.Files.LineLength
             debugging('AI Course Builder module deletion failed for cmid ' . (int)$cm->id . ': ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
     }
@@ -323,6 +397,9 @@ function local_aisn_cb_delete_modules_in_section(int $courseid, int $sectionnum)
     return $deleted;
 }
 
+/**
+ * Local aisn cb clear section zero helper.
+ */
 function local_aisn_cb_clear_section_zero(int $courseid): void {
     global $DB;
 
@@ -342,6 +419,9 @@ function local_aisn_cb_clear_section_zero(int $courseid): void {
     $DB->update_record('course_sections', $section0);
 }
 
+/**
+ * Local aisn cb delete all sections helper.
+ */
 function local_aisn_cb_delete_all_sections(int $courseid): array {
     global $DB;
 
@@ -386,14 +466,19 @@ function local_aisn_cb_delete_all_sections(int $courseid): array {
     local_aisn_cb_clear_section_zero($courseid);
     rebuild_course_cache($courseid, true);
 
+    // phpcs:ignore moodle.Files.LineLength
     array_unshift($logs, 'Azione diretta: corso ripulito. Moduli cancellati: ' . $deletedmods . '. Sezioni cancellate: ' . $deletedsections . '. Highlights/section 0 svuotata.');
 
     return $logs;
 }
 
+/**
+ * Local aisn cb prompt wants clear course helper.
+ */
 function local_aisn_cb_prompt_wants_clear_course(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
 
+    // phpcs:ignore moodle.Files.LineLength
     if (preg_match('/\b(?:elimina|cancella|rimuovi|togli|svuota|resetta|ripulisci|pulisci)\b.*\b(?:tutte|tutti|ogni|intero|intera)\b.*\b(?:sezioni|sezione|corso|materiali|risorse|attivit)/iu', $prompt)) {
         return true;
     }
@@ -413,6 +498,9 @@ function local_aisn_cb_prompt_wants_clear_course(string $prompt): bool {
         || str_contains($p, 'clear course');
 }
 
+/**
+ * Local aisn cb prompt mentions files or materials helper.
+ */
 function local_aisn_cb_prompt_mentions_files_or_materials(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
 
@@ -427,12 +515,18 @@ function local_aisn_cb_prompt_mentions_files_or_materials(string $prompt): bool 
         || str_contains($p, 'inseriti');
 }
 
+/**
+ * Local aisn cb prompt singular section request helper.
+ */
 function local_aisn_cb_prompt_singular_section_request(string $prompt): bool {
     return (bool)preg_match('/\b(?:una|unica|sola|solo una|1)\s+sezione\b/iu', $prompt)
         || (bool)preg_match('/\bsezione\s+(?:chiamata|chiamala|di nome|intitolata)\b/iu', $prompt)
         || (bool)preg_match('/\b(?:chiamala|chiamarla|chiamata|intitolata)\b/iu', $prompt);
 }
 
+/**
+ * Local aisn cb command title clean helper.
+ */
 function local_aisn_cb_command_title_clean(string $raw): string {
     $title = html_entity_decode(strip_tags($raw), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $title = preg_replace('/\s+/u', ' ', (string)$title);
@@ -472,10 +566,16 @@ function local_aisn_cb_command_title_clean(string $raw): string {
     return $title;
 }
 
+/**
+ * Local aisn cb extract named section title helper.
+ */
 function local_aisn_cb_extract_named_section_title(string $prompt): ?string {
     $patterns = [
+        // phpcs:ignore moodle.Files.LineLength
         '/\b(?:chiamala|chiamarlo|chiamalo|chiamarla|chiamata|chiamato|intitolata|intitolato)\s+["“”\'«»]?(.+?)(?:["“”\'«»]|\s+(?:mettendoci|mettici|metti|inserendo|contenente|che contiene|con|e\s+per quanto riguarda)\b|[\r\n.;:]|$)/iu',
+        // phpcs:ignore moodle.Files.LineLength
         '/\bsezione\s+(?:chiamata|chiamato|di nome|intitolata|intitolato)\s+["“”\'«»]?(.+?)(?:["“”\'«»]|\s+(?:mettendoci|mettici|metti|inserendo|contenente|che contiene|con|e\s+per quanto riguarda)\b|[\r\n.;:]|$)/iu',
+        // phpcs:ignore moodle.Files.LineLength
         '/\b(?:crea|creami|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\s+["“”\'«»]?(.+?)(?:["“”\'«»]|\s+(?:mettendoci|mettici|metti|inserendo|contenente|che contiene|con|e\s+per quanto riguarda)\b|[\r\n.;:]|$)/iu',
     ];
 
@@ -483,6 +583,7 @@ function local_aisn_cb_extract_named_section_title(string $prompt): ?string {
         if (preg_match($pattern, $prompt, $matches)) {
             $title = local_aisn_cb_safe_title_clean((string)$matches[1]);
 
+            // phpcs:ignore moodle.Files.LineLength
             if ($title !== '' && !in_array(local_aisn_cb_low($title), ['file', 'files', 'materiale', 'materiali', 'tutti', 'tutte'], true)) {
                 return $title;
             }
@@ -491,12 +592,15 @@ function local_aisn_cb_extract_named_section_title(string $prompt): ?string {
 
     return null;
 }
+/**
+ * Local aisn cb delete section helper.
+ */
 function local_aisn_cb_delete_section(int $courseid, stdClass $section): string {
     $sectionnum = (int)($section->section ?? -1);
 
-    // Section 0 cannot be physically removed in Moodle. For a prompt like
-    // "elimina Highlights", the expected Course Builder behaviour is to remove
-    // all activities from it and clear title/summary so it becomes empty.
+    // Section 0 cannot be physically removed in Moodle. For a prompt like.
+    // "elimina Highlights", the expected Course Builder behaviour is to remove.
+    // All activities from it and clear title/summary so it becomes empty.
     if ($sectionnum <= 0) {
         $deletedmods = local_aisn_cb_delete_modules_in_section($courseid, 0);
         local_aisn_cb_clear_section_zero($courseid);
@@ -519,12 +623,18 @@ function local_aisn_cb_delete_section(int $courseid, stdClass $section): string 
     return 'nascosta perché course_delete_section non è disponibile';
 }
 
+/**
+ * Local aisn cb duplicate section helper.
+ */
 function local_aisn_cb_duplicate_section(int $courseid, stdClass $source, string $newtitle = ''): stdClass {
     $title = $newtitle !== '' ? $newtitle : ((string)$source->name . ' - copia');
 
     return local_aisn_cb_create_section($courseid, $title, (string)($source->summary ?? ''));
 }
 
+/**
+ * Local aisn cb move section helper.
+ */
 function local_aisn_cb_move_section(int $courseid, stdClass $section, int $destination): string {
     $destination = max(1, $destination);
     $course = get_course($courseid);
@@ -539,6 +649,9 @@ function local_aisn_cb_move_section(int $courseid, stdClass $section, int $desti
     return 'move_section_to non disponibile';
 }
 
+/**
+ * Local aisn cb file signature helper.
+ */
 function local_aisn_cb_file_signature(array $file): string {
     $name = core_text::strtolower(clean_param((string)($file['name'] ?? ''), PARAM_FILE));
     $size = (int)($file['size'] ?? 0);
@@ -552,6 +665,9 @@ function local_aisn_cb_file_signature(array $file): string {
     return $name . '|' . $size . '|' . $hash;
 }
 
+/**
+ * Local aisn cb dedupe files helper.
+ */
 function local_aisn_cb_dedupe_files(array $files): array {
     $seen = [];
     $out = [];
@@ -570,6 +686,9 @@ function local_aisn_cb_dedupe_files(array $files): array {
     return $out;
 }
 
+/**
+ * Local aisn cb uploaded files helper.
+ */
 function local_aisn_cb_uploaded_files(): array {
     if (empty($_FILES['materials']) || empty($_FILES['materials']['name'])) {
         return [];
@@ -615,6 +734,9 @@ function local_aisn_cb_uploaded_files(): array {
     return local_aisn_cb_dedupe_files($files);
 }
 
+/**
+ * Local aisn cb resource identity helper.
+ */
 function local_aisn_cb_resource_identity(string $name): string {
     $name = html_entity_decode(strip_tags($name), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $name = core_text::strtolower(trim((string)$name));
@@ -627,6 +749,9 @@ function local_aisn_cb_resource_identity(string $name): string {
     return preg_replace('/[^\p{L}\p{N}\.]+/u', '', (string)$name);
 }
 
+/**
+ * Local aisn cb existing resource cmid helper.
+ */
 function local_aisn_cb_existing_resource_cmid(int $courseid, int $sectionnum, string $resourcename): int {
     global $DB;
 
@@ -672,6 +797,9 @@ function local_aisn_cb_existing_resource_cmid(int $courseid, int $sectionnum, st
     return 0;
 }
 
+/**
+ * Local aisn cb cleanup duplicate resources in course helper.
+ */
 function local_aisn_cb_cleanup_duplicate_resources_in_course(int $courseid): int {
     global $DB;
 
@@ -716,6 +844,7 @@ function local_aisn_cb_cleanup_duplicate_resources_in_course(int $courseid): int
             course_delete_module((int)$record->cmid);
             $deleted++;
         } catch (Throwable $e) {
+            // phpcs:ignore moodle.Files.LineLength
             debugging('AI Course Builder duplicate resource cleanup failed for cmid ' . (int)$record->cmid . ': ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
     }
@@ -727,6 +856,9 @@ function local_aisn_cb_cleanup_duplicate_resources_in_course(int $courseid): int
     return $deleted;
 }
 
+/**
+ * Local aisn cb create resource from file helper.
+ */
 function local_aisn_cb_create_resource_from_file(int $courseid, int $sectionnum, array $file, string $resourcename): int {
     global $DB, $USER;
 
@@ -794,6 +926,9 @@ function local_aisn_cb_create_resource_from_file(int $courseid, int $sectionnum,
     return !empty($created->coursemodule) ? (int)$created->coursemodule : 0;
 }
 
+/**
+ * Local aisn cb attach files to section helper.
+ */
 function local_aisn_cb_attach_files_to_section(int $courseid, int $userid, stdClass $section, array $files): array {
     $logs = [];
     $files = local_aisn_cb_dedupe_files($files);
@@ -832,6 +967,9 @@ function local_aisn_cb_attach_files_to_section(int $courseid, int $userid, stdCl
     return $logs;
 }
 
+/**
+ * Local aisn cb sync resources helper.
+ */
 function local_aisn_cb_sync_resources(int $courseid): void {
     global $CFG, $USER;
 
@@ -869,6 +1007,9 @@ function local_aisn_cb_sync_resources(int $courseid): void {
     }
 }
 
+/**
+ * Local aisn cb filename to section title helper.
+ */
 function local_aisn_cb_filename_to_section_title(string $filename): string {
     $filename = clean_param($filename, PARAM_FILE);
     $base = preg_replace('/\.[^.]+$/', '', $filename);
@@ -885,10 +1026,14 @@ function local_aisn_cb_filename_to_section_title(string $filename): string {
     return local_aisn_cb_clean_section_title($base, 120);
 }
 
+/**
+ * Local aisn cb prompt wants one section per file helper.
+ */
 function local_aisn_cb_prompt_wants_one_section_per_file(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
 
     return (
+        // phpcs:ignore moodle.Files.LineLength
         (str_contains($p, 'per ogni file') || str_contains($p, 'ogni file') || str_contains($p, 'ciascun file') || str_contains($p, 'ogni materiale'))
         && (str_contains($p, 'sezione') || str_contains($p, 'sezioni'))
     ) || str_contains($p, 'un file per sezione')
@@ -899,12 +1044,16 @@ function local_aisn_cb_prompt_wants_one_section_per_file(string $prompt): bool {
       || str_contains($p, 'organizza i file');
 }
 
+/**
+ * Local aisn cb extract delete target helper.
+ */
 function local_aisn_cb_extract_delete_target(string $prompt): ?string {
     if (local_aisn_cb_prompt_wants_clear_course($prompt)) {
         return '__ALL_SECTIONS__';
     }
 
     $patterns = [
+        // phpcs:ignore moodle.Files.LineLength
         '/\b(?:togli|elimina|cancella|rimuovi|rimuovere|cancellare|eliminare)\s+(?:la\s+)?sezione\s+["“”\'«»]?([^"“”\'«»\r\n]+)["“”\'«»]?/iu',
         '/\b(?:togli|elimina|cancella|rimuovi)\s+["“”\'«»]([^"“”\'«»\r\n]+)["“”\'«»]/iu',
     ];
@@ -922,6 +1071,9 @@ function local_aisn_cb_extract_delete_target(string $prompt): ?string {
     return null;
 }
 
+/**
+ * Local aisn cb extract target section helper.
+ */
 function local_aisn_cb_extract_target_section(string $prompt): ?string {
     $named = local_aisn_cb_extract_named_section_title($prompt);
 
@@ -945,6 +1097,9 @@ function local_aisn_cb_extract_target_section(string $prompt): ?string {
     return null;
 }
 
+/**
+ * Local aisn cb extract create section titles helper.
+ */
 function local_aisn_cb_extract_create_section_titles(string $prompt): array {
     $titles = [];
     $named = local_aisn_cb_extract_named_section_title($prompt);
@@ -974,6 +1129,9 @@ function local_aisn_cb_extract_create_section_titles(string $prompt): array {
     return array_values($titles);
 }
 
+/**
+ * Local aisn cb prompt text to html helper.
+ */
 function local_aisn_cb_prompt_text_to_html(string $text): string {
     $text = trim((string)$text);
 
@@ -989,6 +1147,9 @@ function local_aisn_cb_prompt_text_to_html(string $text): string {
     return '<div class="aisn-cb-prompt-summary">' . nl2br(s($text), false) . '</div>';
 }
 
+/**
+ * Local aisn cb set section summary html helper.
+ */
 function local_aisn_cb_set_section_summary_html(stdClass $section, string $html): void {
     global $DB;
 
@@ -1000,9 +1161,14 @@ function local_aisn_cb_set_section_summary_html(stdClass $section, string $html)
     rebuild_course_cache((int)$section->course, true);
 }
 
+/**
+ * Local aisn cb extract text section request helper.
+ */
 function local_aisn_cb_extract_text_section_request(string $prompt): ?array {
     $patterns = [
+        // phpcs:ignore moodle.Files.LineLength
         '/\b(?:crea|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\s+(?:chiamata|chiamato|di nome|intitolata|intitolato)?\s*["“”\'«»]?(.+?)["“”\'«»]?\s+(?:mettendoci|mettici|metti|inserendo|con|contenente|che contiene)\s+(?:questo\s+)?(?:testo|contenuto)\s*:?\s*([\s\S]+)/iu',
+        // phpcs:ignore moodle.Files.LineLength
         '/\b(?:crea|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\s+["“”\'«»]?([^"“”\'«»\r\n:]+)["“”\'«»]?\s*:\s*([\s\S]+)/iu',
     ];
 
@@ -1028,6 +1194,9 @@ function local_aisn_cb_extract_text_section_request(string $prompt): ?array {
     return null;
 }
 
+/**
+ * Local aisn cb prompt wants existing file routing helper.
+ */
 function local_aisn_cb_prompt_wants_existing_file_routing(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
 
@@ -1050,6 +1219,9 @@ function local_aisn_cb_prompt_wants_existing_file_routing(string $prompt): bool 
     ) && local_aisn_cb_prompt_mentions_files_or_materials($prompt);
 }
 
+/**
+ * Local aisn cb find section by candidates helper.
+ */
 function local_aisn_cb_find_section_by_candidates(int $courseid, array $candidates): ?stdClass {
     foreach ($candidates as $candidate) {
         $candidate = trim((string)$candidate);
@@ -1068,6 +1240,9 @@ function local_aisn_cb_find_section_by_candidates(int $courseid, array $candidat
     return null;
 }
 
+/**
+ * Local aisn cb existing section for filename helper.
+ */
 function local_aisn_cb_existing_section_for_filename(int $courseid, string $filename): ?stdClass {
     $filename = clean_param($filename, PARAM_FILE);
     $base = preg_replace('/\.[^.]+$/', '', $filename);
@@ -1146,6 +1321,9 @@ function local_aisn_cb_existing_section_for_filename(int $courseid, string $file
     return local_aisn_cb_find_section_by_candidates($courseid, $candidates);
 }
 
+/**
+ * Local aisn cb attach files to existing sections helper.
+ */
 function local_aisn_cb_attach_files_to_existing_sections(int $courseid, int $userid, array $files): array {
     $logs = [];
     $files = local_aisn_cb_dedupe_files($files);
@@ -1160,6 +1338,7 @@ function local_aisn_cb_attach_files_to_existing_sections(int $courseid, int $use
         $section = local_aisn_cb_existing_section_for_filename($courseid, $filename);
 
         if (!$section) {
+            // phpcs:ignore moodle.Files.LineLength
             $logs[] = 'File "' . $filename . '" non collegato: nessuna sezione esistente compatibile trovata. Nessuna nuova sezione creata.';
             continue;
         }
@@ -1174,7 +1353,10 @@ function local_aisn_cb_attach_files_to_existing_sections(int $courseid, int $use
     return $logs;
 }
 
-// AISN_EXISTING_SECTION_ROUTING_FIX
+// AISN_EXISTING_SECTION_ROUTING_FIX.
+/**
+ * Local aisn cb safe title clean helper.
+ */
 function local_aisn_cb_safe_title_clean(string $title): string {
     $title = trim((string)$title);
     $title = html_entity_decode($title, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -1183,6 +1365,7 @@ function local_aisn_cb_safe_title_clean(string $title): string {
     $title = preg_replace('/^\s*(?:sezione|section)\s+/iu', '', $title);
     $title = preg_replace('/^\s*(?:chiamata|chiamato|di nome|intitolata|intitolato)\s+/iu', '', $title);
 
+    // phpcs:ignore moodle.Files.LineLength
     $title = preg_replace('/\s+(?:e\s+)?(?:per quanto riguarda|mettendoci|mettici|metti|inserendo|contenente|che contiene|con questo testo|con il testo|con contenuto|con il contenuto)\b[\s\S]*$/iu', '', $title);
     $title = preg_replace('/\s+(?:non creare|senza creare|limitati|solo|soltanto)\b[\s\S]*$/iu', '', $title);
 
@@ -1205,6 +1388,9 @@ function local_aisn_cb_safe_title_clean(string $title): string {
     return trim((string)$title);
 }
 
+/**
+ * Local aisn cb safe is conservative helper.
+ */
 function local_aisn_cb_safe_is_conservative(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
 
@@ -1223,10 +1409,16 @@ function local_aisn_cb_safe_is_conservative(string $prompt): bool {
         || str_contains($p, 'sezioni corrette');
 }
 
+/**
+ * Local aisn cb safe wants create section helper.
+ */
 function local_aisn_cb_safe_wants_create_section(string $prompt): bool {
     return preg_match('/\b(?:crea|creami|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\b/iu', $prompt) === 1;
 }
 
+/**
+ * Local aisn cb safe wants one section per file helper.
+ */
 function local_aisn_cb_safe_wants_one_section_per_file(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
 
@@ -1237,9 +1429,14 @@ function local_aisn_cb_safe_wants_one_section_per_file(string $prompt): bool {
         || str_contains($p, 'crea sezioni dai file');
 }
 
+/**
+ * Local aisn cb safe extract text section helper.
+ */
 function local_aisn_cb_safe_extract_text_section(string $prompt): ?array {
     $patterns = [
+        // phpcs:ignore moodle.Files.LineLength
         '/\b(?:crea|creami|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\s+(?:chiamata|chiamato|di nome|intitolata|intitolato)?\s*["“”\'«»]?(.+?)["“”\'«»]?\s+(?:mettendoci|mettici|metti|inserendo|contenente|che contiene|con)\s+(?:questo\s+)?(?:testo|contenuto)?\s*:?\s*([\s\S]+)/iu',
+        // phpcs:ignore moodle.Files.LineLength
         '/\b(?:crea|creami|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\s+["“”\'«»]?([^"“”\'«»\r\n:]+)["“”\'«»]?\s*:\s*([\s\S]+)/iu',
     ];
 
@@ -1262,6 +1459,9 @@ function local_aisn_cb_safe_extract_text_section(string $prompt): ?array {
     return null;
 }
 
+/**
+ * Local aisn cb safe body to html helper.
+ */
 function local_aisn_cb_safe_body_to_html(string $body): string {
     $body = trim((string)$body);
     $body = html_entity_decode($body, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -1283,6 +1483,7 @@ function local_aisn_cb_safe_body_to_html(string $body): string {
             continue;
         }
 
+        // phpcs:ignore moodle.Files.LineLength
         $isheading = preg_match('/^(?:Exam Dates|Exam rules|Exam Results|Course Objectives|Syllabus|General Info|Study material|Reference materials|Teacher|Course|Degrees|Curricula)\b.*:?$/iu', $line)
             || preg_match('/^[\p{L}0-9 .\/\-]+:\s*$/u', $line);
 
@@ -1327,6 +1528,9 @@ function local_aisn_cb_safe_body_to_html(string $body): string {
     return $html;
 }
 
+/**
+ * Local aisn cb safe set section summary helper.
+ */
 function local_aisn_cb_safe_set_section_summary(stdClass $section, string $html): void {
     global $DB;
 
@@ -1338,6 +1542,9 @@ function local_aisn_cb_safe_set_section_summary(stdClass $section, string $html)
     rebuild_course_cache((int)$section->course, true);
 }
 
+/**
+ * Local aisn cb safe extract target helper.
+ */
 function local_aisn_cb_safe_extract_target(string $prompt): ?string {
     $patterns = [
         '/\b(?:nella sezione|alla sezione|dentro la sezione|in sezione)\s+["“”\'«»]([^"“”\'«»]+)["“”\'«»]/iu',
@@ -1370,6 +1577,9 @@ function local_aisn_cb_safe_extract_target(string $prompt): ?string {
     return null;
 }
 
+/**
+ * Local aisn cb safe section candidates for file helper.
+ */
 function local_aisn_cb_safe_section_candidates_for_file(string $filename): array {
     $filename = clean_param($filename, PARAM_FILE);
     $base = preg_replace('/\.[^.]+$/', '', $filename);
@@ -1441,6 +1651,9 @@ function local_aisn_cb_safe_section_candidates_for_file(string $filename): array
     return array_values(array_unique(array_filter($candidates)));
 }
 
+/**
+ * Local aisn cb safe find section for file helper.
+ */
 function local_aisn_cb_safe_find_section_for_file(int $courseid, string $filename): ?stdClass {
     foreach (local_aisn_cb_safe_section_candidates_for_file($filename) as $candidate) {
         $section = local_aisn_cb_find_section($courseid, $candidate);
@@ -1453,6 +1666,9 @@ function local_aisn_cb_safe_find_section_for_file(int $courseid, string $filenam
     return null;
 }
 
+/**
+ * Local aisn cb safe attach existing helper.
+ */
 function local_aisn_cb_safe_attach_existing(int $courseid, int $userid, array $files): array {
     $logs = [];
     $files = local_aisn_cb_dedupe_files($files);
@@ -1467,6 +1683,7 @@ function local_aisn_cb_safe_attach_existing(int $courseid, int $userid, array $f
         $section = local_aisn_cb_safe_find_section_for_file($courseid, $filename);
 
         if (!$section) {
+            // phpcs:ignore moodle.Files.LineLength
             $logs[] = 'File "' . $filename . '" non collegato: nessuna sezione esistente compatibile trovata. Nessuna nuova sezione creata.';
             continue;
         }
@@ -1481,6 +1698,9 @@ function local_aisn_cb_safe_attach_existing(int $courseid, int $userid, array $f
     return $logs;
 }
 
+/**
+ * Local aisn cb safe extract section list helper.
+ */
 function local_aisn_cb_safe_extract_section_list(string $prompt): array {
     $p = local_aisn_cb_low($prompt);
 
@@ -1515,6 +1735,9 @@ function local_aisn_cb_safe_extract_section_list(string $prompt): array {
     return array_values(array_unique($titles));
 }
 
+/**
+ * Local aisn cb content edit clean value helper.
+ */
 function local_aisn_cb_content_edit_clean_value(string $value): string {
     $value = trim((string)$value);
     $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -1523,6 +1746,9 @@ function local_aisn_cb_content_edit_clean_value(string $value): string {
     return $value;
 }
 
+/**
+ * Local aisn cb content edit clean section name helper.
+ */
 function local_aisn_cb_content_edit_clean_section_name(string $value): string {
     $value = local_aisn_cb_content_edit_clean_value($value);
 
@@ -1533,10 +1759,14 @@ function local_aisn_cb_content_edit_clean_section_name(string $value): string {
     return trim($value);
 }
 
+/**
+ * Local aisn cb content edit extract helper.
+ */
 function local_aisn_cb_content_edit_extract(string $prompt): ?array {
     $prompt = trim((string)$prompt);
 
     $replacepatterns = [
+        // phpcs:ignore moodle.Files.LineLength
         '/(?:nel|nella|dentro\s+il|all’interno\s+del|all\'interno\s+del)?\s*contenuto\s+della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?\s+sostituisci\s+(.+?)\s+con\s+(.+)$/iu',
         '/(?:nella\s+sezione|sezione)\s+["“”\'«»]?(.+?)["“”\'«»]?\s+sostituisci\s+(.+?)\s+con\s+(.+)$/iu',
     ];
@@ -1559,6 +1789,7 @@ function local_aisn_cb_content_edit_extract(string $prompt): ?array {
     }
 
     $removepatterns = [
+        // phpcs:ignore moodle.Files.LineLength
         '/(?:nel|nella|dentro\s+il|all’interno\s+del|all\'interno\s+del)?\s*contenuto\s+della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?\s+(?:togli|rimuovi|elimina|cancella)\s+(.+)$/iu',
         '/(?:togli|rimuovi|elimina|cancella)\s+(.+?)\s+(?:dal|dalla)\s+contenuto\s+della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?$/iu',
         '/(?:togli|rimuovi|elimina|cancella)\s+(.+?)\s+(?:dalla|nella)\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?$/iu',
@@ -1587,6 +1818,9 @@ function local_aisn_cb_content_edit_extract(string $prompt): ?array {
     return null;
 }
 
+/**
+ * Local aisn cb content edit repair flat summary helper.
+ */
 function local_aisn_cb_content_edit_repair_flat_summary(string $summary): string {
     $hasstructure = preg_match('/<(h[1-6]|ul|ol|li|p|div)\b/i', $summary) === 1;
 
@@ -1600,6 +1834,7 @@ function local_aisn_cb_content_edit_repair_flat_summary(string $summary): string
         return $summary;
     }
 
+    // phpcs:ignore moodle.Files.LineLength
     $looksflat = preg_match('/\b(Exam Dates|Exam rules|Exam Results|Course Objectives|Syllabus|General Info|Study material|Reference materials)\b/iu', $plain) === 1;
 
     if (!$looksflat) {
@@ -1611,6 +1846,7 @@ function local_aisn_cb_content_edit_repair_flat_summary(string $summary): string
     $plain = preg_replace('/\b(Exam Dates\s+A\.Y\.\s*[0-9\/]+)(?:\s*\(tentative\))?/iu', "$1\n", $plain);
     $plain = preg_replace('/\s+(Exam rules)\b:?/iu', "\n\n$1:\n", $plain);
     $plain = preg_replace('/\s+(Exam Results)\b:?/iu', "\n\n$1:\n", $plain);
+    // phpcs:ignore moodle.Files.LineLength
     $plain = preg_replace('/\s+(Course Objectives|Syllabus|General Info|Study material|Reference materials)\b:?/iu', "\n\n$1:\n", $plain);
 
     $plain = preg_replace('/\s+(\d{2}\/\d{2}\/\d{4})\b/u', "\n$1", $plain);
@@ -1625,6 +1861,9 @@ function local_aisn_cb_content_edit_repair_flat_summary(string $summary): string
     return '<div>' . nl2br(s($plain), false) . '</div>';
 }
 
+/**
+ * Local aisn cb content edit update summary helper.
+ */
 function local_aisn_cb_content_edit_update_summary(stdClass $section, string $summary): void {
     global $DB;
 
@@ -1636,6 +1875,9 @@ function local_aisn_cb_content_edit_update_summary(stdClass $section, string $su
     rebuild_course_cache((int)$section->course, true);
 }
 
+/**
+ * Local aisn cb content edit try handle helper.
+ */
 function local_aisn_cb_content_edit_try_handle(int $courseid, string $prompt, array $files): ?array {
     if (!empty($files)) {
         return null;
@@ -1695,7 +1937,10 @@ function local_aisn_cb_content_edit_try_handle(int $courseid, string $prompt, ar
     return null;
 }
 
-// AISN_CB_CONTENT_EDIT_PATCH
+// AISN_CB_CONTENT_EDIT_PATCH.
+/**
+ * Local aisn cb brutal content clean value helper.
+ */
 function local_aisn_cb_brutal_content_clean_value(string $value): string {
     $value = trim((string)$value);
     $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -1704,6 +1949,9 @@ function local_aisn_cb_brutal_content_clean_value(string $value): string {
     return $value;
 }
 
+/**
+ * Local aisn cb brutal content clean section helper.
+ */
 function local_aisn_cb_brutal_content_clean_section(string $value): string {
     $value = local_aisn_cb_brutal_content_clean_value($value);
 
@@ -1714,6 +1962,9 @@ function local_aisn_cb_brutal_content_clean_section(string $value): string {
     return trim($value);
 }
 
+/**
+ * Local aisn cb brutal find section helper.
+ */
 function local_aisn_cb_brutal_find_section(int $courseid, string $sectionname): ?stdClass {
     global $DB;
 
@@ -1748,6 +1999,9 @@ function local_aisn_cb_brutal_find_section(int $courseid, string $sectionname): 
     return null;
 }
 
+/**
+ * Local aisn cb brutal content extract helper.
+ */
 function local_aisn_cb_brutal_content_extract(string $prompt): ?array {
     $prompt = trim((string)$prompt);
     $removeverb = '(?:eliminami|eliminiami|elimina|rimuovimi|rimuovi|toglimi|togli|cancellami|cancella|levami|leva)';
@@ -1771,7 +2025,9 @@ function local_aisn_cb_brutal_content_extract(string $prompt): ?array {
     }
 
     $replacepatterns = [
+        // phpcs:ignore moodle.Files.LineLength
         '/^(?:nel|nella|dentro\s+il)?\s*contenuto\s+della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?\s+sostituisci\s+(.+?)\s+con\s+(.+)$/iu',
+        // phpcs:ignore moodle.Files.LineLength
         '/^sostituisci\s+(.+?)\s+con\s+(.+?)\s+(?:nel|nella|dal|dalla)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)\s+["“”\'«»]?(.+?)["“”\'«»]?\s*$/iu',
     ];
 
@@ -1800,6 +2056,7 @@ function local_aisn_cb_brutal_content_extract(string $prompt): ?array {
 
     $removepatterns = [
         '/^(?:nel|nella|dentro\s+il)?\s*contenuto\s+della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?\s+' . $removeverb . '\s+(.+)$/iu',
+        // phpcs:ignore moodle.Files.LineLength
         '/^' . $removeverb . '\s+(.+?)\s+(?:dal|dalla|nel|nella)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)\s+["“”\'«»]?(.+?)["“”\'«»]?\s*$/iu',
         '/^' . $removeverb . '\s+(.+?)\s+(?:dalla|nella)\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?\s*$/iu',
     ];
@@ -1827,6 +2084,9 @@ function local_aisn_cb_brutal_content_extract(string $prompt): ?array {
     return null;
 }
 
+/**
+ * Local aisn cb brutal remove text helper.
+ */
 function local_aisn_cb_brutal_remove_text(string $summary, string $needle): string {
     $needle = local_aisn_cb_brutal_content_clean_value($needle);
 
@@ -1855,6 +2115,9 @@ function local_aisn_cb_brutal_remove_text(string $summary, string $needle): stri
     return $summary;
 }
 
+/**
+ * Local aisn cb brutal repair summary helper.
+ */
 function local_aisn_cb_brutal_repair_summary(string $summary): string {
     $summary = trim((string)$summary);
 
@@ -1878,6 +2141,7 @@ function local_aisn_cb_brutal_repair_summary(string $summary): string {
 
     $plain = preg_replace('/\s+/u', ' ', $plain);
 
+    // phpcs:ignore moodle.Files.LineLength
     if (preg_match('/\bExam Dates\b/iu', $plain) || preg_match('/\bExam rules\b/iu', $plain) || preg_match('/\bExam Results\b/iu', $plain)) {
         $title = 'Exam Dates';
         if (preg_match('/(Exam Dates\s+A\.Y\.\s*[0-9\/]+)/iu', $plain, $m)) {
@@ -1943,6 +2207,9 @@ function local_aisn_cb_brutal_repair_summary(string $summary): string {
     return '<div>' . nl2br(s($plain), false) . '</div>';
 }
 
+/**
+ * Local aisn cb brutal update summary helper.
+ */
 function local_aisn_cb_brutal_update_summary(stdClass $section, string $summary): void {
     global $DB;
 
@@ -1954,6 +2221,9 @@ function local_aisn_cb_brutal_update_summary(stdClass $section, string $summary)
     rebuild_course_cache((int)$section->course, true);
 }
 
+/**
+ * Local aisn cb brutal content edit try handle helper.
+ */
 function local_aisn_cb_brutal_content_edit_try_handle(int $courseid, string $prompt, array $files): ?array {
     if (!empty($files)) {
         return null;
@@ -2019,7 +2289,10 @@ function local_aisn_cb_brutal_content_edit_try_handle(int $courseid, string $pro
     return null;
 }
 
-// AISN_CB_BRUTAL_CONTENT_EDIT_PATCH
+// AISN_CB_BRUTAL_CONTENT_EDIT_PATCH.
+/**
+ * Local aisn cb ui editor v2 low helper.
+ */
 function local_aisn_cb_ui_editor_v2_low(string $value): string {
     $value = trim((string)$value);
 
@@ -2030,6 +2303,9 @@ function local_aisn_cb_ui_editor_v2_low(string $value): string {
     return strtolower($value);
 }
 
+/**
+ * Local aisn cb ui editor v2 clean helper.
+ */
 function local_aisn_cb_ui_editor_v2_clean(string $value): string {
     $value = trim((string)$value);
     $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -2038,6 +2314,9 @@ function local_aisn_cb_ui_editor_v2_clean(string $value): string {
     return $value;
 }
 
+/**
+ * Local aisn cb ui editor v2 clean section helper.
+ */
 function local_aisn_cb_ui_editor_v2_clean_section(string $value): string {
     $value = local_aisn_cb_ui_editor_v2_clean($value);
 
@@ -2048,6 +2327,9 @@ function local_aisn_cb_ui_editor_v2_clean_section(string $value): string {
     return trim($value);
 }
 
+/**
+ * Local aisn cb ui editor v2 find section helper.
+ */
 function local_aisn_cb_ui_editor_v2_find_section(int $courseid, string $sectionname): ?stdClass {
     global $DB;
 
@@ -2082,6 +2364,9 @@ function local_aisn_cb_ui_editor_v2_find_section(int $courseid, string $sectionn
     return null;
 }
 
+/**
+ * Local aisn cb ui editor v2 section from prompt helper.
+ */
 function local_aisn_cb_ui_editor_v2_section_from_prompt(int $courseid, string $prompt): ?stdClass {
     $patterns = [
         '/(?:contenuto\s+della\s+sezione|sezione)\s+["“”\'«»]([^"“”\'«»]+)["“”\'«»]/iu',
@@ -2121,6 +2406,9 @@ function local_aisn_cb_ui_editor_v2_section_from_prompt(int $courseid, string $p
     return null;
 }
 
+/**
+ * Local aisn cb ui editor v2 color from prompt helper.
+ */
 function local_aisn_cb_ui_editor_v2_color_from_prompt(string $prompt): ?array {
     $p = local_aisn_cb_ui_editor_v2_low($prompt);
 
@@ -2151,6 +2439,9 @@ function local_aisn_cb_ui_editor_v2_color_from_prompt(string $prompt): ?array {
     return null;
 }
 
+/**
+ * Local aisn cb ui editor v2 wants color helper.
+ */
 function local_aisn_cb_ui_editor_v2_wants_color(string $prompt): bool {
     $p = local_aisn_cb_ui_editor_v2_low($prompt);
 
@@ -2163,6 +2454,9 @@ function local_aisn_cb_ui_editor_v2_wants_color(string $prompt): bool {
         || str_contains($p, 'evidenzia');
 }
 
+/**
+ * Local aisn cb ui editor v2 wants repair helper.
+ */
 function local_aisn_cb_ui_editor_v2_wants_repair(string $prompt): bool {
     $p = local_aisn_cb_ui_editor_v2_low($prompt);
 
@@ -2172,6 +2466,9 @@ function local_aisn_cb_ui_editor_v2_wants_repair(string $prompt): bool {
         || str_contains($p, 'sistema il contenuto');
 }
 
+/**
+ * Local aisn cb ui editor v2 wants remove helper.
+ */
 function local_aisn_cb_ui_editor_v2_wants_remove(string $prompt): bool {
     $p = local_aisn_cb_ui_editor_v2_low($prompt);
 
@@ -2187,12 +2484,18 @@ function local_aisn_cb_ui_editor_v2_wants_remove(string $prompt): bool {
         || str_contains($p, 'leva');
 }
 
+/**
+ * Local aisn cb ui editor v2 wants replace helper.
+ */
 function local_aisn_cb_ui_editor_v2_wants_replace(string $prompt): bool {
     $p = local_aisn_cb_ui_editor_v2_low($prompt);
 
     return str_contains($p, 'sostituisci') || str_contains($p, 'rimpiazza');
 }
 
+/**
+ * Local aisn cb ui editor v2 repair exam summary helper.
+ */
 function local_aisn_cb_ui_editor_v2_repair_exam_summary(string $summary): string {
     $summary = trim((string)$summary);
 
@@ -2282,6 +2585,9 @@ function local_aisn_cb_ui_editor_v2_repair_exam_summary(string $summary): string
     return $html;
 }
 
+/**
+ * Local aisn cb ui editor v2 strip existing date color helper.
+ */
 function local_aisn_cb_ui_editor_v2_strip_existing_date_color(string $summary): string {
     return preg_replace(
         '/<span[^>]*class=["\']aisn-cb-colored-date["\'][^>]*>(\d{2}\/\d{2}\/\d{4})<\/span>/iu',
@@ -2290,6 +2596,9 @@ function local_aisn_cb_ui_editor_v2_strip_existing_date_color(string $summary): 
     );
 }
 
+/**
+ * Local aisn cb ui editor v2 color dates helper.
+ */
 function local_aisn_cb_ui_editor_v2_color_dates(string $summary, string $hex): string {
     $summary = local_aisn_cb_ui_editor_v2_repair_exam_summary($summary);
     $summary = local_aisn_cb_ui_editor_v2_strip_existing_date_color($summary);
@@ -2301,10 +2610,14 @@ function local_aisn_cb_ui_editor_v2_color_dates(string $summary, string $hex): s
     );
 }
 
+/**
+ * Local aisn cb ui editor v2 extract remove text helper.
+ */
 function local_aisn_cb_ui_editor_v2_extract_remove_text(string $prompt): string {
     $removeverb = '(?:eliminami|eliminiami|elimina|rimuovimi|rimuovi|toglimi|togli|cancellami|cancella|levami|leva)';
 
     $patterns = [
+        // phpcs:ignore moodle.Files.LineLength
         '/^' . $removeverb . '\s+(.+?)\s+(?:dal|dalla|nel|nella)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)\s+["“”\'«»]?.+?["“”\'«»]?\s*$/iu',
         '/^(?:nel|nella)?\s*contenuto\s+della\s+sezione\s+["“”\'«»]?.+?["“”\'«»]?\s+' . $removeverb . '\s+(.+)$/iu',
     ];
@@ -2318,8 +2631,12 @@ function local_aisn_cb_ui_editor_v2_extract_remove_text(string $prompt): string 
     return '';
 }
 
+/**
+ * Local aisn cb ui editor v2 extract replace helper.
+ */
 function local_aisn_cb_ui_editor_v2_extract_replace(string $prompt): ?array {
     $patterns = [
+        // phpcs:ignore moodle.Files.LineLength
         '/sostituisci\s+(.+?)\s+con\s+(.+?)\s+(?:nel|nella|dal|dalla)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)\s+["“”\'«»]?.+?["“”\'«»]?\s*$/iu',
         '/(?:contenuto\s+della\s+sezione|sezione)\s+["“”\'«»]?.+?["“”\'«»]?\s+sostituisci\s+(.+?)\s+con\s+(.+)$/iu',
     ];
@@ -2336,6 +2653,9 @@ function local_aisn_cb_ui_editor_v2_extract_replace(string $prompt): ?array {
     return null;
 }
 
+/**
+ * Local aisn cb ui editor v2 remove text helper.
+ */
 function local_aisn_cb_ui_editor_v2_remove_text(string $summary, string $needle): string {
     $needle = local_aisn_cb_ui_editor_v2_clean($needle);
 
@@ -2352,6 +2672,9 @@ function local_aisn_cb_ui_editor_v2_remove_text(string $summary, string $needle)
     return local_aisn_cb_ui_editor_v2_repair_exam_summary((string)$summary);
 }
 
+/**
+ * Local aisn cb ui editor v2 update helper.
+ */
 function local_aisn_cb_ui_editor_v2_update(stdClass $section, string $summary): void {
     global $DB;
 
@@ -2363,6 +2686,9 @@ function local_aisn_cb_ui_editor_v2_update(stdClass $section, string $summary): 
     rebuild_course_cache((int)$section->course, true);
 }
 
+/**
+ * Local aisn cb ui editor v2 try handle helper.
+ */
 function local_aisn_cb_ui_editor_v2_try_handle(int $courseid, string $prompt, array $files): ?array {
     if (!empty($files)) {
         return null;
@@ -2473,7 +2799,10 @@ function local_aisn_cb_ui_editor_v2_try_handle(int $courseid, string $prompt, ar
     return null;
 }
 
-// AISN_CB_UI_CONTENT_EDITOR_V2
+// AISN_CB_UI_CONTENT_EDITOR_V2.
+/**
+ * Local aisn cb ai editor is content prompt helper.
+ */
 function local_aisn_cb_ai_editor_is_content_prompt(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
 
@@ -2499,6 +2828,9 @@ function local_aisn_cb_ai_editor_is_content_prompt(string $prompt): bool {
         || preg_match('/\d{2}\/\d{2}\/\d{4}/u', $prompt);
 }
 
+/**
+ * Local aisn cb ai editor clean html helper.
+ */
 function local_aisn_cb_ai_editor_clean_html(string $html): string {
     $html = trim((string)$html);
 
@@ -2519,10 +2851,16 @@ function local_aisn_cb_ai_editor_clean_html(string $html): string {
     return trim((string)$html);
 }
 
+/**
+ * Local aisn cb ai editor parse json helper.
+ */
 function local_aisn_cb_ai_editor_parse_json(string $raw): ?array {
     $raw = trim((string)$raw);
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
     $raw = preg_replace('/^```json\s*/i', '', $raw);
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
     $raw = preg_replace('/^```\s*/i', '', $raw);
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
     $raw = preg_replace('/\s*```$/', '', $raw);
 
     $start = strpos($raw, '{');
@@ -2538,6 +2876,9 @@ function local_aisn_cb_ai_editor_parse_json(string $raw): ?array {
     return is_array($decoded) ? $decoded : null;
 }
 
+/**
+ * Local aisn cb ai editor sections context helper.
+ */
 function local_aisn_cb_ai_editor_sections_context(int $courseid): array {
     global $DB;
 
@@ -2567,6 +2908,9 @@ function local_aisn_cb_ai_editor_sections_context(int $courseid): array {
     return $out;
 }
 
+/**
+ * Local aisn cb ai editor find target section helper.
+ */
 function local_aisn_cb_ai_editor_find_target_section(int $courseid, array $data): ?stdClass {
     if (isset($data['section_number']) && is_numeric($data['section_number'])) {
         $section = local_aisn_cb_get_section($courseid, (int)$data['section_number']);
@@ -2589,6 +2933,9 @@ function local_aisn_cb_ai_editor_find_target_section(int $courseid, array $data)
     return null;
 }
 
+/**
+ * Local aisn cb ai editor try handle helper.
+ */
 function local_aisn_cb_ai_editor_try_handle(int $courseid, string $teacherprompt, array $files): ?array {
     if (!empty($files)) {
         return null;
@@ -2615,11 +2962,15 @@ function local_aisn_cb_ai_editor_try_handle(int $courseid, string $teacherprompt
         . "- Prompt docente.\n\n"
         . "AZIONI MATERIALI/RISORSE EXTRA:\n"
         . "- AISN_AI_MATERIAL_ACTIONS_FULL_PROMPT_V1\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "12. delete_material: {\"action\":\"delete_material\",\"target\":\"Nome o numero sezione\",\"material\":\"nome completo o parziale del materiale/file da eliminare\"}\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "13. move_material: {\"action\":\"move_material\",\"from\":\"sezione sorgente opzionale\",\"destination\":\"sezione destinazione\",\"material\":\"nome completo o parziale del materiale/file\"}\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "14. rename_material: {\"action\":\"rename_material\",\"target\":\"Nome o numero sezione\",\"material\":\"nome materiale attuale\",\"new_name\":\"nuovo nome materiale\"}\n"
         . "15. hide_material: {\"action\":\"hide_material\",\"target\":\"Nome o numero sezione\",\"material\":\"nome materiale\"}\n"
         . "16. show_material: {\"action\":\"show_material\",\"target\":\"Nome o numero sezione\",\"material\":\"nome materiale\"}\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "17. clear_section_content: {\"action\":\"clear_section_content\",\"target\":\"Nome o numero sezione\"}\n\n"        . "REGOLE OBBLIGATORIE:\n"
         . "1. Scegli una sola sezione target tra quelle esistenti.\n"
         . "2. Non inventare nuove sezioni.\n"
@@ -2635,12 +2986,15 @@ function local_aisn_cb_ai_editor_try_handle(int $courseid, string $teacherprompt
 
         . "DATE_CONTEXT_CALCOLATO_DAL_SERVER:\n"
         . json_encode($datefacts, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "Usa DATE_CONTEXT_CALCOLATO_DAL_SERVER per tutti i prompt con date, oggi, domani, prossimo, più vicino, più lontano, appelli, scadenze.\n"
         . "Se il docente chiede la data più vicina a oggi, usa closest_to_today della sezione target.\n"
         . "Se il docente chiede la data più lontana da oggi, usa farthest_from_today della sezione target.\n"
         . "Non scegliere date a intuito: usa sempre le distanze già calcolate dal server.\n\n"
         . "DATA DI OGGI SERVER MOODLE: " . $todayiso . "\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "Quando il prompt usa riferimenti temporali come oggi, domani, prossimo, precedente, data più vicina ad oggi, calcola rispetto a DATA DI OGGI SERVER MOODLE.\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "Se il docente chiede la data più vicina ad oggi, scegli UNA SOLA data presente nella sezione target: quella con distanza minima dalla data di oggi.\n"
         . "Se tutte le date sono nel passato, la più vicina ad oggi è la più recente tra quelle passate.\n\n"
         . "PROMPT DOCENTE:\n"
@@ -2716,23 +3070,26 @@ function local_aisn_cb_ai_editor_try_handle(int $courseid, string $teacherprompt
     ];
 }
 
-// AISN_AI_SECTION_EDITOR_V1
+// AISN_AI_SECTION_EDITOR_V1.
+/**
+ * Local aisn cb safe router helper.
+ */
 function local_aisn_cb_safe_router(int $courseid, int $userid, string $prompt, array $files): ?array {
-    // AISN_AI_SECTION_EDITOR_V1_HOOK
+    // AISN_AI_SECTION_EDITOR_V1_HOOK.
     $aiedit = local_aisn_cb_ai_editor_try_handle($courseid, $prompt, $files);
 
     if ($aiedit !== null) {
         return $aiedit;
     }
 
-    // AISN_CB_UI_CONTENT_EDITOR_V2_HOOK
+    // AISN_CB_UI_CONTENT_EDITOR_V2_HOOK.
     $uicontentedit = local_aisn_cb_ui_editor_v2_try_handle($courseid, $prompt, $files);
 
     if ($uicontentedit !== null) {
         return $uicontentedit;
     }
 
-    // AISN_CB_BRUTAL_CONTENT_EDIT_HOOK
+    // AISN_CB_BRUTAL_CONTENT_EDIT_HOOK.
     $brutalcontentedit = local_aisn_cb_brutal_content_edit_try_handle($courseid, $prompt, $files);
 
     if ($brutalcontentedit !== null) {
@@ -2764,6 +3121,7 @@ function local_aisn_cb_safe_router(int $courseid, int $userid, string $prompt, a
         $logs = [];
 
         foreach ($sectionlist as $title) {
+            // phpcs:ignore moodle.Files.LineLength
             $section = local_aisn_cb_ensure_section($courseid, $title, '<p>Sezione creata da AI Course Builder tramite struttura docente.</p>');
             $logs[] = 'Sezione pronta: "' . (string)$section->name . '".';
         }
@@ -2781,7 +3139,7 @@ function local_aisn_cb_safe_router(int $courseid, int $userid, string $prompt, a
     $files = local_aisn_cb_dedupe_files($files);
     $target = local_aisn_cb_safe_extract_target($prompt);
     $oneperfile = local_aisn_cb_safe_wants_one_section_per_file($prompt);
-    $createTarget = local_aisn_cb_safe_wants_create_section($prompt);
+    $createtarget = local_aisn_cb_safe_wants_create_section($prompt);
     $conservative = local_aisn_cb_safe_is_conservative($prompt);
 
     if ($oneperfile) {
@@ -2804,7 +3162,8 @@ function local_aisn_cb_safe_router(int $courseid, int $userid, string $prompt, a
     }
 
     if ($target !== null && $target !== '') {
-        if ($createTarget && !$conservative) {
+        if ($createtarget && !$conservative) {
+            // phpcs:ignore moodle.Files.LineLength
             $section = local_aisn_cb_ensure_section($courseid, $target, '<p>Sezione creata da AI Course Builder tramite prompt docente.</p>');
         } else {
             $section = local_aisn_cb_find_section($courseid, $target);
@@ -2828,7 +3187,10 @@ function local_aisn_cb_safe_router(int $courseid, int $userid, string $prompt, a
     return local_aisn_cb_safe_attach_existing($courseid, $userid, $files);
 }
 
-// AISN_CB_SAFE_ROUTER_PATCH
+// AISN_CB_SAFE_ROUTER_PATCH.
+/**
+ * Local aisn cb execute direct helper.
+ */
 function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt, array $files): array {
     $logs = [];
     $promptlow = local_aisn_cb_low($prompt);
@@ -2851,23 +3213,22 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
         ];
     }
 
-
     if (local_aisn_cb_prompt_wants_clear_course($prompt)) {
         $logs = local_aisn_cb_delete_all_sections($courseid);
         local_aisn_cb_sync_resources($courseid);
         return $logs;
     }
 
-    $deleteTarget = local_aisn_cb_extract_delete_target($prompt);
+    $deletetarget = local_aisn_cb_extract_delete_target($prompt);
 
-    if ($deleteTarget !== null && !local_aisn_cb_prompt_wants_one_section_per_file($prompt)) {
-        if ($deleteTarget === '__ALL_SECTIONS__') {
+    if ($deletetarget !== null && !local_aisn_cb_prompt_wants_one_section_per_file($prompt)) {
+        if ($deletetarget === '__ALL_SECTIONS__') {
             $logs = local_aisn_cb_delete_all_sections($courseid);
             local_aisn_cb_sync_resources($courseid);
             return $logs;
         }
 
-        $section = local_aisn_cb_find_section($courseid, $deleteTarget);
+        $section = local_aisn_cb_find_section($courseid, $deletetarget);
 
         if ($section) {
             $status = local_aisn_cb_delete_section($courseid, $section);
@@ -2877,7 +3238,7 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
             }
             $logs[] = 'Azione diretta: sezione "' . $label . '" ' . $status . '.';
         } else {
-            $logs[] = 'Azione diretta: sezione da togliere non trovata: ' . $deleteTarget . '.';
+            $logs[] = 'Azione diretta: sezione da togliere non trovata: ' . $deletetarget . '.';
         }
 
         local_aisn_cb_sync_resources($courseid);
@@ -2885,10 +3246,13 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
         return $logs;
     }
 
+    // phpcs:ignore moodle.Files.LineLength
     if (preg_match('/rinomina\s+(?:la\s+)?sezione\s+["“”\'«»]?([^"“”\'«»]+)["“”\'«»]?\s+(?:in|come|a)\s+["“”\'«»]?([^"“”\'«»\r\n]+)["“”\'«»]?/iu', $prompt, $m)) {
-        // AISN_PS1_DIRECT_RENAME_GUARD
-        if (function_exists('local_aisn_prod_course_builder_action_allowed') &&
-            !local_aisn_prod_course_builder_action_allowed('rename_section')) {
+        // AISN_PS1_DIRECT_RENAME_GUARD.
+        if (
+            function_exists('local_aisn_prod_course_builder_action_allowed') &&
+            !local_aisn_prod_course_builder_action_allowed('rename_section')
+        ) {
             return ['Azione diretta bloccata dalle impostazioni di sicurezza: rename_section.'];
         }
 
@@ -2904,6 +3268,7 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
         if ($section) {
             $body = '';
 
+            // phpcs:ignore moodle.Files.LineLength
             if (preg_match('/(?:inserisci|metti|aggiungi|mettici|mettendoci)\s+(?:questo\s+)?(?:testo|contenuto)\s*:?\s*([\s\S]+)$/iu', $prompt, $textmatches)) {
                 $body = trim((string)$textmatches[1]);
             }
@@ -2941,6 +3306,7 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
         $oneperfile = local_aisn_cb_prompt_wants_one_section_per_file($prompt);
         $singlesection = local_aisn_cb_prompt_singular_section_request($prompt);
         $mentionsfiles = local_aisn_cb_prompt_mentions_files_or_materials($prompt);
+        // phpcs:ignore moodle.Files.LineLength
         if ($target !== null && !$oneperfile && !preg_match('/\b(?:crea|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\b/iu', $prompt)) {
             $section = local_aisn_cb_find_section($courseid, $target);
 
@@ -2963,10 +3329,10 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
             return local_aisn_cb_attach_files_to_existing_sections($courseid, $userid, $files);
         }
 
-
         // Important demo case: "crea una sezione, chiamala Introduzione e mettimi i materiali".
         // Keep all uploaded files in that single section, do NOT split by filename.
         if ($target !== null && !$oneperfile && ($singlesection || $mentionsfiles || count($files) === 1)) {
+            // phpcs:ignore moodle.Files.LineLength
             $section = local_aisn_cb_ensure_section($courseid, $target, '<p>Sezione creata da AI Course Builder tramite prompt docente.</p>');
             $logs[] = 'Azione diretta: uso sezione "' . (string)$section->name . '".';
             $logs = array_merge($logs, local_aisn_cb_attach_files_to_section($courseid, $userid, $section, $files));
@@ -2977,6 +3343,7 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
         }
 
         if ($singlesection && $mentionsfiles) {
+            // phpcs:ignore moodle.Files.LineLength
             $section = local_aisn_cb_ensure_section($courseid, 'Materiali docente', '<p>Sezione creata da AI Course Builder tramite prompt docente.</p>');
             $logs[] = 'Azione diretta: uso sezione "' . (string)$section->name . '".';
             $logs = array_merge($logs, local_aisn_cb_attach_files_to_section($courseid, $userid, $section, $files));
@@ -2986,7 +3353,9 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
             return $logs;
         }
 
+        // phpcs:ignore moodle.Files.LineLength
         if ($target !== null && !$oneperfile && (str_contains($promptlow, 'tutti') || count($files) === 1 || str_contains($promptlow, 'file caricati') || str_contains($promptlow, 'materiali'))) {
+            // phpcs:ignore moodle.Files.LineLength
             $section = local_aisn_cb_ensure_section($courseid, $target, '<p>Sezione creata da AI Course Builder tramite prompt docente.</p>');
             $logs[] = 'Azione diretta: uso sezione "' . (string)$section->name . '".';
             $logs = array_merge($logs, local_aisn_cb_attach_files_to_section($courseid, $userid, $section, $files));
@@ -3024,6 +3393,7 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
 
     if (!empty($titles)) {
         foreach ($titles as $title) {
+            // phpcs:ignore moodle.Files.LineLength
             $section = local_aisn_cb_ensure_section($courseid, $title, '<p>Sezione creata da AI Course Builder tramite prompt docente.</p>');
             $logs[] = 'Azione diretta: sezione pronta "' . (string)$section->name . '".';
         }
@@ -3034,6 +3404,9 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
     return [];
 }
 
+/**
+ * Local aisn cb sections for ai helper.
+ */
 function local_aisn_cb_sections_for_ai(int $courseid): array {
     global $DB;
 
@@ -3064,6 +3437,9 @@ function local_aisn_cb_sections_for_ai(int $courseid): array {
     return $out;
 }
 
+/**
+ * Local aisn cb files for ai helper.
+ */
 function local_aisn_cb_files_for_ai(array $files): array {
     $out = [];
 
@@ -3078,10 +3454,16 @@ function local_aisn_cb_files_for_ai(array $files): array {
     return $out;
 }
 
+/**
+ * Local aisn cb extract json actions helper.
+ */
 function local_aisn_cb_extract_json_actions(string $raw): array {
     $raw = trim($raw);
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
     $raw = preg_replace('/^```json\s*/iu', '', $raw);
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
     $raw = preg_replace('/^```\s*/iu', '', $raw);
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
     $raw = preg_replace('/\s*```$/u', '', $raw);
 
     if (preg_match('/\{[\s\S]*\}/u', $raw, $matches)) {
@@ -3097,6 +3479,9 @@ function local_aisn_cb_extract_json_actions(string $raw): array {
     return $data['actions'];
 }
 
+/**
+ * Local aisn cb ai datefacts context helper.
+ */
 function local_aisn_cb_ai_datefacts_context(array $sections): array {
     $today = new DateTimeImmutable(date('Y-m-d'));
 
@@ -3151,10 +3536,12 @@ function local_aisn_cb_ai_datefacts_context(array $sections): array {
         $farthest = null;
 
         foreach ($dates as $dateinfo) {
+            // phpcs:ignore moodle.Files.LineLength
             if ($closest === null || $dateinfo['absolute_distance_days_from_today'] < $closest['absolute_distance_days_from_today']) {
                 $closest = $dateinfo;
             }
 
+            // phpcs:ignore moodle.Files.LineLength
             if ($farthest === null || $dateinfo['absolute_distance_days_from_today'] > $farthest['absolute_distance_days_from_today']) {
                 $farthest = $dateinfo;
             }
@@ -3172,7 +3559,10 @@ function local_aisn_cb_ai_datefacts_context(array $sections): array {
     return $out;
 }
 
-// AISN_AI_DATE_CONTEXT_HELPER_V1
+// AISN_AI_DATE_CONTEXT_HELPER_V1.
+/**
+ * Local aisn cb ai material title from module helper.
+ */
 function local_aisn_cb_ai_material_title_from_module(stdClass $row): string {
     global $DB;
 
@@ -3204,6 +3594,9 @@ function local_aisn_cb_ai_material_title_from_module(stdClass $row): string {
     return '';
 }
 
+/**
+ * Local aisn cb ai material catalog helper.
+ */
 function local_aisn_cb_ai_material_catalog(int $courseid): array {
     global $DB;
 
@@ -3252,10 +3645,16 @@ function local_aisn_cb_ai_material_catalog(int $courseid): array {
     return $catalog;
 }
 
+/**
+ * Local aisn cb ai clean json response helper.
+ */
 function local_aisn_cb_ai_clean_json_response(string $raw): string {
     $clean = trim($raw);
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
     $clean = preg_replace('/^```json\s*/i', '', $clean);
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
     $clean = preg_replace('/^```\s*/i', '', $clean);
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
     $clean = preg_replace('/\s*```$/', '', $clean);
 
     $start = strpos($clean, '{');
@@ -3268,6 +3667,9 @@ function local_aisn_cb_ai_clean_json_response(string $raw): string {
     return trim(substr($clean, $start, $end - $start + 1));
 }
 
+/**
+ * Local aisn cb ai decode actions helper.
+ */
 function local_aisn_cb_ai_decode_actions(string $raw): array {
     $json = local_aisn_cb_ai_clean_json_response($raw);
 
@@ -3292,6 +3694,9 @@ function local_aisn_cb_ai_decode_actions(string $raw): array {
     return [];
 }
 
+/**
+ * Local aisn cb ai normalize material actions helper.
+ */
 function local_aisn_cb_ai_normalize_material_actions(array $actions, array $materialcatalog): array {
     $bycmid = [];
 
@@ -3309,7 +3714,7 @@ function local_aisn_cb_ai_normalize_material_actions(array $actions, array $mate
         }
 
         $type = trim((string)($action['action'] ?? ''));
-        $isMaterialAction = in_array($type, [
+        $ismaterialaction = in_array($type, [
             'delete_material',
             'move_material',
             'rename_material',
@@ -3318,7 +3723,7 @@ function local_aisn_cb_ai_normalize_material_actions(array $actions, array $mate
             'set_material_visibility',
         ], true);
 
-        if (!$isMaterialAction) {
+        if (!$ismaterialaction) {
             continue;
         }
 
@@ -3350,6 +3755,9 @@ function local_aisn_cb_ai_normalize_material_actions(array $actions, array $mate
     return $actions;
 }
 
+/**
+ * Local aisn cb ai plan actions helper.
+ */
 function local_aisn_cb_ai_plan_actions(int $courseid, string $teacherprompt, array $files): array {
     if (!class_exists('\local_aiskillnavigator\service\ai_provider_factory')) {
         return [];
@@ -3386,26 +3794,36 @@ function local_aisn_cb_ai_plan_actions(int $courseid, string $teacherprompt, arr
         . "AZIONI AMMESSE:\n"
         . "1. create_section: {\"action\":\"create_section\",\"title\":\"Nome sezione\",\"summary_html\":\"HTML opzionale\"}\n"
         . "2. rename_section: {\"action\":\"rename_section\",\"target\":\"Nome o numero sezione\",\"title\":\"Nuovo nome\"}\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "3. update_section_html: {\"action\":\"update_section_html\",\"target\":\"Nome o numero sezione\",\"html\":\"HTML finale completo\"}\n"
         . "4. delete_section: {\"action\":\"delete_section\",\"target\":\"Nome o numero sezione\"}\n"
         . "5. delete_all_sections: {\"action\":\"delete_all_sections\"}\n"
         . "6. clear_section_zero: {\"action\":\"clear_section_zero\"}\n"
         . "7. hide_section: {\"action\":\"hide_section\",\"target\":\"Nome o numero sezione\"}\n"
         . "8. show_section: {\"action\":\"show_section\",\"target\":\"Nome o numero sezione\"}\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "9. duplicate_section: {\"action\":\"duplicate_section\",\"target\":\"Nome o numero sezione\",\"new_title\":\"Nome copia\"}\n"
         . "10. move_section: {\"action\":\"move_section\",\"target\":\"Nome o numero sezione\",\"destination\":2}\n"
         . "11. attach_files: {\"action\":\"attach_files\",\"target\":\"Nome o numero sezione\",\"files\":[\"parte nome file\"]}\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "12. delete_material: {\"action\":\"delete_material\",\"cmid\":123,\"target\":\"Nome sezione\",\"material\":\"titolo esatto dal catalogo\"}\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "13. move_material: {\"action\":\"move_material\",\"cmid\":123,\"from\":\"sezione sorgente\",\"destination\":\"sezione destinazione\",\"material\":\"titolo esatto dal catalogo\"}\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "14. rename_material: {\"action\":\"rename_material\",\"cmid\":123,\"target\":\"Nome sezione\",\"material\":\"titolo esatto dal catalogo\",\"new_name\":\"nuovo nome\"}\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "15. hide_material: {\"action\":\"hide_material\",\"cmid\":123,\"target\":\"Nome sezione\",\"material\":\"titolo esatto dal catalogo\"}\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "16. show_material: {\"action\":\"show_material\",\"cmid\":123,\"target\":\"Nome sezione\",\"material\":\"titolo esatto dal catalogo\"}\n"
         . "17. clear_section_content: {\"action\":\"clear_section_content\",\"target\":\"Nome o numero sezione\"}\n\n"
 
         . "REGOLE SEMANTICHE OBBLIGATORIE:\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "- Se il prompt parla di un materiale/file/risorsa/pdf/ppt/slide/documento, guarda PRIMA MATERIALI/RISORSE REALI DEL CORSO.\n"
         . "- Se il docente scrive male il nome, usa il materiale semanticamente più vicino nel catalogo.\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "- Esempio: se scrive 'tabellozza' e nel catalogo esiste 'tabella ascii.pdf', considera 'tabellozza' un riferimento probabile a quel PDF.\n"
+        // phpcs:ignore moodle.Files.LineLength
         . "- Se il docente dice 'elimina/togli/rimuovi X dalla sezione Y' e X è simile a un materiale nel catalogo, usa delete_material, NON update_section_html.\n"
         . "- Se scegli un materiale dal catalogo, copia SEMPRE cmid e title esatti dal catalogo.\n"
         . "- Se più materiali sono plausibili nella stessa sezione, scegli quello più semanticamente vicino al prompt.\n"
@@ -3439,6 +3857,9 @@ function local_aisn_cb_ai_plan_actions(int $courseid, string $teacherprompt, arr
     }
 }
 
+/**
+ * Local aisn cb pick files helper.
+ */
 function local_aisn_cb_pick_files(array $files, array $wanted): array {
     if (empty($wanted)) {
         return $files;
@@ -3462,6 +3883,9 @@ function local_aisn_cb_pick_files(array $files, array $wanted): array {
     return !empty($selected) ? $selected : $files;
 }
 
+/**
+ * Local aisn cb ai clean safe html helper.
+ */
 function local_aisn_cb_ai_clean_safe_html(string $html): string {
     $html = trim((string)$html);
 
@@ -3482,6 +3906,9 @@ function local_aisn_cb_ai_clean_safe_html(string $html): string {
     return trim((string)$html);
 }
 
+/**
+ * Local aisn cb ai section from action helper.
+ */
 function local_aisn_cb_ai_section_from_action(int $courseid, array $action): ?stdClass {
     $target = trim((string)($action['target'] ?? ''));
 
@@ -3496,6 +3923,9 @@ function local_aisn_cb_ai_section_from_action(int $courseid, array $action): ?st
     return local_aisn_cb_find_section($courseid, $target);
 }
 
+/**
+ * Local aisn cb delete material normalize helper.
+ */
 function local_aisn_cb_delete_material_normalize(string $value): string {
     $value = trim((string)$value);
     $value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -3509,6 +3939,9 @@ function local_aisn_cb_delete_material_normalize(string $value): string {
     return trim((string)$value);
 }
 
+/**
+ * Local aisn cb delete material tokens helper.
+ */
 function local_aisn_cb_delete_material_tokens(string $value): array {
     $value = trim((string)$value);
     $value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -3518,7 +3951,7 @@ function local_aisn_cb_delete_material_tokens(string $value): array {
     $value = preg_replace('/[^\p{L}\p{N}]+/u', ' ', (string)$value);
     $parts = preg_split('/\s+/u', trim((string)$value));
 
-    return array_values(array_filter((array)$parts, static function($part): bool {
+    return array_values(array_filter((array)$parts, static function ($part): bool {
         $part = trim((string)$part);
 
         if ($part === '') {
@@ -3533,6 +3966,9 @@ function local_aisn_cb_delete_material_tokens(string $value): array {
     }));
 }
 
+/**
+ * Local aisn cb delete material score helper.
+ */
 function local_aisn_cb_delete_material_score(string $needle, string $candidate): int {
     $needlekey = local_aisn_cb_delete_material_normalize($needle);
     $candidatekey = local_aisn_cb_delete_material_normalize($candidate);
@@ -3560,6 +3996,9 @@ function local_aisn_cb_delete_material_score(string $needle, string $candidate):
     return $score;
 }
 
+/**
+ * Local aisn cb delete material find cm helper.
+ */
 function local_aisn_cb_delete_material_find_cm(int $courseid, string $sectionref, string $materialname): ?stdClass {
     global $DB;
 
@@ -3617,6 +4056,9 @@ function local_aisn_cb_delete_material_find_cm(int $courseid, string $sectionref
     return null;
 }
 
+/**
+ * Local aisn cb delete material from course helper.
+ */
 function local_aisn_cb_delete_material_from_course(int $courseid, string $sectionref, string $materialname): string {
     global $DB;
 
@@ -3664,8 +4106,11 @@ function local_aisn_cb_delete_material_from_course(int $courseid, string $sectio
     }
 }
 
-// AISN_AI_DELETE_MATERIAL_HELPERS_V1
+// AISN_AI_DELETE_MATERIAL_HELPERS_V1.
 
+/**
+ * Local aisn cb ai mat norm helper.
+ */
 function local_aisn_cb_ai_mat_norm(string $value): string {
     $value = trim((string)$value);
     $value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -3677,6 +4122,9 @@ function local_aisn_cb_ai_mat_norm(string $value): string {
     return trim((string)$value);
 }
 
+/**
+ * Local aisn cb ai mat tokens helper.
+ */
 function local_aisn_cb_ai_mat_tokens(string $value): array {
     $value = trim((string)$value);
     $value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -3686,7 +4134,7 @@ function local_aisn_cb_ai_mat_tokens(string $value): array {
     $value = preg_replace('/[^\p{L}\p{N}]+/u', ' ', (string)$value);
     $parts = preg_split('/\s+/u', trim((string)$value));
 
-    return array_values(array_filter((array)$parts, static function($part): bool {
+    return array_values(array_filter((array)$parts, static function ($part): bool {
         $part = trim((string)$part);
 
         if ($part === '') {
@@ -3701,6 +4149,9 @@ function local_aisn_cb_ai_mat_tokens(string $value): array {
     }));
 }
 
+/**
+ * Local aisn cb ai mat score helper.
+ */
 function local_aisn_cb_ai_mat_score(string $needle, string $candidate): int {
     $needlekey = local_aisn_cb_ai_mat_norm($needle);
     $candidatekey = local_aisn_cb_ai_mat_norm($candidate);
@@ -3728,6 +4179,9 @@ function local_aisn_cb_ai_mat_score(string $needle, string $candidate): int {
     return $score;
 }
 
+/**
+ * Local aisn cb ai mat get title helper.
+ */
 function local_aisn_cb_ai_mat_get_title(stdClass $cmrow): string {
     global $DB;
 
@@ -3757,6 +4211,9 @@ function local_aisn_cb_ai_mat_get_title(stdClass $cmrow): string {
     return '';
 }
 
+/**
+ * Local aisn cb ai mat find cm helper.
+ */
 function local_aisn_cb_ai_mat_find_cm(int $courseid, string $sectionref, string $materialname): ?stdClass {
     global $DB;
 
@@ -3813,16 +4270,22 @@ function local_aisn_cb_ai_mat_find_cm(int $courseid, string $sectionref, string 
     return null;
 }
 
+/**
+ * Local aisn cb ai mat remove from sequence helper.
+ */
 function local_aisn_cb_ai_mat_remove_from_sequence(string $sequence, int $cmid): string {
-    $items = array_values(array_filter(explode(',', trim($sequence)), static function($item) use ($cmid): bool {
+    $items = array_values(array_filter(explode(',', trim($sequence)), static function ($item) use ($cmid): bool {
         return (int)trim((string)$item) !== $cmid && trim((string)$item) !== '';
     }));
 
     return implode(',', $items);
 }
 
+/**
+ * Local aisn cb ai mat add to sequence helper.
+ */
 function local_aisn_cb_ai_mat_add_to_sequence(string $sequence, int $cmid): string {
-    $items = array_values(array_filter(explode(',', trim($sequence)), static function($item): bool {
+    $items = array_values(array_filter(explode(',', trim($sequence)), static function ($item): bool {
         return trim((string)$item) !== '';
     }));
 
@@ -3833,6 +4296,9 @@ function local_aisn_cb_ai_mat_add_to_sequence(string $sequence, int $cmid): stri
     return implode(',', $items);
 }
 
+/**
+ * Local aisn cb ai mat update material record title helper.
+ */
 function local_aisn_cb_ai_mat_update_material_record_title(int $courseid, int $cmid, string $newname): void {
     global $DB;
 
@@ -3869,6 +4335,9 @@ function local_aisn_cb_ai_mat_update_material_record_title(int $courseid, int $c
     }
 }
 
+/**
+ * Local aisn cb ai delete material helper.
+ */
 function local_aisn_cb_ai_delete_material(int $courseid, string $sectionref, string $materialname): string {
     global $DB;
 
@@ -3918,6 +4387,14 @@ function local_aisn_cb_ai_delete_material(int $courseid, string $sectionref, str
     }
 }
 
+/**
+ * Local aisn cb ai move material helper.
+ */
+// phpcs:ignore moodle.Files.LineLength
+/**
+ * Local aisn cb ai move material helper.
+ */
+// phpcs:ignore moodle.Files.LineLength
 function local_aisn_cb_ai_move_material(int $courseid, string $fromsection, string $destinationsection, string $materialname): string {
     global $DB;
 
@@ -3948,6 +4425,9 @@ function local_aisn_cb_ai_move_material(int $courseid, string $fromsection, stri
     return 'materiale "' . (string)$cm->title . '" spostato in "' . (string)$destination->name . '"';
 }
 
+/**
+ * Local aisn cb ai rename material helper.
+ */
 function local_aisn_cb_ai_rename_material(int $courseid, string $sectionref, string $materialname, string $newname): string {
     global $DB;
 
@@ -3984,6 +4464,9 @@ function local_aisn_cb_ai_rename_material(int $courseid, string $sectionref, str
     }
 }
 
+/**
+ * Local aisn cb ai set material visibility helper.
+ */
 function local_aisn_cb_ai_set_material_visibility(int $courseid, string $sectionref, string $materialname, bool $visible): string {
     global $DB;
 
@@ -4011,6 +4494,9 @@ function local_aisn_cb_ai_set_material_visibility(int $courseid, string $section
     }
 }
 
+/**
+ * Local aisn cb ai clear section content helper.
+ */
 function local_aisn_cb_ai_clear_section_content(int $courseid, string $sectionref): string {
     global $DB;
 
@@ -4032,8 +4518,11 @@ function local_aisn_cb_ai_clear_section_content(int $courseid, string $sectionre
     return 'contenuto testuale svuotato nella sezione "' . (string)$section->name . '"';
 }
 
-// AISN_AI_MATERIAL_ACTIONS_FULL_HELPERS_V1
+// AISN_AI_MATERIAL_ACTIONS_FULL_HELPERS_V1.
 
+/**
+ * Local aisn cb execute ai actions helper.
+ */
 function local_aisn_cb_execute_ai_actions(int $courseid, int $userid, array $actions, array $files): array {
     $logs = [];
     $lastsection = null;
@@ -4045,9 +4534,11 @@ function local_aisn_cb_execute_ai_actions(int $courseid, int $userid, array $act
 
         $type = local_aisn_cb_low((string)($a['action'] ?? ''));
 
-        // AISN_PS1_DESTRUCTIVE_ACTION_GUARD
-        if (function_exists('local_aisn_prod_course_builder_action_allowed') &&
-            !local_aisn_prod_course_builder_action_allowed($type)) {
+        // AISN_PS1_DESTRUCTIVE_ACTION_GUARD.
+        if (
+            function_exists('local_aisn_prod_course_builder_action_allowed') &&
+            !local_aisn_prod_course_builder_action_allowed($type)
+        ) {
             $logs[] = 'AI: azione bloccata dalle impostazioni di sicurezza: ' . $type . '.';
             continue;
         }
@@ -4131,6 +4622,7 @@ function local_aisn_cb_execute_ai_actions(int $courseid, int $userid, array $act
             $section = local_aisn_cb_ai_section_from_action($courseid, $a);
 
             if ($section) {
+                // phpcs:ignore moodle.Files.LineLength
                 $logs[] = 'AI: sezione "' . (string)($section->name ?: ('Section ' . (int)$section->section)) . '" ' . local_aisn_cb_delete_section($courseid, $section) . '.';
             } else {
                 $logs[] = 'AI: sezione da eliminare non trovata: ' . (string)($a['target'] ?? '');
@@ -4184,6 +4676,7 @@ function local_aisn_cb_execute_ai_actions(int $courseid, int $userid, array $act
 
             if ($section) {
                 $destination = (int)($a['destination'] ?? 1);
+                // phpcs:ignore moodle.Files.LineLength
                 $logs[] = 'AI: sezione "' . (string)$section->name . '" ' . local_aisn_cb_move_section($courseid, $section, $destination) . '.';
             } else {
                 $logs[] = 'AI: sezione da spostare non trovata: ' . (string)($a['target'] ?? '');
@@ -4191,7 +4684,7 @@ function local_aisn_cb_execute_ai_actions(int $courseid, int $userid, array $act
 
             continue;
         }
-        // AISN_AI_MATERIAL_ACTIONS_FULL_EXECUTOR_V1
+        // AISN_AI_MATERIAL_ACTIONS_FULL_EXECUTOR_V1.
         if ($type === 'delete_material') {
             $sectiontarget = (string)($a['target'] ?? $a['section'] ?? '');
             $materialname = (string)($a['material'] ?? $a['file'] ?? $a['filename'] ?? $a['name'] ?? '');
@@ -4270,11 +4763,13 @@ function local_aisn_cb_execute_ai_actions(int $courseid, int $userid, array $act
             }
 
             if (!$section) {
+                // phpcs:ignore moodle.Files.LineLength
                 $logs[] = 'AI: sezione target non trovata per collegare file: ' . (string)($a['target'] ?? '') . '. Nessuna nuova sezione creata automaticamente.';
                 continue;
             }
 
             $wanted = !empty($a['files']) && is_array($a['files']) ? $a['files'] : [];
+            // phpcs:ignore moodle.Files.LineLength
             $logs = array_merge($logs, local_aisn_cb_attach_files_to_section($courseid, $userid, $section, local_aisn_cb_pick_files($files, $wanted)));
             continue;
         }
@@ -4290,6 +4785,9 @@ function local_aisn_cb_execute_ai_actions(int $courseid, int $userid, array $act
 }
 
 
+/**
+ * Local aisn cb execute prompt helper.
+ */
 function local_aisn_cb_execute_prompt(int $courseid, int $userid, string $prompt, array $files): array {
     $actions = local_aisn_cb_ai_plan_actions($courseid, $prompt, $files);
 
@@ -4314,7 +4812,7 @@ function local_aisn_cb_execute_prompt(int $courseid, int $userid, string $prompt
     ];
 }
 
-// AISN_EXECUTE_PROMPT_AI_FIRST_STABLE
+// AISN_EXECUTE_PROMPT_AI_FIRST_STABLE.
 
 $result = [];
 $error = '';
@@ -4327,7 +4825,7 @@ if ($action === 'build') {
     } else {
         try {
             $result = local_aisn_cb_execute_prompt($courseid, (int)$USER->id, $prompt, local_aisn_cb_uploaded_files());
-            // AISN_EMERGENCY_FAST_FINAL_REBUILD
+            // AISN_EMERGENCY_FAST_FINAL_REBUILD.
             rebuild_course_cache($courseid, true);
         } catch (Throwable $e) {
             $error = $e->getMessage();
@@ -4380,6 +4878,7 @@ echo html_writer::start_div('container-fluid');
 
 echo html_writer::start_div('aisn-p2m-hero');
 echo html_writer::tag('h2', 'AI Course Builder');
+// phpcs:ignore moodle.Files.LineLength
 echo html_writer::tag('p', 'Prompt-to-Moodle AI editor: crea, modifica, collega materiali e gestisce sezioni Moodle tramite prompt docente.');
 echo html_writer::end_div();
 
@@ -4395,18 +4894,21 @@ if (!empty($result)) {
         echo html_writer::tag('li', s($line));
     }
     echo html_writer::end_tag('ul');
+    // phpcs:ignore moodle.Files.LineLength
     echo html_writer::link(new moodle_url('/course/view.php', ['id' => $courseid]), 'Vai al corso e verifica', ['class' => 'btn btn-success']);
     echo html_writer::end_div();
 }
 
 echo html_writer::start_div('aisn-p2m-card');
 echo html_writer::tag('h3', 'Prompt unico per modificare il corso');
+// phpcs:ignore moodle.Files.LineLength
 echo html_writer::tag('p', 'Scrivi un prompt naturale. Se carichi file, il Course Builder organizza e collega i materiali anche senza dipendere dal planner AI.', ['class' => 'aisn-p2m-muted']);
 
 echo html_writer::start_div('aisn-p2m-help');
 echo html_writer::tag('strong', 'Esempi validi:');
-echo html_writer::tag('pre',
-'Crea sezione "Exams" con questo testo: ...
+echo html_writer::tag(
+    'pre',
+    'Crea sezione "Exams" con questo testo: ...
 Metti tutti i file caricati nella sezione "Lecture 02 - Business Intelligence e Big Data"
 Inserisci i file caricati nelle sezioni già create in base al nome del file. Non creare nuove sezioni.
 Togli la sezione "simulazione"
@@ -4431,7 +4933,7 @@ echo html_writer::tag('textarea', s($prompt), [
     'class' => 'form-control mb-3',
     'rows' => 10,
     'required' => 'required',
-    'placeholder' => 'Esempio: crea una sezione per ogni file e metti un file per sezione'
+    'placeholder' => 'Esempio: crea una sezione per ogni file e metti un file per sezione',
 ]);
 
 echo html_writer::tag('label', 'Materiali da usare nel prompt', ['for' => 'materials']);
@@ -4441,13 +4943,14 @@ echo html_writer::empty_tag('input', [
     'name' => 'materials[]',
     'class' => 'form-control mb-3',
     'multiple' => 'multiple',
-    'accept' => '.txt,.md,.csv,.json,.xml,.html,.htm,.css,.js,.ts,.sql,.cs,.java,.py,.cpp,.c,.pptx,.docx,.pdf,.png,.jpg,.jpeg,.bmp,.webp,.tif,.tiff'
+    // phpcs:ignore moodle.Files.LineLength
+    'accept' => '.txt,.md,.csv,.json,.xml,.html,.htm,.css,.js,.ts,.sql,.cs,.java,.py,.cpp,.c,.pptx,.docx,.pdf,.png,.jpg,.jpeg,.bmp,.webp,.tif,.tiff',
 ]);
 
 echo html_writer::empty_tag('input', [
     'type' => 'submit',
     'class' => 'btn btn-primary',
-    'value' => 'Esegui prompt sul corso Moodle'
+    'value' => 'Esegui prompt sul corso Moodle',
 ]);
 
 echo ' ';

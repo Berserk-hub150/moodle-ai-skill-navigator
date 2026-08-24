@@ -75,6 +75,14 @@ Important production settings:
 
 The plugin stores course materials, quiz attempts, assessment attempts, saved simulations and tutor interaction signals. It implements Moodle's Privacy API for metadata, export and deletion of user data. External AI providers are optional and disabled for course materials unless explicitly approved.
 
+## Moodle Marketplace package
+
+The Moodle Marketplace package for this component contains only `local_aiskillnavigator` and installs as `local/aiskillnavigator`.
+
+The optional `block_aiskillnavigator` is a separate Moodle component. It is not bundled in the local-plugin Marketplace ZIP and, when distributed through Moodle Marketplace, must be released separately with its dependency on `local_aiskillnavigator` declared.
+
+Marketplace releases are checked with the repository's dedicated Moodle Plugin CI workflow before packaging.
+
 ## Requirements
 
 - Moodle 4.4 or later.

@@ -1,32 +1,73 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace local_aiskillnavigator\service;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
-// AISN_SECURITY_HTTP_HARDENING_V2
+// AISN_SECURITY_HTTP_HARDENING_V2.
 // Hardened HTTP client for optional external Search APIs.
+/**
+ * Web search service implementation.
+ */
 class web_search_service {
+    /** @var string Provider. */
     private string $provider;
+    /** @var string Apikey. */
     private string $apikey;
+    /** @var string Endpoint. */
     private string $endpoint;
 
+    /**
+     * Construct helper.
+     */
     public function __construct() {
         $this->provider = strtolower(trim((string) get_config('local_aiskillnavigator', 'searchprovider')));
         $this->apikey = trim((string) get_config('local_aiskillnavigator', 'searchapikey'));
         $this->endpoint = trim((string) get_config('local_aiskillnavigator', 'searchendpoint'));
     }
 
+    /**
+     * Is enabled helper.
+     */
     public function is_enabled(): bool {
         return $this->provider !== ''
             && $this->provider !== 'none'
             && $this->apikey !== '';
     }
 
+    /**
+     * Provider name helper.
+     */
     public function provider_name(): string {
         return $this->provider !== '' ? $this->provider : 'none';
     }
 
+    /**
+     * Search helper.
+     */
     public function search(string $query, int $limit = 5): array {
         $query = trim($query);
         $limit = max(1, min(10, $limit));
@@ -50,6 +91,9 @@ class web_search_service {
         return [];
     }
 
+    /**
+     * Search tavily helper.
+     */
     private function search_tavily(string $query, int $limit): array {
         $endpoint = $this->endpoint !== '' ? $this->endpoint : 'https://api.tavily.com/search';
 
@@ -85,6 +129,9 @@ class web_search_service {
         return $this->clean_results($out, $limit);
     }
 
+    /**
+     * Search brave helper.
+     */
     private function search_brave(string $query, int $limit): array {
         $endpoint = $this->endpoint !== '' ? $this->endpoint : 'https://api.search.brave.com/res/v1/web/search';
 
@@ -99,6 +146,7 @@ class web_search_service {
             'X-Subscription-Token: ' . $this->apikey,
         ]);
 
+        // phpcs:ignore moodle.Files.LineLength
         if (empty($response['ok']) || empty($response['json']['web']['results']) || !is_array($response['json']['web']['results'])) {
             return [];
         }
@@ -117,6 +165,9 @@ class web_search_service {
         return $this->clean_results($out, $limit);
     }
 
+    /**
+     * Search serpapi helper.
+     */
     private function search_serpapi(string $query, int $limit): array {
         $endpoint = $this->endpoint !== '' ? $this->endpoint : 'https://serpapi.com/search.json';
 
@@ -131,6 +182,7 @@ class web_search_service {
             'Accept: application/json',
         ]);
 
+        // phpcs:ignore moodle.Files.LineLength
         if (empty($response['ok']) || empty($response['json']['organic_results']) || !is_array($response['json']['organic_results'])) {
             return [];
         }
@@ -149,6 +201,9 @@ class web_search_service {
         return $this->clean_results($out, $limit);
     }
 
+    /**
+     * Post json helper.
+     */
     private function post_json(string $url, array $payload, array $headers): array {
         $validation = $this->validate_url($url);
 
@@ -192,6 +247,9 @@ class web_search_service {
         return $this->exec_json($curl);
     }
 
+    /**
+     * Get json helper.
+     */
     private function get_json(string $url, array $headers): array {
         $validation = $this->validate_url($url);
 
@@ -228,6 +286,9 @@ class web_search_service {
         return $this->exec_json($curl);
     }
 
+    /**
+     * Exec json helper.
+     */
     private function exec_json($curl): array {
         $raw = curl_exec($curl);
         $status = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
@@ -257,6 +318,9 @@ class web_search_service {
         ];
     }
 
+    /**
+     * Normalise headers helper.
+     */
     private function normalise_headers(array $headers, bool $jsonbody): array {
         $out = [];
         $hascontenttype = false;
@@ -282,6 +346,9 @@ class web_search_service {
         return $out;
     }
 
+    /**
+     * Validate url helper.
+     */
     private function validate_url(string $url): string {
         $url = trim($url);
 
@@ -319,6 +386,9 @@ class web_search_service {
         return '';
     }
 
+    /**
+     * Is public ip helper.
+     */
     private function is_public_ip(string $ip): bool {
         return filter_var(
             $ip,
@@ -327,6 +397,9 @@ class web_search_service {
         ) !== false;
     }
 
+    /**
+     * Clean results helper.
+     */
     private function clean_results(array $rows, int $limit): array {
         $clean = [];
         $seen = [];
@@ -362,6 +435,9 @@ class web_search_service {
         return $clean;
     }
 
+    /**
+     * Is safe result url helper.
+     */
     private function is_safe_result_url(string $url): bool {
         $parts = parse_url(trim($url));
 

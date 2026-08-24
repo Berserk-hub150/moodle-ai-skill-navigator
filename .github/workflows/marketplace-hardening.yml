@@ -1,0 +1,98 @@
+name: Marketplace source hardening
+
+on:
+  push:
+    branches:
+      - marketplace-readiness
+    paths:
+      - 'plugins/aiskillnavigator/**'
+      - 'tools/marketplace_hardening.py'
+      - 'tools/localise_page_chrome.py'
+      - 'tools/moodle_quality_autofix.py'
+      - '.github/workflows/marketplace-hardening.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  harden:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: marketplace-readiness
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Install Moodle coding tools
+        run: composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
+
+      - name: Repair deterministic scripts
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('tools/marketplace_hardening.py')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              'newtext, count = pattern.subn(replacement, text, count=1)',
+              'newtext, count = pattern.subn(lambda _match: replacement, text, count=1)',
+          )
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('tools/moodle_quality_autofix.py')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              "if body[-1] not in '.!?;:)}`]':",
+              "if body[-1] not in '.!?;:)}]`':",
+          )
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Localise page titles and headings
+        run: python3 tools/localise_page_chrome.py
+
+      - name: Run deterministic Marketplace hardening
+        id: harden
+        shell: bash
+        run: |
+          set +e
+          python3 tools/marketplace_hardening.py
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Apply Moodle quality autofix
+        run: python3 tools/moodle_quality_autofix.py
+
+      - name: Auto-fix Moodle coding style
+        shell: bash
+        run: |
+          set +e
+          ci/bin/moodle-plugin-ci phpcbf plugins/aiskillnavigator
+          exit 0
+
+      - name: Commit generated source fixes
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add plugins/aiskillnavigator tools/marketplace_hardening.py tools/localise_page_chrome.py tools/moodle_quality_autofix.py
+          git commit -m "fix: resolve Moodle coding-standard blockers"
+          git push origin HEAD:marketplace-readiness
+
+      - name: Require no direct request superglobals
+        if: steps.harden.outputs.exit_code != '0'
+        run: |
+          echo "Marketplace hardening still found direct request superglobal access."
+          exit 1

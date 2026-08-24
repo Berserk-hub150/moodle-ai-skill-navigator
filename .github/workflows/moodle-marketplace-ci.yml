@@ -1,0 +1,90 @@
+name: Moodle Marketplace CI
+
+on:
+  push:
+    branches:
+      - main
+      - marketplace-readiness
+    paths:
+      - 'plugins/aiskillnavigator/**'
+      - '.github/workflows/moodle-marketplace-ci.yml'
+  pull_request:
+    paths:
+      - 'plugins/aiskillnavigator/**'
+      - '.github/workflows/moodle-marketplace-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  moodle-prechecks:
+    name: Moodle 4.5 / PHP 8.3 / PostgreSQL
+    runs-on: ubuntu-24.04
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          path: repository
+          persist-credentials: false
+
+      - name: Stage only local_aiskillnavigator
+        run: |
+          mkdir plugin
+          cp -R repository/plugins/aiskillnavigator/. plugin/
+          rm -f plugin/.gitignore
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pgsql, mysqli, curl, dom, gd, intl, json, libxml, mbstring, simplexml, soap, xml, zip
+          ini-values: max_input_vars=5000, opcache.enable_cli=1
+          coverage: none
+
+      - name: Initialise moodle-plugin-ci
+        run: |
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
+          echo "$(cd ci/bin; pwd)" >> "$GITHUB_PATH"
+          echo "$(cd ci/vendor/bin; pwd)" >> "$GITHUB_PATH"
+          sudo locale-gen en_AU.UTF-8
+          echo "NVM_DIR=$HOME/.nvm" >> "$GITHUB_ENV"
+
+      - name: Install Moodle test environment
+        env:
+          DB: pgsql
+          MOODLE_BRANCH: MOODLE_405_STABLE
+        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+
+      - name: PHP syntax
+        run: moodle-plugin-ci phplint
+
+      - name: Moodle coding style
+        run: moodle-plugin-ci phpcs --max-warnings 0
+
+      - name: PHPDoc checks
+        run: moodle-plugin-ci phpdoc
+
+      - name: Upgrade savepoints
+        run: moodle-plugin-ci savepoints
+
+      - name: Plugin validation
+        run: moodle-plugin-ci validate
+
+      - name: JavaScript and CSS checks
+        run: moodle-plugin-ci grunt

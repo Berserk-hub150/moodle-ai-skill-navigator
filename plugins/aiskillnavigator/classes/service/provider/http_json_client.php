@@ -1,11 +1,40 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace local_aiskillnavigator\service\provider;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 // Small hardened HTTP JSON client for AI providers.
+/**
+ * Http json client implementation.
+ */
 class http_json_client {
+    /**
+     * Post helper.
+     */
     public function post(string $url, array $payload, array $headers = [], int $timeout = 60): array {
         $validation = $this->validate_url($url);
 
@@ -98,6 +127,9 @@ class http_json_client {
         ];
     }
 
+    /**
+     * Normalise headers helper.
+     */
     private function normalise_headers(array $headers): array {
         $out = [];
         $hascontenttype = false;
@@ -123,6 +155,9 @@ class http_json_client {
         return $out;
     }
 
+    /**
+     * Validate url helper.
+     */
     private function validate_url(string $url): string {
         $url = trim($url);
 
@@ -162,6 +197,9 @@ class http_json_client {
         return '';
     }
 
+    /**
+     * Is public ip helper.
+     */
     private function is_public_ip(string $ip): bool {
         return filter_var(
             $ip,

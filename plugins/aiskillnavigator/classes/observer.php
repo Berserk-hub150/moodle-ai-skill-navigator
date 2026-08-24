@@ -1,10 +1,39 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace local_aiskillnavigator;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Observer implementation.
+ */
 class observer {
+    /**
+     * Course created helper.
+     */
     public static function course_created(\core\event\course_created $event): void {
         $courseid = (int)($event->courseid ?: $event->objectid);
 
@@ -17,6 +46,9 @@ class observer {
         }
     }
 
+    /**
+     * Course updated helper.
+     */
     public static function course_updated(\core\event\course_updated $event): void {
         $courseid = (int)($event->courseid ?: $event->objectid);
 
@@ -29,18 +61,27 @@ class observer {
         }
     }
 
+    /**
+     * Course module created helper.
+     */
     public static function course_module_created(\core\event\course_module_created $event): void {
         if (self::auto_sync_enabled()) {
             self::sync_course_resources((int)$event->courseid, (int)$event->userid);
         }
     }
 
+    /**
+     * Course module updated helper.
+     */
     public static function course_module_updated(\core\event\course_module_updated $event): void {
         if (self::auto_sync_enabled()) {
             self::sync_course_resources((int)$event->courseid, (int)$event->userid);
         }
     }
 
+    /**
+     * Course module deleted helper.
+     */
     public static function course_module_deleted(\core\event\course_module_deleted $event): void {
         global $DB;
 
@@ -77,6 +118,9 @@ class observer {
         }
     }
 
+    /**
+     * Ensure course block helper.
+     */
     public static function ensure_course_block(int $courseid): void {
         global $DB;
 
@@ -95,10 +139,12 @@ class observer {
                 return;
             }
 
-            if ($DB->record_exists('block_instances', [
+            if (
+                $DB->record_exists('block_instances', [
                 'blockname' => 'aiskillnavigator',
                 'parentcontextid' => $context->id,
-            ])) {
+                ])
+            ) {
                 return;
             }
 
@@ -120,14 +166,23 @@ class observer {
         }
     }
 
+    /**
+     * Auto block enabled helper.
+     */
     private static function auto_block_enabled(): bool {
         return (string)get_config('local_aiskillnavigator', 'autoblockcourses') === '1';
     }
 
+    /**
+     * Auto sync enabled helper.
+     */
     private static function auto_sync_enabled(): bool {
         return (string)get_config('local_aiskillnavigator', 'autosynccourseresources') === '1';
     }
 
+    /**
+     * Sync course resources helper.
+     */
     private static function sync_course_resources(int $courseid, int $userid): void {
         global $CFG;
 
@@ -218,12 +273,15 @@ class observer {
 
         if (!empty($deleteids)) {
             self::delete_material_chunks($deleteids);
-            list($insql, $inparams) = $DB->get_in_or_equal($deleteids, SQL_PARAMS_NAMED, 'dup');
+            [$insql, $inparams] = $DB->get_in_or_equal($deleteids, SQL_PARAMS_NAMED, 'dup');
             $DB->delete_records_select('local_aiskillnav_material', 'id ' . $insql, $inparams);
             debugging('AI Skill Navigator removed duplicate course materials: ' . count($deleteids), DEBUG_DEVELOPER);
         }
     }
 
+    /**
+     * Material identity key helper.
+     */
     private static function material_identity_key(\stdClass $record): string {
         $title = trim((string)($record->title ?? ''));
         $type = trim((string)($record->materialtype ?? ''));
@@ -240,6 +298,9 @@ class observer {
         return strtolower($type) . ':' . md5(self::normalise_key_text($title) . "\n" . self::normalise_key_text($content));
     }
 
+    /**
+     * Normalise key text helper.
+     */
     private static function normalise_key_text(string $text): string {
         $text = trim($text);
         $text = preg_replace('/\s+/u', ' ', $text);
@@ -251,6 +312,9 @@ class observer {
         return strtolower((string)$text);
     }
 
+    /**
+     * Delete material chunks helper.
+     */
     private static function delete_material_chunks(array $materialids): void {
         global $DB;
 
@@ -260,10 +324,13 @@ class observer {
             return;
         }
 
-        list($insql, $inparams) = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mid');
+        [$insql, $inparams] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mid');
         $DB->delete_records_select('local_aiskillnav_chunk', 'materialid ' . $insql, $inparams);
     }
 
+    /**
+     * Table exists helper.
+     */
     private static function table_exists(string $table): bool {
         global $DB;
 

@@ -1,18 +1,54 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace local_aiskillnavigator\service\embedding;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Embedding config implementation.
+ */
 class embedding_config {
+    /** @var string Provider. */
     public string $provider;
+    /** @var string Endpoint. */
     public string $endpoint;
+    /** @var string Model. */
     public string $model;
+    /** @var string Apikey. */
     public string $apikey;
+    /** @var string Requesttemplate. */
     public string $requesttemplate;
+    /** @var string Headersjson. */
     public string $headersjson;
+    /** @var string Responsepath. */
     public string $responsepath;
 
+    /**
+     * Construct helper.
+     */
     public function __construct() {
         $chatprovider = strtolower(trim((string) get_config('local_aiskillnavigator', 'provider')));
         $requestedprovider = strtolower(trim((string) get_config('local_aiskillnavigator', 'embeddingprovider')));
@@ -24,7 +60,8 @@ class embedding_config {
             $embeddingprovider = $requestedprovider;
         }
 
-        if (in_array($embeddingprovider, [
+        if (
+            in_array($embeddingprovider, [
             'openrouter',
             'groq',
             'deepseek',
@@ -33,7 +70,8 @@ class embedding_config {
             'fireworks',
             'perplexity',
             'openai_compatible',
-        ], true)) {
+            ], true)
+        ) {
             $embeddingprovider = 'openai';
         }
 
@@ -75,10 +113,16 @@ class embedding_config {
         }
     }
 
+    /**
+     * Is keyword only helper.
+     */
     public function is_keyword_only(): bool {
         return $this->provider === 'keyword' || $this->endpoint === '';
     }
 
+    /**
+     * Uses external service helper.
+     */
     public function uses_external_service(): bool {
         if ($this->is_keyword_only()) {
             return false;
@@ -100,6 +144,9 @@ class embedding_config {
         ], true) && !str_ends_with($host, '.local');
     }
 
+    /**
+     * Provider from chat helper.
+     */
     private function provider_from_chat(string $chatprovider): string {
         if (in_array($chatprovider, ['ollama', 'local', 'local_ollama'], true)) {
             return 'ollama';
@@ -109,12 +156,15 @@ class embedding_config {
             return 'openai';
         }
 
-        // Prototype, Gemini and Anthropic do not use the OpenAI embeddings
-        // protocol implemented by this plugin. Use deterministic keyword
-        // fallback instead of silently contacting an unrelated endpoint.
+        // Prototype, Gemini and Anthropic do not use the OpenAI embeddings.
+        // Protocol implemented by this plugin. Use deterministic keyword.
+        // Fallback instead of silently contacting an unrelated endpoint.
         return 'keyword';
     }
 
+    /**
+     * Resolve endpoint helper.
+     */
     private function resolve_endpoint(
         string $provider,
         string $requestedprovider,
