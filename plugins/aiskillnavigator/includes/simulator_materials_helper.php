@@ -267,55 +267,30 @@ function local_aisn_sim_material_context(int $courseid, array $ids): string {
 }
 
 function local_aisn_sim_require_materials_for_post(int $courseid): void {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $submitted = data_submitted();
+    if ($submitted === false) {
         return;
     }
 
     $ids = local_aisn_sim_selected_ids();
-
     if (empty($ids)) {
         redirect(
             new moodle_url('/local/aiskillnavigator/pages/simulator_finder.php', ['courseid' => $courseid]),
-            'Select at least one course material before generating a simulator exercise.',
+            get_string('simulator_select_material', 'local_aiskillnavigator'),
             3,
             \core\output\notification::NOTIFY_ERROR
         );
     }
 
     $context = local_aisn_sim_material_context($courseid, $ids);
-
     if ($context === '') {
         redirect(
             new moodle_url('/local/aiskillnavigator/pages/simulator_finder.php', ['courseid' => $courseid]),
-            'The selected material has no readable text.',
+            get_string('simulator_material_unreadable', 'local_aiskillnavigator'),
             3,
             \core\output\notification::NOTIFY_ERROR
         );
     }
-
-    if (!empty($_POST['aisn_selected_material_context_added'])) {
-        return;
-    }
-
-    $addition = "\n\nSelected Moodle course materials:\n" . $context;
-    $targetkey = 'materials';
-
-    foreach (['materials', 'material', 'teacher_notes', 'notes', 'context', 'constraints'] as $candidate) {
-        if (isset($_POST[$candidate]) && trim((string)$_POST[$candidate]) !== '') {
-            $targetkey = $candidate;
-            break;
-        }
-    }
-
-    $current = isset($_POST[$targetkey]) ? (string)$_POST[$targetkey] : '';
-
-    if (strpos($current, 'Selected Moodle course materials:') === false) {
-        $_POST[$targetkey] = trim($current . $addition);
-        $_REQUEST[$targetkey] = $_POST[$targetkey];
-    }
-
-    $_POST['aisn_selected_material_context_added'] = '1';
-    $_REQUEST['aisn_selected_material_context_added'] = '1';
 }
 
 function local_aisn_sim_material_selector_html(int $courseid): string {

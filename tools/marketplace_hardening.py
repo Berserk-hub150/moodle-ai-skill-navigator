@@ -193,7 +193,7 @@ def replace_superglobal_access() -> list[str]:
 }
 
 function local_aisn_sim_material_selector_html"""
-    newtext, count = pattern.subn(replacement, text, count=1)
+    newtext, count = pattern.subn(lambda _match: replacement, text, count=1)
     if count:
         helper.write_text(newtext, encoding="utf-8")
         changed.append(str(helper))
