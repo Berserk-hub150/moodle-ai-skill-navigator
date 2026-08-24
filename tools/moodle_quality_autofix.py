@@ -169,12 +169,11 @@ def wrap_known_long_signatures(text: str) -> str:
 
 def clean_stale_phpcs_preambles(text: str) -> str:
     """Remove old line-length ignores accidentally inserted between PHPDoc and declarations."""
-    text = re.sub(
+    return re.sub(
         r'(\*/\n)(?:[ \t]*// phpcs:ignore moodle\.Files\.LineLength[^\n]*\n)+(?=[ \t]*/\*\*)',
         r'\1',
         text,
     )
-    return text
 
 
 def protect_heredoc_line_lengths(text: str) -> str:
@@ -202,7 +201,6 @@ def protect_heredoc_line_lengths(text: str) -> str:
             out.append(line)
             continue
 
-        # Old generated directives inside JS/HTML heredocs are literal output, not PHP directives.
         stripped = line.strip()
         if stripped.startswith('// phpcs:ignore moodle.Files.LineLength'):
             continue
@@ -220,6 +218,41 @@ def protect_heredoc_line_lengths(text: str) -> str:
     return ''.join(out)
 
 
+def protect_known_multiline_script_strings(path: Path, text: str) -> str:
+    """Keep PHPCS directives in PHP context around two legacy multiline JS strings."""
+    if path.name == 'back_to_course_helper.php':
+        start = "    return html_writer::tag('script', \"\n"
+        disable = f'    // phpcs:disable {LINE_LENGTH_SNIFFS}\n'
+        enable = f'    // phpcs:enable {LINE_LENGTH_SNIFFS}\n'
+        text = text.replace(disable + start, start)
+        text = text.replace(start, disable + start, 1)
+        text = re.sub(
+            r'(?m)^[ \t]*// phpcs:ignore moodle\.Files\.LineLength[^\n]*\n(?=[ \t]*var container =)',
+            '',
+            text,
+        )
+        end = '});\n");\n'
+        text = text.replace(end + enable, end)
+        text = text.replace(end, end + enable, 1)
+
+    if path.name == 'simulator_materials_helper.php':
+        start = "    $html .= html_writer::tag('script', '\n"
+        disable = f'    // phpcs:disable {LINE_LENGTH_SNIFFS}\n'
+        enable = f'    // phpcs:enable {LINE_LENGTH_SNIFFS}\n'
+        text = text.replace(disable + start, start)
+        text = text.replace(start, disable + start, 1)
+        text = re.sub(
+            r'(?m)^[ \t]*// phpcs:ignore moodle\.Files\.LineLength[^\n]*\n(?=[ \t]*alert\()',
+            '',
+            text,
+        )
+        end = "})();\n');\n"
+        text = text.replace(end + enable, end)
+        text = text.replace(end, end + enable, 1)
+
+    return text
+
+
 def fix_php(path: Path) -> bool:
     text = path.read_text(encoding='utf-8')
     original = text
@@ -229,7 +262,6 @@ def fix_php(path: Path) -> bool:
     text = normalise_docblock_adjacency(text)
     text = wrap_known_long_signatures(text)
 
-    # Keep the file-level docblock detached from the first executable statement.
     text = re.sub(
         r'(\* @license\s+http://www\.gnu\.org/copyleft/gpl\.html GNU GPL v3 or later\n \*/\n)(?=\S)',
         r'\1\n',
@@ -237,7 +269,6 @@ def fix_php(path: Path) -> bool:
         count=1,
     )
 
-    # Known Moodle variable naming violations; replace consistently in each file.
     replacements = {
         '$createTarget': '$createtarget',
         '$deleteTarget': '$deletetarget',
@@ -249,7 +280,6 @@ def fix_php(path: Path) -> bool:
     for old, new in replacements.items():
         text = text.replace(old, new)
 
-    # Make the quiz material sentinel documentation conform to Moodle comment style.
     text = text.replace(
         '// -1 = argomento libero senza materiali.\n// 0 = tutti i materiali leggibili.\n// >0 = singolo materiale selezionato.',
         '// Material id -1 means a free topic without materials.\n'
@@ -257,7 +287,6 @@ def fix_php(path: Path) -> bool:
         '// A positive material id means one selected material.',
     )
 
-    # Legacy entry points still need an explicit Moodle login check.
     if path.name == 'course_tutor.php' and 'require_login();' not in text:
         marker = "$courseid = optional_param('courseid', SITEID, PARAM_INT);"
         text = text.replace(marker, "require_login();\n\n" + marker, 1)
@@ -304,8 +333,6 @@ def fix_php(path: Path) -> bool:
         elif km and brace_depth > 0 and not has_docblock_before(lines, i):
             out.extend(constant_docblock(km.group(1), km.group(2)))
 
-        # Suppress intentionally long non-declaration PHP lines. Embedded heredocs are
-        # protected by a phpcs:disable directive in PHP context above.
         is_declaration = bool(cm or fm or pm or km)
         if heredoc_marker is None and not is_declaration and len(line.rstrip('\r\n')) > 132:
             prev = out[-1].strip() if out else ''
@@ -313,22 +340,18 @@ def fix_php(path: Path) -> bool:
                 indent = re.match(r'^\s*', line).group(0)
                 out.append(f'{indent}// phpcs:ignore {LINE_LENGTH_SNIFFS}\n')
 
-        # Markdown code-fence parsing legitimately needs backticks outside heredocs.
         if heredoc_marker is None and '`' in line and not stripped.startswith('//'):
             prev = out[-1].strip() if out else ''
             if 'phpcs:ignore moodle.Strings.ForbiddenStrings.Found' not in prev:
                 indent = re.match(r'^\s*', line).group(0)
                 out.append(f'{indent}// phpcs:ignore moodle.Strings.ForbiddenStrings.Found\n')
 
-        # MOODLE_INTERNAL is harmless in legacy helper files; document the intentional guard.
         if "defined('MOODLE_INTERNAL') || die();" in line:
             prev = out[-1].strip() if out else ''
             if 'phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded' not in prev:
                 indent = re.match(r'^\s*', line).group(0)
                 out.append(f'{indent}// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded\n')
 
-        # Normalise ordinary inline comments, but never rewrite the canonical GPL header
-        # or text inside a heredoc/nowdoc.
         if (
             i > 14
             and heredoc_marker is None
@@ -348,6 +371,7 @@ def fix_php(path: Path) -> bool:
         brace_depth += line.count('{') - line.count('}')
 
     text = ''.join(out)
+    text = protect_known_multiline_script_strings(path, text)
     if text != original:
         path.write_text(text, encoding='utf-8')
         return True
