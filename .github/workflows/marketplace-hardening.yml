@@ -33,16 +33,25 @@ jobs:
       - name: Install Moodle coding tools
         run: composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
 
-      - name: Repair replacement callback in hardening script
+      - name: Repair deterministic scripts
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
+
           path = Path('tools/marketplace_hardening.py')
           text = path.read_text(encoding='utf-8')
           text = text.replace(
               'newtext, count = pattern.subn(replacement, text, count=1)',
               'newtext, count = pattern.subn(lambda _match: replacement, text, count=1)',
+          )
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('tools/moodle_quality_autofix.py')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              "if body[-1] not in '.!?;:)}`]':",
+              "if body[-1] not in '.!?;:)}]`':",
           )
           path.write_text(text, encoding='utf-8')
           PY
