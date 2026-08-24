@@ -1544,13 +1544,26 @@ if (!function_exists('local_aisn_mindmap_polish_prof')) {
  * Esc helper.
  */
 // phpcs:ignore moodle.Files.LineLength
+/**
+ * Esc helper.
+ */
+// phpcs:ignore moodle.Files.LineLength
 function esc(s){return String(s||'').replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m];});}
 /**
  * Parse helper.
  */
 // phpcs:ignore moodle.Files.LineLength
 // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
+/**
+ * Parse helper.
+ */
+// phpcs:ignore moodle.Files.LineLength
+// phpcs:ignore moodle.Strings.ForbiddenStrings.Found
 function parse(t){t=(t||'').trim();if(!t||t.indexOf('{')<0||t.indexOf('branches')<0)return null;t=t.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();try{var d=JSON.parse(t);return d&&d.branches?d:null;}catch(e){return null;}}
+/**
+ * Render helper.
+ */
+// phpcs:ignore moodle.Files.LineLength
 /**
  * Render helper.
  */

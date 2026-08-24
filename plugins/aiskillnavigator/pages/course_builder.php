@@ -4391,6 +4391,10 @@ function local_aisn_cb_ai_delete_material(int $courseid, string $sectionref, str
  * Local aisn cb ai move material helper.
  */
 // phpcs:ignore moodle.Files.LineLength
+/**
+ * Local aisn cb ai move material helper.
+ */
+// phpcs:ignore moodle.Files.LineLength
 function local_aisn_cb_ai_move_material(int $courseid, string $fromsection, string $destinationsection, string $materialname): string {
     global $DB;
 
