@@ -1,1 +1,1 @@
-Trigger a fresh Moodle Marketplace PHPCS diagnostic after the final quality autofix pass.
+Trigger a fresh Moodle Marketplace PHPCS diagnostic after the final generated cleanup commit.
