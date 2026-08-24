@@ -1,0 +1,51 @@
+name: Marketplace source hardening
+
+on:
+  push:
+    branches:
+      - marketplace-readiness
+    paths:
+      - 'plugins/aiskillnavigator/**'
+      - 'tools/marketplace_hardening.py'
+      - '.github/workflows/marketplace-hardening.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  harden:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: marketplace-readiness
+
+      - name: Run deterministic Marketplace hardening
+        id: harden
+        shell: bash
+        run: |
+          set +e
+          python3 tools/marketplace_hardening.py
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Commit generated source fixes
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add plugins/aiskillnavigator
+          git commit -m "fix: harden plugin source for Moodle Marketplace"
+          git push origin HEAD:marketplace-readiness
+
+      - name: Require no direct request superglobals
+        if: steps.harden.outputs.exit_code != '0'
+        run: |
+          echo "Marketplace hardening still found direct request superglobal access."
+          exit 1
