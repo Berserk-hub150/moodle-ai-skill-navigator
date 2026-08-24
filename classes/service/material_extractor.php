@@ -1,7 +1,30 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace local_aiskillnavigator\service;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -26,6 +49,9 @@ foreach (glob(__DIR__ . '/material/*.php') as $materialhelper) {
     require_once($materialhelper);
 }
 
+/**
+ * Material extractor implementation.
+ */
 class material_extractor {
     private const MAX_BYTES = 26214400;
     private const MAX_CHARS = 120000;
@@ -37,6 +63,9 @@ class material_extractor {
         'png', 'jpg', 'jpeg', 'bmp', 'tif', 'tiff', 'webp',
     ];
 
+    /**
+     * Extract helper.
+     */
     public static function extract($file, ?string $name = null): array {
         if (is_array($file)) {
             return self::extract_from_upload($file);
@@ -50,10 +79,28 @@ class material_extractor {
         return self::fail('Unsupported material input.', 'unknown');
     }
 
-    public static function extract_file($file, ?string $name = null): array { return self::extract($file, $name); }
-    public static function extract_material($file, ?string $name = null): array { return self::extract($file, $name); }
-    public static function extract_uploaded_file(array $file): array { return self::extract_from_upload($file); }
+    /**
+     * Extract file helper.
+     */
+    public static function extract_file($file, ?string $name = null): array {
+        return self::extract($file, $name);
+    }
+    /**
+     * Extract material helper.
+     */
+    public static function extract_material($file, ?string $name = null): array {
+        return self::extract($file, $name);
+    }
+    /**
+     * Extract uploaded file helper.
+     */
+    public static function extract_uploaded_file(array $file): array {
+        return self::extract_from_upload($file);
+    }
 
+    /**
+     * Extract from upload helper.
+     */
     public static function extract_from_upload(array $file): array {
         $error = (int)($file['error'] ?? UPLOAD_ERR_NO_FILE);
         if ($error !== UPLOAD_ERR_OK) {
@@ -65,14 +112,21 @@ class material_extractor {
         if ($name === '' || $tmp === '' || !is_file($tmp)) {
             return self::fail('Uploaded file is missing or unreadable.', 'upload');
         }
-        if ($size <= 0) { $size = (int)filesize($tmp); }
-        if ($size <= 0) { return self::fail('Uploaded file is empty.', self::extension($name)); }
+        if ($size <= 0) {
+            $size = (int)filesize($tmp);
+        }
+        if ($size <= 0) {
+            return self::fail('Uploaded file is empty.', self::extension($name));
+        }
         if ($size > self::MAX_BYTES) {
             return self::fail('Uploaded file is too large. Maximum supported size is 25 MB.', self::extension($name));
         }
         return self::extract_from_path($tmp, $name);
     }
 
+    /**
+     * Extract from moodle file helper.
+     */
     public static function extract_from_moodle_file(\stored_file $file): array {
         $tmpdir = make_temp_directory('local_aiskillnavigator/material_extractor');
         $name = $file->get_filename();
@@ -86,6 +140,9 @@ class material_extractor {
         return $result;
     }
 
+    /**
+     * Extract from path helper.
+     */
     public static function extract_from_path(string $path, string $name = ''): array {
         if ($path === '' || !is_readable($path)) {
             return self::fail('Material file is not readable.', 'unknown');
@@ -93,12 +150,27 @@ class material_extractor {
         $filename = $name !== '' ? $name : basename($path);
         $ext = self::extension($filename);
         if (!in_array($ext, self::ALLOWED_EXTENSIONS, true)) {
+            // phpcs:ignore moodle.Files.LineLength
             return self::fail('Unsupported file type. Supported formats: TXT, MD, CSV, JSON, XML, HTML, code files, PDF, PPTX, DOCX and images.', $ext);
         }
         switch ($ext) {
-            case 'txt': case 'md': case 'csv': case 'json': case 'xml': case 'css': case 'js': case 'ts': case 'sql': case 'cs': case 'java': case 'py': case 'cpp': case 'c':
+            case 'txt':
+            case 'md':
+            case 'csv':
+            case 'json':
+            case 'xml':
+            case 'css':
+            case 'js':
+            case 'ts':
+            case 'sql':
+            case 'cs':
+            case 'java':
+            case 'py':
+            case 'cpp':
+            case 'c':
                 return self::extract_text_file($path, $filename, $ext);
-            case 'html': case 'htm':
+            case 'html':
+            case 'htm':
                 return self::extract_html_file($path, $filename, $ext);
             case 'pdf':
                 return self::extract_pdf($path, $filename);
@@ -106,34 +178,59 @@ class material_extractor {
                 return self::extract_pptx($path, $filename);
             case 'docx':
                 return self::extract_docx($path, $filename);
-            case 'png': case 'jpg': case 'jpeg': case 'bmp': case 'tif': case 'tiff': case 'webp':
+            case 'png':
+            case 'jpg':
+            case 'jpeg':
+            case 'bmp':
+            case 'tif':
+            case 'tiff':
+            case 'webp':
                 return self::extract_image($path, $filename, $ext);
             default:
                 return self::fail('Unsupported file type.', $ext);
         }
     }
 
+    /**
+     * Extract text file helper.
+     */
     private static function extract_text_file(string $path, string $filename, string $ext): array {
         $text = file_get_contents($path);
-        if ($text === false) { return self::fail('Could not read text file.', $ext); }
+        if ($text === false) {
+            return self::fail('Could not read text file.', $ext);
+        }
         $text = self::limit(self::clean($text));
-        if ($text === '') { return self::fail('No readable text found in file.', $ext); }
+        if ($text === '') {
+            return self::fail('No readable text found in file.', $ext);
+        }
         return self::ok($text, $ext, $filename, 'Text extracted successfully.');
     }
 
+    /**
+     * Extract html file helper.
+     */
     private static function extract_html_file(string $path, string $filename, string $ext): array {
         $html = file_get_contents($path);
-        if ($html === false) { return self::fail('Could not read HTML file.', $ext); }
+        if ($html === false) {
+            return self::fail('Could not read HTML file.', $ext);
+        }
         $text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $text = self::limit(self::clean($text));
-        if ($text === '') { return self::fail('No readable text found in HTML file.', $ext); }
+        if ($text === '') {
+            return self::fail('No readable text found in HTML file.', $ext);
+        }
         return self::ok($text, $ext, $filename, 'HTML extracted successfully.');
     }
 
-    // AISN_MATERIAL_EXTRACTOR_MISTRAL_FIRST_V1
+    // AISN_MATERIAL_EXTRACTOR_MISTRAL_FIRST_V1.
+    /**
+     * Try mistral ocr helper.
+     */
     private static function try_mistral_ocr(string $path, string $filename, string $type): ?array {
-        if (!function_exists('\\local_aisn_mistral_ocr_supported_extension') ||
-            !function_exists('\\local_aisn_mistral_ocr_extract_path')) {
+        if (
+            !function_exists('\\local_aisn_mistral_ocr_supported_extension') ||
+            !function_exists('\\local_aisn_mistral_ocr_extract_path')
+        ) {
             return null;
         }
 
@@ -152,20 +249,30 @@ class material_extractor {
 
         return self::ok($text, $type, $filename, 'Document converted to structured Markdown using Mistral OCR.');
     }
+    /**
+     * Extract pdf helper.
+     */
     private static function extract_pdf(string $path, string $filename): array {
         $mistral = self::try_mistral_ocr($path, $filename, 'pdf');
-        if ($mistral !== null) { return $mistral; }
+        if ($mistral !== null) {
+            return $mistral;
+        }
 
         if (function_exists('\\local_aiskillnavigator_extract_pdf_text_from_path')) {
             $text = \local_aiskillnavigator_extract_pdf_text_from_path($path, $filename);
             $text = self::limit(self::clean($text));
             if ($text !== '') {
+                // phpcs:ignore moodle.Files.LineLength
                 return self::ok($text, 'pdf', $filename, 'PDF converted to TXT using fast text-layer extraction; OCR only for small scanned PDFs.');
             }
         }
+        // phpcs:ignore moodle.Files.LineLength
         return self::fail('No readable text layer found in PDF. Large scanned PDFs are not OCRed during Course Builder for performance.', 'pdf');
     }
 
+    /**
+     * Extract pptx helper.
+     */
     private static function extract_pptx(string $path, string $filename): array {
         $parts = [];
 
@@ -178,16 +285,24 @@ class material_extractor {
 
         // Fast PPTX -> TXT mode: read slide XML and chart XML only.
         // No embedded-image OCR here, otherwise 100MB+ decks freeze the Course Builder.
-        if (function_exists('\\local_aisn_extract_pptx_xml_text_from_path')) { $parts[] = \local_aisn_extract_pptx_xml_text_from_path($path); }
-        if (function_exists('\\local_aisn_extract_pptx_chart_text_from_path')) { $parts[] = \local_aisn_extract_pptx_chart_text_from_path($path); }
+        if (function_exists('\\local_aisn_extract_pptx_xml_text_from_path')) {
+            $parts[] = \local_aisn_extract_pptx_xml_text_from_path($path);
+        }
+        if (function_exists('\\local_aisn_extract_pptx_chart_text_from_path')) {
+            $parts[] = \local_aisn_extract_pptx_chart_text_from_path($path);
+        }
 
         $content = self::limit(self::clean(implode("\n\n", array_filter($parts))));
         if ($content === '') {
+            // phpcs:ignore moodle.Files.LineLength
             return self::ok('[PPTX linked as Moodle resource. Fast XML-to-TXT found no selectable text; embedded-image OCR skipped for performance.]', 'pptx', $filename, 'PPTX linked without OCR.');
         }
         return self::ok($content, 'pptx', $filename, 'PPTX converted to TXT from slide XML/chart XML without OCR.');
     }
 
+    /**
+     * Extract docx helper.
+     */
     private static function extract_docx(string $path, string $filename): array {
         $parts = [];
 
@@ -196,7 +311,9 @@ class material_extractor {
             $parts[] = $xmltext;
         }
 
-        if (function_exists('\\local_aisn_extract_docx_xml_text_from_path')) { $parts[] = \local_aisn_extract_docx_xml_text_from_path($path); }
+        if (function_exists('\\local_aisn_extract_docx_xml_text_from_path')) {
+            $parts[] = \local_aisn_extract_docx_xml_text_from_path($path);
+        }
 
         // Only OCR embedded DOCX images for small files and only when XML text is weak.
         $size = is_readable($path) ? (int)@filesize($path) : 0;
@@ -207,10 +324,15 @@ class material_extractor {
         }
 
         $content = self::limit(self::clean(implode("\n\n", array_filter($parts))));
-        if ($content === '') { return self::fail('No readable text found in DOCX.', 'docx'); }
+        if ($content === '') {
+            return self::fail('No readable text found in DOCX.', 'docx');
+        }
         return self::ok($content, 'docx', $filename, 'DOCX converted to TXT from XML; OCR only for small image-heavy files.');
     }
 
+    /**
+     * Extract docx xml text helper.
+     */
     private static function extract_docx_xml_text(string $path): string {
         if (!class_exists('\\ZipArchive')) {
             return '';
@@ -246,6 +368,9 @@ class material_extractor {
         return trim(implode("\n\n", $parts));
     }
 
+    /**
+     * Extract openxml text helper.
+     */
     private static function extract_openxml_text(string $xml): string {
         $previous = libxml_use_internal_errors(true);
         $dom = new \DOMDocument();
@@ -277,6 +402,9 @@ class material_extractor {
         return trim((string) preg_replace('/\s+/u', ' ', implode(' ', $parts)));
     }
 
+    /**
+     * Extract image helper.
+     */
     private static function extract_image(string $path, string $filename, string $ext): array {
         $text = function_exists('\\local_aisn_ocr_image_path') ? \local_aisn_ocr_image_path($path, $filename) : '';
         $text = self::limit(self::clean($text));
@@ -286,6 +414,9 @@ class material_extractor {
         return self::ok($text, $ext, $filename, 'Image OCR extracted successfully.');
     }
 
+    /**
+     * Large file threshold helper.
+     */
     private static function large_file_threshold(): int {
         $configured = (int)get_config('local_aiskillnavigator', 'largefilethresholdbytes');
         if ($configured > 0) {
@@ -294,8 +425,16 @@ class material_extractor {
         return 25 * 1024 * 1024;
     }
 
-    private static function extension(string $filename): string { return strtolower((string)pathinfo($filename, PATHINFO_EXTENSION)); }
+    /**
+     * Extension helper.
+     */
+    private static function extension(string $filename): string {
+        return strtolower((string)pathinfo($filename, PATHINFO_EXTENSION));
+    }
 
+    /**
+     * Clean helper.
+     */
     private static function clean(string $text): string {
         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $text = str_replace(["\r\n", "\r"], "\n", $text);
@@ -305,6 +444,9 @@ class material_extractor {
         return trim((string)$text);
     }
 
+    /**
+     * Limit helper.
+     */
     private static function limit(string $text): string {
         if (function_exists('mb_strlen') && function_exists('mb_substr')) {
             if (mb_strlen($text, 'UTF-8') > self::MAX_CHARS) {
@@ -318,25 +460,40 @@ class material_extractor {
         return $text;
     }
 
+    /**
+     * Ok helper.
+     */
     private static function ok(string $content, string $type, string $filename, string $message): array {
         return ['success' => true, 'content' => $content, 'message' => $message, 'type' => $type, 'filename' => $filename];
     }
 
+    /**
+     * Fail helper.
+     */
     private static function fail(string $message, string $type): array {
         return ['success' => false, 'content' => '', 'message' => $message, 'type' => $type];
     }
 
+    /**
+     * Upload error message helper.
+     */
     private static function upload_error_message(int $error): string {
         switch ($error) {
-            case UPLOAD_ERR_INI_SIZE: case UPLOAD_ERR_FORM_SIZE: return 'Uploaded file is too large.';
-            case UPLOAD_ERR_PARTIAL: return 'Uploaded file was only partially uploaded.';
-            case UPLOAD_ERR_NO_FILE: return 'No file was uploaded.';
-            case UPLOAD_ERR_NO_TMP_DIR: return 'Missing temporary upload directory.';
-            case UPLOAD_ERR_CANT_WRITE: return 'Could not write uploaded file to disk.';
-            case UPLOAD_ERR_EXTENSION: return 'Upload was stopped by a PHP extension.';
-            default: return 'Unknown upload error.';
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+                return 'Uploaded file is too large.';
+            case UPLOAD_ERR_PARTIAL:
+                return 'Uploaded file was only partially uploaded.';
+            case UPLOAD_ERR_NO_FILE:
+                return 'No file was uploaded.';
+            case UPLOAD_ERR_NO_TMP_DIR:
+                return 'Missing temporary upload directory.';
+            case UPLOAD_ERR_CANT_WRITE:
+                return 'Could not write uploaded file to disk.';
+            case UPLOAD_ERR_EXTENSION:
+                return 'Upload was stopped by a PHP extension.';
+            default:
+                return 'Unknown upload error.';
         }
     }
 }
-
-

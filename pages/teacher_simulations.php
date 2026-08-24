@@ -1,4 +1,26 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/ui_style_helper.php');
@@ -28,8 +50,8 @@ if ($simulationid > 0) {
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/teacher_simulations.php', $params));
-$PAGE->set_title('Saved simulations');
-$PAGE->set_heading('Saved simulations');
+$PAGE->set_title(get_string('page_teacher_simulations_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_teacher_simulations_heading', 'local_aiskillnavigator'));
 
 local_aisn_sim_ensure_table();
 
@@ -46,11 +68,17 @@ if ($action === 'delete' && $simulationid > 0) {
     redirect($listurl, 'Simulation deleted.', 1);
 }
 
+/**
+ * Local aisn saved material titles helper.
+ */
 function local_aisn_saved_material_titles(stdClass $record): array {
     $titles = json_decode((string)($record->materialtitles ?? ''), true);
     return is_array($titles) ? array_values(array_filter(array_map('strval', $titles))) : [];
 }
 
+/**
+ * Local aisn saved render materials helper.
+ */
 function local_aisn_saved_render_materials(array $titles): string {
     if (empty($titles)) {
         return '';
@@ -67,6 +95,9 @@ function local_aisn_saved_render_materials(array $titles): string {
     return $html;
 }
 
+/**
+ * Local aisn saved record text helper.
+ */
 function local_aisn_saved_record_text(stdClass $record): string {
     $text = trim((string)($record->resulttext ?? ''));
 
@@ -77,6 +108,9 @@ function local_aisn_saved_record_text(stdClass $record): string {
     return trim((string)($record->description ?? ''));
 }
 
+/**
+ * Local aisn saved record title helper.
+ */
 function local_aisn_saved_record_title(stdClass $record): string {
     $topic = trim((string)($record->topic ?? ''));
 
@@ -89,12 +123,18 @@ function local_aisn_saved_record_title(stdClass $record): string {
     return $title !== '' ? $title : 'Generated simulator exercise';
 }
 
+/**
+ * Local aisn saved record level helper.
+ */
 function local_aisn_saved_record_level(stdClass $record): string {
     $level = trim((string)($record->level ?? ''));
 
     return $level !== '' ? $level : '-';
 }
 
+/**
+ * Local aisn saved css helper.
+ */
 function local_aisn_saved_css(): string {
     return '
 /* AISN_SAVED_SIMULATIONS_LINK_DETAIL_V1 */
@@ -409,6 +449,7 @@ if ($action === 'view' && $simulationid > 0) {
 
     if (local_aisn_saved_sim_is_bad_raw($recordtext)) {
         echo html_writer::div(
+            // phpcs:ignore moodle.Files.LineLength
             'Nota: questo record era stato salvato con testo sporco della pagina Moodle. La vista dettaglio mostra solo la parte utile recuperata.',
             'aisn-bad-old-record'
         );
@@ -462,7 +503,7 @@ if ($action === 'view' && $simulationid > 0) {
 
 $records = $DB->get_records('local_aiskillnav_sim', ['courseid' => $courseid], 'timecreated DESC, id DESC');
 
-// AISN_SIM_DEDUPE_LIST_V1
+// AISN_SIM_DEDUPE_LIST_V1.
 // Difesa UI: anche se il DB contiene duplicati vecchi, la lista mostra una sola simulazione.
 if (function_exists('local_aisn_sim_unique_records')) {
     $records = local_aisn_sim_unique_records($records);
@@ -589,4 +630,3 @@ echo html_writer::script("
 echo html_writer::end_div();
 
 echo $OUTPUT->footer();
-

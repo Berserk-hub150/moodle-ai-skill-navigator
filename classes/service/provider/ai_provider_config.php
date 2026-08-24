@@ -1,18 +1,54 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace local_aiskillnavigator\service\provider;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Ai provider config implementation.
+ */
 class ai_provider_config {
+    /** @var string Provider. */
     public string $provider;
+    /** @var string Endpoint. */
     public string $endpoint;
+    /** @var string Model. */
     public string $model;
+    /** @var string Apikey. */
     public string $apikey;
+    /** @var string Customrequesttemplate. */
     public string $customrequesttemplate;
+    /** @var string Customheadersjson. */
     public string $customheadersjson;
+    /** @var string Customresponsepath. */
     public string $customresponsepath;
 
+    /**
+     * Construct helper.
+     */
     public function __construct() {
         $this->provider = strtolower(trim((string) get_config('local_aiskillnavigator', 'provider')));
         $this->endpoint = trim((string) get_config('local_aiskillnavigator', 'endpoint'));
@@ -39,6 +75,9 @@ class ai_provider_config {
         }
     }
 
+    /**
+     * Default model helper.
+     */
     private function default_model(string $provider): string {
         $defaults = [
             'prototype' => 'prototype',
@@ -62,6 +101,9 @@ class ai_provider_config {
         return $defaults[$provider] ?? 'default';
     }
 
+    /**
+     * Default endpoint helper.
+     */
     private function default_endpoint(string $provider): string {
         $defaults = [
             'ollama' => 'http://host.docker.internal:11434',

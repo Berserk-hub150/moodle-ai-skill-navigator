@@ -1,8 +1,34 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 if (!function_exists('local_aisn_fix_mojibake')) {
+    /**
+     * Local aisn fix mojibake helper.
+     */
     function local_aisn_fix_mojibake(string $text): string {
         $map = [
             'â€™' => '’', 'â€˜' => '‘', 'â€œ' => '“', 'â€' => '”',
@@ -18,6 +44,9 @@ if (!function_exists('local_aisn_fix_mojibake')) {
 }
 
 if (!function_exists('local_aisn_ai_output_formatter_assets')) {
+    /**
+     * Local aisn ai output formatter assets helper.
+     */
     function local_aisn_ai_output_formatter_assets(): string {
         $css = <<<'CSS'
 .aisn-ai-output {
@@ -107,6 +136,9 @@ CSS;
         "Ã§": "ç"
     };
 
+    /**
+     * Fixtext helper.
+     */
     function fixText(value) {
         let out = String(value || "");
         Object.keys(mojibakeMap).forEach(function (bad) {
@@ -115,6 +147,9 @@ CSS;
         return out;
     }
 
+    /**
+     * Esc helper.
+     */
     function esc(value) {
         return String(value || "")
             .replaceAll("&", "&amp;")
@@ -124,16 +159,25 @@ CSS;
             .replaceAll("'", "&#039;");
     }
 
+    /**
+     * Istableseparator helper.
+     */
     function isTableSeparator(line) {
         line = String(line || "").trim();
         return /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
     }
 
+    /**
+     * Istableline helper.
+     */
     function isTableLine(line) {
         line = String(line || "").trim();
         return line.startsWith("|") && line.endsWith("|") && line.split("|").length >= 3;
     }
 
+    /**
+     * Splittablerow helper.
+     */
     function splitTableRow(line) {
         return String(line || "")
             .trim()
@@ -143,6 +187,9 @@ CSS;
             .map(x => x.trim());
     }
 
+    /**
+     * Looksmath helper.
+     */
     function looksMath(line) {
         line = String(line || "").trim();
         return (
@@ -154,6 +201,9 @@ CSS;
         );
     }
 
+    /**
+     * Rendermarkdownish helper.
+     */
     function renderMarkdownish(raw) {
         let text = fixText(raw)
             .replace(/\r\n/g, "\n")
@@ -173,9 +223,11 @@ CSS;
                 continue;
             }
 
+            // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
             if (/^```/.test(line)) {
                 const code = [];
                 i++;
+                // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
                 while (i < lines.length && !/^```/.test(lines[i].trim())) {
                     code.push(lines[i]);
                     i++;
@@ -243,6 +295,7 @@ CSS;
             while (
                 i < lines.length &&
                 lines[i].trim() &&
+                // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
                 !/^```/.test(lines[i].trim()) &&
                 !isTableLine(lines[i]) &&
                 !/^[-*]\s+/.test(lines[i].trim()) &&
@@ -258,6 +311,9 @@ CSS;
         return '<div class="aisn-ai-output">' + html + '</div>';
     }
 
+    /**
+     * Findanswercards helper.
+     */
     function findAnswerCards() {
         const cards = [];
 
@@ -284,6 +340,9 @@ CSS;
         return cards;
     }
 
+    /**
+     * Formatanswercard helper.
+     */
     function formatAnswerCard(card) {
         if (
             !card ||
@@ -319,10 +378,12 @@ CSS;
             return;
         }
 
+        // phpcs:ignore moodle.Files.LineLength
         const hasMarkdownTable = text.split(/\n/).some((line, idx, arr) => isTableLine(line) && idx + 1 < arr.length && isTableSeparator(arr[idx + 1]));
         const hasMath = text.split(/\n/).some(looksMath);
         const hasList = text.split(/\n/).some(line => /^[-*]\s+/.test(line.trim()) || /^\d+\.\s+/.test(line.trim()));
 
+        // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
         if (!hasMarkdownTable && !hasMath && !hasList && !text.includes("```")) {
             return;
         }
@@ -354,6 +415,9 @@ CSS;
         card.dataset.aisnUnifiedAnswerDone = "1";
     }
 
+    /**
+     * Fixmojibakeeverywhere helper.
+     */
     function fixMojibakeEverywhere() {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
         const nodes = [];
@@ -380,6 +444,9 @@ CSS;
         });
     }
 
+    /**
+     * Run helper.
+     */
     function run() {
         fixMojibakeEverywhere();
         findAnswerCards().forEach(formatAnswerCard);

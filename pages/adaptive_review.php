@@ -1,4 +1,26 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/role_guard.php');
@@ -23,9 +45,12 @@ require_capability('local/aiskillnavigator:viewstudent', $context);
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/adaptive_review.php', ['courseid' => $courseid]));
-$PAGE->set_title('Adaptive review');
-$PAGE->set_heading('Adaptive review');
+$PAGE->set_title(get_string('page_adaptive_review_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_adaptive_review_heading', 'local_aiskillnavigator'));
 
+/**
+ * Local aiskillnavigator adaptive call ai helper.
+ */
 function local_aiskillnavigator_adaptive_call_ai(string $prompt): string {
     try {
         if (class_exists('\local_aiskillnavigator\service\ai_provider_factory')) {
@@ -33,6 +58,7 @@ function local_aiskillnavigator_adaptive_call_ai(string $prompt): string {
             return $provider->generate(
                 $prompt,
                 2600,
+                // phpcs:ignore moodle.Files.LineLength
                 'You are an adaptive Moodle tutor. Generate remedial explanations and practice questions based on weak abilities. Do not invent private data.'
             );
         }
@@ -78,6 +104,7 @@ if (empty($profile['skills'])) {
     echo html_writer::start_div('card mb-4');
     echo html_writer::start_div('card-body');
     echo html_writer::tag('h3', 'No learning data yet');
+    // phpcs:ignore moodle.Files.LineLength
     echo html_writer::tag('p', 'Complete at least one AI quiz or initial/final test. Then this page will build a personalized weak-ability profile.', ['class' => 'text-muted']);
     echo html_writer::end_div();
     echo html_writer::end_div();
@@ -147,9 +174,9 @@ echo html_writer::link(
 
 echo html_writer::end_div();
 
+// phpcs:ignore moodle.Files.LineLength
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
-if (function_exists('local_aisn_ai_output_formatter_assets')) { echo local_aisn_ai_output_formatter_assets(); }
+if (function_exists('local_aisn_ai_output_formatter_assets')) {
+    echo local_aisn_ai_output_formatter_assets();
+}
 echo $OUTPUT->footer();
-
-
-

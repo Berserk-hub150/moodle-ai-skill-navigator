@@ -1,5 +1,26 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/ai_output_formatter.php');
@@ -26,8 +47,8 @@ require_capability('local/aiskillnavigator:viewteacher', $context);
 $PAGE->set_context($context);
 $PAGE->requires->css(new moodle_url('/local/aiskillnavigator/assets/css/styles.css'));
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/teacher.php', ['courseid' => $courseid]));
-$PAGE->set_title('Teacher dashboard');
-$PAGE->set_heading('Teacher dashboard');
+$PAGE->set_title(get_string('page_teacher_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_teacher_heading', 'local_aiskillnavigator'));
 
 $attempts = $DB->get_records_sql(
     "SELECT a.*, u.firstname, u.lastname, u.email
@@ -176,6 +197,9 @@ foreach ($students as $student) {
     }
 }
 
+/**
+ * Local aiskillnavigator teacher badge class helper.
+ */
 function local_aiskillnavigator_teacher_badge_class(int $percentage): string {
     if ($percentage >= 80) {
         return 'badge badge-success';
@@ -188,6 +212,9 @@ function local_aiskillnavigator_teacher_badge_class(int $percentage): string {
     return 'badge badge-danger';
 }
 
+/**
+ * Local aiskillnavigator teacher status text helper.
+ */
 function local_aiskillnavigator_teacher_status_text(int $percentage): string {
     if ($percentage >= 80) {
         return 'Strong';
@@ -402,7 +429,9 @@ echo html_writer::div(
 echo html_writer::end_div();
 
 
+// phpcs:ignore moodle.Files.LineLength
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
-if (function_exists('local_aisn_ai_output_formatter_assets')) { echo local_aisn_ai_output_formatter_assets(); }
+if (function_exists('local_aisn_ai_output_formatter_assets')) {
+    echo local_aisn_ai_output_formatter_assets();
+}
 echo $OUTPUT->footer();
-

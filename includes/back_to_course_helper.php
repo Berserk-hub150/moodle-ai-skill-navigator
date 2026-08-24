@@ -1,7 +1,33 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Local aisn back to course autofix helper.
+ */
 function local_aisn_back_to_course_autofix(int $courseid): string {
     if ($courseid <= 0) {
         return '';
@@ -14,10 +40,16 @@ function local_aisn_back_to_course_autofix(int $courseid): string {
 document.addEventListener('DOMContentLoaded', function () {
     var courseUrl = {$urljson};
 
+    /**
+     * Labelof helper.
+     */
     function labelOf(el) {
         return String(el.textContent || el.value || el.getAttribute('aria-label') || '').trim().toLowerCase();
     }
 
+    /**
+     * Isbackbutton helper.
+     */
     function isBackButton(el) {
         var t = labelOf(el);
         return t.indexOf('back to course') !== -1 ||
@@ -55,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     if (!found) {
+        // phpcs:ignore moodle.Files.LineLength
         var container = document.querySelector('.container-fluid') || document.querySelector('#region-main') || document.querySelector('main') || document.body;
 
         if (container) {

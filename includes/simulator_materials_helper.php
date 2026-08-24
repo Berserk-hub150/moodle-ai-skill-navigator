@@ -1,17 +1,46 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/saved_simulation_helper.php');
 
 require_once(__DIR__ . '/course_resource_sync.php');
 require_once(__DIR__ . '/material_ai_policy.php');
 
+/**
+ * Local aisn sim table exists helper.
+ */
 function local_aisn_sim_table_exists(string $name): bool {
     global $DB;
     return $DB->get_manager()->table_exists(new xmldb_table($name));
 }
 
 
+/**
+ * Local aisn sim field exists helper.
+ */
 function local_aisn_sim_field_exists(string $fieldname): bool {
     global $DB;
 
@@ -34,6 +63,9 @@ function local_aisn_sim_field_exists(string $fieldname): bool {
     return $cache[$fieldname];
 }
 
+/**
+ * Local aisn sim add field if missing helper.
+ */
 function local_aisn_sim_add_field_if_missing(xmldb_table $table, xmldb_field $field): void {
     global $DB;
 
@@ -44,6 +76,9 @@ function local_aisn_sim_add_field_if_missing(xmldb_table $table, xmldb_field $fi
     }
 }
 
+/**
+ * Local aisn sim material cmid helper.
+ */
 function local_aisn_sim_material_cmid(stdClass $material): int {
     if (isset($material->sourcecmid) && (int)$material->sourcecmid > 0) {
         return (int)$material->sourcecmid;
@@ -60,6 +95,9 @@ function local_aisn_sim_material_cmid(stdClass $material): int {
     return 0;
 }
 
+/**
+ * Local aisn sim ensure table helper.
+ */
 function local_aisn_sim_ensure_table(): void {
     global $DB;
 
@@ -91,20 +129,33 @@ function local_aisn_sim_ensure_table(): void {
     }
 
     // Upgrade old ad-hoc simulator tables to the superset expected by this helper.
+    // phpcs:ignore moodle.Files.LineLength
     local_aisn_sim_add_field_if_missing($table, new xmldb_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'courseid'));
+    // phpcs:ignore moodle.Files.LineLength
     local_aisn_sim_add_field_if_missing($table, new xmldb_field('materialid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'userid'));
+    // phpcs:ignore moodle.Files.LineLength
     local_aisn_sim_add_field_if_missing($table, new xmldb_field('topic', XMLDB_TYPE_CHAR, '255', null, null, null, '', 'materialid'));
     local_aisn_sim_add_field_if_missing($table, new xmldb_field('level', XMLDB_TYPE_CHAR, '40', null, null, null, '', 'topic'));
+    // phpcs:ignore moodle.Files.LineLength
     local_aisn_sim_add_field_if_missing($table, new xmldb_field('title', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, '', 'level'));
     local_aisn_sim_add_field_if_missing($table, new xmldb_field('url', XMLDB_TYPE_TEXT, null, null, null, null, null, 'title'));
+    // phpcs:ignore moodle.Files.LineLength
     local_aisn_sim_add_field_if_missing($table, new xmldb_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null, 'url'));
+    // phpcs:ignore moodle.Files.LineLength
     local_aisn_sim_add_field_if_missing($table, new xmldb_field('source', XMLDB_TYPE_CHAR, '40', null, XMLDB_NOTNULL, null, 'ai_generated', 'description'));
+    // phpcs:ignore moodle.Files.LineLength
     local_aisn_sim_add_field_if_missing($table, new xmldb_field('materialids', XMLDB_TYPE_TEXT, null, null, null, null, null, 'source'));
+    // phpcs:ignore moodle.Files.LineLength
     local_aisn_sim_add_field_if_missing($table, new xmldb_field('materialtitles', XMLDB_TYPE_TEXT, null, null, null, null, null, 'materialids'));
+    // phpcs:ignore moodle.Files.LineLength
     local_aisn_sim_add_field_if_missing($table, new xmldb_field('resulttext', XMLDB_TYPE_TEXT, null, null, null, null, null, 'materialtitles'));
+    // phpcs:ignore moodle.Files.LineLength
     local_aisn_sim_add_field_if_missing($table, new xmldb_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'timecreated'));
 }
 
+/**
+ * Local aisn sim selected ids helper.
+ */
 function local_aisn_sim_selected_ids(): array {
     $ids = optional_param_array('materialids', [], PARAM_INT);
     $ids = array_values(array_unique(array_filter(array_map('intval', $ids))));
@@ -112,6 +163,9 @@ function local_aisn_sim_selected_ids(): array {
 }
 
 
+/**
+ * Local aisn sim material selectable helper.
+ */
 function local_aisn_sim_material_selectable(stdClass $material): bool {
     if (function_exists('local_aiskillnavigator_material_can_be_sent_to_current_ai')) {
         return local_aiskillnavigator_material_can_be_sent_to_current_ai($material);
@@ -120,6 +174,9 @@ function local_aisn_sim_material_selectable(stdClass $material): bool {
     return true;
 }
 
+/**
+ * Local aisn sim material policy label safe helper.
+ */
 function local_aisn_sim_material_policy_label_safe(stdClass $material): string {
     if (function_exists('local_aiskillnavigator_ai_policy_label')) {
         return local_aiskillnavigator_ai_policy_label($material);
@@ -130,6 +187,9 @@ function local_aisn_sim_material_policy_label_safe(stdClass $material): string {
         : 'Local AI only';
 }
 
+/**
+ * Local aisn sim material policy class safe helper.
+ */
 function local_aisn_sim_material_policy_class_safe(stdClass $material): string {
     if (function_exists('local_aiskillnavigator_ai_policy_badge_class')) {
         return local_aiskillnavigator_ai_policy_badge_class($material);
@@ -141,11 +201,17 @@ function local_aisn_sim_material_policy_class_safe(stdClass $material): string {
 }
 
 
+/**
+ * Local aisn sim clean title helper.
+ */
 function local_aisn_sim_clean_title(string $title): string {
     $title = preg_replace('/^\[Course #[0-9]+ \/ cm #[0-9]+\]\s*/', '', $title);
     return trim((string)$title);
 }
 
+/**
+ * Local aisn sim get course materials helper.
+ */
 function local_aisn_sim_get_course_materials(int $courseid): array {
     global $DB;
 
@@ -201,6 +267,9 @@ function local_aisn_sim_get_course_materials(int $courseid): array {
     return $out;
 }
 
+/**
+ * Local aisn sim selected materials helper.
+ */
 function local_aisn_sim_selected_materials(int $courseid, array $ids): array {
     $materials = local_aisn_sim_get_course_materials($courseid);
 
@@ -208,12 +277,15 @@ function local_aisn_sim_selected_materials(int $courseid, array $ids): array {
         return [];
     }
 
-    return array_filter($materials, function($material) use ($ids) {
+    return array_filter($materials, function ($material) use ($ids) {
         return in_array((int)$material->id, $ids, true) &&
             local_aisn_sim_material_selectable($material);
     });
 }
 
+/**
+ * Local aisn sim material context helper.
+ */
 function local_aisn_sim_material_context(int $courseid, array $ids): string {
     $selected = local_aisn_sim_selected_materials($courseid, $ids);
     $parts = [];
@@ -245,58 +317,39 @@ function local_aisn_sim_material_context(int $courseid, array $ids): string {
     return trim(implode("\n\n---\n\n", $parts));
 }
 
+/**
+ * Local aisn sim require materials for post helper.
+ */
 function local_aisn_sim_require_materials_for_post(int $courseid): void {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $submitted = data_submitted();
+    if ($submitted === false) {
         return;
     }
 
     $ids = local_aisn_sim_selected_ids();
-
     if (empty($ids)) {
         redirect(
             new moodle_url('/local/aiskillnavigator/pages/simulator_finder.php', ['courseid' => $courseid]),
-            'Select at least one course material before generating a simulator exercise.',
+            get_string('simulator_select_material', 'local_aiskillnavigator'),
             3,
             \core\output\notification::NOTIFY_ERROR
         );
     }
 
     $context = local_aisn_sim_material_context($courseid, $ids);
-
     if ($context === '') {
         redirect(
             new moodle_url('/local/aiskillnavigator/pages/simulator_finder.php', ['courseid' => $courseid]),
-            'The selected material has no readable text.',
+            get_string('simulator_material_unreadable', 'local_aiskillnavigator'),
             3,
             \core\output\notification::NOTIFY_ERROR
         );
     }
-
-    if (!empty($_POST['aisn_selected_material_context_added'])) {
-        return;
-    }
-
-    $addition = "\n\nSelected Moodle course materials:\n" . $context;
-    $targetkey = 'materials';
-
-    foreach (['materials', 'material', 'teacher_notes', 'notes', 'context', 'constraints'] as $candidate) {
-        if (isset($_POST[$candidate]) && trim((string)$_POST[$candidate]) !== '') {
-            $targetkey = $candidate;
-            break;
-        }
-    }
-
-    $current = isset($_POST[$targetkey]) ? (string)$_POST[$targetkey] : '';
-
-    if (strpos($current, 'Selected Moodle course materials:') === false) {
-        $_POST[$targetkey] = trim($current . $addition);
-        $_REQUEST[$targetkey] = $_POST[$targetkey];
-    }
-
-    $_POST['aisn_selected_material_context_added'] = '1';
-    $_REQUEST['aisn_selected_material_context_added'] = '1';
 }
 
+/**
+ * Local aisn sim material selector html helper.
+ */
 function local_aisn_sim_material_selector_html(int $courseid): string {
     $materials = local_aisn_sim_get_course_materials($courseid);
     $selectedids = local_aisn_sim_selected_ids();
@@ -513,6 +566,9 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
 
     $html .= html_writer::tag('script', '
 (function() {
+    /**
+     * Initmaterialselector helper.
+     */
     function initMaterialSelector() {
         const root = document.getElementById("aisn-sim-material-selector");
         if (!root) { return; }
@@ -523,6 +579,9 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
         const rows = Array.from(root.querySelectorAll("[data-aisn-material-row]"));
         const boxes = Array.from(root.querySelectorAll("[data-aisn-material-checkbox]:not(:disabled)"));
 
+        /**
+         * Refreshsummary helper.
+         */
         function refreshSummary() {
             const selected = boxes.filter(function(box) { return box.checked; }).length;
             summary.textContent = selected > 0
@@ -558,6 +617,7 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
                 if (!selected) {
                     event.preventDefault();
                     event.stopPropagation();
+                    // phpcs:ignore moodle.Files.LineLength
                     alert("Select at least one selectable course material. Local-only materials require local AI or must be allowed for external AI.");
                 }
             }, true);
@@ -582,6 +642,9 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
 }
 
 
+/**
+ * Local aisn sim saved link html helper.
+ */
 function local_aisn_sim_saved_link_html(int $courseid): string {
     return html_writer::div(
         html_writer::link(
@@ -593,6 +656,9 @@ function local_aisn_sim_saved_link_html(int $courseid): string {
     );
 }
 
+/**
+ * Local aisn sim prepare capture helper.
+ */
 function local_aisn_sim_prepare_capture(int $courseid): void {
     // The previous implementation captured the whole rendered Moodle page at shutdown.
     // That stored navigation, CSS and JavaScript inside saved simulations.
@@ -600,6 +666,9 @@ function local_aisn_sim_prepare_capture(int $courseid): void {
     return;
 }
 
+/**
+ * Local aisn sim save generated helper.
+ */
 function local_aisn_sim_save_generated(
     int $courseid,
     int $userid,
@@ -676,7 +745,7 @@ function local_aisn_sim_save_generated(
         $record->timemodified = $now;
     }
 
-        // AISN_SIM_DEDUPE_SAVE_SAFE_V3
+        // AISN_SIM_DEDUPE_SAVE_SAFE_V3.
     if (function_exists('local_aisn_sim_upsert_record')) {
         local_aisn_sim_upsert_record($record);
     } else {
@@ -690,6 +759,9 @@ function local_aisn_sim_save_generated(
  */
 
 if (!function_exists('local_aisn_sim_dupe_normalize_value')) {
+    /**
+     * Local aisn sim dupe normalize value helper.
+     */
     function local_aisn_sim_dupe_normalize_value($value, int $max = 12000): string {
         $text = (string)($value ?? '');
         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -715,6 +787,9 @@ if (!function_exists('local_aisn_sim_dupe_normalize_value')) {
 }
 
 if (!function_exists('local_aisn_sim_dupe_json_key')) {
+    /**
+     * Local aisn sim dupe json key helper.
+     */
     function local_aisn_sim_dupe_json_key($value): string {
         if (is_array($value)) {
             $arr = $value;
@@ -724,11 +799,11 @@ if (!function_exists('local_aisn_sim_dupe_json_key')) {
             $arr = is_array($decoded) ? $decoded : [$raw];
         }
 
-        $arr = array_map(static function($item): string {
+        $arr = array_map(static function ($item): string {
             return trim((string)$item);
         }, $arr);
 
-        $arr = array_values(array_filter($arr, static function($item): bool {
+        $arr = array_values(array_filter($arr, static function ($item): bool {
             return $item !== '';
         }));
 
@@ -739,6 +814,9 @@ if (!function_exists('local_aisn_sim_dupe_json_key')) {
 }
 
 if (!function_exists('local_aisn_sim_record_signature')) {
+    /**
+     * Local aisn sim record signature helper.
+     */
     function local_aisn_sim_record_signature(stdClass $record): string {
         $courseid = (int)($record->courseid ?? 0);
         $userid = (int)($record->userid ?? 0);
@@ -774,6 +852,9 @@ if (!function_exists('local_aisn_sim_record_signature')) {
 }
 
 if (!function_exists('local_aisn_sim_unique_records')) {
+    /**
+     * Local aisn sim unique records helper.
+     */
     function local_aisn_sim_unique_records(array $records): array {
         $seen = [];
         $out = [];
@@ -798,6 +879,9 @@ if (!function_exists('local_aisn_sim_unique_records')) {
 }
 
 if (!function_exists('local_aisn_sim_upsert_record')) {
+    /**
+     * Local aisn sim upsert record helper.
+     */
     function local_aisn_sim_upsert_record(stdClass $record): int {
         global $DB;
 

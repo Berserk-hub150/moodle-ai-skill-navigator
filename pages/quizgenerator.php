@@ -1,5 +1,26 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/role_guard.php');
@@ -42,14 +63,14 @@ $topic = optional_param('topic', '', PARAM_TEXT);
 $difficulty = optional_param('difficulty', 'medium', PARAM_ALPHA);
 
 // -1 = argomento libero senza materiali.
-//  0 = tutti i materiali leggibili.
+// 0 = tutti i materiali leggibili.
 // >0 = singolo materiale selezionato.
 $materialid = optional_param('materialid', -1, PARAM_INT);
 
 $generate = optional_param('generate', 0, PARAM_BOOL);
 $action = optional_param('action', '', PARAM_ALPHA);
 if ($generate && $action !== 'grade') {
-    // AISN_HOTFIX_QUIZ_GENERATE_SESSKEY_V2
+    // AISN_HOTFIX_QUIZ_GENERATE_SESSKEY_V2.
     require_sesskey();
 }
 
@@ -72,6 +93,7 @@ $totalchunks = $embeddingservice->count_indexed_chunks($courseid);
 
 $sourcemode = local_aiskillnavigator_material_source_mode_from_request(-1);
 $selectedmaterialids = local_aiskillnavigator_material_source_selected_ids_from_request($readablematerials);
+// phpcs:ignore moodle.Files.LineLength
 $selectedmaterials = local_aiskillnavigator_material_source_selected_materials($readablematerials, $sourcemode, $selectedmaterialids);
 $materialid = local_aiskillnavigator_material_source_legacy_materialid($sourcemode, $selectedmaterialids);
 
@@ -79,11 +101,17 @@ if ($sourcemode === 'selected' && empty($selectedmaterialids)) {
     $warning = 'Select at least one teacher material or switch to all course materials.';
 }
 
+/**
+ * Local aiskillnavigator clean ai json response helper.
+ */
 function local_aiskillnavigator_clean_ai_json_response(string $raw): string {
     $clean = trim($raw);
 
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
     $clean = preg_replace('/^```json\s*/i', '', $clean);
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
     $clean = preg_replace('/^```\s*/i', '', $clean);
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
     $clean = preg_replace('/\s*```$/', '', $clean);
     $clean = trim($clean);
 
@@ -110,6 +138,9 @@ function local_aiskillnavigator_clean_ai_json_response(string $raw): string {
     return local_aiskillnavigator_repair_json($clean);
 }
 
+/**
+ * Local aiskillnavigator repair json helper.
+ */
 function local_aiskillnavigator_repair_json(string $json): string {
     $json = trim($json);
 
@@ -161,6 +192,9 @@ function local_aiskillnavigator_repair_json(string $json): string {
 }
 
 
+/**
+ * Local aisn quiz clean rag source title helper.
+ */
 function local_aisn_quiz_clean_rag_source_title(string $title): string {
     $title = preg_replace('/(?:Ãƒ|Ã‚|Ã‚|Ã¢â‚¬|â€™|â€šÃ‚|Æ’Ã†)[\s\S]*/u', '', $title);
     $title = preg_replace('/\s+/u', ' ', trim((string)$title));
@@ -168,6 +202,9 @@ function local_aisn_quiz_clean_rag_source_title(string $title): string {
     return $title !== '' ? $title : 'Course material';
 }
 
+/**
+ * Local aiskillnavigator extract quiz json helper.
+ */
 function local_aiskillnavigator_extract_quiz_json(string $raw): ?array {
     $cleanresult = local_aiskillnavigator_clean_ai_json_response($raw);
 
@@ -255,6 +292,9 @@ function local_aiskillnavigator_extract_quiz_json(string $raw): ?array {
     return $decoded;
 }
 
+/**
+ * Local aiskillnavigator material short title helper.
+ */
 function local_aiskillnavigator_material_short_title(stdClass $material): string {
     $title = trim((string) ($material->title ?? 'Materiale senza titolo'));
 
@@ -311,8 +351,9 @@ if ($action === 'grade') {
         $savedmessage = 'Quiz attempt saved in the student profile.';
     }
 } else if ($generate) {
-    // AISN_PS1_QUIZ_GENERATE_SESSKEY
+    // AISN_PS1_QUIZ_GENERATE_SESSKEY.
     require_sesskey();
+    // phpcs:ignore moodle.Files.LineLength
     $selectedmaterials = local_aiskillnavigator_material_source_selected_materials($readablematerials, $sourcemode, $selectedmaterialids);
 
     $kgcontext = function_exists('local_aisn_kg_prompt_context')
@@ -334,6 +375,7 @@ if ($action === 'grade') {
         $result = $service->generate_quiz($fallbacktopic, $difficulty);
     } else if ($totalchunks > 0) {
         $searchquery = $topic !== '' ? $topic : 'quiz based on course materials';
+        // phpcs:ignore moodle.Files.LineLength
         $results = local_aiskillnavigator_material_source_search($embeddingservice, $searchquery, $courseid, 6, $sourcemode, $selectedmaterialids);
 
         if (!empty($results)) {
@@ -345,6 +387,7 @@ if ($action === 'grade') {
             $ragdebug = count($results) . ' RAG chunks retrieved, top similarity: ' . $results[0]->similarity;
 
             foreach ($results as $ragresult) {
+                // phpcs:ignore moodle.Files.LineLength
                 $ragsources[local_aisn_quiz_clean_rag_source_title((string)$ragresult->title) . ' chunk ' . (((int)$ragresult->chunkindex) + 1)] = $ragresult->similarity;
             }
         } else if (!empty($selectedmaterials)) {
@@ -367,7 +410,8 @@ if ($action === 'grade') {
     if ($quiz === null) {
         if ($sourcemode !== 'manual' && $totalchunks > 0) {
             $searchquery = $topic !== '' ? $topic : 'quiz based on course materials';
-        $results = local_aiskillnavigator_material_source_search($embeddingservice, $searchquery, $courseid, 6, $sourcemode, $selectedmaterialids);
+            // phpcs:ignore moodle.Files.LineLength
+            $results = local_aiskillnavigator_material_source_search($embeddingservice, $searchquery, $courseid, 6, $sourcemode, $selectedmaterialids);
             $ragcontext = $embeddingservice->build_context($results, 6500);
             $result = $service->generate_quiz_with_rag_context($topic, $difficulty, $ragcontext);
         } else {
@@ -394,6 +438,7 @@ echo html_writer::tag('h2', get_string('quizgenerator', 'local_aiskillnavigator'
 
 echo html_writer::tag(
     'p',
+    // phpcs:ignore moodle.Files.LineLength
     'Generate an AI micro-quiz from a generic topic or from teacher materials. In RAG mode, the quiz is grounded on the most relevant indexed chunks.',
     ['class' => 'lead']
 );
@@ -424,6 +469,7 @@ if ($totalchunks > 0) {
     );
 } else {
     echo html_writer::div(
+        // phpcs:ignore moodle.Files.LineLength
         'Readable teacher materials available: ' . count($readablematerials) . ', but no RAG chunks are indexed yet. Re-index materials from Teacher Materials.',
         'alert alert-warning'
     );
@@ -466,6 +512,7 @@ echo local_aiskillnavigator_material_source_selector_html(
     $sourcemode,
     $selectedmaterialids,
     'Generation source',
+    // phpcs:ignore moodle.Files.LineLength
     'Choose Manual topic only for a generic topic, all materials for full RAG search, or selected materials to use only specific uploaded files.'
 );
 echo html_writer::end_div();
@@ -485,6 +532,7 @@ echo html_writer::empty_tag('input', [
 
 echo html_writer::tag(
     'small',
+    // phpcs:ignore moodle.Files.LineLength
     'With manual topic mode this is the quiz topic. With teacher materials mode this is only an optional focus inside the selected materials.',
     ['class' => 'form-text text-muted']
 );
@@ -632,7 +680,7 @@ if ($quiz !== null) {
     ]);
 
     echo local_aiskillnavigator_material_source_hidden_fields($sourcemode, $selectedmaterialids);
-echo html_writer::empty_tag('input', [
+    echo html_writer::empty_tag('input', [
         'type' => 'hidden',
         'name' => 'quizdata',
         'value' => $encodedquiz,
@@ -732,7 +780,7 @@ echo html_writer::empty_tag('input', [
                 'difficulty' => $difficulty,
                 'materialid' => $materialid,
                 'courseid' => $courseid,
-                // AISN_FINAL_GENERATE_ANOTHER_SESSKEY
+                // AISN_FINAL_GENERATE_ANOTHER_SESSKEY.
                 'sesskey' => sesskey(),
             ]),
             'Generate another test',
@@ -761,14 +809,21 @@ echo html_writer::div(
 echo html_writer::end_div();
 echo local_aiskillnavigator_mojibake_guard();
 echo local_aiskillnavigator_quiz_tavily_video_assets_final_single((int)$courseid);
+// phpcs:ignore moodle.Files.LineLength
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
-if (function_exists('local_aisn_ai_output_formatter_assets')) { echo local_aisn_ai_output_formatter_assets(); }
+if (function_exists('local_aisn_ai_output_formatter_assets')) {
+    echo local_aisn_ai_output_formatter_assets();
+}
 echo $OUTPUT->footer();
 
 
 
 
+/**
+ * Local aiskillnavigator quiz video remediation assets helper.
+ */
 function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): string {
+    // phpcs:ignore moodle.Files.LineLength
     $endpoint = new moodle_url('/local/aiskillnavigator/pages/quiz_error_video.php', ['courseid' => $courseid, 'sesskey' => sesskey()]);
     $endpointjson = json_encode($endpoint->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
@@ -832,16 +887,25 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
 (function () {
     const endpoint = {$endpointjson};
 
+    /**
+     * Escapehtml helper.
+     */
     function escapeHtml(value) {
         return String(value || "").replace(/[&<>"']/g, function(m) {
             return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"}[m];
         });
     }
 
+    /**
+     * Cleanline helper.
+     */
     function cleanLine(value) {
         return String(value || "").replace(/Correct answer/g, "").replace(/\\s+/g, " ").trim();
     }
 
+    /**
+     * Gettopic helper.
+     */
     function getTopic() {
         const url = new URL(window.location.href);
         const fromUrl = url.searchParams.get("topic");
@@ -856,6 +920,9 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
         return document.title || "";
     }
 
+    /**
+     * Findquestioncards helper.
+     */
     function findQuestionCards() {
         return Array.from(document.querySelectorAll(".card, .aisn-card, section, div"))
             .filter(function (el) {
@@ -864,18 +931,27 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
             });
     }
 
+    /**
+     * Extractskill helper.
+     */
     function extractSkill(card) {
         const text = card.innerText || "";
         const match = (text.match(/Ability:\\s*([^\\n]+)/i) || text.match(/Skill:\\s*([^\\n]+)/i));
         return match ? cleanLine(match[1]) : "";
     }
 
+    /**
+     * Extractexplanation helper.
+     */
     function extractExplanation(card) {
         const text = card.innerText || "";
         const match = text.match(/Explanation:\\s*([^\\n]+)/i);
         return match ? cleanLine(match[1]) : "";
     }
 
+    /**
+     * Extractquestion helper.
+     */
     function extractQuestion(card) {
         const h = card.querySelector("h2,h3,h4");
         if (!h) return "";
@@ -890,6 +966,9 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
         return cleanLine(card.innerText || "").slice(0, 180);
     }
 
+    /**
+     * Iswrong helper.
+     */
     function isWrong(card) {
         const checked = card.querySelector('input[type="radio"]:checked');
         if (!checked) return false;
@@ -938,6 +1017,7 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
                 '<span class="aisn-video-remediation-chip">' + escapeHtml(label) + '</span>' +
                 "<h4>Recupero adattivo guidato dall'errore</h4>" +
                 '<p><strong>Ability to improve:</strong> ' + escapeHtml(skill) + '</p>' +
+                // phpcs:ignore moodle.Files.LineLength
                 '<p><a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(data.title || data.url) + '</a></p>' +
                 (data.snippet ? '<p>' + escapeHtml(data.snippet) + '</p>' : '') +
                 '<p><strong>Mini-attivita:</strong> ' + escapeHtml(data.activity || '') + '</p>' +
@@ -959,15 +1039,23 @@ HTML;
 }
 
 
+/**
+ * Local aiskillnavigator quiz video dedupe guard helper.
+ */
 function local_aiskillnavigator_quiz_video_dedupe_guard(): string {
     return <<<'HTML'
 <script id="aisn-video-dedupe-v1">
 (function () {
+    /**
+     * Dedupe helper.
+     */
     function dedupe() {
+        // phpcs:ignore moodle.Files.LineLength
         document.querySelectorAll(".aisn-video-remediation-card, .aisn-video-remediation-loading, .aisn-video-remediation-muted").forEach(function (card) {
             var parent = card.parentElement;
             if (!parent) return;
 
+            // phpcs:ignore moodle.Files.LineLength
             var cards = parent.querySelectorAll(".aisn-video-remediation-card, .aisn-video-remediation-loading, .aisn-video-remediation-muted");
             if (cards.length <= 1) return;
 
@@ -994,10 +1082,16 @@ HTML;
 }
 
 
+/**
+ * Local aiskillnavigator quiz clean video labels helper.
+ */
 function local_aiskillnavigator_quiz_clean_video_labels(): string {
     return <<<'HTML'
 <script id="aisn-clean-video-labels-final-v1">
 (function () {
+    /**
+     * Cleancard helper.
+     */
     function cleanCard(card) {
         if (!card) return;
 
@@ -1019,12 +1113,16 @@ function local_aiskillnavigator_quiz_clean_video_labels(): string {
                 if (idx >= 0) {
                     p.innerHTML = "<strong>Mini-attivita:</strong> " + txt.substring(idx);
                 } else {
+                    // phpcs:ignore moodle.Files.LineLength
                     p.innerHTML = "<strong>Mini-attivita:</strong> Guarda la risorsa consigliata, poi riprova spiegando il concetto in 3 righe.";
                 }
             }
         });
     }
 
+    /**
+     * Run helper.
+     */
     function run() {
         document.querySelectorAll(".aisn-video-remediation-card").forEach(cleanCard);
     }
@@ -1049,16 +1147,25 @@ HTML;
 }
 
 
+/**
+ * Local aiskillnavigator quiz video rescue final helper.
+ */
 function local_aiskillnavigator_quiz_video_rescue_final(): string {
     return <<<'HTML'
 <script id="aisn-quiz-video-rescue-final-v1">
 (function () {
+    /**
+     * Escapehtml helper.
+     */
     function escapeHtml(value) {
         return String(value || "").replace(/[&<>"']/g, function(m) {
             return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m];
         });
     }
 
+    /**
+     * Findquestioncard helper.
+     */
     function findQuestionCard(box) {
         let el = box.parentElement;
 
@@ -1073,17 +1180,26 @@ function local_aiskillnavigator_quiz_video_rescue_final(): string {
         return box.parentElement;
     }
 
+    /**
+     * Iswrongquestion helper.
+     */
     function isWrongQuestion(card) {
         if (!card) return false;
         return /Your answer/i.test(card.innerText || "");
     }
 
+    /**
+     * Extractskill helper.
+     */
     function extractSkill(card) {
         const text = card ? (card.innerText || "") : "";
         const match = (text.match(/Ability:\\s*([^\\n]+)/i) || text.match(/Skill:\\s*([^\\n]+)/i));
         return match ? match[1].replace(/\s+/g, " ").trim() : "quiz ability";
     }
 
+    /**
+     * Extractquestion helper.
+     */
     function extractQuestion(card) {
         if (!card) return "";
         const h = card.querySelector("h2,h3,h4");
@@ -1100,23 +1216,35 @@ function local_aiskillnavigator_quiz_video_rescue_final(): string {
         return "";
     }
 
+    /**
+     * Youtubefallbackurl helper.
+     */
     function youtubeFallbackUrl(skill, question) {
         const query = (skill + " " + question + " tutorial spiegazione video").trim();
         return "https://www.youtube.com/results?search_query=" + encodeURIComponent(query);
     }
 
+    /**
+     * Renderfallback helper.
+     */
     function renderFallback(box, skill, question) {
         box.className = "aisn-video-remediation-card";
         box.innerHTML =
             '<span class="aisn-video-remediation-chip">Video consigliato dopo l\\'errore</span>' +
             '<h4>Recupero adattivo guidato dall\\'errore</h4>' +
             '<p><strong>Ability to improve:</strong> ' + escapeHtml(skill) + '</p>' +
+            // phpcs:ignore moodle.Files.LineLength
             '<p><a href="' + escapeHtml(youtubeFallbackUrl(skill, question)) + '" target="_blank" rel="noopener noreferrer">Apri ricerca video YouTube mirata</a></p>' +
+            // phpcs:ignore moodle.Files.LineLength
             '<p>La ricerca automatica sta impiegando troppo tempo, quindi viene proposta una ricerca video mirata sulla competenza da recuperare.</p>' +
+            // phpcs:ignore moodle.Files.LineLength
             '<p><strong>Mini-attivita:</strong> guarda una spiegazione pertinente e poi riscrivi in 3 righe il concetto collegato.</p>' +
             '<p><small>Fonte: fallback YouTube mirato</small></p>';
     }
 
+    /**
+     * Cleancardlabels helper.
+     */
     function cleanCardLabels(card) {
         if (!card) return;
 
@@ -1136,7 +1264,11 @@ function local_aiskillnavigator_quiz_video_rescue_final(): string {
         });
     }
 
+    /**
+     * Rescue helper.
+     */
     function rescue() {
+        // phpcs:ignore moodle.Files.LineLength
         document.querySelectorAll(".aisn-video-remediation-loading, .aisn-video-remediation-card, .aisn-video-remediation-muted").forEach(function (box) {
             const card = findQuestionCard(box);
 
@@ -1189,7 +1321,11 @@ HTML;
 }
 
 
+/**
+ * Local aiskillnavigator quiz tavily video assets helper.
+ */
 function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string {
+    // phpcs:ignore moodle.Files.LineLength
     $endpoint = new moodle_url('/local/aiskillnavigator/pages/quiz_error_video.php', ['courseid' => $courseid, 'sesskey' => sesskey()]);
     $endpointjson = json_encode($endpoint->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
@@ -1253,6 +1389,9 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
 (function () {
     const endpoint = {$endpointjson};
 
+    /**
+     * Clean helper.
+     */
     function clean(value) {
         return String(value || "")
             .replace(/Correct answer/g, "")
@@ -1261,12 +1400,18 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
             .trim();
     }
 
+    /**
+     * Escapehtml helper.
+     */
     function escapeHtml(value) {
         return String(value || "").replace(/[&<>"']/g, function(m) {
             return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"}[m];
         });
     }
 
+    /**
+     * Fixlabels helper.
+     */
     function fixLabels(text) {
         return String(text || "")
             .replace(/â‚¬â€žÂ¢/g, "'")
@@ -1287,6 +1432,9 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
             .replace(/Ã¹/g, "u'");
     }
 
+    /**
+     * Findquestioncards helper.
+     */
     function findQuestionCards() {
         return Array.from(document.querySelectorAll(".card, .aisn-card, section, div"))
             .filter(function (el) {
@@ -1297,6 +1445,9 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
             });
     }
 
+    /**
+     * Iswrong helper.
+     */
     function isWrong(card) {
         const checked = card.querySelector('input[type="radio"]:checked');
         if (!checked) return false;
@@ -1308,12 +1459,18 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
         return /Your answer/i.test(labelText) || /Your answer/i.test(card.innerText || "");
     }
 
+    /**
+     * Extractskill helper.
+     */
     function extractSkill(card) {
         const text = card.innerText || "";
         const match = (text.match(/Ability:\\s*([^\\n]+)/i) || text.match(/Skill:\\s*([^\\n]+)/i));
         return match ? clean(match[1]) : "quiz ability";
     }
 
+    /**
+     * Extractquestion helper.
+     */
     function extractQuestion(card) {
         const h = card.querySelector("h2,h3,h4");
         let node = h ? h.nextElementSibling : null;
@@ -1334,6 +1491,9 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
         return clean(card.innerText || "").slice(0, 180);
     }
 
+    /**
+     * Rendercard helper.
+     */
     function renderCard(box, data, skill) {
         const label = data.isvideo ? "Video consigliato dopo l'errore" : "Risorsa consigliata dopo l'errore";
 
@@ -1342,8 +1502,10 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
             '<span class="aisn-tavily-video-chip">' + escapeHtml(label) + '</span>' +
             '<h4>Recupero adattivo guidato dall\\'errore</h4>' +
             '<p><strong>Ability to improve:</strong> ' + escapeHtml(skill) + '</p>' +
+            // phpcs:ignore moodle.Files.LineLength
             '<p><a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(fixLabels(data.title || data.url)) + '</a></p>' +
             (data.snippet ? '<p>' + escapeHtml(fixLabels(data.snippet)) + '</p>' : '') +
+            // phpcs:ignore moodle.Files.LineLength
             '<p><strong>Mini-attivita:</strong> ' + escapeHtml(fixLabels(data.activity || "Guarda la risorsa e rispiega il concetto in 3 righe.")) + '</p>' +
             '<p><small>Fonte trovata tramite Search API: ' + escapeHtml(data.provider || "tavily") + '</small></p>';
     }
@@ -1354,6 +1516,7 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
 
         if (!isWrong(card)) return;
 
+        // phpcs:ignore moodle.Files.LineLength
         card.querySelectorAll(".aisn-direct-youtube-card, .aisn-video-remediation-card, .aisn-video-remediation-loading, .aisn-video-remediation-muted, .aisn-tavily-video-card, .aisn-tavily-video-loading, .aisn-tavily-video-muted").forEach(function (el) {
             el.remove();
         });
@@ -1400,7 +1563,11 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
         }
     }
 
+    /**
+     * Run helper.
+     */
     function run() {
+        // phpcs:ignore moodle.Files.LineLength
         document.querySelectorAll(".aisn-direct-youtube-card, .aisn-video-remediation-card, .aisn-video-remediation-loading, .aisn-video-remediation-muted").forEach(function (el) {
             el.remove();
         });
@@ -1419,7 +1586,11 @@ HTML;
 }
 
 
+/**
+ * Local aiskillnavigator quiz tavily video assets final single helper.
+ */
 function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $courseid): string {
+    // phpcs:ignore moodle.Files.LineLength
     $endpoint = new moodle_url('/local/aiskillnavigator/pages/quiz_error_video.php', ['courseid' => $courseid, 'sesskey' => sesskey()]);
     $endpointjson = json_encode($endpoint->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
@@ -1482,6 +1653,9 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
 (function () {
     const endpoint = {$endpointjson};
 
+    /**
+     * Clean helper.
+     */
     function clean(value) {
         return String(value || "")
             .replace(/Correct answer/g, "")
@@ -1490,12 +1664,18 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
             .trim();
     }
 
+    /**
+     * Escapehtml helper.
+     */
     function escapeHtml(value) {
         return String(value || "").replace(/[&<>"']/g, function(m) {
             return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"}[m];
         });
     }
 
+    /**
+     * Findquestioncards helper.
+     */
     function findQuestionCards() {
         return Array.from(document.querySelectorAll(".card, .aisn-card, section, div"))
             .filter(function (el) {
@@ -1506,6 +1686,9 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
             });
     }
 
+    /**
+     * Iswrong helper.
+     */
     function isWrong(card) {
         const checked = card.querySelector('input[type="radio"]:checked');
         if (!checked) return false;
@@ -1517,12 +1700,18 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
         return /Your answer/i.test(labelText) || /Your answer/i.test(card.innerText || "");
     }
 
+    /**
+     * Extractskill helper.
+     */
     function extractSkill(card) {
         const text = card.innerText || "";
         const match = (text.match(/Ability:\\s*([^\\n]+)/i) || text.match(/Skill:\\s*([^\\n]+)/i));
         return match ? clean(match[1]) : "quiz ability";
     }
 
+    /**
+     * Extractquestion helper.
+     */
     function extractQuestion(card) {
         const h = card.querySelector("h2,h3,h4");
         let node = h ? h.nextElementSibling : null;
@@ -1543,6 +1732,9 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
         return clean(card.innerText || "").slice(0, 180);
     }
 
+    /**
+     * Removealloldcards helper.
+     */
     function removeAllOldCards(card) {
         card.querySelectorAll(
             ".aisn-direct-youtube-card, " +
@@ -1554,6 +1746,9 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
         });
     }
 
+    /**
+     * Rendercard helper.
+     */
     function renderCard(box, data, skill) {
         const label = data.isvideo ? "Video consigliato dopo l'errore" : "Risorsa consigliata dopo l'errore";
 
@@ -1562,8 +1757,10 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
             '<span class="aisn-tavily-final-chip">' + escapeHtml(label) + '</span>' +
             '<h4>Recupero adattivo guidato dall\\'errore</h4>' +
             '<p><strong>Ability to improve:</strong> ' + escapeHtml(skill) + '</p>' +
+            // phpcs:ignore moodle.Files.LineLength
             '<p><a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(data.title || data.url) + '</a></p>' +
             (data.snippet ? '<p>' + escapeHtml(data.snippet) + '</p>' : '') +
+            // phpcs:ignore moodle.Files.LineLength
             '<p><strong>Mini-attivita:</strong> ' + escapeHtml(data.activity || "Guarda la risorsa e rispiega il concetto in 3 righe.") + '</p>' +
             '<p><small>Fonte trovata tramite Search API: ' + escapeHtml(data.provider || "tavily") + '</small></p>';
     }
@@ -1615,6 +1812,9 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
         }
     }
 
+    /**
+     * Run helper.
+     */
     function run() {
         findQuestionCards().forEach(addSingleCard);
     }
@@ -1628,5 +1828,3 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
 </script>
 HTML;
 }
-
-

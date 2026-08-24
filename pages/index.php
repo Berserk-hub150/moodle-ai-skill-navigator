@@ -1,5 +1,26 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/role_guard.php');
@@ -13,6 +34,9 @@ $courseid = optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM
 
 require_login();
 
+/**
+ * Local aisn index card helper.
+ */
 function local_aisn_index_card(
     string $title,
     string $description,
@@ -44,10 +68,15 @@ function local_aisn_index_card(
 }
 
 
+/**
+ * Local aisn index ocr card helper.
+ */
 function local_aisn_index_ocr_card(int $courseid): string {
-    if (!function_exists('local_aisn_document_ocr_user_can_toggle') ||
+    if (
+        !function_exists('local_aisn_document_ocr_user_can_toggle') ||
         !function_exists('local_aisn_document_ocr_course_enabled') ||
-        !function_exists('local_aisn_document_ocr_toggle_url')) {
+        !function_exists('local_aisn_document_ocr_toggle_url')
+    ) {
         return '';
     }
 
@@ -80,6 +109,9 @@ function local_aisn_index_ocr_card(int $courseid): string {
 
     return $html;
 }
+/**
+ * Local aisn index user courses helper.
+ */
 function local_aisn_index_user_courses(): array {
     global $DB;
 
@@ -96,8 +128,8 @@ function local_aisn_index_user_courses(): array {
 if ($courseid <= SITEID) {
     $PAGE->set_context(context_system::instance());
     $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/index.php'));
-    $PAGE->set_title('AI Skill Navigator');
-    $PAGE->set_heading('AI Skill Navigator');
+    $PAGE->set_title(get_string('page_index_title_1', 'local_aiskillnavigator'));
+    $PAGE->set_heading(get_string('page_index_heading_1', 'local_aiskillnavigator'));
 
     echo $OUTPUT->header();
 
@@ -117,6 +149,7 @@ if ($courseid <= SITEID) {
 
     if (empty($courses)) {
         echo html_writer::div(
+            // phpcs:ignore moodle.Files.LineLength
             'No course was selected. Open AI Skill Navigator from a Moodle course or use a URL like /local/aiskillnavigator/pages/index.php?courseid=2.',
             'alert alert-info'
         );
@@ -159,8 +192,8 @@ $context = context_course::instance($courseid);
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/index.php', ['courseid' => $courseid]));
-$PAGE->set_title('AI Skill Navigator');
-$PAGE->set_heading('AI Skill Navigator');
+$PAGE->set_title(get_string('page_index_title_2', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_index_heading_2', 'local_aiskillnavigator'));
 $PAGE->requires->css(new moodle_url('/local/aiskillnavigator/assets/css/styles.css'));
 
 $isteacher = is_siteadmin()

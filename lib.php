@@ -1,5 +1,28 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -17,6 +40,9 @@ function local_aiskillnavigator_ai_policy_supported_modnames(): array {
     ];
 }
 
+/**
+ * Local aiskillnavigator ai policy current modname helper.
+ */
 function local_aiskillnavigator_ai_policy_current_modname($formwrapper): string {
     $modname = '';
 
@@ -51,6 +77,9 @@ function local_aiskillnavigator_ai_policy_current_modname($formwrapper): string 
     return $modname;
 }
 
+/**
+ * Local aiskillnavigator coursemodule standard elements helper.
+ */
 function local_aiskillnavigator_coursemodule_standard_elements($formwrapper, $mform): void {
     $modname = local_aiskillnavigator_ai_policy_current_modname($formwrapper);
 
@@ -58,8 +87,10 @@ function local_aiskillnavigator_coursemodule_standard_elements($formwrapper, $mf
         return;
     }
 
-    if (method_exists($mform, 'elementExists') &&
-        $mform->elementExists('local_aiskillnavigator_external_ai')) {
+    if (
+        method_exists($mform, 'elementExists') &&
+        $mform->elementExists('local_aiskillnavigator_external_ai')
+    ) {
         return;
     }
 
@@ -85,6 +116,9 @@ function local_aiskillnavigator_coursemodule_standard_elements($formwrapper, $mf
     $mform->setDefault('local_aiskillnavigator_external_ai', $default);
 }
 
+/**
+ * Local aiskillnavigator coursemodule edit post actions helper.
+ */
 function local_aiskillnavigator_coursemodule_edit_post_actions($data, $course) {
     global $CFG, $USER;
 
@@ -137,6 +171,9 @@ function local_aiskillnavigator_coursemodule_edit_post_actions($data, $course) {
     return $data;
 }
 
+/**
+ * Local aiskillnavigator apply cm ai policy to material helper.
+ */
 function local_aiskillnavigator_apply_cm_ai_policy_to_material(
     int $courseid,
     int $cmid,

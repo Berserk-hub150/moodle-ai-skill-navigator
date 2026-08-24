@@ -1,7 +1,33 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Local aisn mdtable fix text helper.
+ */
 function local_aisn_mdtable_fix_text(string $text): string {
     $map = [
         'Ã¨' => 'è',
@@ -20,6 +46,9 @@ function local_aisn_mdtable_fix_text(string $text): string {
     return str_replace(array_keys($map), array_values($map), $text);
 }
 
+/**
+ * Local aisn mdtable is separator helper.
+ */
 function local_aisn_mdtable_is_separator(string $line): bool {
     $line = trim($line);
 
@@ -32,10 +61,16 @@ function local_aisn_mdtable_is_separator(string $line): bool {
     return $clean === '' && strpos($line, '-') !== false;
 }
 
+/**
+ * Local aisn mdtable is row helper.
+ */
 function local_aisn_mdtable_is_row(string $line): bool {
     return substr_count(trim($line), '|') >= 2;
 }
 
+/**
+ * Local aisn mdtable split row helper.
+ */
 function local_aisn_mdtable_split_row(string $line): array {
     $line = trim(local_aisn_mdtable_fix_text($line));
 
@@ -52,6 +87,9 @@ function local_aisn_mdtable_split_row(string $line): array {
     return $cells;
 }
 
+/**
+ * Local aisn mdtable render helper.
+ */
 function local_aisn_mdtable_render(array $headers, array $rows): string {
     $html = '<div class="aisn-mdtable-wrap"><table class="aisn-mdtable"><thead><tr>';
 
@@ -76,6 +114,9 @@ function local_aisn_mdtable_render(array $headers, array $rows): string {
     return $html;
 }
 
+/**
+ * Local aisn mdtable convert block helper.
+ */
 function local_aisn_mdtable_convert_block(string $block): string {
     $block = preg_replace('/<br\s*\/?>/i', "\n", $block);
     $block = html_entity_decode($block, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -123,7 +164,11 @@ function local_aisn_mdtable_convert_block(string $block): string {
     return local_aisn_mdtable_render($headers, $rows);
 }
 
+/**
+ * Local aisn mdtable filter html helper.
+ */
 function local_aisn_mdtable_filter_html(string $html): string {
+    // phpcs:ignore moodle.Files.LineLength
     $pattern = '~((?:^|(?:\n|<br\s*/?>))\s*\|[^\n<]+\|\s*(?:\n|<br\s*/?>)\s*\|[\s:\-\|]+\|\s*(?:\n|<br\s*/?>)(?:\s*\|[^\n<]+\|\s*(?:\n|<br\s*/?>)?)+)~iu';
 
     return preg_replace_callback($pattern, static function ($matches) {
@@ -131,6 +176,9 @@ function local_aisn_mdtable_filter_html(string $html): string {
     }, $html);
 }
 
+/**
+ * Local aisn start mdtable formatter helper.
+ */
 function local_aisn_start_mdtable_formatter(): void {
     static $started = false;
 
@@ -145,6 +193,9 @@ function local_aisn_start_mdtable_formatter(): void {
     });
 }
 
+/**
+ * Local aisn mdtable assets helper.
+ */
 function local_aisn_mdtable_assets(): string {
     return html_writer::tag('style', '
 .aisn-mdtable-wrap {

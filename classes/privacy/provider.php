@@ -1,8 +1,30 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace local_aiskillnavigator\privacy;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 use core_privacy\local\metadata\collection;
@@ -15,7 +37,10 @@ use core_privacy\local\request\plugin\provider as request_provider;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
-class provider implements metadata_provider, request_provider, core_userlist_provider {
+/**
+ * Provider implementation.
+ */
+class provider implements core_userlist_provider, metadata_provider, request_provider {
     private const USER_TABLES = [
         'local_aiskillnav_material',
         'local_aiskillnav_attempt',
@@ -25,6 +50,9 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
         'local_aiskillnav_tutor_sig',
     ];
 
+    /**
+     * Get metadata helper.
+     */
     public static function get_metadata(collection $collection): collection {
         $collection->add_database_table(
             'local_aiskillnav_material',
@@ -151,6 +179,9 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
         return $collection;
     }
 
+    /**
+     * Get contexts for userid helper.
+     */
     public static function get_contexts_for_userid(int $userid): contextlist {
         $contextlist = new contextlist();
 
@@ -171,6 +202,9 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
         return $contextlist;
     }
 
+    /**
+     * Export user data helper.
+     */
     public static function export_user_data(approved_contextlist $contextlist): void {
         global $DB;
 
@@ -202,6 +236,9 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
         }
     }
 
+    /**
+     * Delete data for all users in context helper.
+     */
     public static function delete_data_for_all_users_in_context(\context $context): void {
         global $DB;
 
@@ -231,6 +268,9 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
         }
     }
 
+    /**
+     * Delete data for user helper.
+     */
     public static function delete_data_for_user(approved_contextlist $contextlist): void {
         $userid = (int)$contextlist->get_user()->id;
 
@@ -239,6 +279,9 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
         }
     }
 
+    /**
+     * Get users in context helper.
+     */
     public static function get_users_in_context(userlist $userlist): void {
         $context = $userlist->get_context();
 
@@ -264,10 +307,16 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
         }
     }
 
+    /**
+     * Delete data for users helper.
+     */
     public static function delete_data_for_users(approved_userlist $userlist): void {
         self::delete_userids_in_context($userlist->get_context(), $userlist->get_userids());
     }
 
+    /**
+     * Delete userids in context helper.
+     */
     private static function delete_userids_in_context(\context $context, array $userids): void {
         global $DB;
 
@@ -282,7 +331,7 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
             return;
         }
 
-        list($usersql, $userparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED, 'aisnuser');
+        [$usersql, $userparams] = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED, 'aisnuser');
 
         if (self::table_exists('local_aiskillnav_material')) {
             $params = array_merge(['courseid' => $courseid], $userparams);
@@ -306,13 +355,14 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
             );
 
             if (!empty($assessmentids) && self::table_exists('local_aiskillnav_ass_att')) {
-                list($asssql, $assparams) = $DB->get_in_or_equal($assessmentids, SQL_PARAMS_NAMED, 'aisnass');
+                [$asssql, $assparams] = $DB->get_in_or_equal($assessmentids, SQL_PARAMS_NAMED, 'aisnass');
                 $DB->delete_records_select('local_aiskillnav_ass_att', 'assessmentid ' . $asssql, $assparams);
             }
 
             $DB->delete_records_select('local_aiskillnav_assessment', 'courseid = :courseid AND userid ' . $usersql, $params);
         }
 
+        // phpcs:ignore moodle.Files.LineLength
         foreach (['local_aiskillnav_attempt', 'local_aiskillnav_ass_att', 'local_aiskillnav_sim', 'local_aiskillnav_tutor_sig'] as $table) {
             if (!self::table_exists($table)) {
                 continue;
@@ -323,6 +373,9 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
         }
     }
 
+    /**
+     * Delete material related helper.
+     */
     private static function delete_material_related(array $materialids): void {
         global $DB;
 
@@ -332,7 +385,7 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
             return;
         }
 
-        list($sql, $params) = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'aisnmat');
+        [$sql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'aisnmat');
         $conceptids = [];
 
         if (self::table_exists('local_aisn_kg_source')) {
@@ -353,18 +406,23 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
         self::delete_orphan_concepts($conceptids);
     }
 
+    /**
+     * Delete orphan concepts helper.
+     */
     private static function delete_orphan_concepts(array $conceptids): void {
         global $DB;
 
         $conceptids = array_values(array_unique(array_filter(array_map('intval', $conceptids))));
 
-        if (empty($conceptids) ||
+        if (
+            empty($conceptids) ||
             !self::table_exists('local_aisn_kg_concept') ||
-            !self::table_exists('local_aisn_kg_source')) {
+            !self::table_exists('local_aisn_kg_source')
+        ) {
             return;
         }
 
-        list($sql, $params) = $DB->get_in_or_equal($conceptids, SQL_PARAMS_NAMED, 'aisnconcept');
+        [$sql, $params] = $DB->get_in_or_equal($conceptids, SQL_PARAMS_NAMED, 'aisnconcept');
         $orphans = $DB->get_fieldset_sql(
             "SELECT c.id
                FROM {local_aisn_kg_concept} c
@@ -378,19 +436,19 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
             return;
         }
 
-        list($orphansql, $orphanparams) = $DB->get_in_or_equal(
+        [$orphansql, $orphanparams] = $DB->get_in_or_equal(
             $orphans,
             SQL_PARAMS_NAMED,
             'aisnorph'
         );
 
         if (self::table_exists('local_aisn_kg_relation')) {
-            list($sourcesql, $sourceparams) = $DB->get_in_or_equal(
+            [$sourcesql, $sourceparams] = $DB->get_in_or_equal(
                 $orphans,
                 SQL_PARAMS_NAMED,
                 'aisnsrc'
             );
-            list($targetsql, $targetparams) = $DB->get_in_or_equal(
+            [$targetsql, $targetparams] = $DB->get_in_or_equal(
                 $orphans,
                 SQL_PARAMS_NAMED,
                 'aisntgt'
@@ -406,6 +464,9 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
         $DB->delete_records_select('local_aisn_kg_concept', 'id ' . $orphansql, $orphanparams);
     }
 
+    /**
+     * Table exists helper.
+     */
     private static function table_exists(string $table): bool {
         global $DB;
 

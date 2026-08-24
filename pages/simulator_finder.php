@@ -1,4 +1,26 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/simulator_materials_helper.php');
@@ -15,13 +37,13 @@ $action = optional_param('action', '', PARAM_ALPHA);
 $topic = optional_param('topic', '', PARAM_TEXT);
 $level = optional_param('level', 'medium', PARAM_ALPHA);
 $notes = optional_param('notes', '', PARAM_RAW_TRIMMED);
-//Reset
+// Reset.
 if ($action === 'reset') {
     $topic = '';
     $level = 'medium';
     $notes = '';
     $action = '';
-}   
+}
 $course = get_course($courseid);
 
 require_login($course);
@@ -31,9 +53,9 @@ require_capability('local/aiskillnavigator:viewteacher', $context);
 
 local_aisn_sim_require_materials_for_post((int)$courseid);
 
-// AISN_SIM_DIRECT_MATERIAL_CONTEXT_V1
+// AISN_SIM_DIRECT_MATERIAL_CONTEXT_V1.
 // Keep the selected course materials in a real variable.
-// Do not rely only on $_POST/$_REQUEST mutation, because $notes may already be read.
+// Do not rely on request-superglobal mutation, because $notes may already be read.
 $selectedmaterialids = local_aisn_sim_selected_ids();
 $selectedmaterialcontext = '';
 
@@ -43,9 +65,12 @@ if (!empty($selectedmaterialids)) {
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/simulator_finder.php', ['courseid' => $courseid]));
-$PAGE->set_title('AI Simulator Finder');
-$PAGE->set_heading('AI Simulator Finder');
+$PAGE->set_title(get_string('page_simulator_finder_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_simulator_finder_heading', 'local_aiskillnavigator'));
 
+/**
+ * Local aiskillnavigator sim clean helper.
+ */
 function local_aiskillnavigator_sim_clean(string $text): string {
     $text = trim($text);
     $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -55,6 +80,9 @@ function local_aiskillnavigator_sim_clean(string $text): string {
     return trim($text);
 }
 
+/**
+ * Local aiskillnavigator sim known catalogue helper.
+ */
 function local_aiskillnavigator_sim_known_catalogue(): array {
     return [
         'Arduino, IoT, sensors, circuits' => 'Wokwi, Tinkercad Circuits, Arduino Web Editor',
@@ -69,6 +97,9 @@ function local_aiskillnavigator_sim_known_catalogue(): array {
     ];
 }
 
+/**
+ * Local aiskillnavigator sim call ai helper.
+ */
 function local_aiskillnavigator_sim_call_ai(string $prompt, string $systemprompt): string {
     try {
         if (class_exists('\local_aiskillnavigator\service\ai_provider_factory')) {
@@ -92,6 +123,9 @@ function local_aiskillnavigator_sim_call_ai(string $prompt, string $systemprompt
     return 'AI provider not available. Configure it from plugin settings.';
 }
 
+/**
+ * Local aiskillnavigator sim search context helper.
+ */
 function local_aiskillnavigator_sim_search_context(array $results): string {
     if (empty($results)) {
         return "No live search results available.\n";
@@ -113,6 +147,9 @@ function local_aiskillnavigator_sim_search_context(array $results): string {
     return $context;
 }
 
+/**
+ * Local aiskillnavigator sim inline format helper.
+ */
 function local_aiskillnavigator_sim_inline_format(string $line): string {
     $line = trim($line);
 
@@ -144,6 +181,9 @@ function local_aiskillnavigator_sim_inline_format(string $line): string {
     return $safe;
 }
 
+/**
+ * Local aiskillnavigator sim section title helper.
+ */
 function local_aiskillnavigator_sim_section_title(string $raw): string {
     $raw = trim($raw);
     $raw = preg_replace('/^\*\*(.*?)\*\*:?\s*$/u', '$1', $raw);
@@ -151,6 +191,9 @@ function local_aiskillnavigator_sim_section_title(string $raw): string {
     return trim($raw);
 }
 
+/**
+ * Local aiskillnavigator render simulator result helper.
+ */
 function local_aiskillnavigator_render_simulator_result(string $text): string {
     $text = local_aiskillnavigator_sim_clean($text);
 
@@ -303,8 +346,10 @@ if ($action === 'generate') {
             $searchresults = $searchservice->search($query, 5);
 
             if (false && !empty($searchresults)) {
+                // phpcs:ignore moodle.Files.LineLength
                 $searchnote = 'Live web search enabled via ' . $searchservice->provider_name() . '. Results were used in the AI prompt.';
             } else {
+                // phpcs:ignore moodle.Files.LineLength
                 $searchnote = 'Live web search enabled via ' . $searchservice->provider_name() . ', but no useful results were returned.';
             }
         } else {
@@ -319,7 +364,7 @@ if ($action === 'generate') {
             $prompt .= "Teacher notes/material:\n" . $notes . "\n";
         }
 
-        // AISN_SIM_DIRECT_MATERIAL_PROMPT_CONTEXT_V1
+        // AISN_SIM_DIRECT_MATERIAL_PROMPT_CONTEXT_V1.
         // Force selected Moodle course materials into the AI prompt.
         if (!empty($selectedmaterialcontext)) {
             $prompt .= "\nSelected Moodle course materials:\n" . $selectedmaterialcontext . "\n";
@@ -355,6 +400,7 @@ if ($action === 'generate') {
 
         $result = local_aiskillnavigator_sim_call_ai(
             $prompt,
+            // phpcs:ignore moodle.Files.LineLength
             'You help teachers find practical online simulators/tools. Avoid fake links. Use live search results when available. Say no if no suitable simulator is known. Return numbered sections.'
         );
 
@@ -443,8 +489,11 @@ body.path-local-aiskillnavigator [role="main"] {
 CSS);
 
 echo html_writer::script(<<<'JS'
-// AISN_DIRECT_SELECT_FIX_FINAL_V1
+// AISN_DIRECT_SELECT_FIX_FINAL_V1.
 (function () {
+    /**
+     * Fixselect helper.
+     */
     function fixSelect(id) {
         var el = document.getElementById(id);
         if (!el) {
@@ -474,6 +523,9 @@ echo html_writer::script(<<<'JS'
         }
     }
 
+    /**
+     * Run helper.
+     */
     function run() {
         fixSelect('difficulty');
         fixSelect('level');
@@ -498,6 +550,7 @@ echo html_writer::start_div('container-fluid');
 echo html_writer::tag('h2', 'AI Simulator Finder');
 echo html_writer::tag(
     'p',
+    // phpcs:ignore moodle.Files.LineLength
     'Insert a topic and let the AI propose a practical exercise plus a suitable online simulator/tool. If a Search API is configured, the plugin also checks live web results.',
     ['class' => 'lead']
 );
@@ -559,6 +612,7 @@ echo html_writer::select(
     'level',
     $level,
     false,
+    // phpcs:ignore moodle.Files.LineLength
     ['class' => 'form-control custom-select aisn-direct-fixed-select mb-3', 'id' => 'level', 'style' => 'display:block!important;width:360px!important;min-width:360px!important;max-width:100%!important;height:50px!important;min-height:50px!important;padding:10px 46px 10px 14px!important;box-sizing:border-box!important;font-size:15px!important;line-height:1.45!important;border-radius:12px!important;appearance:auto!important;-webkit-appearance:menulist!important;']
 );
 
@@ -582,7 +636,7 @@ echo ' ';
 echo html_writer::link(
     new moodle_url('/local/aiskillnavigator/pages/simulator_finder.php', [
         'courseid' => $courseid,
-        'action' => 'reset'
+        'action' => 'reset',
     ]),
     'Reset',
     ['class' => 'btn btn-outline-secondary']
@@ -618,6 +672,7 @@ if (false && !empty($searchresults)) {
         $snippet = trim((string)($row['snippet'] ?? ''));
 
         if ($url !== '') {
+            // phpcs:ignore moodle.Files.LineLength
             $link = html_writer::link($url, s($title !== '' ? $title : $url), ['target' => '_blank', 'rel' => 'noopener noreferrer']);
         } else {
             $link = s($title);
@@ -643,8 +698,9 @@ if ($result !== '') {
 
 echo html_writer::end_div();
 
+// phpcs:ignore moodle.Files.LineLength
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
-if (function_exists('local_aisn_ai_output_formatter_assets')) { echo local_aisn_ai_output_formatter_assets(); }
+if (function_exists('local_aisn_ai_output_formatter_assets')) {
+    echo local_aisn_ai_output_formatter_assets();
+}
 echo $OUTPUT->footer();
-
-

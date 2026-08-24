@@ -1,5 +1,28 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 $aisnDocumentOcrHelper = __DIR__ . '/document_ocr_toggle_helper.php';
@@ -18,6 +41,9 @@ if (file_exists($aisnDocumentOcrHelper)) {
  */
 
 if (!function_exists('local_aisn_mistral_ocr_enabled')) {
+    /**
+     * Local aisn mistral ocr enabled helper.
+     */
     function local_aisn_mistral_ocr_enabled(): bool {
         $enabled = (string)get_config('local_aiskillnavigator', 'mistral_ocr_enabled');
         $key = trim((string)get_config('local_aiskillnavigator', 'mistral_ocr_api_key'));
@@ -31,6 +57,9 @@ if (!function_exists('local_aisn_mistral_ocr_enabled')) {
 }
 
 if (!function_exists('local_aisn_mistral_ocr_api_key')) {
+    /**
+     * Local aisn mistral ocr api key helper.
+     */
     function local_aisn_mistral_ocr_api_key(): string {
         $key = trim((string)get_config('local_aiskillnavigator', 'mistral_ocr_api_key'));
 
@@ -43,6 +72,9 @@ if (!function_exists('local_aisn_mistral_ocr_api_key')) {
 }
 
 if (!function_exists('local_aisn_mistral_ocr_supported_extension')) {
+    /**
+     * Local aisn mistral ocr supported extension helper.
+     */
     function local_aisn_mistral_ocr_supported_extension(string $extension): bool {
         $extension = strtolower(trim($extension));
 
@@ -54,6 +86,9 @@ if (!function_exists('local_aisn_mistral_ocr_supported_extension')) {
 }
 
 if (!function_exists('local_aisn_mistral_ocr_mime_type')) {
+    /**
+     * Local aisn mistral ocr mime type helper.
+     */
     function local_aisn_mistral_ocr_mime_type(string $filename): string {
         $extension = strtolower((string)pathinfo($filename, PATHINFO_EXTENSION));
 
@@ -80,6 +115,9 @@ if (!function_exists('local_aisn_mistral_ocr_mime_type')) {
 }
 
 if (!function_exists('local_aisn_mistral_ocr_max_bytes')) {
+    /**
+     * Local aisn mistral ocr max bytes helper.
+     */
     function local_aisn_mistral_ocr_max_bytes(): int {
         $configured = (int)get_config('local_aiskillnavigator', 'mistral_ocr_maxbytes');
 
@@ -92,6 +130,9 @@ if (!function_exists('local_aisn_mistral_ocr_max_bytes')) {
 }
 
 if (!function_exists('local_aisn_mistral_ocr_timeout')) {
+    /**
+     * Local aisn mistral ocr timeout helper.
+     */
     function local_aisn_mistral_ocr_timeout(): int {
         $configured = (int)get_config('local_aiskillnavigator', 'mistral_ocr_timeout');
 
@@ -104,6 +145,9 @@ if (!function_exists('local_aisn_mistral_ocr_timeout')) {
 }
 
 if (!function_exists('local_aisn_mistral_ocr_model')) {
+    /**
+     * Local aisn mistral ocr model helper.
+     */
     function local_aisn_mistral_ocr_model(): string {
         $model = trim((string)get_config('local_aiskillnavigator', 'mistral_ocr_model'));
         return $model !== '' ? $model : 'mistral-ocr-latest';
@@ -111,6 +155,9 @@ if (!function_exists('local_aisn_mistral_ocr_model')) {
 }
 
 if (!function_exists('local_aisn_mistral_ocr_can_send_external')) {
+    /**
+     * Local aisn mistral ocr can send external helper.
+     */
     function local_aisn_mistral_ocr_can_send_external(int $cmid): bool {
         if ($cmid <= 0) {
             return false;
@@ -125,9 +172,12 @@ if (!function_exists('local_aisn_mistral_ocr_can_send_external')) {
 }
 
 if (!function_exists('local_aisn_mistral_ocr_extract_path')) {
+    /**
+     * Local aisn mistral ocr extract path helper.
+     */
     function local_aisn_mistral_ocr_extract_path(string $path, string $filename, int $cmid = 0): string {
-        // AISN_COURSE_SCOPED_OCR_GATE_V1
-        // Advanced OCR is course-scoped. If disabled for the course of this cmid,
+        // AISN_COURSE_SCOPED_OCR_GATE_V1.
+        // Advanced OCR is course-scoped. If disabled for the course of this cmid,.
         // Mistral is skipped and the plugin falls back to the local extraction pipeline.
         if (function_exists('local_aisn_document_ocr_cmid_enabled') && !local_aisn_document_ocr_cmid_enabled((int)$cmid)) {
             return '';
@@ -206,7 +256,7 @@ if (!function_exists('local_aisn_mistral_ocr_extract_path')) {
             ],
             CURLOPT_POSTFIELDS => json_encode($payload),
             CURLOPT_RETURNTRANSFER => true,
-            // AISN_MISTRAL_CURL_HARDENING_V2
+            // AISN_MISTRAL_CURL_HARDENING_V2.
             CURLOPT_CONNECTTIMEOUT => 15,
             CURLOPT_TIMEOUT => local_aisn_mistral_ocr_timeout(),
             CURLOPT_USERAGENT => 'Moodle local_aiskillnavigator mistral OCR client',
@@ -270,9 +320,9 @@ if (!function_exists('local_aisn_mistral_ocr_extract_path')) {
             return '';
         }
 
-        // AISN_MISTRAL_REJECT_TABLE_LINK_ONLY_V1
-        // If Mistral returns only asset links such as [tbl-0.html](tbl-0.html),
-        // the output is not useful for RAG. Fallback to the local pipeline.
+        // AISN_MISTRAL_REJECT_TABLE_LINK_ONLY_V1.
+        // If Mistral returns only asset links such as [tbl-0.html](tbl-0.html),.
+        // The output is not useful for RAG. Fallback to the local pipeline.
         $semantic = preg_replace('/<!--.*?-->/s', ' ', $text);
         $semantic = preg_replace('/\[[^\]]+\]\((?:tbl|img)-[^\)]+\)/i', ' ', (string)$semantic);
         $semantic = preg_replace('/[-\s_]+/u', ' ', (string)$semantic);
@@ -288,6 +338,9 @@ if (!function_exists('local_aisn_mistral_ocr_extract_path')) {
 }
 
 if (!function_exists('local_aisn_mistral_ocr_extract_stored_file')) {
+    /**
+     * Local aisn mistral ocr extract stored file helper.
+     */
     function local_aisn_mistral_ocr_extract_stored_file(stored_file $file, int $cmid = 0): string {
         $filename = $file->get_filename();
         $extension = strtolower((string)pathinfo($filename, PATHINFO_EXTENSION));
@@ -312,5 +365,3 @@ if (!function_exists('local_aisn_mistral_ocr_extract_stored_file')) {
         }
     }
 }
-
-

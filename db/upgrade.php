@@ -1,8 +1,33 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * AI Skill Navigator plugin file.
+ *
+ * @package    local_aiskillnavigator
+ * @copyright  2026 Luca Magrini
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Xmldb local aiskillnavigator upgrade helper.
+ */
 function xmldb_local_aiskillnavigator_upgrade($oldversion) {
     global $DB;
 
@@ -209,6 +234,7 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
 
+            // phpcs:ignore moodle.Files.LineLength
             $field = new xmldb_field('aipolicy', XMLDB_TYPE_CHAR, '32', null, XMLDB_NOTNULL, null, 'local_only', 'externalaiallowed');
             if (!$dbman->field_exists($table, $field)) {
                 $dbman->add_field($table, $field);
@@ -266,7 +292,6 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
 
         upgrade_plugin_savepoint(true, 2026060101, 'local', 'aiskillnavigator');
     }
-
 
     if ($oldversion < 2026060401) {
         $table = new xmldb_table('local_aiskillnav_sim');
@@ -351,7 +376,6 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
 
         upgrade_plugin_savepoint(true, 2026060702, 'local', 'aiskillnavigator');
     }
-
 
     if ($oldversion < 2026061201) {
         $concept = new xmldb_table('local_aisn_kg_concept');
