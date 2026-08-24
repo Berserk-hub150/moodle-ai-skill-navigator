@@ -1,1 +1,1 @@
-Trigger a fresh Moodle Marketplace PHPCS diagnostic after the Marketplace hardening merge.
+Trigger a fresh Moodle Marketplace PHPCS diagnostic after the final quality autofix pass.
