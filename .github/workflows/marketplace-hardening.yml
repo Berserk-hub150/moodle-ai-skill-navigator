@@ -7,6 +7,7 @@ on:
     paths:
       - 'plugins/aiskillnavigator/**'
       - 'tools/marketplace_hardening.py'
+      - 'tools/localise_page_chrome.py'
       - '.github/workflows/marketplace-hardening.yml'
   workflow_dispatch:
 
@@ -36,6 +37,9 @@ jobs:
           path.write_text(text, encoding='utf-8')
           PY
 
+      - name: Localise page titles and headings
+        run: python3 tools/localise_page_chrome.py
+
       - name: Run deterministic Marketplace hardening
         id: harden
         shell: bash
@@ -54,8 +58,8 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add plugins/aiskillnavigator tools/marketplace_hardening.py
-          git commit -m "fix: finish Moodle Marketplace hardening"
+          git add plugins/aiskillnavigator tools/marketplace_hardening.py tools/localise_page_chrome.py
+          git commit -m "fix: localise Marketplace page chrome"
           git push origin HEAD:marketplace-readiness
 
       - name: Require no direct request superglobals
