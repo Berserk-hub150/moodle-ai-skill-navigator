@@ -715,6 +715,10 @@ if (!function_exists('local_aiskillnavigator_extract_files_from_area')) {
      * Local aiskillnavigator extract files from area helper.
      */
     // phpcs:ignore moodle.Files.LineLength
+    /**
+     * Local aiskillnavigator extract files from area helper.
+     */
+    // phpcs:ignore moodle.Files.LineLength
     function local_aiskillnavigator_extract_files_from_area(int $contextid, string $component, string $filearea, int $cmid = 0): string {
         $fs = get_file_storage();
         $files = $fs->get_area_files($contextid, $component, $filearea, false, 'filename', false);
