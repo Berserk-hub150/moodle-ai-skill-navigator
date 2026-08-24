@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,6 +21,7 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/document_ocr_toggle_helper.php');
 
@@ -53,6 +54,7 @@ set_config(local_aisn_document_ocr_config_key($courseid), $newvalue, 'local_aisk
 if ($newvalue === '1') {
     set_config('mistral_ocr_enabled', '1', 'local_aiskillnavigator');
     set_config('mistral_ocr_timeout', '120', 'local_aiskillnavigator');
+    // phpcs:ignore moodle.Files.LineLength
     \core\notification::success('OCR attivato per questo corso. Usalo per sincronizzare PDF/PPTX, poi puoi disattivarlo per navigare più velocemente.');
 } else {
     set_config('mistral_ocr_timeout', '30', 'local_aiskillnavigator');

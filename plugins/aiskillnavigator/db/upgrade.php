@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,8 +21,13 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Xmldb local aiskillnavigator upgrade helper.
+ */
 function xmldb_local_aiskillnavigator_upgrade($oldversion) {
     global $DB;
 
@@ -229,6 +234,7 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
 
+            // phpcs:ignore moodle.Files.LineLength
             $field = new xmldb_field('aipolicy', XMLDB_TYPE_CHAR, '32', null, XMLDB_NOTNULL, null, 'local_only', 'externalaiallowed');
             if (!$dbman->field_exists($table, $field)) {
                 $dbman->add_field($table, $field);

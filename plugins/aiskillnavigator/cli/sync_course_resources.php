@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,6 +21,7 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../../config.php');
@@ -70,6 +71,9 @@ global $DB;
 $userid = max(0, (int)($options['userid'] ?? 2));
 $force = !empty($options['force']);
 
+/**
+ * Local aisn cli print sync result helper.
+ */
 function local_aisn_cli_print_sync_result(int $courseid, array $result): void {
     echo "Course resource sync completed for course {$courseid}\n";
     echo "Created: " . (int)($result['created'] ?? 0) . "\n";

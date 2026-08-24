@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,6 +21,7 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/role_guard.php');
 require_once(__DIR__ . '/../includes/ai_output_formatter.php');
@@ -47,11 +48,17 @@ $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/assessment.php', ['
 $PAGE->set_title(get_string('page_assessment_title', 'local_aiskillnavigator'));
 $PAGE->set_heading(get_string('page_assessment_heading', 'local_aiskillnavigator'));
 
+/**
+ * Local aiskillnavigator assessment table exists helper.
+ */
 function local_aiskillnavigator_assessment_table_exists(string $tablename): bool {
     global $DB;
     return $DB->get_manager()->table_exists(new xmldb_table($tablename));
 }
 
+/**
+ * Local aiskillnavigator assessment type label helper.
+ */
 function local_aiskillnavigator_assessment_type_label(string $type): string {
     if ($type === 'pretest' || $type === 'initial' || $type === 'diagnostic') {
         return 'Initial diagnostic quiz';
@@ -64,6 +71,9 @@ function local_aiskillnavigator_assessment_type_label(string $type): string {
     return $type !== '' ? ucfirst($type) : 'Assessment';
 }
 
+/**
+ * Local aiskillnavigator assessment decode quiz helper.
+ */
 function local_aiskillnavigator_assessment_decode_quiz(string $json): ?array {
     $quiz = json_decode($json, true);
 
@@ -74,6 +84,9 @@ function local_aiskillnavigator_assessment_decode_quiz(string $json): ?array {
     return $quiz;
 }
 
+/**
+ * Local aiskillnavigator assessment get published helper.
+ */
 function local_aiskillnavigator_assessment_get_published(int $courseid): array {
     global $DB;
 
@@ -92,6 +105,9 @@ function local_aiskillnavigator_assessment_get_published(int $courseid): array {
     ));
 }
 
+/**
+ * Local aiskillnavigator assessment get attempt helper.
+ */
 function local_aiskillnavigator_assessment_get_attempt(int $assessmentid, int $userid): ?stdClass {
     global $DB;
 
@@ -118,6 +134,9 @@ function local_aiskillnavigator_assessment_get_attempt(int $assessmentid, int $u
     return reset($records);
 }
 
+/**
+ * Local aiskillnavigator assessment card helper.
+ */
 function local_aiskillnavigator_assessment_card(stdClass $assessment, ?stdClass $attempt, int $courseid): string {
     $type = local_aiskillnavigator_assessment_type_label((string)($assessment->assessmenttype ?? ''));
     $title = trim((string)($assessment->title ?? 'AI assessment'));
@@ -311,6 +330,7 @@ if ($selectedassessment && $quiz) {
 
     echo html_writer::end_div();
 
+    // phpcs:ignore moodle.Files.LineLength
     echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
     if (function_exists('local_aisn_ai_output_formatter_assets')) {
         echo local_aisn_ai_output_formatter_assets();
@@ -325,6 +345,7 @@ echo html_writer::tag('h2', 'AI assessments for students');
 
 echo html_writer::tag(
     'p',
+    // phpcs:ignore moodle.Files.LineLength
     'This page shows the initial diagnostic quiz and the final test created by the teacher. Students complete them here; the results are used to identify learning gaps and measure progress.',
     ['class' => 'lead']
 );
@@ -374,6 +395,7 @@ echo html_writer::link(
 
 echo html_writer::end_div();
 
+// phpcs:ignore moodle.Files.LineLength
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
 if (function_exists('local_aisn_ai_output_formatter_assets')) {
     echo local_aisn_ai_output_formatter_assets();

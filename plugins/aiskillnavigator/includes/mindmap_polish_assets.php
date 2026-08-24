@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,9 +21,14 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 if (!function_exists('local_aisn_mindmap_polish_prof')) {
+    /**
+     * Local aisn mindmap polish prof helper.
+     */
     function local_aisn_mindmap_polish_prof(): string {
         return <<<'HTML'
 <style id="aisn-mindmap-big-view-v1">
@@ -148,6 +153,9 @@ body.aisn-mm-fullscreen-body {
 
 <script id="aisn-mindmap-big-view-v1-js">
 (function () {
+    /**
+     * Forcerefresh helper.
+     */
     function forceRefresh() {
         setTimeout(function () {
             window.dispatchEvent(new Event('resize'));
@@ -158,6 +166,9 @@ body.aisn-mm-fullscreen-body {
         }, 80);
     }
 
+    /**
+     * Makebutton helper.
+     */
     function makeButton(id, text, cssClass) {
         var btn = document.createElement('button');
         btn.type = 'button';

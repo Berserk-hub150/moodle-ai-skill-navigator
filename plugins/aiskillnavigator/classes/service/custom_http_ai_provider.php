@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,20 +21,34 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_aiskillnavigator\service;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/provider/http_json_client.php');
 
+/**
+ * Custom http ai provider implementation.
+ */
 class custom_http_ai_provider implements ai_provider_interface {
+    /** @var string Endpoint. */
     private string $endpoint;
+    /** @var string Model. */
     private string $model;
+    /** @var string Apikey. */
     private string $apikey;
+    /** @var string Requesttemplate. */
     private string $requesttemplate;
+    /** @var string Headersjson. */
     private string $headersjson;
+    /** @var string Responsepath. */
     private string $responsepath;
 
+    /**
+     * Construct helper.
+     */
     public function __construct(
         string $endpoint,
         string $model,
@@ -51,10 +65,16 @@ class custom_http_ai_provider implements ai_provider_interface {
         $this->responsepath = trim($responsepath);
     }
 
+    /**
+     * Get name helper.
+     */
     public function get_name(): string {
         return 'custom_http';
     }
 
+    /**
+     * Generate helper.
+     */
     public function generate(string $prompt, int $maxtokens = 1200, string $systemprompt = ''): string {
         if ($this->endpoint === '') {
             return 'Errore Custom HTTP API: endpoint mancante.';
@@ -106,6 +126,9 @@ class custom_http_ai_provider implements ai_provider_interface {
         return $answer !== '' ? $answer : 'Errore Custom HTTP API: response path vuoto o non trovato.';
     }
 
+    /**
+     * Default template helper.
+     */
     private function default_template(): string {
         return '{
           "model": "{{model}}",
@@ -118,6 +141,9 @@ class custom_http_ai_provider implements ai_provider_interface {
         }';
     }
 
+    /**
+     * Render template helper.
+     */
     private function render_template(string $template, array $values): string {
         foreach ($values as $key => $value) {
             $replacement = $key === 'max_tokens'
@@ -130,6 +156,9 @@ class custom_http_ai_provider implements ai_provider_interface {
         return $template;
     }
 
+    /**
+     * Escape json string helper.
+     */
     private function escape_json_string(string $value): string {
         $encoded = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
@@ -140,6 +169,9 @@ class custom_http_ai_provider implements ai_provider_interface {
         return substr($encoded, 1, -1);
     }
 
+    /**
+     * Build headers helper.
+     */
     private function build_headers(): array {
         $headers = [];
         $decoded = json_decode($this->headersjson, true);
@@ -166,6 +198,9 @@ class custom_http_ai_provider implements ai_provider_interface {
         return $headers;
     }
 
+    /**
+     * Value by path helper.
+     */
     private function value_by_path(array $data, string $path) {
         $current = $data;
 
@@ -192,6 +227,9 @@ class custom_http_ai_provider implements ai_provider_interface {
         return $current;
     }
 
+    /**
+     * Error helper.
+     */
     private function error(array $response): string {
         $status = (int)($response['status'] ?? 0);
         $body = $response['body'] ?? null;

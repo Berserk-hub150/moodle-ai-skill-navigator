@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,6 +21,7 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/role_guard.php');
 require_once(__DIR__ . '/../includes/ai_output_formatter.php');
@@ -34,7 +35,7 @@ $topic = optional_param('topic', '', PARAM_TEXT);
 
 $course = get_course($courseid);
 require_login($course);
-// AISN_FINAL_QUIZ_VIDEO_SESSKEY
+// AISN_FINAL_QUIZ_VIDEO_SESSKEY.
 require_sesskey();
 
 $context = context_course::instance($courseid);
@@ -52,6 +53,9 @@ if (
 
 header('Content-Type: application/json; charset=utf-8');
 
+/**
+ * Local aisn clean text helper.
+ */
 function local_aisn_clean_text(string $text, int $max = 700): string {
     $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $text = preg_replace('/\s+/u', ' ', $text);
@@ -136,6 +140,7 @@ try {
         'title' => local_aisn_clean_text((string)($best['title'] ?? 'Risorsa consigliata'), 180),
         'url' => $url,
         'snippet' => local_aisn_clean_text((string)($best['content'] ?? $best['snippet'] ?? ''), 500),
+        // phpcs:ignore moodle.Files.LineLength
         'activity' => 'Guarda la risorsa trovata da Tavily, poi scrivi in 3 righe il concetto collegato alla competenza "' . local_aisn_clean_text($skill, 120) . '".',
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 } catch (Throwable $e) {

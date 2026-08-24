@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,6 +21,7 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_aiskillnavigator\service\provider;
 
 use local_aiskillnavigator\service\anthropic_ai_provider;
@@ -32,6 +33,7 @@ use local_aiskillnavigator\service\openai_compatible_ai_provider;
 use local_aiskillnavigator\service\prototype_ai_provider;
 use local_aiskillnavigator\service\ai_provider_interface;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/../anthropic_ai_provider.php');
@@ -42,7 +44,13 @@ require_once(__DIR__ . '/../ollama_ai_provider.php');
 require_once(__DIR__ . '/../openai_compatible_ai_provider.php');
 require_once(__DIR__ . '/../prototype_ai_provider.php');
 
+/**
+ * Ai provider selector implementation.
+ */
 class ai_provider_selector {
+    /**
+     * Create helper.
+     */
     public function create(ai_provider_config $config): ai_provider_interface {
         $provider = strtolower(trim($config->provider));
 

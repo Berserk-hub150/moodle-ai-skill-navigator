@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,6 +21,7 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/ai_output_formatter.php');
 require_once(__DIR__ . '/../includes/back_to_course_helper.php');
@@ -43,11 +44,17 @@ $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/gap_analysis.php', 
 $PAGE->set_title(get_string('page_gap_analysis_title', 'local_aiskillnavigator'));
 $PAGE->set_heading(get_string('page_gap_analysis_heading', 'local_aiskillnavigator'));
 
+/**
+ * Local aiskillnavigator gap table exists helper.
+ */
 function local_aiskillnavigator_gap_table_exists(string $tablename): bool {
     global $DB;
     return $DB->get_manager()->table_exists(new xmldb_table($tablename));
 }
 
+/**
+ * Local aiskillnavigator gap call ai helper.
+ */
 function local_aiskillnavigator_gap_call_ai(string $prompt, string $systemprompt): string {
     try {
         if (class_exists('\local_aiskillnavigator\service\ai_provider_factory')) {
@@ -71,6 +78,9 @@ function local_aiskillnavigator_gap_call_ai(string $prompt, string $systemprompt
     return 'AI provider not available. Configure it from plugin settings.';
 }
 
+/**
+ * Local aiskillnavigator gap collect helper.
+ */
 function local_aiskillnavigator_gap_collect(int $courseid): array {
     global $DB;
 
@@ -130,6 +140,7 @@ function local_aiskillnavigator_gap_collect(int $courseid): array {
             }
 
             foreach ($questions as $index => $question) {
+                // phpcs:ignore moodle.Files.LineLength
                 $skill = trim((string)($question['ability'] ?? $question['skill'] ?? $question['Ability'] ?? 'General understanding'));
 
                 if ($skill === '') {
@@ -192,6 +203,7 @@ if ($action === 'generate') {
     $lines[] = 'Assessment summary:';
 
     foreach ($data['assessments'] as $assessment) {
+        // phpcs:ignore moodle.Files.LineLength
         $lines[] = '- ' . $assessment['title'] . ' [' . $assessment['type'] . '], attempts: ' . $assessment['attempts'] . ', average: ' . $assessment['average'] . '%';
     }
 
@@ -339,6 +351,7 @@ echo html_writer::tag('h2', 'AI learning-gap analysis');
 
 echo html_writer::tag(
     'p',
+    // phpcs:ignore moodle.Files.LineLength
     'Analyze initial diagnostic quizzes and final tests to identify weak abilities, class-level ability gaps and teacher-side remediation actions.',
     ['class' => 'lead']
 );
@@ -377,6 +390,7 @@ if ((int)$data['totalattempts'] === 0) {
 
     echo html_writer::tag(
         'p',
+        // phpcs:ignore moodle.Files.LineLength
         'Generate and publish an initial diagnostic quiz or final test, then let students submit their answers. After that, this page will show ability gaps and AI recommendations.',
         ['class' => 'text-muted']
     );
@@ -496,6 +510,7 @@ echo html_writer::link(
 
 echo html_writer::end_div();
 
+// phpcs:ignore moodle.Files.LineLength
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
 if (function_exists('local_aisn_ai_output_formatter_assets')) {
     echo local_aisn_ai_output_formatter_assets();

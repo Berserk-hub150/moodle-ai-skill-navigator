@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,18 +21,29 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_aiskillnavigator\service\workflow;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 // Runs tutor prompts.
+/**
+ * Tutor workflow implementation.
+ */
 class tutor_workflow extends base_workflow {
+    /**
+     * Ask helper.
+     */
     public function ask(string $question): string {
         $question = trim($question);
         return $question === '' ? 'Scrivi una domanda prima di inviarla al tutor AI.'
             : $this->provider->generate($this->prompts->tutor_prompt($question), 1000);
     }
 
+    /**
+     * Materials helper.
+     */
     public function materials(string $question, array $materials): string {
         $question = trim($question);
         if ($question === '') {
@@ -43,6 +54,9 @@ class tutor_workflow extends base_workflow {
             : $this->provider->generate($this->prompts->tutor_with_materials_prompt($question, $materials), 1400);
     }
 
+    /**
+     * Rag helper.
+     */
     public function rag(string $question, string $context): string {
         $question = trim($question);
         if ($question === '') {

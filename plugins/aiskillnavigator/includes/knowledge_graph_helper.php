@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,16 +21,24 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/material_exclusion_helper.php');
 require_once(__DIR__ . '/material_ai_policy.php');
 
+/**
+ * Local aisn kg table exists helper.
+ */
 function local_aisn_kg_table_exists(string $name): bool {
     global $DB;
     return $DB->get_manager()->table_exists(new xmldb_table($name));
 }
 
+/**
+ * Local aisn kg ensure schema helper.
+ */
 function local_aisn_kg_ensure_schema(): void {
     global $DB;
 
@@ -92,6 +100,9 @@ function local_aisn_kg_ensure_schema(): void {
 }
 
 
+/**
+ * Local aisn kg material allowed for graph helper.
+ */
 function local_aisn_kg_material_allowed_for_graph(stdClass $material): bool {
     if (function_exists('local_aiskillnavigator_material_external_allowed')) {
         return local_aiskillnavigator_material_external_allowed($material);
@@ -108,18 +119,30 @@ function local_aisn_kg_material_allowed_for_graph(stdClass $material): bool {
     return false;
 }
 
+/**
+ * Local aisn kg text len helper.
+ */
 function local_aisn_kg_text_len(string $text): int {
     return class_exists('core_text') ? core_text::strlen($text) : strlen($text);
 }
 
+/**
+ * Local aisn kg substr helper.
+ */
 function local_aisn_kg_substr(string $text, int $start, int $length): string {
     return class_exists('core_text') ? core_text::substr($text, $start, $length) : substr($text, $start, $length);
 }
 
+/**
+ * Local aisn kg lower helper.
+ */
 function local_aisn_kg_lower(string $text): string {
     return class_exists('core_text') ? core_text::strtolower($text) : strtolower($text);
 }
 
+/**
+ * Local aisn kg normalize helper.
+ */
 function local_aisn_kg_normalize(string $name): string {
     $name = html_entity_decode(strip_tags($name), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $name = preg_replace('/[_\-]+/u', ' ', $name);
@@ -134,6 +157,9 @@ function local_aisn_kg_normalize(string $name): string {
     return local_aisn_kg_substr(local_aisn_kg_lower($name), 0, 191);
 }
 
+/**
+ * Local aisn kg clean text helper.
+ */
 function local_aisn_kg_clean_text(string $text): string {
     $text = html_entity_decode(strip_tags($text), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $text = str_replace(["\r\n", "\r"], "\n", $text);
@@ -142,6 +168,9 @@ function local_aisn_kg_clean_text(string $text): string {
     return trim((string)$text);
 }
 
+/**
+ * Local aisn kg sentence excerpt helper.
+ */
 function local_aisn_kg_sentence_excerpt(string $text, string $term): string {
     $text = local_aisn_kg_clean_text($text);
     $termnorm = local_aisn_kg_normalize($term);
@@ -156,6 +185,9 @@ function local_aisn_kg_sentence_excerpt(string $text, string $term): string {
     return local_aisn_kg_substr($text, 0, 420);
 }
 
+/**
+ * Local aisn kg stopwords helper.
+ */
 function local_aisn_kg_stopwords(): array {
     $words = [
         'alla', 'allo', 'alle', 'agli', 'dalla', 'dello', 'delle', 'degli', 'nella', 'nello', 'nelle', 'negli',
@@ -170,6 +202,9 @@ function local_aisn_kg_stopwords(): array {
     return array_fill_keys($words, true);
 }
 
+/**
+ * Local aisn kg extract terms helper.
+ */
 function local_aisn_kg_extract_terms(string $text, int $limit = 36): array {
     $text = local_aisn_kg_clean_text($text);
 
@@ -212,6 +247,7 @@ function local_aisn_kg_extract_terms(string $text, int $limit = 36): array {
             continue;
         }
 
+        // phpcs:ignore moodle.Files.LineLength
         if (preg_match_all('/\b(?:concetto|argomento|abilità|ability|competenza|tema|modulo|funzione|classe|metodo|tabella|query|formula|dominio|codominio)\s+(?:di|del|della|su|per)?\s*([A-ZÀ-Ýa-zà-ÿ0-9][A-ZÀ-Ýa-zà-ÿ0-9\s\+\#\._-]{2,70})/iu', $sentence, $matches)) {
             foreach ($matches[1] as $match) {
                 $candidate = trim((string)$match);
@@ -288,6 +324,9 @@ function local_aisn_kg_extract_terms(string $text, int $limit = 36): array {
     return $result;
 }
 
+/**
+ * Local aisn kg get chunks for material helper.
+ */
 function local_aisn_kg_get_chunks_for_material(stdClass $material): array {
     global $DB;
 
@@ -343,6 +382,9 @@ function local_aisn_kg_get_chunks_for_material(stdClass $material): array {
     return $chunks;
 }
 
+/**
+ * Local aisn kg find concept helper.
+ */
 function local_aisn_kg_find_concept(int $courseid, string $normalizedname): ?stdClass {
     global $DB;
 
@@ -362,6 +404,9 @@ function local_aisn_kg_find_concept(int $courseid, string $normalizedname): ?std
     return reset($records);
 }
 
+/**
+ * Local aisn kg upsert concept helper.
+ */
 function local_aisn_kg_upsert_concept(int $courseid, array $term): int {
     global $DB;
 
@@ -407,6 +452,9 @@ function local_aisn_kg_upsert_concept(int $courseid, array $term): int {
     return (int)$DB->insert_record('local_aisn_kg_concept', $record);
 }
 
+/**
+ * Local aisn kg add source helper.
+ */
 function local_aisn_kg_add_source(int $conceptid, int $materialid, int $chunkid, string $evidence): void {
     global $DB;
 
@@ -434,6 +482,9 @@ function local_aisn_kg_add_source(int $conceptid, int $materialid, int $chunkid,
     $DB->insert_record('local_aisn_kg_source', $record);
 }
 
+/**
+ * Local aisn kg add relation helper.
+ */
 function local_aisn_kg_add_relation(
     int $courseid,
     int $sourceid,
@@ -481,6 +532,9 @@ function local_aisn_kg_add_relation(
     $DB->insert_record('local_aisn_kg_relation', $record);
 }
 
+/**
+ * Local aisn kg delete orphan concepts helper.
+ */
 function local_aisn_kg_delete_orphan_concepts(int $courseid): void {
     global $DB;
 
@@ -501,6 +555,9 @@ function local_aisn_kg_delete_orphan_concepts(int $courseid): void {
     $DB->delete_records_select('local_aisn_kg_concept', "id {$insql}", $params);
 }
 
+/**
+ * Local aisn kg delete material helper.
+ */
 function local_aisn_kg_delete_material(int $materialid): void {
     global $DB;
 
@@ -521,6 +578,9 @@ function local_aisn_kg_delete_material(int $materialid): void {
     }
 }
 
+/**
+ * Local aisn kg rebuild material helper.
+ */
 function local_aisn_kg_rebuild_material(int $materialid): array {
     global $DB;
 
@@ -560,6 +620,7 @@ function local_aisn_kg_rebuild_material(int $materialid): array {
             $chunkconcepts[(int)$chunk['chunkid']][$term['normalizedname']] = [
                 'id' => $conceptid,
                 'name' => $term['name'],
+                // phpcs:ignore moodle.Files.LineLength
                 'evidence' => $term['evidence'] !== '' ? $term['evidence'] : local_aisn_kg_sentence_excerpt($chunk['text'], $term['name']),
                 'confidence' => (int)$term['confidence'],
             ];
@@ -613,6 +674,9 @@ function local_aisn_kg_rebuild_material(int $materialid): array {
     return ['concepts' => count($conceptids), 'relations' => $relationcount];
 }
 
+/**
+ * Local aisn kg material cmid helper.
+ */
 function local_aisn_kg_material_cmid(stdClass $material): int {
     $title = (string)($material->title ?? '');
 
@@ -627,6 +691,9 @@ function local_aisn_kg_material_cmid(stdClass $material): int {
     return 0;
 }
 
+/**
+ * Local aisn kg course materials helper.
+ */
 function local_aisn_kg_course_materials(int $courseid): array {
     global $DB;
 
@@ -675,6 +742,9 @@ function local_aisn_kg_course_materials(int $courseid): array {
     return $materials;
 }
 
+/**
+ * Local aisn kg cleanup stale course helper.
+ */
 function local_aisn_kg_cleanup_stale_course(int $courseid): void {
     $materials = local_aisn_kg_course_materials($courseid);
     $validids = array_fill_keys(array_map('intval', array_keys($materials)), true);
@@ -697,6 +767,9 @@ function local_aisn_kg_cleanup_stale_course(int $courseid): void {
     }
 }
 
+/**
+ * Local aisn kg rebuild course helper.
+ */
 function local_aisn_kg_rebuild_course(int $courseid): array {
     global $DB;
 
@@ -723,6 +796,9 @@ function local_aisn_kg_rebuild_course(int $courseid): array {
     return $summary;
 }
 
+/**
+ * Local aisn kg sync course after material sync helper.
+ */
 function local_aisn_kg_sync_course_after_material_sync(int $courseid, array $changedids = []): void {
     try {
         local_aisn_kg_ensure_schema();
@@ -740,6 +816,9 @@ function local_aisn_kg_sync_course_after_material_sync(int $courseid, array $cha
     }
 }
 
+/**
+ * Local aisn kg stats helper.
+ */
 function local_aisn_kg_stats(int $courseid): array {
     global $DB;
 
@@ -758,6 +837,9 @@ function local_aisn_kg_stats(int $courseid): array {
     ];
 }
 
+/**
+ * Local aisn kg graph data helper.
+ */
 function local_aisn_kg_graph_data(int $courseid, int $limitnodes = 80, int $limitedges = 160): array {
     global $DB;
 
@@ -825,6 +907,9 @@ function local_aisn_kg_graph_data(int $courseid, int $limitnodes = 80, int $limi
     return ['nodes' => $nodes, 'edges' => $edges];
 }
 
+/**
+ * Local aisn kg prompt context helper.
+ */
 function local_aisn_kg_prompt_context(int $courseid, string $focus = '', int $limit = 28): string {
     global $DB;
 
@@ -866,6 +951,7 @@ function local_aisn_kg_prompt_context(int $courseid, string $focus = '', int $li
     $ids = array_map('intval', array_keys($concepts));
     $lines = [];
     $lines[] = "COURSE KNOWLEDGE GRAPH";
+    // phpcs:ignore moodle.Files.LineLength
     $lines[] = "Use these teacher-approved concepts to choose abilities, prerequisites and distractors. Do not invent facts outside the course materials.";
 
     foreach ($concepts as $concept) {

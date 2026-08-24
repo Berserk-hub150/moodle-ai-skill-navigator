@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,9 +21,14 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 if (!function_exists('local_aiskillnavigator_pdf_tool_path')) {
+    /**
+     * Local aiskillnavigator pdf tool path helper.
+     */
     function local_aiskillnavigator_pdf_tool_path(string $tool): string {
         $tool = preg_replace('/[^a-zA-Z0-9_\-]/', '', $tool);
         return trim((string)@shell_exec('command -v ' . escapeshellarg($tool) . ' 2>/dev/null'));
@@ -31,6 +36,9 @@ if (!function_exists('local_aiskillnavigator_pdf_tool_path')) {
 }
 
 if (!function_exists('local_aiskillnavigator_pdf_clean_text')) {
+    /**
+     * Local aiskillnavigator pdf clean text helper.
+     */
     function local_aiskillnavigator_pdf_clean_text(string $text): string {
         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $text = str_replace(["\r\n", "\r"], "\n", $text);
@@ -43,6 +51,9 @@ if (!function_exists('local_aiskillnavigator_pdf_clean_text')) {
 }
 
 if (!function_exists('local_aiskillnavigator_pdf_timeout_prefix')) {
+    /**
+     * Local aiskillnavigator pdf timeout prefix helper.
+     */
     function local_aiskillnavigator_pdf_timeout_prefix(int $seconds): string {
         $timeout = local_aiskillnavigator_pdf_tool_path('timeout');
         return $timeout !== '' ? escapeshellcmd($timeout) . ' ' . (int)$seconds . 's ' : '';
@@ -50,12 +61,18 @@ if (!function_exists('local_aiskillnavigator_pdf_timeout_prefix')) {
 }
 
 if (!function_exists('local_aiskillnavigator_pdf_filesize')) {
+    /**
+     * Local aiskillnavigator pdf filesize helper.
+     */
     function local_aiskillnavigator_pdf_filesize(string $pdfpath): int {
         return is_readable($pdfpath) ? (int)@filesize($pdfpath) : 0;
     }
 }
 
 if (!function_exists('local_aiskillnavigator_pdf_large_threshold')) {
+    /**
+     * Local aiskillnavigator pdf large threshold helper.
+     */
     function local_aiskillnavigator_pdf_large_threshold(): int {
         $configured = (int)get_config('local_aiskillnavigator', 'largefilethresholdbytes');
         if ($configured > 0) {
@@ -66,6 +83,9 @@ if (!function_exists('local_aiskillnavigator_pdf_large_threshold')) {
 }
 
 if (!function_exists('local_aiskillnavigator_pdf_is_large')) {
+    /**
+     * Local aiskillnavigator pdf is large helper.
+     */
     function local_aiskillnavigator_pdf_is_large(string $pdfpath): bool {
         $size = local_aiskillnavigator_pdf_filesize($pdfpath);
         return $size > 0 && $size >= local_aiskillnavigator_pdf_large_threshold();
@@ -73,6 +93,9 @@ if (!function_exists('local_aiskillnavigator_pdf_is_large')) {
 }
 
 if (!function_exists('local_aiskillnavigator_pdf_text_layer')) {
+    /**
+     * Local aiskillnavigator pdf text layer helper.
+     */
     function local_aiskillnavigator_pdf_text_layer(string $pdfpath): string {
         $pdftotext = local_aiskillnavigator_pdf_tool_path('pdftotext');
 
@@ -92,6 +115,9 @@ if (!function_exists('local_aiskillnavigator_pdf_text_layer')) {
 }
 
 if (!function_exists('local_aiskillnavigator_pdf_page_count')) {
+    /**
+     * Local aiskillnavigator pdf page count helper.
+     */
     function local_aiskillnavigator_pdf_page_count(string $pdfpath): int {
         $pdfinfo = local_aiskillnavigator_pdf_tool_path('pdfinfo');
 
@@ -112,6 +138,9 @@ if (!function_exists('local_aiskillnavigator_pdf_page_count')) {
 }
 
 if (!function_exists('local_aiskillnavigator_pdf_ocr_allowed')) {
+    /**
+     * Local aiskillnavigator pdf ocr allowed helper.
+     */
     function local_aiskillnavigator_pdf_ocr_allowed(string $pdfpath): bool {
         if (function_exists('local_aisn_ocr_enabled') && !local_aisn_ocr_enabled()) {
             return false;
@@ -132,6 +161,9 @@ if (!function_exists('local_aiskillnavigator_pdf_ocr_allowed')) {
 }
 
 if (!function_exists('local_aiskillnavigator_pdf_ocr')) {
+    /**
+     * Local aiskillnavigator pdf ocr helper.
+     */
     function local_aiskillnavigator_pdf_ocr(string $pdfpath): string {
         if (!local_aiskillnavigator_pdf_ocr_allowed($pdfpath)) {
             return '';
@@ -198,6 +230,9 @@ if (!function_exists('local_aiskillnavigator_pdf_ocr')) {
 }
 
 if (!function_exists('local_aiskillnavigator_extract_pdf_text_from_path')) {
+    /**
+     * Local aiskillnavigator extract pdf text from path helper.
+     */
     function local_aiskillnavigator_extract_pdf_text_from_path(string $pdfpath, string $filename = ''): string {
         if ($pdfpath === '' || !is_readable($pdfpath)) {
             return '';

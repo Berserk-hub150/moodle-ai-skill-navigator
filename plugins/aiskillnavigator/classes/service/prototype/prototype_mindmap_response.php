@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,12 +21,20 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_aiskillnavigator\service\prototype;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 // Demo mind map JSON used by the prototype provider.
+/**
+ * Prototype mindmap response implementation.
+ */
 class prototype_mindmap_response {
+    /**
+     * Get helper.
+     */
     public function get(): string {
         return json_encode([
             'title' => 'Mappa AI Skill Navigator',
@@ -42,6 +50,9 @@ class prototype_mindmap_response {
         ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
 
+    /**
+     * Branch helper.
+     */
     private function branch(string $title, string $description): array {
         return [
             'title' => $title,

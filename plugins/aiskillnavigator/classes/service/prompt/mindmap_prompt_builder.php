@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,21 +21,34 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_aiskillnavigator\service\prompt;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 // Builds mind map prompts from a topic, materials or RAG text.
+/**
+ * Mindmap prompt builder implementation.
+ */
 class mindmap_prompt_builder extends base_prompt_helper {
     private const MATERIAL_LIMIT = 2600;
+    /** @var mindmap_rules Rules. */
     private mindmap_rules $rules;
+    /** @var mindmap_schema Schema. */
     private mindmap_schema $schema;
 
+    /**
+     * Construct helper.
+     */
     public function __construct() {
         parent::__construct();
         $this->rules = new mindmap_rules();
         $this->schema = new mindmap_schema();
     }
 
+    /**
+     * Plain helper.
+     */
     public function plain(string $topic): string {
         $topic = $this->default_if_empty($topic, 'Digital Twin');
 
@@ -45,6 +58,9 @@ class mindmap_prompt_builder extends base_prompt_helper {
             . $this->schema->get($topic);
     }
 
+    /**
+     * From materials helper.
+     */
     public function from_materials(string $focus, array $materials): string {
         $topic = $this->default_if_empty($focus, 'Materiali del docente');
 
@@ -55,6 +71,9 @@ class mindmap_prompt_builder extends base_prompt_helper {
             . $this->schema->get($topic);
     }
 
+    /**
+     * With rag helper.
+     */
     public function with_rag(string $focus, string $ragcontext): string {
         return $this->from_materials($focus, [(object) ['content' => $ragcontext]]);
     }

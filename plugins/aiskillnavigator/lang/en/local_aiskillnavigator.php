@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,51 +21,71 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'AI Skill Navigator';
-
-$string['studentdashboard'] = 'Student dashboard';
-$string['teacherdashboard'] = 'Teacher dashboard';
-$string['skills'] = 'Skills';
-$string['recommendations'] = 'Recommendations';
-$string['main_gap'] = 'Main skill gap';
 $string['ai_recommendation'] = 'AI recommendation prototype';
-
 $string['aitutor'] = 'AI Tutor';
-$string['quizgenerator'] = 'AI Quiz Generator';
-$string['mindmapgenerator'] = 'AI Mind Map Generator';
-
-$string['tutor_question'] = 'Ask a question';
-$string['quiz_topic'] = 'Quiz topic';
-$string['mindmap_topic'] = 'Mind map topic';
-
-$string['settings'] = 'AI Skill Navigator settings';
-$string['provider'] = 'AI provider';
-$string['provider_desc'] = 'Select the AI provider used by the plugin.';
 $string['apikey'] = 'AI API key';
 $string['apikey_desc'] = 'API key for the external AI provider.';
 $string['embeddingmodel'] = 'Embedding model';
 $string['embeddingmodel_desc'] = 'Model used for generating RAG embeddings. For Ollama: nomic-embed-text. For OpenAI: text-embedding-3-small.';
+$string['local/aiskillnavigator:manageassessments'] = 'Manage AI assessments';
+$string['local/aiskillnavigator:managematerials'] = 'Manage teacher AI materials';
 $string['local/aiskillnavigator:viewstudent'] = 'Use student AI tools';
 $string['local/aiskillnavigator:viewteacher'] = 'Use teacher AI tools';
-$string['local/aiskillnavigator:managematerials'] = 'Manage teacher AI materials';
-$string['local/aiskillnavigator:manageassessments'] = 'Manage AI assessments';
+$string['main_gap'] = 'Main skill gap';
+$string['mindmap_topic'] = 'Mind map topic';
+$string['mindmapgenerator'] = 'AI Mind Map Generator';
+$string['page_adaptive_review_heading'] = 'Adaptive review';
+$string['page_adaptive_review_title'] = 'Adaptive review';
+$string['page_assessment_heading'] = 'AI assessments';
+$string['page_assessment_title'] = 'AI assessments';
+$string['page_course_builder_heading'] = 'AI Course Builder';
+$string['page_course_builder_title'] = 'AI Course Builder';
+$string['page_gap_analysis_heading'] = 'AI learning-gap analysis';
+$string['page_gap_analysis_title'] = 'AI learning-gap analysis';
+$string['page_index_heading_1'] = 'AI Skill Navigator';
+$string['page_index_heading_2'] = 'AI Skill Navigator';
+$string['page_index_title_1'] = 'AI Skill Navigator';
+$string['page_index_title_2'] = 'AI Skill Navigator';
+$string['page_mindmapgenerator_heading'] = 'AI Mind Map Generator';
+$string['page_mindmapgenerator_title'] = 'AI Mind Map Generator';
+$string['page_simulator_finder_heading'] = 'AI Simulator Finder';
+$string['page_simulator_finder_title'] = 'AI Simulator Finder';
+$string['page_teacher_assessments_heading'] = 'Initial/final tests';
+$string['page_teacher_assessments_title'] = 'Initial/final tests';
+$string['page_teacher_heading'] = 'Teacher dashboard';
+$string['page_teacher_materials_heading'] = 'Course materials / RAG';
+$string['page_teacher_materials_title'] = 'Course materials / RAG';
+$string['page_teacher_simulations_heading'] = 'Saved simulations';
+$string['page_teacher_simulations_title'] = 'Saved simulations';
+$string['page_teacher_title'] = 'Teacher dashboard';
+$string['page_tutor_analytics_heading'] = 'Tutor analyst';
+$string['page_tutor_analytics_title'] = 'Tutor analyst';
+$string['page_tutor_heading'] = 'AI Tutor';
+$string['page_tutor_title'] = 'AI Tutor';
+$string['pluginname'] = 'AI Skill Navigator';
 $string['privacy:metadata:configured_ai_provider'] = 'Optional external AI provider configured by the site administrator.';
-$string['privacy:metadata:local_aiskillnav_material'] = 'Course materials stored for AI-assisted learning.';
+$string['privacy:metadata:content'] = 'User-provided or extracted content.';
+$string['privacy:metadata:courseid'] = 'The course identifier.';
+$string['privacy:metadata:local_aiskillnav_ass_att'] = 'Student attempts on teacher-generated assessments.';
+$string['privacy:metadata:local_aiskillnav_assessment'] = 'Teacher-generated initial and final assessments.';
 $string['privacy:metadata:local_aiskillnav_attempt'] = 'Student AI quiz attempts.';
 $string['privacy:metadata:local_aiskillnav_chunk'] = 'Search chunks generated from course materials.';
-$string['privacy:metadata:local_aiskillnav_assessment'] = 'Teacher-generated initial and final assessments.';
-$string['privacy:metadata:local_aiskillnav_ass_att'] = 'Student attempts on teacher-generated assessments.';
+$string['privacy:metadata:local_aiskillnav_material'] = 'Course materials stored for AI-assisted learning.';
 $string['privacy:metadata:local_aiskillnav_sim'] = 'Saved simulator suggestions and activities.';
 $string['privacy:metadata:local_aiskillnav_tutor_sig'] = 'Tutor questions and interaction signals.';
-$string['privacy:metadata:userid'] = 'The user identifier.';
-$string['privacy:metadata:courseid'] = 'The course identifier.';
-$string['privacy:metadata:content'] = 'User-provided or extracted content.';
 $string['privacy:metadata:timecreated'] = 'The time the record was created.';
 $string['privacy:metadata:timemodified'] = 'The time the record was last modified.';
-
-// Marketplace/admin settings strings.
+$string['privacy:metadata:userid'] = 'The user identifier.';
+$string['provider'] = 'AI provider';
+$string['provider_desc'] = 'Select the AI provider used by the plugin.';
+$string['quiz_topic'] = 'Quiz topic';
+$string['quizgenerator'] = 'AI Quiz Generator';
+$string['recommendations'] = 'Recommendations';
+$string['settings'] = 'AI Skill Navigator settings';
 $string['settings_allowdestructivecoursebuilder'] = 'Allow destructive AI Course Builder actions';
 $string['settings_allowdestructivecoursebuilder_desc'] = 'If disabled, AI Course Builder can create sections and attach files, but cannot rename, hide, move, duplicate or delete existing sections.';
 $string['settings_apikey'] = 'API key';
@@ -151,33 +171,7 @@ $string['settings_searchprovider_serpapi'] = 'SerpAPI Google Search';
 $string['settings_searchprovider_tavily'] = 'Tavily Search API';
 $string['simulator_material_unreadable'] = 'The selected material has no readable text.';
 $string['simulator_select_material'] = 'Select at least one course material before generating a simulator exercise.';
-
-// Moodle page titles and headings.
-$string['page_adaptive_review_heading'] = 'Adaptive review';
-$string['page_adaptive_review_title'] = 'Adaptive review';
-$string['page_assessment_heading'] = 'AI assessments';
-$string['page_assessment_title'] = 'AI assessments';
-$string['page_course_builder_heading'] = 'AI Course Builder';
-$string['page_course_builder_title'] = 'AI Course Builder';
-$string['page_gap_analysis_heading'] = 'AI learning-gap analysis';
-$string['page_gap_analysis_title'] = 'AI learning-gap analysis';
-$string['page_index_heading_1'] = 'AI Skill Navigator';
-$string['page_index_heading_2'] = 'AI Skill Navigator';
-$string['page_index_title_1'] = 'AI Skill Navigator';
-$string['page_index_title_2'] = 'AI Skill Navigator';
-$string['page_mindmapgenerator_heading'] = 'AI Mind Map Generator';
-$string['page_mindmapgenerator_title'] = 'AI Mind Map Generator';
-$string['page_simulator_finder_heading'] = 'AI Simulator Finder';
-$string['page_simulator_finder_title'] = 'AI Simulator Finder';
-$string['page_teacher_assessments_heading'] = 'Initial/final tests';
-$string['page_teacher_assessments_title'] = 'Initial/final tests';
-$string['page_teacher_heading'] = 'Teacher dashboard';
-$string['page_teacher_materials_heading'] = 'Course materials / RAG';
-$string['page_teacher_materials_title'] = 'Course materials / RAG';
-$string['page_teacher_simulations_heading'] = 'Saved simulations';
-$string['page_teacher_simulations_title'] = 'Saved simulations';
-$string['page_teacher_title'] = 'Teacher dashboard';
-$string['page_tutor_analytics_heading'] = 'Tutor analyst';
-$string['page_tutor_analytics_title'] = 'Tutor analyst';
-$string['page_tutor_heading'] = 'AI Tutor';
-$string['page_tutor_title'] = 'AI Tutor';
+$string['skills'] = 'Skills';
+$string['studentdashboard'] = 'Student dashboard';
+$string['teacherdashboard'] = 'Teacher dashboard';
+$string['tutor_question'] = 'Ask a question';

@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,19 +21,30 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_aiskillnavigator\service;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/abstract_curl_ai_provider.php');
 require_once(__DIR__ . '/provider/http_json_client.php');
 
 // Anthropic Claude provider.
+/**
+ * Anthropic ai provider implementation.
+ */
 class anthropic_ai_provider extends abstract_curl_ai_provider {
+    /**
+     * Get name helper.
+     */
     public function get_name(): string {
         return 'anthropic';
     }
 
+    /**
+     * Generate helper.
+     */
     public function generate(string $prompt, int $maxtokens = 1200, string $systemprompt = ''): string {
         if (trim($this->apikey) === '') {
             return 'Errore Anthropic API: API key mancante.';
@@ -95,6 +106,9 @@ class anthropic_ai_provider extends abstract_curl_ai_provider {
         return 'Errore Anthropic API: risposta vuota o formato non riconosciuto.';
     }
 
+    /**
+     * Error helper.
+     */
     private function error(array $response): string {
         $status = (int)($response['status'] ?? 0);
         $raw = trim((string)($response['raw'] ?? ''));

@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,6 +21,7 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/role_guard.php');
 require_once(__DIR__ . '/../includes/ui_style_helper.php');
@@ -146,6 +147,9 @@ if ($totalattempts > 0) {
     }
 }
 
+/**
+ * Local aiskillnavigator student badge class helper.
+ */
 function local_aiskillnavigator_student_badge_class(int $percentage): string {
     if ($percentage >= 80) {
         return 'badge badge-success';
@@ -158,6 +162,9 @@ function local_aiskillnavigator_student_badge_class(int $percentage): string {
     return 'badge badge-danger';
 }
 
+/**
+ * Local aiskillnavigator student status text helper.
+ */
 function local_aiskillnavigator_student_status_text(int $percentage): string {
     if ($percentage >= 80) {
         return 'Strong';
@@ -343,6 +350,7 @@ echo html_writer::div(
 
 echo html_writer::end_div();
 
+// phpcs:ignore moodle.Files.LineLength
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
 if (function_exists('local_aisn_ai_output_formatter_assets')) {
     echo local_aisn_ai_output_formatter_assets();

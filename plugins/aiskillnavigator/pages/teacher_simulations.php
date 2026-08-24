@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,6 +21,7 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/ui_style_helper.php');
 require_once(__DIR__ . '/../includes/back_to_course_helper.php');
@@ -67,11 +68,17 @@ if ($action === 'delete' && $simulationid > 0) {
     redirect($listurl, 'Simulation deleted.', 1);
 }
 
+/**
+ * Local aisn saved material titles helper.
+ */
 function local_aisn_saved_material_titles(stdClass $record): array {
     $titles = json_decode((string)($record->materialtitles ?? ''), true);
     return is_array($titles) ? array_values(array_filter(array_map('strval', $titles))) : [];
 }
 
+/**
+ * Local aisn saved render materials helper.
+ */
 function local_aisn_saved_render_materials(array $titles): string {
     if (empty($titles)) {
         return '';
@@ -88,6 +95,9 @@ function local_aisn_saved_render_materials(array $titles): string {
     return $html;
 }
 
+/**
+ * Local aisn saved record text helper.
+ */
 function local_aisn_saved_record_text(stdClass $record): string {
     $text = trim((string)($record->resulttext ?? ''));
 
@@ -98,6 +108,9 @@ function local_aisn_saved_record_text(stdClass $record): string {
     return trim((string)($record->description ?? ''));
 }
 
+/**
+ * Local aisn saved record title helper.
+ */
 function local_aisn_saved_record_title(stdClass $record): string {
     $topic = trim((string)($record->topic ?? ''));
 
@@ -110,12 +123,18 @@ function local_aisn_saved_record_title(stdClass $record): string {
     return $title !== '' ? $title : 'Generated simulator exercise';
 }
 
+/**
+ * Local aisn saved record level helper.
+ */
 function local_aisn_saved_record_level(stdClass $record): string {
     $level = trim((string)($record->level ?? ''));
 
     return $level !== '' ? $level : '-';
 }
 
+/**
+ * Local aisn saved css helper.
+ */
 function local_aisn_saved_css(): string {
     return '
 /* AISN_SAVED_SIMULATIONS_LINK_DETAIL_V1 */
@@ -430,6 +449,7 @@ if ($action === 'view' && $simulationid > 0) {
 
     if (local_aisn_saved_sim_is_bad_raw($recordtext)) {
         echo html_writer::div(
+            // phpcs:ignore moodle.Files.LineLength
             'Nota: questo record era stato salvato con testo sporco della pagina Moodle. La vista dettaglio mostra solo la parte utile recuperata.',
             'aisn-bad-old-record'
         );
@@ -483,7 +503,7 @@ if ($action === 'view' && $simulationid > 0) {
 
 $records = $DB->get_records('local_aiskillnav_sim', ['courseid' => $courseid], 'timecreated DESC, id DESC');
 
-// AISN_SIM_DEDUPE_LIST_V1
+// AISN_SIM_DEDUPE_LIST_V1.
 // Difesa UI: anche se il DB contiene duplicati vecchi, la lista mostra una sola simulazione.
 if (function_exists('local_aisn_sim_unique_records')) {
     $records = local_aisn_sim_unique_records($records);

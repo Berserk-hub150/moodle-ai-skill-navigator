@@ -135,7 +135,7 @@ def fix_php(path: Path) -> bool:
             if body and not body.startswith(('#', '-', '*')):
                 if body[0].isalpha() and body[0].islower():
                     body = body[0].upper() + body[1:]
-                if body[-1] not in '.!?;:)}`]':
+                if body[-1] not in '.!?;:)}]`':
                     body += '.'
                 indent = line[:len(line) - len(line.lstrip())]
                 line = f'{indent}// {body}\n'

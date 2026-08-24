@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,12 +21,20 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_aiskillnavigator\service\embedding;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 // Splits long text around sentence boundaries.
+/**
+ * Sentence chunker implementation.
+ */
 class sentence_chunker {
+    /**
+     * Split helper.
+     */
     public function split(string $text): array {
         $sentences = preg_split('/(?<=[.!?])\s+/u', trim($text));
 
@@ -38,10 +46,10 @@ class sentence_chunker {
         $current = '';
 
         foreach ($sentences as $sentence) {
-            $tooBig = $current !== ''
+            $toobig = $current !== ''
                 && \core_text::strlen($current) + \core_text::strlen($sentence) + 1 > length_chunker::SIZE;
 
-            if ($tooBig) {
+            if ($toobig) {
                 $chunks[] = trim($current);
                 $overlap = \core_text::substr($current, -length_chunker::OVERLAP);
                 $current = trim($overlap . ' ' . $sentence);

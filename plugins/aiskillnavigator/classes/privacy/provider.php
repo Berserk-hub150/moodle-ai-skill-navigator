@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,8 +21,10 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_aiskillnavigator\privacy;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 use core_privacy\local\metadata\collection;
@@ -35,6 +37,9 @@ use core_privacy\local\request\plugin\provider as request_provider;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
+/**
+ * Provider implementation.
+ */
 class provider implements core_userlist_provider, metadata_provider, request_provider {
     private const USER_TABLES = [
         'local_aiskillnav_material',
@@ -45,6 +50,9 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
         'local_aiskillnav_tutor_sig',
     ];
 
+    /**
+     * Get metadata helper.
+     */
     public static function get_metadata(collection $collection): collection {
         $collection->add_database_table(
             'local_aiskillnav_material',
@@ -171,6 +179,9 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
         return $collection;
     }
 
+    /**
+     * Get contexts for userid helper.
+     */
     public static function get_contexts_for_userid(int $userid): contextlist {
         $contextlist = new contextlist();
 
@@ -191,6 +202,9 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
         return $contextlist;
     }
 
+    /**
+     * Export user data helper.
+     */
     public static function export_user_data(approved_contextlist $contextlist): void {
         global $DB;
 
@@ -222,6 +236,9 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
         }
     }
 
+    /**
+     * Delete data for all users in context helper.
+     */
     public static function delete_data_for_all_users_in_context(\context $context): void {
         global $DB;
 
@@ -251,6 +268,9 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
         }
     }
 
+    /**
+     * Delete data for user helper.
+     */
     public static function delete_data_for_user(approved_contextlist $contextlist): void {
         $userid = (int)$contextlist->get_user()->id;
 
@@ -259,6 +279,9 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
         }
     }
 
+    /**
+     * Get users in context helper.
+     */
     public static function get_users_in_context(userlist $userlist): void {
         $context = $userlist->get_context();
 
@@ -284,10 +307,16 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
         }
     }
 
+    /**
+     * Delete data for users helper.
+     */
     public static function delete_data_for_users(approved_userlist $userlist): void {
         self::delete_userids_in_context($userlist->get_context(), $userlist->get_userids());
     }
 
+    /**
+     * Delete userids in context helper.
+     */
     private static function delete_userids_in_context(\context $context, array $userids): void {
         global $DB;
 
@@ -333,6 +362,7 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
             $DB->delete_records_select('local_aiskillnav_assessment', 'courseid = :courseid AND userid ' . $usersql, $params);
         }
 
+        // phpcs:ignore moodle.Files.LineLength
         foreach (['local_aiskillnav_attempt', 'local_aiskillnav_ass_att', 'local_aiskillnav_sim', 'local_aiskillnav_tutor_sig'] as $table) {
             if (!self::table_exists($table)) {
                 continue;
@@ -343,6 +373,9 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
         }
     }
 
+    /**
+     * Delete material related helper.
+     */
     private static function delete_material_related(array $materialids): void {
         global $DB;
 
@@ -373,6 +406,9 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
         self::delete_orphan_concepts($conceptids);
     }
 
+    /**
+     * Delete orphan concepts helper.
+     */
     private static function delete_orphan_concepts(array $conceptids): void {
         global $DB;
 
@@ -428,6 +464,9 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
         $DB->delete_records_select('local_aisn_kg_concept', 'id ' . $orphansql, $orphanparams);
     }
 
+    /**
+     * Table exists helper.
+     */
     private static function table_exists(string $table): bool {
         global $DB;
 

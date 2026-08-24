@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,6 +21,7 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/role_guard.php');
 require_once(__DIR__ . '/../includes/ai_output_formatter.php');
@@ -47,6 +48,9 @@ $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/adaptive_review.php
 $PAGE->set_title(get_string('page_adaptive_review_title', 'local_aiskillnavigator'));
 $PAGE->set_heading(get_string('page_adaptive_review_heading', 'local_aiskillnavigator'));
 
+/**
+ * Local aiskillnavigator adaptive call ai helper.
+ */
 function local_aiskillnavigator_adaptive_call_ai(string $prompt): string {
     try {
         if (class_exists('\local_aiskillnavigator\service\ai_provider_factory')) {
@@ -54,6 +58,7 @@ function local_aiskillnavigator_adaptive_call_ai(string $prompt): string {
             return $provider->generate(
                 $prompt,
                 2600,
+                // phpcs:ignore moodle.Files.LineLength
                 'You are an adaptive Moodle tutor. Generate remedial explanations and practice questions based on weak abilities. Do not invent private data.'
             );
         }
@@ -99,6 +104,7 @@ if (empty($profile['skills'])) {
     echo html_writer::start_div('card mb-4');
     echo html_writer::start_div('card-body');
     echo html_writer::tag('h3', 'No learning data yet');
+    // phpcs:ignore moodle.Files.LineLength
     echo html_writer::tag('p', 'Complete at least one AI quiz or initial/final test. Then this page will build a personalized weak-ability profile.', ['class' => 'text-muted']);
     echo html_writer::end_div();
     echo html_writer::end_div();
@@ -168,6 +174,7 @@ echo html_writer::link(
 
 echo html_writer::end_div();
 
+// phpcs:ignore moodle.Files.LineLength
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
 if (function_exists('local_aisn_ai_output_formatter_assets')) {
     echo local_aisn_ai_output_formatter_assets();

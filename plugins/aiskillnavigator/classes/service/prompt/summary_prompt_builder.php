@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,23 +21,37 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_aiskillnavigator\service\prompt;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 // Builds summary prompts for uploaded materials or RAG text.
+/**
+ * Summary prompt builder implementation.
+ */
 class summary_prompt_builder extends base_prompt_helper {
     private const MATERIAL_LIMIT = 3000;
 
+    /**
+     * From materials helper.
+     */
     public function from_materials(string $focus, array $materials): string {
         return $this->base($focus)
             . "\nMateriali:\n"
             . $this->material_context($materials, self::MATERIAL_LIMIT);
     }
 
+    /**
+     * With rag helper.
+     */
     public function with_rag(string $focus, string $ragcontext): string {
         return $this->base($focus) . "\nMateriali:\n" . trim($ragcontext);
     }
 
+    /**
+     * Base helper.
+     */
     private function base(string $focus): string {
         $prompt = "Riassumi questi materiali in italiano.\n"
             . "Usa solo il contenuto fornito.\n"

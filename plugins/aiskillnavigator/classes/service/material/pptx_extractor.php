@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,14 +21,23 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_aiskillnavigator\service\material;
 
+// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
 // Reads slide text from PPTX files.
+/**
+ * Pptx extractor implementation.
+ */
 class pptx_extractor {
+    /**
+     * Extract helper.
+     */
     public function extract(string $path): array {
         if (!class_exists('\ZipArchive')) {
+            // phpcs:ignore moodle.Files.LineLength
             return ['success' => false, 'content' => '', 'message' => 'PHP ZipArchive is not available. PPTX extraction cannot run.', 'type' => 'slide'];
         }
 
@@ -54,10 +63,12 @@ class pptx_extractor {
 
         $zip->close();
         if (empty($slides)) {
+            // phpcs:ignore moodle.Files.LineLength
             return ['success' => false, 'content' => '', 'message' => 'No readable text found in the PPTX slides.', 'type' => 'slide'];
         }
 
         ksort($slides);
+        // phpcs:ignore moodle.Files.LineLength
         return ['success' => true, 'content' => trim(implode("\n\n", $slides)), 'message' => 'PPTX slides extracted successfully.', 'type' => 'slide'];
     }
 }

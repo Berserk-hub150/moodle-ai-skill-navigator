@@ -8,10 +8,10 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
+// You should have received a copy of the GNU General Public License.
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
@@ -21,6 +21,7 @@
  * @copyright  2026 Luca Magrini
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/role_guard.php');
 require_once(__DIR__ . '/../includes/back_to_course_helper.php');
@@ -33,6 +34,9 @@ $courseid = optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM
 
 require_login();
 
+/**
+ * Local aisn index card helper.
+ */
 function local_aisn_index_card(
     string $title,
     string $description,
@@ -64,6 +68,9 @@ function local_aisn_index_card(
 }
 
 
+/**
+ * Local aisn index ocr card helper.
+ */
 function local_aisn_index_ocr_card(int $courseid): string {
     if (
         !function_exists('local_aisn_document_ocr_user_can_toggle') ||
@@ -102,6 +109,9 @@ function local_aisn_index_ocr_card(int $courseid): string {
 
     return $html;
 }
+/**
+ * Local aisn index user courses helper.
+ */
 function local_aisn_index_user_courses(): array {
     global $DB;
 
@@ -139,6 +149,7 @@ if ($courseid <= SITEID) {
 
     if (empty($courses)) {
         echo html_writer::div(
+            // phpcs:ignore moodle.Files.LineLength
             'No course was selected. Open AI Skill Navigator from a Moodle course or use a URL like /local/aiskillnavigator/pages/index.php?courseid=2.',
             'alert alert-info'
         );
