@@ -79,8 +79,10 @@ function local_aiskillnavigator_coursemodule_standard_elements($formwrapper, $mf
         return;
     }
 
-    if (method_exists($mform, 'elementExists') &&
-        $mform->elementExists('local_aiskillnavigator_external_ai')) {
+    if (
+        method_exists($mform, 'elementExists') &&
+        $mform->elementExists('local_aiskillnavigator_external_ai')
+    ) {
         return;
     }
 

@@ -26,7 +26,6 @@ namespace local_aiskillnavigator\service;
 defined('MOODLE_INTERNAL') || die();
 
 class ai_recommendation_service {
-
     public function generate_student_recommendation(array $profile): string {
         $gap = $profile['main_gap'] ?? 'the weakest skill';
 

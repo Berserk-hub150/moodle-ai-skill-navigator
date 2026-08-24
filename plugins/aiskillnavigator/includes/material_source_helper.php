@@ -416,7 +416,7 @@ function local_aiskillnavigator_material_source_selected_ids_from_request(array 
 
     $ids = array_values(array_unique(array_map('intval', $ids)));
 
-    return array_values(array_filter($ids, function($id) use ($readablematerials) {
+    return array_values(array_filter($ids, function ($id) use ($readablematerials) {
         return isset($readablematerials[$id]);
     }));
 }
@@ -444,7 +444,7 @@ function local_aiskillnavigator_material_source_selected_materials(array $readab
         $selected = local_aisn_matlist_dedupe($selected);
     }
 
-    return array_values(array_filter($selected, function($material) {
+    return array_values(array_filter($selected, function ($material) {
         return local_aiskillnavigator_material_can_be_sent_to_current_ai($material);
     }));
 }
@@ -500,7 +500,7 @@ function local_aisn_prod_filter_rag_results_by_ai_policy(array $results, int $co
         return [];
     }
 
-    return array_values(array_filter($results, static function($result) use ($allowed): bool {
+    return array_values(array_filter($results, static function ($result) use ($allowed): bool {
         $materialid = isset($result->materialid) ? (int)$result->materialid : 0;
         return $materialid > 0 && isset($allowed[$materialid]);
     }));
@@ -559,13 +559,13 @@ function local_aiskillnavigator_material_source_search($embeddingservice, string
     if ($sourcemode === 'selected' && !empty($selectedmaterialids)) {
         $selected = array_map('intval', $selectedmaterialids);
 
-        $results = array_values(array_filter($results, function($result) use ($selected) {
+        $results = array_values(array_filter($results, function ($result) use ($selected) {
             $materialid = isset($result->materialid) ? (int)$result->materialid : 0;
             return in_array($materialid, $selected, true);
         }));
     }
 
-    usort($results, function($a, $b) {
+    usort($results, function ($a, $b) {
         return ((float)($b->similarity ?? 0)) <=> ((float)($a->similarity ?? 0));
     });
 
@@ -624,7 +624,7 @@ function local_aiskillnavigator_material_source_selector_html(
     string $help = ''
 ): string {
     $readablematerials = local_aisn_matlist_dedupe($readablematerials);
-    $selectedmaterialids = array_values(array_filter($selectedmaterialids, function($id) use ($readablematerials) {
+    $selectedmaterialids = array_values(array_filter($selectedmaterialids, function ($id) use ($readablematerials) {
         return isset($readablematerials[(int)$id]);
     }));
 

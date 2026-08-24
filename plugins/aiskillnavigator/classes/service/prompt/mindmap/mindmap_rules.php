@@ -26,7 +26,6 @@ namespace local_aiskillnavigator\service\prompt;
 defined('MOODLE_INTERNAL') || die();
 // Keeps the mind map output strict enough for JSON parsing.
 class mindmap_rules {
-
     public function format(): string {
         return "Formato:\n"
             . "- Rispondi solo con JSON valido.\n"

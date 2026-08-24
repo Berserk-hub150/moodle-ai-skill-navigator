@@ -65,9 +65,11 @@ function local_aisn_index_card(
 
 
 function local_aisn_index_ocr_card(int $courseid): string {
-    if (!function_exists('local_aisn_document_ocr_user_can_toggle') ||
+    if (
+        !function_exists('local_aisn_document_ocr_user_can_toggle') ||
         !function_exists('local_aisn_document_ocr_course_enabled') ||
-        !function_exists('local_aisn_document_ocr_toggle_url')) {
+        !function_exists('local_aisn_document_ocr_toggle_url')
+    ) {
         return '';
     }
 

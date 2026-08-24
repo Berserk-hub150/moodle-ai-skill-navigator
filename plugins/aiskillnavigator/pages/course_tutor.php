@@ -34,5 +34,3 @@ require_once(__DIR__ . '/../includes/course_resource_sync.php');
 $courseid = optional_param('courseid', SITEID, PARAM_INT);
 
 redirect(new moodle_url('/local/aiskillnavigator/pages/tutor.php', ['courseid' => $courseid]));
-
-

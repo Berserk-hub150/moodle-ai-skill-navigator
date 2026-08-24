@@ -291,8 +291,10 @@ function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): strin
     } else {
         $html .= html_writer::start_tag('div', ['class' => 'table-responsive']);
         $html .= html_writer::start_tag('table', ['class' => 'table table-sm']);
-        $html .= html_writer::tag('thead',
-            html_writer::tag('tr',
+        $html .= html_writer::tag(
+            'thead',
+            html_writer::tag(
+                'tr',
                 html_writer::tag('th', 'Time') .
                 html_writer::tag('th', 'Student') .
                 html_writer::tag('th', 'Skill') .
@@ -306,7 +308,8 @@ function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): strin
             $user = $DB->get_record('user', ['id' => $r->userid], 'id,firstname,lastname', IGNORE_MISSING);
             $student = $user ? fullname($user) : ('User #' . (int)$r->userid);
 
-            $html .= html_writer::tag('tr',
+            $html .= html_writer::tag(
+                'tr',
                 html_writer::tag('td', userdate((int)$r->timecreated, '%d/%m %H:%M')) .
                 html_writer::tag('td', s($student)) .
                 html_writer::tag('td', s((string)$r->skill)) .

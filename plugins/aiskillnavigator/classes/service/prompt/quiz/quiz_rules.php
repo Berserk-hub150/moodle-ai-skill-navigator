@@ -26,7 +26,6 @@ namespace local_aiskillnavigator\service\prompt;
 defined('MOODLE_INTERNAL') || die();
 // Keeps the quiz output strict enough for JSON parsing.
 class quiz_rules {
-
     public function format(): string {
         return "Formato:\n"
             . "- Rispondi solo con JSON valido.\n"

@@ -27,7 +27,7 @@ require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/clilib.php');
 require_once($CFG->dirroot . '/local/aiskillnavigator/classes/observer.php');
 
-list($options, $unrecognized) = cli_get_params(
+[$options, $unrecognized] = cli_get_params(
     [
         'help' => false,
         'courseid' => 0,

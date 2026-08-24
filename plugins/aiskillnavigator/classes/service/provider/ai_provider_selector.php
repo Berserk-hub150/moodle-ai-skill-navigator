@@ -100,7 +100,8 @@ class ai_provider_selector {
             );
         }
 
-        if (in_array($provider, [
+        if (
+            in_array($provider, [
             'openai',
             'openrouter',
             'openai_compatible',
@@ -112,7 +113,8 @@ class ai_provider_selector {
             'lmstudio',
             'vllm',
             'text-generation-webui',
-        ], true)) {
+            ], true)
+        ) {
             if ($config->endpoint === '') {
                 return new prototype_ai_provider();
             }

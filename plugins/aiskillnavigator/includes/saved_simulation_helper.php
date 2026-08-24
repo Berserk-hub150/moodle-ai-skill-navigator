@@ -159,8 +159,10 @@ if (!function_exists('local_aisn_saved_sim_noise_line')) {
             return true;
         }
 
-        if (preg_match('/^\s*[a-z\-]+\s*:\s*[^;]+;?\s*$/i', $line) &&
-            preg_match('/(padding|margin|background|border|font|display|width|height|overflow|color|position|radius|shadow|important|cursor|opacity|transition|grid|z-index)/i', $line)) {
+        if (
+            preg_match('/^\s*[a-z\-]+\s*:\s*[^;]+;?\s*$/i', $line) &&
+            preg_match('/(padding|margin|background|border|font|display|width|height|overflow|color|position|radius|shadow|important|cursor|opacity|transition|grid|z-index)/i', $line)
+        ) {
             return true;
         }
 
@@ -321,8 +323,10 @@ if (!function_exists('local_aisn_sim_clean_generated_result')) {
                 continue;
             }
 
-            if (core_text::strlen($line) > 1400 &&
-                preg_match('/(body|padding|margin|background|border|font|display|important|class=|id=|querySelector|function)/i', $line)) {
+            if (
+                core_text::strlen($line) > 1400 &&
+                preg_match('/(body|padding|margin|background|border|font|display|important|class=|id=|querySelector|function)/i', $line)
+            ) {
                 continue;
             }
 

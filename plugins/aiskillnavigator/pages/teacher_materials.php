@@ -152,7 +152,7 @@ function local_aisn_tm_chunk_counts(array $materials): array {
     }
 
     $ids = array_keys($materials);
-    list($insql, $params) = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'mid');
+    [$insql, $params] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'mid');
 
     $sql = "SELECT materialid, COUNT(1) AS chunks
               FROM {local_aiskillnav_chunk}
@@ -317,12 +317,12 @@ function local_aisn_tm_delete_material(stdClass $material): void {
     }
 
     if (!empty($materialids) && local_aisn_tm_table_exists('local_aiskillnav_chunk')) {
-        list($insql, $params) = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mid');
+        [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mid');
         $DB->delete_records_select('local_aiskillnav_chunk', 'materialid ' . $insql, $params);
     }
 
     if (!empty($materialids) && local_aisn_tm_table_exists('local_aiskillnav_material')) {
-        list($insql, $params) = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mat');
+        [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mat');
         $DB->delete_records_select('local_aiskillnav_material', 'id ' . $insql, $params);
     }
 
@@ -392,15 +392,17 @@ if (empty($materials)) {
     );
 
     echo html_writer::end_div();
-echo $OUTPUT->footer();
+    echo $OUTPUT->footer();
     exit;
 }
 
 
-if (function_exists('local_aisn_prod_current_ai_is_local')
+if (
+    function_exists('local_aisn_prod_current_ai_is_local')
     && function_exists('local_aisn_prod_external_ai_globally_enabled')
     && !local_aisn_prod_current_ai_is_local()
-    && !local_aisn_prod_external_ai_globally_enabled()) {
+    && !local_aisn_prod_external_ai_globally_enabled()
+) {
     echo html_writer::div(
         'AISN_EXTERNAL_GLOBAL_GATE_NOTICE: External AI provider detected, but the global admin approval is disabled. Materials can still be marked as Allowed here, but they will not be sent to external AI until the admin enables Approve external AI for teacher materials.',
         'alert alert-warning'
@@ -429,7 +431,7 @@ echo html_writer::empty_tag('input', [
     'type' => 'search',
     'id' => 'aisn-material-search',
     'class' => 'form-control aisn-material-search',
-    'placeholder' => 'Search by title, filename, text or AI policy...'
+    'placeholder' => 'Search by title, filename, text or AI policy...',
 ]);
 echo html_writer::end_div();
 
@@ -485,7 +487,7 @@ foreach ($materials as $material) {
     ]);
 
     echo html_writer::start_div('mt-3');
-if ($externalallowed) {
+    if ($externalallowed) {
         echo html_writer::link(
             new moodle_url('/local/aiskillnavigator/pages/teacher_materials.php', [
                 'courseid' => $courseid,

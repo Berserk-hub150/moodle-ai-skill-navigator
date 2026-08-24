@@ -158,13 +158,13 @@ function local_aisn_kg_sentence_excerpt(string $text, string $term): string {
 
 function local_aisn_kg_stopwords(): array {
     $words = [
-        'alla','allo','alle','agli','dalla','dello','delle','degli','nella','nello','nelle','negli',
-        'con','che','per','una','uno','del','dei','dal','sul','sui','sua','suo','sue','suoi',
-        'sono','essere','come','questo','questa','questi','queste','quello','quella','quelli','quelle',
-        'viene','vengono','puo','può','deve','devono','fare','fatto','parte','modo','caso',
-        'the','and','for','with','from','this','that','into','are','was','were','have','has','can',
-        'file','materiale','lezione','pagina','sezione','obiettivo','spiegazione','studenti','docente',
-        'course','resource','moodle','test','quiz','domanda','risposta',
+        'alla', 'allo', 'alle', 'agli', 'dalla', 'dello', 'delle', 'degli', 'nella', 'nello', 'nelle', 'negli',
+        'con', 'che', 'per', 'una', 'uno', 'del', 'dei', 'dal', 'sul', 'sui', 'sua', 'suo', 'sue', 'suoi',
+        'sono', 'essere', 'come', 'questo', 'questa', 'questi', 'queste', 'quello', 'quella', 'quelli', 'quelle',
+        'viene', 'vengono', 'puo', 'può', 'deve', 'devono', 'fare', 'fatto', 'parte', 'modo', 'caso',
+        'the', 'and', 'for', 'with', 'from', 'this', 'that', 'into', 'are', 'was', 'were', 'have', 'has', 'can',
+        'file', 'materiale', 'lezione', 'pagina', 'sezione', 'obiettivo', 'spiegazione', 'studenti', 'docente',
+        'course', 'resource', 'moodle', 'test', 'quiz', 'domanda', 'risposta',
     ];
 
     return array_fill_keys($words, true);
@@ -226,7 +226,7 @@ function local_aisn_kg_extract_terms(string $text, int $limit = 36): array {
         }
 
         $tokens = preg_split('/[^\p{L}\p{N}\+\#\.]+/u', $sentence) ?: [];
-        $tokens = array_values(array_filter(array_map('trim', $tokens), function($token) use ($stop) {
+        $tokens = array_values(array_filter(array_map('trim', $tokens), function ($token) use ($stop) {
             $norm = local_aisn_kg_normalize($token);
 
             if ($norm === '' || isset($stop[$norm])) {
@@ -414,11 +414,13 @@ function local_aisn_kg_add_source(int $conceptid, int $materialid, int $chunkid,
         return;
     }
 
-    if ($DB->record_exists('local_aisn_kg_source', [
+    if (
+        $DB->record_exists('local_aisn_kg_source', [
         'conceptid' => $conceptid,
         'materialid' => $materialid,
         'chunkid' => $chunkid,
-    ])) {
+        ])
+    ) {
         return;
     }
 
@@ -452,14 +454,16 @@ function local_aisn_kg_add_relation(
         [$sourceid, $targetid] = [$targetid, $sourceid];
     }
 
-    if ($DB->record_exists('local_aisn_kg_relation', [
+    if (
+        $DB->record_exists('local_aisn_kg_relation', [
         'courseid' => $courseid,
         'sourceconceptid' => $sourceid,
         'targetconceptid' => $targetid,
         'relationtype' => $type,
         'materialid' => $materialid,
         'chunkid' => $chunkid,
-    ])) {
+        ])
+    ) {
         return;
     }
 
@@ -491,7 +495,7 @@ function local_aisn_kg_delete_orphan_concepts(int $courseid): void {
         return;
     }
 
-    list($insql, $params) = $DB->get_in_or_equal($orphans, SQL_PARAMS_NAMED, 'kgc');
+    [$insql, $params] = $DB->get_in_or_equal($orphans, SQL_PARAMS_NAMED, 'kgc');
     $DB->delete_records_select('local_aisn_kg_relation', "sourceconceptid {$insql}", $params);
     $DB->delete_records_select('local_aisn_kg_relation', "targetconceptid {$insql}", $params);
     $DB->delete_records_select('local_aisn_kg_concept', "id {$insql}", $params);
@@ -645,8 +649,10 @@ function local_aisn_kg_course_materials(int $courseid): array {
             continue;
         }
 
-        if (function_exists('local_aisn_course_material_is_excluded') &&
-            local_aisn_course_material_is_excluded($courseid, $cmid)) {
+        if (
+            function_exists('local_aisn_course_material_is_excluded') &&
+            local_aisn_course_material_is_excluded($courseid, $cmid)
+        ) {
             continue;
         }
 
@@ -700,7 +706,7 @@ function local_aisn_kg_rebuild_course(int $courseid): array {
     $conceptids = $DB->get_fieldset_select('local_aisn_kg_concept', 'id', 'courseid = :courseid', ['courseid' => $courseid]);
 
     if (!empty($conceptids)) {
-        list($insql, $params) = $DB->get_in_or_equal($conceptids, SQL_PARAMS_NAMED, 'kgc');
+        [$insql, $params] = $DB->get_in_or_equal($conceptids, SQL_PARAMS_NAMED, 'kgc');
         $DB->delete_records_select('local_aisn_kg_source', "conceptid {$insql}", $params);
         $DB->delete_records_select('local_aisn_kg_concept', "id {$insql}", $params);
     }
@@ -788,8 +794,8 @@ function local_aisn_kg_graph_data(int $courseid, int $limitnodes = 80, int $limi
     }
 
     if (!empty($ids)) {
-        list($sourceinsql, $sourceparams) = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'kgsrc');
-        list($targetinsql, $targetparams) = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'kgtgt');
+        [$sourceinsql, $sourceparams] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'kgsrc');
+        [$targetinsql, $targetparams] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'kgtgt');
         $params = array_merge(['courseid' => $courseid], $sourceparams, $targetparams);
 
         $relations = $DB->get_records_sql(
@@ -875,8 +881,8 @@ function local_aisn_kg_prompt_context(int $courseid, string $focus = '', int $li
     }
 
     if (!empty($ids)) {
-        list($sourceinsql, $sourceparams) = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'kgpsrc');
-        list($targetinsql, $targetparams) = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'kgptgt');
+        [$sourceinsql, $sourceparams] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'kgpsrc');
+        [$targetinsql, $targetparams] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'kgptgt');
         $relparams = array_merge(['courseid' => $courseid], $sourceparams, $targetparams);
 
         $relations = $DB->get_records_sql(

@@ -116,10 +116,12 @@ class observer {
                 return;
             }
 
-            if ($DB->record_exists('block_instances', [
+            if (
+                $DB->record_exists('block_instances', [
                 'blockname' => 'aiskillnavigator',
                 'parentcontextid' => $context->id,
-            ])) {
+                ])
+            ) {
                 return;
             }
 
@@ -239,7 +241,7 @@ class observer {
 
         if (!empty($deleteids)) {
             self::delete_material_chunks($deleteids);
-            list($insql, $inparams) = $DB->get_in_or_equal($deleteids, SQL_PARAMS_NAMED, 'dup');
+            [$insql, $inparams] = $DB->get_in_or_equal($deleteids, SQL_PARAMS_NAMED, 'dup');
             $DB->delete_records_select('local_aiskillnav_material', 'id ' . $insql, $inparams);
             debugging('AI Skill Navigator removed duplicate course materials: ' . count($deleteids), DEBUG_DEVELOPER);
         }
@@ -281,7 +283,7 @@ class observer {
             return;
         }
 
-        list($insql, $inparams) = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mid');
+        [$insql, $inparams] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mid');
         $DB->delete_records_select('local_aiskillnav_chunk', 'materialid ' . $insql, $inparams);
     }
 

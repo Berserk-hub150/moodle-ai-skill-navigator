@@ -88,7 +88,7 @@ function local_aisn_ass_normalize_question(array $question): ?array {
         ? array_values($question['options'])
         : [];
 
-    $options = array_map(static function($option): string {
+    $options = array_map(static function ($option): string {
         return trim((string)$option);
     }, $options);
 
@@ -97,7 +97,7 @@ function local_aisn_ass_normalize_question(array $question): ?array {
         $options[] = '';
     }
 
-    $nonempty = array_values(array_filter($options, static function($option): bool {
+    $nonempty = array_values(array_filter($options, static function ($option): bool {
         return trim((string)$option) !== '';
     }));
 
@@ -278,7 +278,7 @@ function local_aisn_ass_questions_from_form(): array {
     $abilityraw = isset($post['ability']) && is_array($post['ability']) ? $post['ability'] : [];
     $explanationraw = isset($post['explanation']) && is_array($post['explanation']) ? $post['explanation'] : [];
 
-    $cleanstring = static function($value, string $type = PARAM_RAW_TRIMMED): string {
+    $cleanstring = static function ($value, string $type = PARAM_RAW_TRIMMED): string {
         if (is_array($value)) {
             return '';
         }
@@ -286,7 +286,7 @@ function local_aisn_ass_questions_from_form(): array {
         return clean_param((string)$value, $type);
     };
 
-    $cleanint = static function($value): int {
+    $cleanint = static function ($value): int {
         if (is_array($value)) {
             return 0;
         }
@@ -651,7 +651,7 @@ if ($action === 'generate') {
             }
         }
         if ($error === '') {
-            $recordmaterialids = array_values(array_map(static function($material): int {
+            $recordmaterialids = array_values(array_map(static function ($material): int {
                 return (int)$material->id;
             }, $selectedmaterials));
             $totalchunks = $embeddingservice->count_indexed_chunks($courseid);
@@ -1116,8 +1116,12 @@ if (empty($assessments)) {
         $low = 0;
         foreach ($attempts as $attempt) {
             $sum += (int)$attempt->percentage;
-            if ((int)$attempt->percentage >= 75) { $high++; }
-            if ((int)$attempt->percentage < 50) { $low++; }
+            if ((int)$attempt->percentage >= 75) {
+                $high++;
+            }
+            if ((int)$attempt->percentage < 50) {
+                $low++;
+            }
         }
         $avg = $count > 0 ? round($sum / $count, 1) : 0;
         $quiz = json_decode((string)$assessment->quizjson, true);
@@ -1136,17 +1140,19 @@ if (empty($assessments)) {
         echo html_writer::end_div();
 
         echo html_writer::link(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid, 'action' => 'edit', 'id' => $assessment->id]), 'Edit test', ['class' => 'btn btn-outline-primary btn-sm mr-2']);
-echo html_writer::link(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid, 'action' => 'toggle', 'id' => $assessment->id, 'sesskey' => sesskey()]), $assessment->visible ? 'Hide from students' : 'Publish to students', ['class' => 'btn btn-outline-secondary btn-sm mr-2']);
+        echo html_writer::link(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid, 'action' => 'toggle', 'id' => $assessment->id, 'sesskey' => sesskey()]), $assessment->visible ? 'Hide from students' : 'Publish to students', ['class' => 'btn btn-outline-secondary btn-sm mr-2']);
         echo html_writer::link(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid, 'action' => 'delete', 'id' => $assessment->id, 'sesskey' => sesskey()]), 'Delete', ['class' => 'btn btn-outline-danger btn-sm']);
         // AISN_EXPORT_LINKS_FINAL_OK
         echo html_writer::start_div('mt-2 mb-2');
         echo html_writer::span('Export: ', 'text-muted mr-1');
-        foreach ([
+        foreach (
+            [
             'json' => 'JSON',
             'gift' => 'Moodle GIFT',
             'google' => 'Google Forms CSV',
-            'csv' => 'Generic CSV'
-        ] as $format => $label) {
+            'csv' => 'Generic CSV',
+            ] as $format => $label
+        ) {
             echo html_writer::link(
                 new moodle_url('/local/aiskillnavigator/pages/export_assessment.php', [
                     'courseid' => $courseid,
@@ -1182,6 +1188,7 @@ echo html_writer::link(new moodle_url('/local/aiskillnavigator/pages/teacher_ass
 
 echo html_writer::div(html_writer::link(new moodle_url('/local/aiskillnavigator/pages/gap_analysis.php', ['courseid' => $courseid]), 'Open AI learning-gap analysis', ['class' => 'btn btn-outline-primary mt-3']) . ' ' . html_writer::link(new moodle_url('/course/view.php', ['id' => $courseid]), 'Back to course', ['class' => 'btn btn-secondary mt-3']));
 echo html_writer::end_div();
-if (function_exists('local_aisn_ai_output_formatter_assets')) { echo local_aisn_ai_output_formatter_assets(); }
+if (function_exists('local_aisn_ai_output_formatter_assets')) {
+    echo local_aisn_ai_output_formatter_assets();
+}
 echo $OUTPUT->footer();
-

@@ -26,7 +26,6 @@ namespace local_aiskillnavigator\service\prompt;
 defined('MOODLE_INTERNAL') || die();
 // Returns the JSON example used by quiz prompts.
 class quiz_schema {
-
     public function get(string $topic, string $difficulty): string {
         return "Schema JSON:\n"
             . "{\n"

@@ -158,7 +158,7 @@ if (!function_exists('local_aiskillnavigator_get_tools')) {
             return $tools;
         }
 
-        return array_values(array_filter($tools, static function(array $tool) use ($section): bool {
+        return array_values(array_filter($tools, static function (array $tool) use ($section): bool {
             return ($tool['section'] ?? '') === $section;
         }));
     }

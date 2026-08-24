@@ -40,7 +40,7 @@ if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
     exit(1);
 }
 
-list($options, $unrecognized) = cli_get_params(
+[$options, $unrecognized] = cli_get_params(
     [
         'help' => false,
         'courseid' => 0,

@@ -29,7 +29,6 @@ defined('MOODLE_INTERNAL') || die();
  * Strategy implementation for Ollama.
  */
 class ollama_ai_provider extends abstract_curl_ai_provider {
-
     public function get_name(): string {
         return 'ollama';
     }

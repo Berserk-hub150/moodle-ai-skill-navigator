@@ -229,7 +229,7 @@ function local_aisn_sim_selected_materials(int $courseid, array $ids): array {
         return [];
     }
 
-    return array_filter($materials, function($material) use ($ids) {
+    return array_filter($materials, function ($material) use ($ids) {
         return in_array((int)$material->id, $ids, true) &&
             local_aisn_sim_material_selectable($material);
     });
@@ -720,11 +720,11 @@ if (!function_exists('local_aisn_sim_dupe_json_key')) {
             $arr = is_array($decoded) ? $decoded : [$raw];
         }
 
-        $arr = array_map(static function($item): string {
+        $arr = array_map(static function ($item): string {
             return trim((string)$item);
         }, $arr);
 
-        $arr = array_values(array_filter($arr, static function($item): bool {
+        $arr = array_values(array_filter($arr, static function ($item): bool {
             return $item !== '';
         }));
 

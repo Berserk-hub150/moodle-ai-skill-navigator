@@ -312,8 +312,10 @@ if ($selectedassessment && $quiz) {
     echo html_writer::end_div();
 
     echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
-if (function_exists('local_aisn_ai_output_formatter_assets')) { echo local_aisn_ai_output_formatter_assets(); }
-echo $OUTPUT->footer();
+    if (function_exists('local_aisn_ai_output_formatter_assets')) {
+        echo local_aisn_ai_output_formatter_assets();
+    }
+    echo $OUTPUT->footer();
     exit;
 }
 
@@ -373,5 +375,7 @@ echo html_writer::link(
 echo html_writer::end_div();
 
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
-if (function_exists('local_aisn_ai_output_formatter_assets')) { echo local_aisn_ai_output_formatter_assets(); }
+if (function_exists('local_aisn_ai_output_formatter_assets')) {
+    echo local_aisn_ai_output_formatter_assets();
+}
 echo $OUTPUT->footer();

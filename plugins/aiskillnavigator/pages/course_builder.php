@@ -206,8 +206,10 @@ function local_aisn_cb_find_section(int $courseid, string $ref): ?stdClass {
             continue;
         }
 
-        if (core_text::strlen($refkey) >= 3 &&
-            (str_contains($namekey, $refkey) || str_contains($refkey, $namekey))) {
+        if (
+            core_text::strlen($refkey) >= 3 &&
+            (str_contains($namekey, $refkey) || str_contains($refkey, $namekey))
+        ) {
             return $section;
         }
 
@@ -2873,7 +2875,6 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
         ];
     }
 
-
     if (local_aisn_cb_prompt_wants_clear_course($prompt)) {
         $logs = local_aisn_cb_delete_all_sections($courseid);
         local_aisn_cb_sync_resources($courseid);
@@ -2909,8 +2910,10 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
 
     if (preg_match('/rinomina\s+(?:la\s+)?sezione\s+["“”\'«»]?([^"“”\'«»]+)["“”\'«»]?\s+(?:in|come|a)\s+["“”\'«»]?([^"“”\'«»\r\n]+)["“”\'«»]?/iu', $prompt, $m)) {
         // AISN_PS1_DIRECT_RENAME_GUARD
-        if (function_exists('local_aisn_prod_course_builder_action_allowed') &&
-            !local_aisn_prod_course_builder_action_allowed('rename_section')) {
+        if (
+            function_exists('local_aisn_prod_course_builder_action_allowed') &&
+            !local_aisn_prod_course_builder_action_allowed('rename_section')
+        ) {
             return ['Azione diretta bloccata dalle impostazioni di sicurezza: rename_section.'];
         }
 
@@ -2984,7 +2987,6 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
         if (local_aisn_cb_prompt_wants_existing_file_routing($prompt)) {
             return local_aisn_cb_attach_files_to_existing_sections($courseid, $userid, $files);
         }
-
 
         // Important demo case: "crea una sezione, chiamala Introduzione e mettimi i materiali".
         // Keep all uploaded files in that single section, do NOT split by filename.
@@ -3540,7 +3542,7 @@ function local_aisn_cb_delete_material_tokens(string $value): array {
     $value = preg_replace('/[^\p{L}\p{N}]+/u', ' ', (string)$value);
     $parts = preg_split('/\s+/u', trim((string)$value));
 
-    return array_values(array_filter((array)$parts, static function($part): bool {
+    return array_values(array_filter((array)$parts, static function ($part): bool {
         $part = trim((string)$part);
 
         if ($part === '') {
@@ -3708,7 +3710,7 @@ function local_aisn_cb_ai_mat_tokens(string $value): array {
     $value = preg_replace('/[^\p{L}\p{N}]+/u', ' ', (string)$value);
     $parts = preg_split('/\s+/u', trim((string)$value));
 
-    return array_values(array_filter((array)$parts, static function($part): bool {
+    return array_values(array_filter((array)$parts, static function ($part): bool {
         $part = trim((string)$part);
 
         if ($part === '') {
@@ -3836,7 +3838,7 @@ function local_aisn_cb_ai_mat_find_cm(int $courseid, string $sectionref, string 
 }
 
 function local_aisn_cb_ai_mat_remove_from_sequence(string $sequence, int $cmid): string {
-    $items = array_values(array_filter(explode(',', trim($sequence)), static function($item) use ($cmid): bool {
+    $items = array_values(array_filter(explode(',', trim($sequence)), static function ($item) use ($cmid): bool {
         return (int)trim((string)$item) !== $cmid && trim((string)$item) !== '';
     }));
 
@@ -3844,7 +3846,7 @@ function local_aisn_cb_ai_mat_remove_from_sequence(string $sequence, int $cmid):
 }
 
 function local_aisn_cb_ai_mat_add_to_sequence(string $sequence, int $cmid): string {
-    $items = array_values(array_filter(explode(',', trim($sequence)), static function($item): bool {
+    $items = array_values(array_filter(explode(',', trim($sequence)), static function ($item): bool {
         return trim((string)$item) !== '';
     }));
 
@@ -4068,8 +4070,10 @@ function local_aisn_cb_execute_ai_actions(int $courseid, int $userid, array $act
         $type = local_aisn_cb_low((string)($a['action'] ?? ''));
 
         // AISN_PS1_DESTRUCTIVE_ACTION_GUARD
-        if (function_exists('local_aisn_prod_course_builder_action_allowed') &&
-            !local_aisn_prod_course_builder_action_allowed($type)) {
+        if (
+            function_exists('local_aisn_prod_course_builder_action_allowed') &&
+            !local_aisn_prod_course_builder_action_allowed($type)
+        ) {
             $logs[] = 'AI: azione bloccata dalle impostazioni di sicurezza: ' . $type . '.';
             continue;
         }
@@ -4427,8 +4431,9 @@ echo html_writer::tag('p', 'Scrivi un prompt naturale. Se carichi file, il Cours
 
 echo html_writer::start_div('aisn-p2m-help');
 echo html_writer::tag('strong', 'Esempi validi:');
-echo html_writer::tag('pre',
-'Crea sezione "Exams" con questo testo: ...
+echo html_writer::tag(
+    'pre',
+    'Crea sezione "Exams" con questo testo: ...
 Metti tutti i file caricati nella sezione "Lecture 02 - Business Intelligence e Big Data"
 Inserisci i file caricati nelle sezioni già create in base al nome del file. Non creare nuove sezioni.
 Togli la sezione "simulazione"
@@ -4453,7 +4458,7 @@ echo html_writer::tag('textarea', s($prompt), [
     'class' => 'form-control mb-3',
     'rows' => 10,
     'required' => 'required',
-    'placeholder' => 'Esempio: crea una sezione per ogni file e metti un file per sezione'
+    'placeholder' => 'Esempio: crea una sezione per ogni file e metti un file per sezione',
 ]);
 
 echo html_writer::tag('label', 'Materiali da usare nel prompt', ['for' => 'materials']);
@@ -4463,13 +4468,13 @@ echo html_writer::empty_tag('input', [
     'name' => 'materials[]',
     'class' => 'form-control mb-3',
     'multiple' => 'multiple',
-    'accept' => '.txt,.md,.csv,.json,.xml,.html,.htm,.css,.js,.ts,.sql,.cs,.java,.py,.cpp,.c,.pptx,.docx,.pdf,.png,.jpg,.jpeg,.bmp,.webp,.tif,.tiff'
+    'accept' => '.txt,.md,.csv,.json,.xml,.html,.htm,.css,.js,.ts,.sql,.cs,.java,.py,.cpp,.c,.pptx,.docx,.pdf,.png,.jpg,.jpeg,.bmp,.webp,.tif,.tiff',
 ]);
 
 echo html_writer::empty_tag('input', [
     'type' => 'submit',
     'class' => 'btn btn-primary',
-    'value' => 'Esegui prompt sul corso Moodle'
+    'value' => 'Esegui prompt sul corso Moodle',
 ]);
 
 echo ' ';

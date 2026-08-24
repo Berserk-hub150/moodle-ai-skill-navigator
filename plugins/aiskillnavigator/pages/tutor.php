@@ -343,7 +343,10 @@ if ($answer !== '') {
 echo html_writer::end_div();
 
 echo local_aiskillnavigator_tutor_signal_capture_assets((int)$courseid);
-echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));if (function_exists('local_aisn_mdtable_assets')) { echo local_aisn_mdtable_assets(); }
+echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
+if (function_exists('local_aisn_mdtable_assets')) {
+    echo local_aisn_mdtable_assets();
+}
 echo '<link rel="stylesheet" href="' . (new moodle_url('/local/aiskillnavigator/assets/aisn_answer_renderer_v3.css', ['v' => time()]))->out(false) . '">';
 echo '<script>
 window.MathJax = {
@@ -505,6 +508,3 @@ function local_aiskillnavigator_tutor_signal_capture_assets(int $courseid): stri
 </script>
 HTML;
 }
-
-
-

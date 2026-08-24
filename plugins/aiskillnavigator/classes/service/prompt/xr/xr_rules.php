@@ -26,7 +26,6 @@ namespace local_aiskillnavigator\service\prompt;
 defined('MOODLE_INTERNAL') || die();
 // Keeps XR scenarios practical enough for a demo.
 class xr_rules {
-
     public function get(bool $usesources): string {
         $rules = "Scenario:\n"
             . "- Deve essere concreto.\n"

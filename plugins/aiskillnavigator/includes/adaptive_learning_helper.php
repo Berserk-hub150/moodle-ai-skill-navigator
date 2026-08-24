@@ -252,7 +252,7 @@ function local_aiskillnavigator_adaptive_collect_student(int $courseid, int $use
         }
     }
 
-    uasort($skills, function(array $a, array $b): int {
+    uasort($skills, function (array $a, array $b): int {
         if ($a['mastery'] === $b['mastery']) {
             return $b['wrong'] <=> $a['wrong'];
         }

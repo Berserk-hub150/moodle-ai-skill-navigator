@@ -26,7 +26,6 @@ namespace local_aiskillnavigator\service\prompt;
 defined('MOODLE_INTERNAL') || die();
 // Cleans short strings before they are used in prompts.
 class text_tools {
-
     public function fallback(string $value, string $default): string {
         $value = trim($value);
         return $value !== '' ? $value : $default;

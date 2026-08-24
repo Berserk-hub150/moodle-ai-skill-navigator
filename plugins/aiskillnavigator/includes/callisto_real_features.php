@@ -113,7 +113,7 @@ if (!function_exists('local_aiskillnavigator_collect_gap_data')) {
             ];
         }
 
-        uasort($skills, function($a, $b) {
+        uasort($skills, function ($a, $b) {
             $arate = $a['total'] > 0 ? $a['correct'] / $a['total'] : 0;
             $brate = $b['total'] > 0 ? $b['correct'] / $b['total'] : 0;
             return $arate <=> $brate;

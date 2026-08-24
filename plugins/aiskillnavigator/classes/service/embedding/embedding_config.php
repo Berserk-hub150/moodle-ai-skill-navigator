@@ -45,7 +45,8 @@ class embedding_config {
             $embeddingprovider = $requestedprovider;
         }
 
-        if (in_array($embeddingprovider, [
+        if (
+            in_array($embeddingprovider, [
             'openrouter',
             'groq',
             'deepseek',
@@ -54,7 +55,8 @@ class embedding_config {
             'fireworks',
             'perplexity',
             'openai_compatible',
-        ], true)) {
+            ], true)
+        ) {
             $embeddingprovider = 'openai';
         }
 

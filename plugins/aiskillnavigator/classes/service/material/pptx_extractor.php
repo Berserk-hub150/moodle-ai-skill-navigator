@@ -42,10 +42,14 @@ class pptx_extractor {
 
         for ($i = 0; $i < $zip->numFiles; $i++) {
             $entry = $zip->getNameIndex($i);
-            if (!preg_match('#^ppt/slides/slide([0-9]+)\.xml$#', $entry, $matches)) { continue; }
+            if (!preg_match('#^ppt/slides/slide([0-9]+)\.xml$#', $entry, $matches)) {
+                continue;
+            }
             $xml = $zip->getFromName($entry);
             $text = $xml === false ? '' : $reader->text($xml);
-            if ($text !== '') { $slides[(int) $matches[1]] = "Slide {$matches[1]}:\n" . $text; }
+            if ($text !== '') {
+                $slides[(int) $matches[1]] = "Slide {$matches[1]}:\n" . $text;
+            }
         }
 
         $zip->close();

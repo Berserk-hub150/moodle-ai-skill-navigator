@@ -32,7 +32,6 @@ defined('MOODLE_INTERNAL') || die();
  * the OpenAI-compatible chat completions strategy.
  */
 class deepseek_ai_provider extends openai_compatible_ai_provider {
-
     public function get_name(): string {
         return 'deepseek';
     }

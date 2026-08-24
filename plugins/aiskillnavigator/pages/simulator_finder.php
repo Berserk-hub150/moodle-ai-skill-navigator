@@ -36,13 +36,13 @@ $action = optional_param('action', '', PARAM_ALPHA);
 $topic = optional_param('topic', '', PARAM_TEXT);
 $level = optional_param('level', 'medium', PARAM_ALPHA);
 $notes = optional_param('notes', '', PARAM_RAW_TRIMMED);
-//Reset
+// Reset
 if ($action === 'reset') {
     $topic = '';
     $level = 'medium';
     $notes = '';
     $action = '';
-}   
+}
 $course = get_course($courseid);
 
 require_login($course);
@@ -603,7 +603,7 @@ echo ' ';
 echo html_writer::link(
     new moodle_url('/local/aiskillnavigator/pages/simulator_finder.php', [
         'courseid' => $courseid,
-        'action' => 'reset'
+        'action' => 'reset',
     ]),
     'Reset',
     ['class' => 'btn btn-outline-secondary']
@@ -665,7 +665,7 @@ if ($result !== '') {
 echo html_writer::end_div();
 
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
-if (function_exists('local_aisn_ai_output_formatter_assets')) { echo local_aisn_ai_output_formatter_assets(); }
+if (function_exists('local_aisn_ai_output_formatter_assets')) {
+    echo local_aisn_ai_output_formatter_assets();
+}
 echo $OUTPUT->footer();
-
-

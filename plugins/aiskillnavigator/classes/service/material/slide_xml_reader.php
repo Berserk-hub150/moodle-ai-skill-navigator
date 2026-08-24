@@ -45,7 +45,9 @@ class slide_xml_reader {
         if ($nodes !== false) {
             foreach ($nodes as $node) {
                 $value = trim($node->textContent);
-                if ($value !== '') { $parts[] = $value; }
+                if ($value !== '') {
+                    $parts[] = $value;
+                }
             }
         }
 

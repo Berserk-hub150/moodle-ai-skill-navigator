@@ -79,6 +79,3 @@ function local_aiskillnavigator_render_block_section(string $title, array $tools
 
     return $html;
 }
-
-
-

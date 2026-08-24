@@ -275,21 +275,21 @@ if (!function_exists('local_aisn_crs_delete_materials')) {
         }
 
         if (local_aisn_crs_table_exists('local_aiskillnav_chunk')) {
-            list($insql, $params) = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mid');
+            [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mid');
             $DB->delete_records_select('local_aiskillnav_chunk', 'materialid ' . $insql, $params);
         }
 
         if (local_aisn_crs_table_exists('local_aisn_kg_source')) {
-            list($insql, $params) = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'kgs');
+            [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'kgs');
             $DB->delete_records_select('local_aisn_kg_source', 'materialid ' . $insql, $params);
         }
 
         if (local_aisn_crs_table_exists('local_aisn_kg_relation')) {
-            list($insql, $params) = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'kgr');
+            [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'kgr');
             $DB->delete_records_select('local_aisn_kg_relation', 'materialid ' . $insql, $params);
         }
 
-        list($insql, $params) = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mat');
+        [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mat');
         $DB->delete_records_select('local_aiskillnav_material', 'id ' . $insql, $params);
 
         return count($materialids);
@@ -535,7 +535,7 @@ if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
 
         $duplicatesdeleted = local_aisn_crs_cleanup_duplicate_course_resources($courseid);
 
-        $changedids = array_values(array_unique(array_filter(array_map('intval', $changedids), static function($id): bool {
+        $changedids = array_values(array_unique(array_filter(array_map('intval', $changedids), static function ($id): bool {
             return $id > 0;
         })));
 
@@ -665,9 +665,11 @@ if (!function_exists('local_aiskillnavigator_extract_stored_file_text')) {
         // AISN_MISTRAL_OCR_FIRST_V1
         // Try Mistral OCR first. If it fails or privacy policy blocks it,
         // fallback to the existing local extraction pipeline.
-        if (function_exists('local_aisn_mistral_ocr_supported_extension') &&
+        if (
+            function_exists('local_aisn_mistral_ocr_supported_extension') &&
             function_exists('local_aisn_mistral_ocr_extract_stored_file') &&
-            local_aisn_mistral_ocr_supported_extension($extension)) {
+            local_aisn_mistral_ocr_supported_extension($extension)
+        ) {
             $mistraltext = local_aisn_mistral_ocr_extract_stored_file($file, $cmid);
             $mistraltext = trim((string)$mistraltext);
 

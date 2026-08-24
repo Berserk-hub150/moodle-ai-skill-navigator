@@ -26,7 +26,6 @@ namespace local_aiskillnavigator\service\prompt;
 defined('MOODLE_INTERNAL') || die();
 // Stores the short writing note reused by prose prompts.
 class style_notes {
-
     public function plain(): string {
         return "Stile:\n"
             . "- Scrivi in modo normale, non solenne.\n"

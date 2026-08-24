@@ -937,7 +937,7 @@ if ($map !== null) {
     echo html_writer::tag('p', s($map['subtitle']), ['class' => 'text-muted']);
 
     if (!empty($selectedmaterials)) {
-        $names = array_map(function($m) {
+        $names = array_map(function ($m) {
             return local_aiskillnavigator_material_source_clean_title($m);
         }, $selectedmaterials);
 
@@ -1419,7 +1419,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 ");
-if (function_exists('local_aisn_ai_output_formatter_assets')) { echo local_aisn_ai_output_formatter_assets(); }
+if (function_exists('local_aisn_ai_output_formatter_assets')) {
+    echo local_aisn_ai_output_formatter_assets();
+}
 echo $OUTPUT->footer();
 if (!function_exists('local_aisn_mindmap_polish_prof')) {
     function local_aisn_mindmap_polish_prof(): string {
@@ -1594,5 +1596,3 @@ function local_aiskillnavigator_mindmap_live_web_assets(int $courseid): string {
 </script>
 HTML;
 }
-
-

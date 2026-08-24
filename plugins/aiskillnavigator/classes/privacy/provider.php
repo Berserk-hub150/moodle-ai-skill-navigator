@@ -35,7 +35,7 @@ use core_privacy\local\request\plugin\provider as request_provider;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
-class provider implements metadata_provider, request_provider, core_userlist_provider {
+class provider implements core_userlist_provider, metadata_provider, request_provider {
     private const USER_TABLES = [
         'local_aiskillnav_material',
         'local_aiskillnav_attempt',
@@ -302,7 +302,7 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
             return;
         }
 
-        list($usersql, $userparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED, 'aisnuser');
+        [$usersql, $userparams] = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED, 'aisnuser');
 
         if (self::table_exists('local_aiskillnav_material')) {
             $params = array_merge(['courseid' => $courseid], $userparams);
@@ -326,7 +326,7 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
             );
 
             if (!empty($assessmentids) && self::table_exists('local_aiskillnav_ass_att')) {
-                list($asssql, $assparams) = $DB->get_in_or_equal($assessmentids, SQL_PARAMS_NAMED, 'aisnass');
+                [$asssql, $assparams] = $DB->get_in_or_equal($assessmentids, SQL_PARAMS_NAMED, 'aisnass');
                 $DB->delete_records_select('local_aiskillnav_ass_att', 'assessmentid ' . $asssql, $assparams);
             }
 
@@ -352,7 +352,7 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
             return;
         }
 
-        list($sql, $params) = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'aisnmat');
+        [$sql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'aisnmat');
         $conceptids = [];
 
         if (self::table_exists('local_aisn_kg_source')) {
@@ -378,13 +378,15 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
 
         $conceptids = array_values(array_unique(array_filter(array_map('intval', $conceptids))));
 
-        if (empty($conceptids) ||
+        if (
+            empty($conceptids) ||
             !self::table_exists('local_aisn_kg_concept') ||
-            !self::table_exists('local_aisn_kg_source')) {
+            !self::table_exists('local_aisn_kg_source')
+        ) {
             return;
         }
 
-        list($sql, $params) = $DB->get_in_or_equal($conceptids, SQL_PARAMS_NAMED, 'aisnconcept');
+        [$sql, $params] = $DB->get_in_or_equal($conceptids, SQL_PARAMS_NAMED, 'aisnconcept');
         $orphans = $DB->get_fieldset_sql(
             "SELECT c.id
                FROM {local_aisn_kg_concept} c
@@ -398,19 +400,19 @@ class provider implements metadata_provider, request_provider, core_userlist_pro
             return;
         }
 
-        list($orphansql, $orphanparams) = $DB->get_in_or_equal(
+        [$orphansql, $orphanparams] = $DB->get_in_or_equal(
             $orphans,
             SQL_PARAMS_NAMED,
             'aisnorph'
         );
 
         if (self::table_exists('local_aisn_kg_relation')) {
-            list($sourcesql, $sourceparams) = $DB->get_in_or_equal(
+            [$sourcesql, $sourceparams] = $DB->get_in_or_equal(
                 $orphans,
                 SQL_PARAMS_NAMED,
                 'aisnsrc'
             );
-            list($targetsql, $targetparams) = $DB->get_in_or_equal(
+            [$targetsql, $targetparams] = $DB->get_in_or_equal(
                 $orphans,
                 SQL_PARAMS_NAMED,
                 'aisntgt'

@@ -287,7 +287,6 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026060101, 'local', 'aiskillnavigator');
     }
 
-
     if ($oldversion < 2026060401) {
         $table = new xmldb_table('local_aiskillnav_sim');
 
@@ -371,7 +370,6 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
 
         upgrade_plugin_savepoint(true, 2026060702, 'local', 'aiskillnavigator');
     }
-
 
     if ($oldversion < 2026061201) {
         $concept = new xmldb_table('local_aisn_kg_concept');

@@ -138,7 +138,6 @@ try {
         'snippet' => local_aisn_clean_text((string)($best['content'] ?? $best['snippet'] ?? ''), 500),
         'activity' => 'Guarda la risorsa trovata da Tavily, poi scrivi in 3 righe il concetto collegato alla competenza "' . local_aisn_clean_text($skill, 120) . '".',
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-
 } catch (Throwable $e) {
     echo json_encode([
         'ok' => false,

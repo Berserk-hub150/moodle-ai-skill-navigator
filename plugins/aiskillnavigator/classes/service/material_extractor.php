@@ -71,9 +71,15 @@ class material_extractor {
         return self::fail('Unsupported material input.', 'unknown');
     }
 
-    public static function extract_file($file, ?string $name = null): array { return self::extract($file, $name); }
-    public static function extract_material($file, ?string $name = null): array { return self::extract($file, $name); }
-    public static function extract_uploaded_file(array $file): array { return self::extract_from_upload($file); }
+    public static function extract_file($file, ?string $name = null): array {
+        return self::extract($file, $name);
+    }
+    public static function extract_material($file, ?string $name = null): array {
+        return self::extract($file, $name);
+    }
+    public static function extract_uploaded_file(array $file): array {
+        return self::extract_from_upload($file);
+    }
 
     public static function extract_from_upload(array $file): array {
         $error = (int)($file['error'] ?? UPLOAD_ERR_NO_FILE);
@@ -86,8 +92,12 @@ class material_extractor {
         if ($name === '' || $tmp === '' || !is_file($tmp)) {
             return self::fail('Uploaded file is missing or unreadable.', 'upload');
         }
-        if ($size <= 0) { $size = (int)filesize($tmp); }
-        if ($size <= 0) { return self::fail('Uploaded file is empty.', self::extension($name)); }
+        if ($size <= 0) {
+            $size = (int)filesize($tmp);
+        }
+        if ($size <= 0) {
+            return self::fail('Uploaded file is empty.', self::extension($name));
+        }
         if ($size > self::MAX_BYTES) {
             return self::fail('Uploaded file is too large. Maximum supported size is 25 MB.', self::extension($name));
         }
@@ -117,9 +127,23 @@ class material_extractor {
             return self::fail('Unsupported file type. Supported formats: TXT, MD, CSV, JSON, XML, HTML, code files, PDF, PPTX, DOCX and images.', $ext);
         }
         switch ($ext) {
-            case 'txt': case 'md': case 'csv': case 'json': case 'xml': case 'css': case 'js': case 'ts': case 'sql': case 'cs': case 'java': case 'py': case 'cpp': case 'c':
+            case 'txt':
+            case 'md':
+            case 'csv':
+            case 'json':
+            case 'xml':
+            case 'css':
+            case 'js':
+            case 'ts':
+            case 'sql':
+            case 'cs':
+            case 'java':
+            case 'py':
+            case 'cpp':
+            case 'c':
                 return self::extract_text_file($path, $filename, $ext);
-            case 'html': case 'htm':
+            case 'html':
+            case 'htm':
                 return self::extract_html_file($path, $filename, $ext);
             case 'pdf':
                 return self::extract_pdf($path, $filename);
@@ -127,7 +151,13 @@ class material_extractor {
                 return self::extract_pptx($path, $filename);
             case 'docx':
                 return self::extract_docx($path, $filename);
-            case 'png': case 'jpg': case 'jpeg': case 'bmp': case 'tif': case 'tiff': case 'webp':
+            case 'png':
+            case 'jpg':
+            case 'jpeg':
+            case 'bmp':
+            case 'tif':
+            case 'tiff':
+            case 'webp':
                 return self::extract_image($path, $filename, $ext);
             default:
                 return self::fail('Unsupported file type.', $ext);
@@ -136,25 +166,35 @@ class material_extractor {
 
     private static function extract_text_file(string $path, string $filename, string $ext): array {
         $text = file_get_contents($path);
-        if ($text === false) { return self::fail('Could not read text file.', $ext); }
+        if ($text === false) {
+            return self::fail('Could not read text file.', $ext);
+        }
         $text = self::limit(self::clean($text));
-        if ($text === '') { return self::fail('No readable text found in file.', $ext); }
+        if ($text === '') {
+            return self::fail('No readable text found in file.', $ext);
+        }
         return self::ok($text, $ext, $filename, 'Text extracted successfully.');
     }
 
     private static function extract_html_file(string $path, string $filename, string $ext): array {
         $html = file_get_contents($path);
-        if ($html === false) { return self::fail('Could not read HTML file.', $ext); }
+        if ($html === false) {
+            return self::fail('Could not read HTML file.', $ext);
+        }
         $text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $text = self::limit(self::clean($text));
-        if ($text === '') { return self::fail('No readable text found in HTML file.', $ext); }
+        if ($text === '') {
+            return self::fail('No readable text found in HTML file.', $ext);
+        }
         return self::ok($text, $ext, $filename, 'HTML extracted successfully.');
     }
 
     // AISN_MATERIAL_EXTRACTOR_MISTRAL_FIRST_V1
     private static function try_mistral_ocr(string $path, string $filename, string $type): ?array {
-        if (!function_exists('\\local_aisn_mistral_ocr_supported_extension') ||
-            !function_exists('\\local_aisn_mistral_ocr_extract_path')) {
+        if (
+            !function_exists('\\local_aisn_mistral_ocr_supported_extension') ||
+            !function_exists('\\local_aisn_mistral_ocr_extract_path')
+        ) {
             return null;
         }
 
@@ -175,7 +215,9 @@ class material_extractor {
     }
     private static function extract_pdf(string $path, string $filename): array {
         $mistral = self::try_mistral_ocr($path, $filename, 'pdf');
-        if ($mistral !== null) { return $mistral; }
+        if ($mistral !== null) {
+            return $mistral;
+        }
 
         if (function_exists('\\local_aiskillnavigator_extract_pdf_text_from_path')) {
             $text = \local_aiskillnavigator_extract_pdf_text_from_path($path, $filename);
@@ -199,8 +241,12 @@ class material_extractor {
 
         // Fast PPTX -> TXT mode: read slide XML and chart XML only.
         // No embedded-image OCR here, otherwise 100MB+ decks freeze the Course Builder.
-        if (function_exists('\\local_aisn_extract_pptx_xml_text_from_path')) { $parts[] = \local_aisn_extract_pptx_xml_text_from_path($path); }
-        if (function_exists('\\local_aisn_extract_pptx_chart_text_from_path')) { $parts[] = \local_aisn_extract_pptx_chart_text_from_path($path); }
+        if (function_exists('\\local_aisn_extract_pptx_xml_text_from_path')) {
+            $parts[] = \local_aisn_extract_pptx_xml_text_from_path($path);
+        }
+        if (function_exists('\\local_aisn_extract_pptx_chart_text_from_path')) {
+            $parts[] = \local_aisn_extract_pptx_chart_text_from_path($path);
+        }
 
         $content = self::limit(self::clean(implode("\n\n", array_filter($parts))));
         if ($content === '') {
@@ -217,7 +263,9 @@ class material_extractor {
             $parts[] = $xmltext;
         }
 
-        if (function_exists('\\local_aisn_extract_docx_xml_text_from_path')) { $parts[] = \local_aisn_extract_docx_xml_text_from_path($path); }
+        if (function_exists('\\local_aisn_extract_docx_xml_text_from_path')) {
+            $parts[] = \local_aisn_extract_docx_xml_text_from_path($path);
+        }
 
         // Only OCR embedded DOCX images for small files and only when XML text is weak.
         $size = is_readable($path) ? (int)@filesize($path) : 0;
@@ -228,7 +276,9 @@ class material_extractor {
         }
 
         $content = self::limit(self::clean(implode("\n\n", array_filter($parts))));
-        if ($content === '') { return self::fail('No readable text found in DOCX.', 'docx'); }
+        if ($content === '') {
+            return self::fail('No readable text found in DOCX.', 'docx');
+        }
         return self::ok($content, 'docx', $filename, 'DOCX converted to TXT from XML; OCR only for small image-heavy files.');
     }
 
@@ -315,7 +365,9 @@ class material_extractor {
         return 25 * 1024 * 1024;
     }
 
-    private static function extension(string $filename): string { return strtolower((string)pathinfo($filename, PATHINFO_EXTENSION)); }
+    private static function extension(string $filename): string {
+        return strtolower((string)pathinfo($filename, PATHINFO_EXTENSION));
+    }
 
     private static function clean(string $text): string {
         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -349,15 +401,21 @@ class material_extractor {
 
     private static function upload_error_message(int $error): string {
         switch ($error) {
-            case UPLOAD_ERR_INI_SIZE: case UPLOAD_ERR_FORM_SIZE: return 'Uploaded file is too large.';
-            case UPLOAD_ERR_PARTIAL: return 'Uploaded file was only partially uploaded.';
-            case UPLOAD_ERR_NO_FILE: return 'No file was uploaded.';
-            case UPLOAD_ERR_NO_TMP_DIR: return 'Missing temporary upload directory.';
-            case UPLOAD_ERR_CANT_WRITE: return 'Could not write uploaded file to disk.';
-            case UPLOAD_ERR_EXTENSION: return 'Upload was stopped by a PHP extension.';
-            default: return 'Unknown upload error.';
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+                return 'Uploaded file is too large.';
+            case UPLOAD_ERR_PARTIAL:
+                return 'Uploaded file was only partially uploaded.';
+            case UPLOAD_ERR_NO_FILE:
+                return 'No file was uploaded.';
+            case UPLOAD_ERR_NO_TMP_DIR:
+                return 'Missing temporary upload directory.';
+            case UPLOAD_ERR_CANT_WRITE:
+                return 'Could not write uploaded file to disk.';
+            case UPLOAD_ERR_EXTENSION:
+                return 'Upload was stopped by a PHP extension.';
+            default:
+                return 'Unknown upload error.';
         }
     }
 }
-
-

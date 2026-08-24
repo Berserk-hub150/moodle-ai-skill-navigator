@@ -65,7 +65,8 @@ class embedding_indexer {
         string $title,
         bool $generateembeddings
     ): array {
-        $indexed = 0; $failed = 0;
+        $indexed = 0;
+        $failed = 0;
         $client = new embedding_client($this->config);
         $recordbuilder = new embedding_chunk_record($this->config);
 

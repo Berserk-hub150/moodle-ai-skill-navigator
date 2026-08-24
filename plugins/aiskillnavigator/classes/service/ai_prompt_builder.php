@@ -50,18 +50,46 @@ class ai_prompt_builder {
         ];
     }
 
-    public function tutor_prompt(string $question): string { return $this->builders['tutor']->plain($question); }
-    public function tutor_with_materials_prompt(string $question, array $materials): string { return $this->builders['tutor']->with_materials($question, $materials); }
-    public function tutor_with_rag_prompt(string $question, string $ragcontext): string { return $this->builders['tutor']->with_rag($question, $ragcontext); }
-    public function quiz_prompt(string $topic, string $difficulty): string { return $this->builders['quiz']->plain($topic, $difficulty); }
-    public function quiz_from_materials_prompt(string $focus, string $difficulty, array $materials): string { return $this->builders['quiz']->from_materials($focus, $difficulty, $materials); }
-    public function quiz_with_rag_prompt(string $focus, string $difficulty, string $ragcontext): string { return $this->builders['quiz']->with_rag($focus, $difficulty, $ragcontext); }
-    public function mindmap_prompt(string $topic): string { return $this->builders['mindmap']->plain($topic); }
-    public function mindmap_from_materials_prompt(string $focus, array $materials): string { return $this->builders['mindmap']->from_materials($focus, $materials); }
-    public function mindmap_with_rag_prompt(string $focus, string $ragcontext): string { return $this->builders['mindmap']->with_rag($focus, $ragcontext); }
-    public function xr_scenario_prompt(string $topic, string $environment): string { return $this->builders['xr']->plain($topic, $environment); }
-    public function xr_scenario_from_materials_prompt(string $focus, string $environment, array $materials): string { return $this->builders['xr']->from_materials($focus, $environment, $materials); }
-    public function xr_scenario_with_rag_prompt(string $focus, string $environment, string $ragcontext): string { return $this->builders['xr']->with_rag($focus, $environment, $ragcontext); }
-    public function summarize_materials_prompt(string $focus, array $materials): string { return $this->builders['summary']->from_materials($focus, $materials); }
-    public function summarize_rag_prompt(string $focus, string $ragcontext): string { return $this->builders['summary']->with_rag($focus, $ragcontext); }
+    public function tutor_prompt(string $question): string {
+        return $this->builders['tutor']->plain($question);
+    }
+    public function tutor_with_materials_prompt(string $question, array $materials): string {
+        return $this->builders['tutor']->with_materials($question, $materials);
+    }
+    public function tutor_with_rag_prompt(string $question, string $ragcontext): string {
+        return $this->builders['tutor']->with_rag($question, $ragcontext);
+    }
+    public function quiz_prompt(string $topic, string $difficulty): string {
+        return $this->builders['quiz']->plain($topic, $difficulty);
+    }
+    public function quiz_from_materials_prompt(string $focus, string $difficulty, array $materials): string {
+        return $this->builders['quiz']->from_materials($focus, $difficulty, $materials);
+    }
+    public function quiz_with_rag_prompt(string $focus, string $difficulty, string $ragcontext): string {
+        return $this->builders['quiz']->with_rag($focus, $difficulty, $ragcontext);
+    }
+    public function mindmap_prompt(string $topic): string {
+        return $this->builders['mindmap']->plain($topic);
+    }
+    public function mindmap_from_materials_prompt(string $focus, array $materials): string {
+        return $this->builders['mindmap']->from_materials($focus, $materials);
+    }
+    public function mindmap_with_rag_prompt(string $focus, string $ragcontext): string {
+        return $this->builders['mindmap']->with_rag($focus, $ragcontext);
+    }
+    public function xr_scenario_prompt(string $topic, string $environment): string {
+        return $this->builders['xr']->plain($topic, $environment);
+    }
+    public function xr_scenario_from_materials_prompt(string $focus, string $environment, array $materials): string {
+        return $this->builders['xr']->from_materials($focus, $environment, $materials);
+    }
+    public function xr_scenario_with_rag_prompt(string $focus, string $environment, string $ragcontext): string {
+        return $this->builders['xr']->with_rag($focus, $environment, $ragcontext);
+    }
+    public function summarize_materials_prompt(string $focus, array $materials): string {
+        return $this->builders['summary']->from_materials($focus, $materials);
+    }
+    public function summarize_rag_prompt(string $focus, string $ragcontext): string {
+        return $this->builders['summary']->with_rag($focus, $ragcontext);
+    }
 }

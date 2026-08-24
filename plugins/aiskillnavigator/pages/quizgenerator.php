@@ -62,7 +62,7 @@ $topic = optional_param('topic', '', PARAM_TEXT);
 $difficulty = optional_param('difficulty', 'medium', PARAM_ALPHA);
 
 // -1 = argomento libero senza materiali.
-//  0 = tutti i materiali leggibili.
+// 0 = tutti i materiali leggibili.
 // >0 = singolo materiale selezionato.
 $materialid = optional_param('materialid', -1, PARAM_INT);
 
@@ -387,7 +387,7 @@ if ($action === 'grade') {
     if ($quiz === null) {
         if ($sourcemode !== 'manual' && $totalchunks > 0) {
             $searchquery = $topic !== '' ? $topic : 'quiz based on course materials';
-        $results = local_aiskillnavigator_material_source_search($embeddingservice, $searchquery, $courseid, 6, $sourcemode, $selectedmaterialids);
+            $results = local_aiskillnavigator_material_source_search($embeddingservice, $searchquery, $courseid, 6, $sourcemode, $selectedmaterialids);
             $ragcontext = $embeddingservice->build_context($results, 6500);
             $result = $service->generate_quiz_with_rag_context($topic, $difficulty, $ragcontext);
         } else {
@@ -652,7 +652,7 @@ if ($quiz !== null) {
     ]);
 
     echo local_aiskillnavigator_material_source_hidden_fields($sourcemode, $selectedmaterialids);
-echo html_writer::empty_tag('input', [
+    echo html_writer::empty_tag('input', [
         'type' => 'hidden',
         'name' => 'quizdata',
         'value' => $encodedquiz,
@@ -782,7 +782,9 @@ echo html_writer::end_div();
 echo local_aiskillnavigator_mojibake_guard();
 echo local_aiskillnavigator_quiz_tavily_video_assets_final_single((int)$courseid);
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
-if (function_exists('local_aisn_ai_output_formatter_assets')) { echo local_aisn_ai_output_formatter_assets(); }
+if (function_exists('local_aisn_ai_output_formatter_assets')) {
+    echo local_aisn_ai_output_formatter_assets();
+}
 echo $OUTPUT->footer();
 
 
@@ -1648,5 +1650,3 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
 </script>
 HTML;
 }
-
-

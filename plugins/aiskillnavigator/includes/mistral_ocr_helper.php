@@ -333,5 +333,3 @@ if (!function_exists('local_aisn_mistral_ocr_extract_stored_file')) {
         }
     }
 }
-
-
