@@ -1,25 +1,9 @@
  RUN  Moodle CodeSniffer standard on local_aiskillnavigator
 ............................................................  60 / 141 (43%)
 ............................................................ 120 / 141 (85%)
-.......W.....W.......                                        141 / 141 (100%)
+.....................                                        141 / 141 (100%)
 
 
+Time: 2.76 secs; Memory: 38MB
 
-FILE: ...nner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/back_to_course_helper.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 91 | WARNING | Line exceeds 132 characters; contains 160 characters (moodle.Files.LineLength.TooLong)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: ...work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/simulator_materials_helper.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 621 | WARNING | Line exceeds 132 characters; contains 151 characters (moodle.Files.LineLength.TooLong)
-------------------------------------------------------------------------------------------------------------------------------------
-
-Time: 2.64 secs; Memory: 40MB
-
-PHPCS exit code: 1
+PHPCS exit code: 0
