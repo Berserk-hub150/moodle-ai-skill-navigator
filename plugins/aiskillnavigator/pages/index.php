@@ -116,8 +116,8 @@ function local_aisn_index_user_courses(): array {
 if ($courseid <= SITEID) {
     $PAGE->set_context(context_system::instance());
     $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/index.php'));
-    $PAGE->set_title('AI Skill Navigator');
-    $PAGE->set_heading('AI Skill Navigator');
+    $PAGE->set_title(get_string('page_index_title_1', 'local_aiskillnavigator'));
+    $PAGE->set_heading(get_string('page_index_heading_1', 'local_aiskillnavigator'));
 
     echo $OUTPUT->header();
 
@@ -179,8 +179,8 @@ $context = context_course::instance($courseid);
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/index.php', ['courseid' => $courseid]));
-$PAGE->set_title('AI Skill Navigator');
-$PAGE->set_heading('AI Skill Navigator');
+$PAGE->set_title(get_string('page_index_title_2', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_index_heading_2', 'local_aiskillnavigator'));
 $PAGE->requires->css(new moodle_url('/local/aiskillnavigator/assets/css/styles.css'));
 
 $isteacher = is_siteadmin()

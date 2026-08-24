@@ -46,8 +46,8 @@ require_capability('local/aiskillnavigator:managematerials', $context);
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/teacher_materials.php', ['courseid' => $courseid]));
-$PAGE->set_title('Course materials / RAG');
-$PAGE->set_heading('Course materials / RAG');
+$PAGE->set_title(get_string('page_teacher_materials_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_teacher_materials_heading', 'local_aiskillnavigator'));
 function local_aisn_tm_table_exists(string $name): bool {
     global $DB;
     return $DB->get_manager()->table_exists(new xmldb_table($name));

@@ -49,8 +49,8 @@ if ($simulationid > 0) {
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/teacher_simulations.php', $params));
-$PAGE->set_title('Saved simulations');
-$PAGE->set_heading('Saved simulations');
+$PAGE->set_title(get_string('page_teacher_simulations_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_teacher_simulations_heading', 'local_aiskillnavigator'));
 
 local_aisn_sim_ensure_table();
 

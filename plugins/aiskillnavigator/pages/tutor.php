@@ -87,8 +87,8 @@ if (function_exists('local_aiskillnavigator_sync_course_resources')) {
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/tutor.php', ['courseid' => $courseid]));
-$PAGE->set_title('AI Tutor');
-$PAGE->set_heading('AI Tutor');
+$PAGE->set_title(get_string('page_tutor_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_tutor_heading', 'local_aiskillnavigator'));
 if (!function_exists('local_aisn_tutor_formatting_suffix')) {
     function local_aisn_tutor_formatting_suffix(): string {
         return "\n\nAISN_TUTOR_FORMATTING_SUFFIX_V5\n"

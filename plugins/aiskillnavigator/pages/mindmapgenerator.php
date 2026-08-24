@@ -59,8 +59,8 @@ if (function_exists('local_aiskillnavigator_sync_course_resources')) {
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/mindmapgenerator.php', ['courseid' => $courseid]));
-$PAGE->set_title('AI Mind Map Generator');
-$PAGE->set_heading('AI Mind Map Generator');
+$PAGE->set_title(get_string('page_mindmapgenerator_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_mindmapgenerator_heading', 'local_aiskillnavigator'));
 
 
 function local_aiskillnavigator_mm_bad_score(string $label): int {

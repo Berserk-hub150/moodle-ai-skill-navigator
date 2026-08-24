@@ -44,8 +44,8 @@ require_capability('local/aiskillnavigator:viewstudent', $context);
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/assessment.php', ['courseid' => $courseid]));
-$PAGE->set_title('AI assessments');
-$PAGE->set_heading('AI assessments');
+$PAGE->set_title(get_string('page_assessment_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_assessment_heading', 'local_aiskillnavigator'));
 
 function local_aiskillnavigator_assessment_table_exists(string $tablename): bool {
     global $DB;

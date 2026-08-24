@@ -39,8 +39,8 @@ require_capability('local/aiskillnavigator:viewteacher', $context);
 $PAGE->set_context($context);
 $PAGE->requires->css(new moodle_url('/local/aiskillnavigator/assets/css/styles.css'));
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/tutor_analytics.php', ['courseid' => $courseid]));
-$PAGE->set_title('Tutor analyst');
-$PAGE->set_heading('Tutor analyst');
+$PAGE->set_title(get_string('page_tutor_analytics_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_tutor_analytics_heading', 'local_aiskillnavigator'));
 
 echo $OUTPUT->header();
 local_aiskillnavigator_print_inline_styles();

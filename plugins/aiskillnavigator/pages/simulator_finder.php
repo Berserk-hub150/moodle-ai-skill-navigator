@@ -54,7 +54,7 @@ local_aisn_sim_require_materials_for_post((int)$courseid);
 
 // AISN_SIM_DIRECT_MATERIAL_CONTEXT_V1
 // Keep the selected course materials in a real variable.
-// Do not rely only on $_POST/$_REQUEST mutation, because $notes may already be read.
+// Do not rely on request-superglobal mutation, because $notes may already be read.
 $selectedmaterialids = local_aisn_sim_selected_ids();
 $selectedmaterialcontext = '';
 
@@ -64,8 +64,8 @@ if (!empty($selectedmaterialids)) {
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/simulator_finder.php', ['courseid' => $courseid]));
-$PAGE->set_title('AI Simulator Finder');
-$PAGE->set_heading('AI Simulator Finder');
+$PAGE->set_title(get_string('page_simulator_finder_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_simulator_finder_heading', 'local_aiskillnavigator'));
 
 function local_aiskillnavigator_sim_clean(string $text): string {
     $text = trim($text);

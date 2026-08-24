@@ -44,8 +44,8 @@ require_capability('local/aiskillnavigator:viewstudent', $context);
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/adaptive_review.php', ['courseid' => $courseid]));
-$PAGE->set_title('Adaptive review');
-$PAGE->set_heading('Adaptive review');
+$PAGE->set_title(get_string('page_adaptive_review_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_adaptive_review_heading', 'local_aiskillnavigator'));
 
 function local_aiskillnavigator_adaptive_call_ai(string $prompt): string {
     try {

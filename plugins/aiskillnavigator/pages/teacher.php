@@ -46,8 +46,8 @@ require_capability('local/aiskillnavigator:viewteacher', $context);
 $PAGE->set_context($context);
 $PAGE->requires->css(new moodle_url('/local/aiskillnavigator/assets/css/styles.css'));
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/teacher.php', ['courseid' => $courseid]));
-$PAGE->set_title('Teacher dashboard');
-$PAGE->set_heading('Teacher dashboard');
+$PAGE->set_title(get_string('page_teacher_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_teacher_heading', 'local_aiskillnavigator'));
 
 $attempts = $DB->get_records_sql(
     "SELECT a.*, u.firstname, u.lastname, u.email

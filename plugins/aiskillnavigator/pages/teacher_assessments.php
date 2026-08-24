@@ -48,8 +48,8 @@ require_capability('local/aiskillnavigator:viewteacher', $context);
 $PAGE->set_context($context);
 $PAGE->requires->css(new moodle_url('/local/aiskillnavigator/assets/css/styles.css'));
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid]));
-$PAGE->set_title('Initial/final tests');
-$PAGE->set_heading('Initial/final tests');
+$PAGE->set_title(get_string('page_teacher_assessments_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_teacher_assessments_heading', 'local_aiskillnavigator'));
 
 $action = optional_param('action', '', PARAM_ALPHA);
 $message = '';
@@ -267,7 +267,7 @@ function local_aisn_ass_get_attempt_count(int $assessmentid): int {
 function local_aisn_ass_questions_from_form(): array {
     // AISN_ASS_NESTED_OPTION_FIX_V1
     // Moodle optional_param_array() non gestisce bene array annidati tipo option[key][].
-    // Qui leggiamo $_POST in modo controllato e puliamo solo valori scalari con clean_param().
+    // Read nested submitted data via data_submitted() and clean scalar values with clean_param().
     $submitted = data_submitted();
     $post = $submitted === false ? [] : (array) $submitted;
 

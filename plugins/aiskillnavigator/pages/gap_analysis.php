@@ -40,8 +40,8 @@ require_capability('local/aiskillnavigator:viewteacher', $context);
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/gap_analysis.php', ['courseid' => $courseid]));
-$PAGE->set_title('AI learning-gap analysis');
-$PAGE->set_heading('AI learning-gap analysis');
+$PAGE->set_title(get_string('page_gap_analysis_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_gap_analysis_heading', 'local_aiskillnavigator'));
 
 function local_aiskillnavigator_gap_table_exists(string $tablename): bool {
     global $DB;

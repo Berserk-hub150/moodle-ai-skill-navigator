@@ -49,8 +49,8 @@ require_capability('moodle/course:manageactivities', $context);
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/course_builder.php', ['courseid' => $courseid]));
-$PAGE->set_title('AI Course Builder');
-$PAGE->set_heading('AI Course Builder');
+$PAGE->set_title(get_string('page_course_builder_title', 'local_aiskillnavigator'));
+$PAGE->set_heading(get_string('page_course_builder_heading', 'local_aiskillnavigator'));
 
 function local_aisn_cb_low(string $text): string {
     return core_text::strtolower(trim($text));
