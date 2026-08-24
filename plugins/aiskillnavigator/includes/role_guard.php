@@ -25,7 +25,7 @@
 // phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
-/**
+/*
  * Central role guards for AI Skill Navigator.
  *
  * Goal:

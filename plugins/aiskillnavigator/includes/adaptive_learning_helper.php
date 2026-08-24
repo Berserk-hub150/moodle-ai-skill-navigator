@@ -34,7 +34,6 @@ defined('MOODLE_INTERNAL') || die();
  * - uses Bayesian smoothing to avoid unstable percentages with few answers;
  * - collects wrong examples so the LLM can generate similar-but-not-identical practice.
  */
-
 function local_aiskillnavigator_adaptive_table_exists(string $tablename): bool {
     global $DB;
 

@@ -753,7 +753,7 @@ function local_aisn_sim_save_generated(
     }
 }
 
-/**
+/*
  * AISN_SIM_DEDUPE_CORE_SAFE_V3
  * Dedupe sicuro per simulazioni salvate.
  */

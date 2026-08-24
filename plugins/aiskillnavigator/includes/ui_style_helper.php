@@ -30,6 +30,7 @@ if (!function_exists('local_aiskillnavigator_unified_css')) {
      * Local aiskillnavigator unified css helper.
      */
     function local_aiskillnavigator_unified_css(): string {
+        // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
         return <<<'CSS'
 /* AI Skill Navigator - unified UI v3 */
 :root {
@@ -494,6 +495,7 @@ body[id^="page-local-aiskillnavigator"] summary:focus {
     }
 }
 CSS;
+// phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
     }
 }
 

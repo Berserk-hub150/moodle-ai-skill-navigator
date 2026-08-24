@@ -25,7 +25,7 @@
 // phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
-/**
+/*
  * Production safety guard for AI Skill Navigator.
  */
 if (!function_exists('local_aisn_prod_bool_config')) {

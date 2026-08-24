@@ -31,6 +31,7 @@ require_once(__DIR__ . '/../classes/service/web_search_service.php');
  * Local aiskillnavigator error remediation css helper.
  */
 function local_aiskillnavigator_error_remediation_css(): string {
+    // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
     return <<<'HTML'
 <style id="aisn-error-remediation-v1">
 .aisn-remediation-card {
@@ -91,6 +92,7 @@ function local_aiskillnavigator_error_remediation_css(): string {
 }
 </style>
 HTML;
+// phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 }
 
 /**

@@ -416,6 +416,7 @@ function local_aiskillnavigator_tutor_signal_capture_assets(int $courseid): stri
 
     $endpointjson = json_encode($endpoint->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
+    // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
     return <<<HTML
 <script id="aisn-tutor-signal-capture-v1">
 (function () {
@@ -474,7 +475,6 @@ function local_aiskillnavigator_tutor_signal_capture_assets(int $courseid): stri
      * Findsourcemode helper.
      */
     function findSourceMode() {
-        // phpcs:ignore moodle.Files.LineLength
         const checked = document.querySelector('input[name="sourcemode"]:checked, input[name="source"]:checked, input[name="materialsource"]:checked');
         if (checked) {
             return checked.value || "selected";
@@ -561,4 +561,5 @@ function local_aiskillnavigator_tutor_signal_capture_assets(int $courseid): stri
 })();
 </script>
 HTML;
+// phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 }

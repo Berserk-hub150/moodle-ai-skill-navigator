@@ -62,9 +62,9 @@ $PAGE->set_heading(get_string('quizgenerator', 'local_aiskillnavigator'));
 $topic = optional_param('topic', '', PARAM_TEXT);
 $difficulty = optional_param('difficulty', 'medium', PARAM_ALPHA);
 
-// -1 = argomento libero senza materiali.
-// 0 = tutti i materiali leggibili.
-// >0 = singolo materiale selezionato.
+// Material id -1 means a free topic without materials.
+// Material id 0 means all readable materials.
+// A positive material id means one selected material.
 $materialid = optional_param('materialid', -1, PARAM_INT);
 
 $generate = optional_param('generate', 0, PARAM_BOOL);
@@ -827,6 +827,7 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
     $endpoint = new moodle_url('/local/aiskillnavigator/pages/quiz_error_video.php', ['courseid' => $courseid, 'sesskey' => sesskey()]);
     $endpointjson = json_encode($endpoint->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
+    // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
     return <<<HTML
 <style id="aisn-quiz-video-remediation-v1">
 .aisn-video-remediation-card {
@@ -1017,7 +1018,6 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
                 '<span class="aisn-video-remediation-chip">' + escapeHtml(label) + '</span>' +
                 "<h4>Recupero adattivo guidato dall'errore</h4>" +
                 '<p><strong>Ability to improve:</strong> ' + escapeHtml(skill) + '</p>' +
-                // phpcs:ignore moodle.Files.LineLength
                 '<p><a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(data.title || data.url) + '</a></p>' +
                 (data.snippet ? '<p>' + escapeHtml(data.snippet) + '</p>' : '') +
                 '<p><strong>Mini-attivita:</strong> ' + escapeHtml(data.activity || '') + '</p>' +
@@ -1036,6 +1036,7 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
 })();
 </script>
 HTML;
+// phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 }
 
 
@@ -1043,6 +1044,7 @@ HTML;
  * Local aiskillnavigator quiz video dedupe guard helper.
  */
 function local_aiskillnavigator_quiz_video_dedupe_guard(): string {
+    // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
     return <<<'HTML'
 <script id="aisn-video-dedupe-v1">
 (function () {
@@ -1050,12 +1052,10 @@ function local_aiskillnavigator_quiz_video_dedupe_guard(): string {
      * Dedupe helper.
      */
     function dedupe() {
-        // phpcs:ignore moodle.Files.LineLength
         document.querySelectorAll(".aisn-video-remediation-card, .aisn-video-remediation-loading, .aisn-video-remediation-muted").forEach(function (card) {
             var parent = card.parentElement;
             if (!parent) return;
 
-            // phpcs:ignore moodle.Files.LineLength
             var cards = parent.querySelectorAll(".aisn-video-remediation-card, .aisn-video-remediation-loading, .aisn-video-remediation-muted");
             if (cards.length <= 1) return;
 
@@ -1079,6 +1079,7 @@ function local_aiskillnavigator_quiz_video_dedupe_guard(): string {
 })();
 </script>
 HTML;
+// phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 }
 
 
@@ -1086,6 +1087,7 @@ HTML;
  * Local aiskillnavigator quiz clean video labels helper.
  */
 function local_aiskillnavigator_quiz_clean_video_labels(): string {
+    // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
     return <<<'HTML'
 <script id="aisn-clean-video-labels-final-v1">
 (function () {
@@ -1113,7 +1115,6 @@ function local_aiskillnavigator_quiz_clean_video_labels(): string {
                 if (idx >= 0) {
                     p.innerHTML = "<strong>Mini-attivita:</strong> " + txt.substring(idx);
                 } else {
-                    // phpcs:ignore moodle.Files.LineLength
                     p.innerHTML = "<strong>Mini-attivita:</strong> Guarda la risorsa consigliata, poi riprova spiegando il concetto in 3 righe.";
                 }
             }
@@ -1144,6 +1145,7 @@ function local_aiskillnavigator_quiz_clean_video_labels(): string {
 })();
 </script>
 HTML;
+// phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 }
 
 
@@ -1151,6 +1153,7 @@ HTML;
  * Local aiskillnavigator quiz video rescue final helper.
  */
 function local_aiskillnavigator_quiz_video_rescue_final(): string {
+    // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
     return <<<'HTML'
 <script id="aisn-quiz-video-rescue-final-v1">
 (function () {
@@ -1233,11 +1236,8 @@ function local_aiskillnavigator_quiz_video_rescue_final(): string {
             '<span class="aisn-video-remediation-chip">Video consigliato dopo l\\'errore</span>' +
             '<h4>Recupero adattivo guidato dall\\'errore</h4>' +
             '<p><strong>Ability to improve:</strong> ' + escapeHtml(skill) + '</p>' +
-            // phpcs:ignore moodle.Files.LineLength
             '<p><a href="' + escapeHtml(youtubeFallbackUrl(skill, question)) + '" target="_blank" rel="noopener noreferrer">Apri ricerca video YouTube mirata</a></p>' +
-            // phpcs:ignore moodle.Files.LineLength
             '<p>La ricerca automatica sta impiegando troppo tempo, quindi viene proposta una ricerca video mirata sulla competenza da recuperare.</p>' +
-            // phpcs:ignore moodle.Files.LineLength
             '<p><strong>Mini-attivita:</strong> guarda una spiegazione pertinente e poi riscrivi in 3 righe il concetto collegato.</p>' +
             '<p><small>Fonte: fallback YouTube mirato</small></p>';
     }
@@ -1268,7 +1268,6 @@ function local_aiskillnavigator_quiz_video_rescue_final(): string {
      * Rescue helper.
      */
     function rescue() {
-        // phpcs:ignore moodle.Files.LineLength
         document.querySelectorAll(".aisn-video-remediation-loading, .aisn-video-remediation-card, .aisn-video-remediation-muted").forEach(function (box) {
             const card = findQuestionCard(box);
 
@@ -1318,6 +1317,7 @@ function local_aiskillnavigator_quiz_video_rescue_final(): string {
 })();
 </script>
 HTML;
+// phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 }
 
 
@@ -1329,6 +1329,7 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
     $endpoint = new moodle_url('/local/aiskillnavigator/pages/quiz_error_video.php', ['courseid' => $courseid, 'sesskey' => sesskey()]);
     $endpointjson = json_encode($endpoint->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
+    // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
     return <<<HTML
 <style id="aisn-tavily-video-v1">
 .aisn-tavily-video-card {
@@ -1502,10 +1503,8 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
             '<span class="aisn-tavily-video-chip">' + escapeHtml(label) + '</span>' +
             '<h4>Recupero adattivo guidato dall\\'errore</h4>' +
             '<p><strong>Ability to improve:</strong> ' + escapeHtml(skill) + '</p>' +
-            // phpcs:ignore moodle.Files.LineLength
             '<p><a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(fixLabels(data.title || data.url)) + '</a></p>' +
             (data.snippet ? '<p>' + escapeHtml(fixLabels(data.snippet)) + '</p>' : '') +
-            // phpcs:ignore moodle.Files.LineLength
             '<p><strong>Mini-attivita:</strong> ' + escapeHtml(fixLabels(data.activity || "Guarda la risorsa e rispiega il concetto in 3 righe.")) + '</p>' +
             '<p><small>Fonte trovata tramite Search API: ' + escapeHtml(data.provider || "tavily") + '</small></p>';
     }
@@ -1516,7 +1515,6 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
 
         if (!isWrong(card)) return;
 
-        // phpcs:ignore moodle.Files.LineLength
         card.querySelectorAll(".aisn-direct-youtube-card, .aisn-video-remediation-card, .aisn-video-remediation-loading, .aisn-video-remediation-muted, .aisn-tavily-video-card, .aisn-tavily-video-loading, .aisn-tavily-video-muted").forEach(function (el) {
             el.remove();
         });
@@ -1567,7 +1565,6 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
      * Run helper.
      */
     function run() {
-        // phpcs:ignore moodle.Files.LineLength
         document.querySelectorAll(".aisn-direct-youtube-card, .aisn-video-remediation-card, .aisn-video-remediation-loading, .aisn-video-remediation-muted").forEach(function (el) {
             el.remove();
         });
@@ -1583,6 +1580,7 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
 })();
 </script>
 HTML;
+// phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 }
 
 
@@ -1594,6 +1592,7 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
     $endpoint = new moodle_url('/local/aiskillnavigator/pages/quiz_error_video.php', ['courseid' => $courseid, 'sesskey' => sesskey()]);
     $endpointjson = json_encode($endpoint->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
+    // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
     return <<<HTML
 <style id="aisn-tavily-final-v1">
 .aisn-tavily-final-card {
@@ -1757,10 +1756,8 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
             '<span class="aisn-tavily-final-chip">' + escapeHtml(label) + '</span>' +
             '<h4>Recupero adattivo guidato dall\\'errore</h4>' +
             '<p><strong>Ability to improve:</strong> ' + escapeHtml(skill) + '</p>' +
-            // phpcs:ignore moodle.Files.LineLength
             '<p><a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(data.title || data.url) + '</a></p>' +
             (data.snippet ? '<p>' + escapeHtml(data.snippet) + '</p>' : '') +
-            // phpcs:ignore moodle.Files.LineLength
             '<p><strong>Mini-attivita:</strong> ' + escapeHtml(data.activity || "Guarda la risorsa e rispiega il concetto in 3 righe.") + '</p>' +
             '<p><small>Fonte trovata tramite Search API: ' + escapeHtml(data.provider || "tavily") + '</small></p>';
     }
@@ -1827,4 +1824,5 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
 })();
 </script>
 HTML;
+// phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 }

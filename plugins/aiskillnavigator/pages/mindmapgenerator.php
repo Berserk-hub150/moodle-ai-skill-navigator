@@ -573,6 +573,7 @@ if ($generate) {
 }
 
 echo $OUTPUT->header();
+// phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 echo html_writer::tag('style', <<<'CSS'
 /* AISN_DIRECT_SELECT_FIX_FINAL_V1 */
 body.path-local-aiskillnavigator select#difficulty,
@@ -876,7 +877,6 @@ echo html_writer::empty_tag('input', [
     'value' => s($topic),
     'placeholder' => 'Example: HTML, funzioni lineari, Digital Twin...',
 ]);
-// phpcs:ignore moodle.Files.LineLength
 echo html_writer::tag('small', 'With Question/topic only this is the mind map topic. With course materials this is an optional focus.', ['class' => 'form-text text-muted']);
 echo html_writer::end_div();
 
@@ -887,7 +887,6 @@ echo html_writer::select(
     'difficulty',
     $difficulty,
     false,
-    // phpcs:ignore moodle.Files.LineLength
     ['class' => 'form-control custom-select aisn-direct-fixed-select', 'id' => 'difficulty', 'style' => 'display:block!important;width:360px!important;min-width:360px!important;max-width:100%!important;height:50px!important;min-height:50px!important;padding:10px 46px 10px 14px!important;box-sizing:border-box!important;font-size:15px!important;line-height:1.45!important;border-radius:12px!important;appearance:auto!important;-webkit-appearance:menulist!important;']
 );
 echo html_writer::end_div();
@@ -965,7 +964,6 @@ function local_aiskillnavigator_mm_web_enrich_nodes(array $nodes, string $topic)
             'title' => (string)($first['title'] ?? 'Risorsa online'),
             'url' => (string)($first['url'] ?? ''),
             'snippet' => (string)($first['content'] ?? $first['snippet'] ?? ''),
-            // phpcs:ignore moodle.Files.LineLength
             'activity' => 'Apri la risorsa, osserva un esempio pratico del concetto "' . $title . '" e scrivi 3 righe su come si collega alla mappa.',
         ];
 
@@ -1001,7 +999,6 @@ if ($map !== null) {
         echo html_writer::tag('p', 'Generated from manual topic, without teacher materials.', ['class' => 'text-muted']);
     }
 
-    // phpcs:ignore moodle.Files.LineLength
     echo html_writer::tag('p', 'Drag the canvas, drag nodes, use mouse wheel to zoom, or use the controls below.', ['class' => 'text-muted']);
 
     echo html_writer::start_div('aisn-mm-controls');
@@ -1288,7 +1285,6 @@ if ($map !== null) {
         }
 
         if (!node.webexample || !node.webexample.url) {
-            // phpcs:ignore moodle.Files.LineLength
             box.innerHTML = '<div class="aisn-mm-web-example-empty">Nessun esempio online collegato a questo nodo. La mappa resta basata sui materiali/argomento inserito.</div>';
             return;
         }
@@ -1298,7 +1294,6 @@ if ($map !== null) {
         box.innerHTML =
             '<div class="aisn-mm-web-example-card">' +
             '<h4>Esempio online collegato</h4>' +
-            // phpcs:ignore moodle.Files.LineLength
             '<a href="' + escapeHtml(ex.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(ex.title || ex.url) + '</a>' +
             (ex.snippet ? '<p>' + escapeHtml(ex.snippet) + '</p>' : '') +
             '<p>' + escapeHtml(ex.activity || '') + '</p>' +
@@ -1473,7 +1468,6 @@ echo html_writer::end_div();
 echo local_aisn_mindmap_polish_prof();
 echo local_aiskillnavigator_mindmap_live_web_assets((int)$courseid);
 echo local_aiskillnavigator_mojibake_guard();
-// phpcs:ignore moodle.Files.LineLength
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
 echo html_writer::tag('script', "
 document.addEventListener('DOMContentLoaded', function () {
@@ -1481,7 +1475,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    // phpcs:ignore moodle.Files.LineLength
     var courseUrl = '/course/view.php?id=' + encodeURIComponent(String(new URLSearchParams(window.location.search).get('courseid') || new URLSearchParams(window.location.search).get('id') || '2'));
 
     var btn = document.createElement('a');
@@ -1526,7 +1519,6 @@ if (!function_exists('local_aisn_mindmap_polish_prof')) {
 .aisn-mm-rendered{background:#f8fafc;border:1px solid #e2e8f0;border-radius:24px;padding:22px;margin-top:18px}
 .aisn-mm-title{font-size:1.6rem;font-weight:900;color:#0f172a;margin:0 0 8px}
 .aisn-mm-summary{color:#64748b;margin:0 0 18px;line-height:1.55}
-// phpcs:ignore moodle.Files.LineLength
 .aisn-mm-central{background:linear-gradient(135deg,#0f6cbf,#2563eb);color:#fff;border-radius:18px;padding:18px 20px;margin-bottom:18px;box-shadow:0 14px 28px rgba(15,108,191,.18)}
 .aisn-mm-central strong{display:block;font-size:1.1rem;margin-bottom:4px}
 .aisn-mm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
@@ -1543,15 +1535,12 @@ if (!function_exists('local_aisn_mindmap_polish_prof')) {
 /**
  * Esc helper.
  */
-// phpcs:ignore moodle.Files.LineLength
 /**
  * Esc helper.
  */
-// phpcs:ignore moodle.Files.LineLength
 /**
  * Esc helper.
  */
-// phpcs:ignore moodle.Files.LineLength
 /**
  * Esc helper.
  */
@@ -1559,18 +1548,12 @@ function esc(s){return String(s||'').replace(/[&<>"']/g,function(m){return {'&':
 /**
  * Parse helper.
  */
-// phpcs:ignore moodle.Files.LineLength
-// phpcs:ignore moodle.Strings.ForbiddenStrings.Found
 /**
  * Parse helper.
  */
-// phpcs:ignore moodle.Files.LineLength
-// phpcs:ignore moodle.Strings.ForbiddenStrings.Found
 /**
  * Parse helper.
  */
-// phpcs:ignore moodle.Files.LineLength
-// phpcs:ignore moodle.Strings.ForbiddenStrings.Found
 /**
  * Parse helper.
  */
@@ -1578,20 +1561,16 @@ function parse(t){t=(t||'').trim();if(!t||t.indexOf('{')<0||t.indexOf('branches'
 /**
  * Render helper.
  */
-// phpcs:ignore moodle.Files.LineLength
 /**
  * Render helper.
  */
-// phpcs:ignore moodle.Files.LineLength
 /**
  * Render helper.
  */
-// phpcs:ignore moodle.Files.LineLength
 /**
  * Render helper.
  */
 function render(d){var h='<div class="aisn-mm-rendered">';h+='<h3 class="aisn-mm-title">'+esc(d.title||d.central_topic||'Mind map')+'</h3>';if(d.summary)h+='<p class="aisn-mm-summary">'+esc(d.summary)+'</p>';h+='<div class="aisn-mm-central"><strong>'+esc(d.central_topic||d.title||'Tema centrale')+'</strong><span>'+esc(d.central_description||'')+'</span></div>';h+='<div class="aisn-mm-grid">';(d.branches||[]).forEach(function(b){h+='<div class="aisn-mm-branch"><h4>'+esc(b.title||'Ramo')+'</h4>';if(b.description)h+='<p>'+esc(b.description)+'</p>';(b.children||[]).forEach(function(c){h+='<div class="aisn-mm-child"><strong>'+esc(c.title||'Nodo')+'</strong><span>'+esc(c.description||'')+'</span></div>';});h+='</div>';});h+='</div></div>';return h;}
-// phpcs:ignore moodle.Files.LineLength
 document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('pre').forEach(function(pre){var d=parse(pre.textContent);if(!d)return;var div=document.createElement('div');div.innerHTML=render(d);pre.classList.add('aisn-mm-json-hidden');pre.parentNode.insertBefore(div.firstElementChild,pre);});});
 })();
 </script>
@@ -1603,7 +1582,6 @@ HTML;
  * Local aiskillnavigator mindmap live web assets helper.
  */
 function local_aiskillnavigator_mindmap_live_web_assets(int $courseid): string {
-    // phpcs:ignore moodle.Files.LineLength
     $endpoint = new moodle_url('/local/aiskillnavigator/pages/mindmap_web_example.php', ['courseid' => $courseid, 'sesskey' => sesskey()]);
     $endpointjson = json_encode($endpoint->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
@@ -1715,7 +1693,6 @@ function local_aiskillnavigator_mindmap_live_web_assets(int $courseid): string {
             const data = await response.json();
 
             if (!data.ok) {
-                // phpcs:ignore moodle.Files.LineLength
                 box.innerHTML = '<div class="aisn-mm-live-muted">' + escapeHtml(data.message || "Nessun esempio online trovato.") + '</div>';
                 return;
             }
@@ -1723,14 +1700,12 @@ function local_aiskillnavigator_mindmap_live_web_assets(int $courseid): string {
             box.innerHTML =
                 '<div class="aisn-mm-live-card">' +
                 '<h4>Esempio online collegato</h4>' +
-                // phpcs:ignore moodle.Files.LineLength
                 '<a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(data.title || data.url) + '</a>' +
                 (data.snippet ? '<p>' + escapeHtml(data.snippet) + '</p>' : '') +
                 '<p>' + escapeHtml(data.activity || '') + '</p>' +
                 '<p><small>Fonte trovata tramite Search API: ' + escapeHtml(data.provider || '') + '</small></p>' +
                 '</div>';
         } catch (e) {
-            // phpcs:ignore moodle.Files.LineLength
             box.innerHTML = '<div class="aisn-mm-live-muted">Errore durante la ricerca online. Controlla configurazione Search API.</div>';
         }
     }
@@ -1738,7 +1713,6 @@ function local_aiskillnavigator_mindmap_live_web_assets(int $courseid): string {
     document.addEventListener("DOMContentLoaded", function () {
         const box = ensureBox();
         if (box) {
-            // phpcs:ignore moodle.Files.LineLength
             box.innerHTML = '<div class="aisn-mm-live-muted">Clicca un ramo o sotto-concetto della mappa per caricare un esempio online collegato.</div>';
         }
     });

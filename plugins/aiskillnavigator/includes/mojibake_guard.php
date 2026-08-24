@@ -30,6 +30,7 @@ if (!function_exists('local_aiskillnavigator_mojibake_guard')) {
      * Local aiskillnavigator mojibake guard helper.
      */
     function local_aiskillnavigator_mojibake_guard(): string {
+        // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
         return <<<'HTML'
 <script id="aisn-mojibake-guard-v2">
 (function () {
@@ -98,5 +99,6 @@ if (!function_exists('local_aiskillnavigator_mojibake_guard')) {
 })();
 </script>
 HTML;
+// phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
     }
 }

@@ -48,6 +48,7 @@ if (!function_exists('local_aisn_ai_output_formatter_assets')) {
      * Local aisn ai output formatter assets helper.
      */
     function local_aisn_ai_output_formatter_assets(): string {
+        // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
         $css = <<<'CSS'
 .aisn-ai-output {
     line-height: 1.7;
@@ -119,7 +120,9 @@ if (!function_exists('local_aisn_ai_output_formatter_assets')) {
     margin-bottom: 14px;
 }
 CSS;
+// phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 
+        // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
         $js = <<<'JS'
 (function () {
     if (window.aisnNotionFormatterLoaded) {
@@ -223,11 +226,9 @@ CSS;
                 continue;
             }
 
-            // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
             if (/^```/.test(line)) {
                 const code = [];
                 i++;
-                // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
                 while (i < lines.length && !/^```/.test(lines[i].trim())) {
                     code.push(lines[i]);
                     i++;
@@ -295,7 +296,6 @@ CSS;
             while (
                 i < lines.length &&
                 lines[i].trim() &&
-                // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
                 !/^```/.test(lines[i].trim()) &&
                 !isTableLine(lines[i]) &&
                 !/^[-*]\s+/.test(lines[i].trim()) &&
@@ -378,12 +378,10 @@ CSS;
             return;
         }
 
-        // phpcs:ignore moodle.Files.LineLength
         const hasMarkdownTable = text.split(/\n/).some((line, idx, arr) => isTableLine(line) && idx + 1 < arr.length && isTableSeparator(arr[idx + 1]));
         const hasMath = text.split(/\n/).some(looksMath);
         const hasList = text.split(/\n/).some(line => /^[-*]\s+/.test(line.trim()) || /^\d+\.\s+/.test(line.trim()));
 
-        // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
         if (!hasMarkdownTable && !hasMath && !hasList && !text.includes("```")) {
             return;
         }
@@ -460,6 +458,7 @@ CSS;
     });
 })();
 JS;
+// phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 
         return html_writer::tag('style', $css) . html_writer::tag('script', $js);
     }

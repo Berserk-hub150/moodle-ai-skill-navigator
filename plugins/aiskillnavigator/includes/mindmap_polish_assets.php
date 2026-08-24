@@ -30,6 +30,7 @@ if (!function_exists('local_aisn_mindmap_polish_prof')) {
      * Local aisn mindmap polish prof helper.
      */
     function local_aisn_mindmap_polish_prof(): string {
+        // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
         return <<<'HTML'
 <style id="aisn-mindmap-big-view-v1">
 body.path-local-aiskillnavigator .container-fluid,
@@ -252,5 +253,6 @@ body.aisn-mm-fullscreen-body {
 })();
 </script>
 HTML;
+// phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
     }
 }

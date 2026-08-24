@@ -30,7 +30,7 @@ if (file_exists($aisndocumentocrhelper)) {
     require_once($aisndocumentocrhelper);
 }
 
-/**
+/*
  * Optional Mistral OCR helper.
  *
  * Strategy:

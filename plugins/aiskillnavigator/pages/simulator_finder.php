@@ -430,6 +430,7 @@ if ($action === 'generate') {
 }
 
 echo $OUTPUT->header();
+// phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 echo html_writer::tag('style', <<<'CSS'
 /* AISN_DIRECT_SELECT_FIX_FINAL_V1 */
 body.path-local-aiskillnavigator select#difficulty,
@@ -550,7 +551,6 @@ echo html_writer::start_div('container-fluid');
 echo html_writer::tag('h2', 'AI Simulator Finder');
 echo html_writer::tag(
     'p',
-    // phpcs:ignore moodle.Files.LineLength
     'Insert a topic and let the AI propose a practical exercise plus a suitable online simulator/tool. If a Search API is configured, the plugin also checks live web results.',
     ['class' => 'lead']
 );
@@ -612,7 +612,6 @@ echo html_writer::select(
     'level',
     $level,
     false,
-    // phpcs:ignore moodle.Files.LineLength
     ['class' => 'form-control custom-select aisn-direct-fixed-select mb-3', 'id' => 'level', 'style' => 'display:block!important;width:360px!important;min-width:360px!important;max-width:100%!important;height:50px!important;min-height:50px!important;padding:10px 46px 10px 14px!important;box-sizing:border-box!important;font-size:15px!important;line-height:1.45!important;border-radius:12px!important;appearance:auto!important;-webkit-appearance:menulist!important;']
 );
 
@@ -672,7 +671,6 @@ if (false && !empty($searchresults)) {
         $snippet = trim((string)($row['snippet'] ?? ''));
 
         if ($url !== '') {
-            // phpcs:ignore moodle.Files.LineLength
             $link = html_writer::link($url, s($title !== '' ? $title : $url), ['target' => '_blank', 'rel' => 'noopener noreferrer']);
         } else {
             $link = s($title);
@@ -698,7 +696,6 @@ if ($result !== '') {
 
 echo html_writer::end_div();
 
-// phpcs:ignore moodle.Files.LineLength
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
 if (function_exists('local_aisn_ai_output_formatter_assets')) {
     echo local_aisn_ai_output_formatter_assets();
