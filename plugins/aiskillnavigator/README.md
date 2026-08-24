@@ -81,6 +81,8 @@ The Moodle Marketplace package for this component contains only `local_aiskillna
 
 The optional `block_aiskillnavigator` is a separate Moodle component. It is not bundled in the local-plugin Marketplace ZIP and, when distributed through Moodle Marketplace, must be released separately with its dependency on `local_aiskillnavigator` declared.
 
+Marketplace releases are checked with the repository's dedicated Moodle Plugin CI workflow before packaging.
+
 ## Requirements
 
 - Moodle 4.4 or later.
