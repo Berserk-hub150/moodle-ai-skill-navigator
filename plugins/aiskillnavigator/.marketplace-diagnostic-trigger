@@ -1,1 +1,1 @@
-Trigger a fresh Moodle Marketplace PHPCS diagnostic after the final generated cleanup commit.
+Trigger a fresh Moodle Marketplace PHPCS diagnostic after clearing the last embedded-script warnings.
