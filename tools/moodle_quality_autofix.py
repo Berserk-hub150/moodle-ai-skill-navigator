@@ -26,6 +26,8 @@ CANONICAL_GPL = """<?php
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+LINE_LENGTH_SNIFFS = 'moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded'
+
 
 def previous_nonblank(lines: list[str], index: int) -> int:
     pos = index - 1
@@ -90,10 +92,142 @@ def canonicalise_header(text: str) -> str:
     return text
 
 
+def normalise_orphan_description_blocks(text: str) -> str:
+    """Turn known descriptive blocks into ordinary comments instead of orphan PHPDoc."""
+    phrases = (
+        'Central role guards for AI Skill Navigator.',
+        'Production safety guard for AI Skill Navigator.',
+        'Saved simulation helper.',
+        'Optional Mistral OCR helper.',
+        'AISN_SIM_DEDUPE_CORE_SAFE_V3',
+    )
+    for phrase in phrases:
+        pattern = re.compile(r'/\*\*\n(?P<body>(?: \*[^\n]*\n)+?) \*/(?=\n)', re.M)
+
+        def replace(match: re.Match[str]) -> str:
+            if phrase not in match.group('body'):
+                return match.group(0)
+            return '/*\n' + match.group('body') + ' */'
+
+        text = pattern.sub(replace, text)
+    return text
+
+
+def normalise_docblock_adjacency(text: str) -> str:
+    """Moodle requires a declaration PHPDoc to immediately precede its declaration."""
+    declaration = (
+        r'(?:(?:public|protected|private|static|final|abstract)\s+)*'
+        r'(?:function|class|interface|const)\b'
+    )
+    return re.sub(
+        rf'(\*/)[ \t]*\n(?:[ \t]*\n)+(?=[ \t]*{declaration})',
+        r'\1\n',
+        text,
+    )
+
+
+def wrap_known_long_signatures(text: str) -> str:
+    replacements = {
+        'function local_aisn_cb_ai_move_material(int $courseid, string $fromsection, string $destinationsection, string $materialname): string {': (
+            'function local_aisn_cb_ai_move_material(\n'
+            '    int $courseid,\n'
+            '    string $fromsection,\n'
+            '    string $destinationsection,\n'
+            '    string $materialname\n'
+            '): string {'
+        ),
+        'function local_aiskillnavigator_material_source_selected_materials(array $readablematerials, string $sourcemode, array $selectedmaterialids): array {': (
+            'function local_aiskillnavigator_material_source_selected_materials(\n'
+            '    array $readablematerials,\n'
+            '    string $sourcemode,\n'
+            '    array $selectedmaterialids\n'
+            '): array {'
+        ),
+        'function local_aiskillnavigator_material_source_search($embeddingservice, string $query, int $courseid, int $limit, string $sourcemode, array $selectedmaterialids): array {': (
+            'function local_aiskillnavigator_material_source_search(\n'
+            '    $embeddingservice,\n'
+            '    string $query,\n'
+            '    int $courseid,\n'
+            '    int $limit,\n'
+            '    string $sourcemode,\n'
+            '    array $selectedmaterialids\n'
+            '): array {'
+        ),
+        '    function local_aiskillnavigator_extract_files_from_area(int $contextid, string $component, string $filearea, int $cmid = 0): string {': (
+            '    function local_aiskillnavigator_extract_files_from_area(\n'
+            '        int $contextid,\n'
+            '        string $component,\n'
+            '        string $filearea,\n'
+            '        int $cmid = 0\n'
+            '    ): string {'
+        ),
+    }
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    return text
+
+
+def clean_stale_phpcs_preambles(text: str) -> str:
+    """Remove old line-length ignores accidentally inserted between PHPDoc and declarations."""
+    text = re.sub(
+        r'(\*/\n)(?:[ \t]*// phpcs:ignore moodle\.Files\.LineLength[^\n]*\n)+(?=[ \t]*/\*\*)',
+        r'\1',
+        text,
+    )
+    return text
+
+
+def protect_heredoc_line_lengths(text: str) -> str:
+    """Disable only line-length sniffs around heredoc/nowdoc bodies in PHP context."""
+    lines = text.splitlines(keepends=True)
+    out: list[str] = []
+    marker: str | None = None
+    inserted_disable = False
+
+    for line in lines:
+        if marker is None:
+            match = re.search(r"<<<['\"]?([A-Za-z_][A-Za-z0-9_]*)['\"]?", line)
+            if match:
+                marker = match.group(1)
+                prev = out[-1].strip() if out else ''
+                if not prev.startswith('// phpcs:disable ' + LINE_LENGTH_SNIFFS):
+                    indent = re.match(r'^\s*', line).group(0)
+                    out.append(f'{indent}// phpcs:disable {LINE_LENGTH_SNIFFS}\n')
+                    inserted_disable = True
+                else:
+                    inserted_disable = False
+                out.append(line)
+                continue
+
+            out.append(line)
+            continue
+
+        # Old generated directives inside JS/HTML heredocs are literal output, not PHP directives.
+        stripped = line.strip()
+        if stripped.startswith('// phpcs:ignore moodle.Files.LineLength'):
+            continue
+        if stripped.startswith('// phpcs:ignore moodle.Strings.ForbiddenStrings.Found'):
+            continue
+
+        out.append(line)
+        if re.match(rf'^\s*{re.escape(marker)}(?:;)?\s*$', line):
+            if inserted_disable:
+                indent = re.match(r'^\s*', line).group(0)
+                out.append(f'{indent}// phpcs:enable {LINE_LENGTH_SNIFFS}\n')
+            marker = None
+            inserted_disable = False
+
+    return ''.join(out)
+
+
 def fix_php(path: Path) -> bool:
     text = path.read_text(encoding='utf-8')
     original = text
     text = canonicalise_header(text)
+    text = normalise_orphan_description_blocks(text)
+    text = clean_stale_phpcs_preambles(text)
+    text = normalise_docblock_adjacency(text)
+    text = wrap_known_long_signatures(text)
 
     # Keep the file-level docblock detached from the first executable statement.
     text = re.sub(
@@ -115,6 +249,14 @@ def fix_php(path: Path) -> bool:
     for old, new in replacements.items():
         text = text.replace(old, new)
 
+    # Make the quiz material sentinel documentation conform to Moodle comment style.
+    text = text.replace(
+        '// -1 = argomento libero senza materiali.\n// 0 = tutti i materiali leggibili.\n// >0 = singolo materiale selezionato.',
+        '// Material id -1 means a free topic without materials.\n'
+        '// Material id 0 means all readable materials.\n'
+        '// A positive material id means one selected material.',
+    )
+
     # Legacy entry points still need an explicit Moodle login check.
     if path.name == 'course_tutor.php' and 'require_login();' not in text:
         marker = "$courseid = optional_param('courseid', SITEID, PARAM_INT);"
@@ -122,6 +264,8 @@ def fix_php(path: Path) -> bool:
     if path == ROOT / 'index.php' and 'require_login();' not in text:
         marker = "require_once(__DIR__ . '/../../config.php');"
         text = text.replace(marker, marker + "\n\nrequire_login();", 1)
+
+    text = protect_heredoc_line_lengths(text)
 
     lines = text.splitlines(keepends=True)
     out: list[str] = []
@@ -143,9 +287,8 @@ def fix_php(path: Path) -> bool:
             hm = re.search(r"<<<['\"]?([A-Za-z_][A-Za-z0-9_]*)['\"]?", line)
             if hm:
                 heredoc_marker = hm.group(1)
-        else:
-            if re.match(rf'^\s*{re.escape(heredoc_marker)}\b', line):
-                heredoc_marker = None
+        elif re.match(rf'^\s*{re.escape(heredoc_marker)}(?:;)?\s*$', line):
+            heredoc_marker = None
 
         cm = class_re.match(line) or interface_re.match(line)
         fm = function_re.match(line)
@@ -161,14 +304,14 @@ def fix_php(path: Path) -> bool:
         elif km and brace_depth > 0 and not has_docblock_before(lines, i):
             out.extend(constant_docblock(km.group(1), km.group(2)))
 
-        # Suppress only intentionally long non-declaration PHP lines. Embedded heredocs
-        # are handled at the call site so comments never become part of JS/HTML strings.
+        # Suppress intentionally long non-declaration PHP lines. Embedded heredocs are
+        # protected by a phpcs:disable directive in PHP context above.
         is_declaration = bool(cm or fm or pm or km)
         if heredoc_marker is None and not is_declaration and len(line.rstrip('\r\n')) > 132:
             prev = out[-1].strip() if out else ''
             if 'phpcs:ignore moodle.Files.LineLength' not in prev:
                 indent = re.match(r'^\s*', line).group(0)
-                out.append(f'{indent}// phpcs:ignore moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded\n')
+                out.append(f'{indent}// phpcs:ignore {LINE_LENGTH_SNIFFS}\n')
 
         # Markdown code-fence parsing legitimately needs backticks outside heredocs.
         if heredoc_marker is None and '`' in line and not stripped.startswith('//'):
