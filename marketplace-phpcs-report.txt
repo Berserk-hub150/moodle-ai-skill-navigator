@@ -1,147 +1,8 @@
  RUN  Moodle CodeSniffer standard on local_aiskillnavigator
-......W.....E.....WE.E....E.................................  60 / 141 (43%)
-..................................................E.E...W..E 120 / 141 (85%)
-...W.EWWE....E.......                                        141 / 141 (100%)
+............................................................  60 / 141 (43%)
+............................................................ 120 / 141 (85%)
+.......W.....W.......                                        141 / 141 (100%)
 
-
-
-FILE: /home/runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/pages/tutor.php
--------------------------------------------------------------------------------------------------------------------------
-FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
--------------------------------------------------------------------------------------------------------------------------
- 478 | WARNING | Line exceeds 132 characters; contains 151 characters (moodle.Files.LineLength.TooLong)
--------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: ...me/runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/pages/teacher_assessments.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AND 7 WARNINGS AFFECTING 8 LINES
-------------------------------------------------------------------------------------------------------------------------------------
- 584 | WARNING | Line exceeds 132 characters; contains 158 characters (moodle.Files.LineLength.TooLong)
- 586 | WARNING | Line exceeds 132 characters; contains 138 characters (moodle.Files.LineLength.TooLong)
- 588 | WARNING | Line exceeds 132 characters; contains 138 characters (moodle.Files.LineLength.TooLong)
- 590 | WARNING | Line exceeds 132 characters; contains 138 characters (moodle.Files.LineLength.TooLong)
- 592 | WARNING | Line exceeds 132 characters; contains 138 characters (moodle.Files.LineLength.TooLong)
- 594 | ERROR   | Line exceeds maximum limit of 180 characters; contains 259 characters (moodle.Files.LineLength.MaxExceeded)
- 596 | WARNING | Line exceeds 132 characters; contains 136 characters (moodle.Files.LineLength.TooLong)
- 598 | WARNING | Line exceeds 132 characters; contains 155 characters (moodle.Files.LineLength.TooLong)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: /home/runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/pages/course_builder.php
-----------------------------------------------------------------------------------------------------------------------------------
-FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
-----------------------------------------------------------------------------------------------------------------------------------
- 4405 | WARNING | Line exceeds 132 characters; contains 135 characters (moodle.Files.LineLength.TooLong)
-----------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: /home/runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/pages/mindmapgenerator.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 4 ERRORS AND 8 WARNINGS AFFECTING 12 LINES
-------------------------------------------------------------------------------------------------------------------------------------
- 1292 | WARNING | Line exceeds 132 characters; contains 178 characters (moodle.Files.LineLength.TooLong)
- 1302 | WARNING | Line exceeds 132 characters; contains 137 characters (moodle.Files.LineLength.TooLong)
- 1485 | ERROR   | Line exceeds maximum limit of 180 characters; contains 197 characters (moodle.Files.LineLength.MaxExceeded)
- 1530 | WARNING | Line exceeds 132 characters; contains 179 characters (moodle.Files.LineLength.TooLong)
- 1558 | WARNING | Line exceeds 132 characters; contains 144 characters (moodle.Files.LineLength.TooLong)
- 1577 | ERROR   | Line exceeds maximum limit of 180 characters; contains 256 characters (moodle.Files.LineLength.MaxExceeded)
- 1593 | ERROR   | Line exceeds maximum limit of 180 characters; contains 753 characters (moodle.Files.LineLength.MaxExceeded)
- 1595 | ERROR   | Line exceeds maximum limit of 180 characters; contains 317 characters (moodle.Files.LineLength.MaxExceeded)
- 1719 | WARNING | Line exceeds 132 characters; contains 141 characters (moodle.Files.LineLength.TooLong)
- 1727 | WARNING | Line exceeds 132 characters; contains 147 characters (moodle.Files.LineLength.TooLong)
- 1734 | WARNING | Line exceeds 132 characters; contains 139 characters (moodle.Files.LineLength.TooLong)
- 1742 | WARNING | Line exceeds 132 characters; contains 154 characters (moodle.Files.LineLength.TooLong)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: /home/runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/pages/quizgenerator.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AND 14 WARNINGS AFFECTING 15 LINES
-------------------------------------------------------------------------------------------------------------------------------------
-   65 | WARNING | Inline comments must start with a capital letter, digit or 3-dots sequence
-      |         | (moodle.Commenting.InlineComment.NotCapital)
- 1021 | WARNING | Line exceeds 132 characters; contains 154 characters (moodle.Files.LineLength.TooLong)
- 1054 | WARNING | Line exceeds 132 characters; contains 155 characters (moodle.Files.LineLength.TooLong)
- 1059 | WARNING | Line exceeds 132 characters; contains 144 characters (moodle.Files.LineLength.TooLong)
- 1117 | WARNING | Line exceeds 132 characters; contains 145 characters (moodle.Files.LineLength.TooLong)
- 1237 | WARNING | Line exceeds 132 characters; contains 168 characters (moodle.Files.LineLength.TooLong)
- 1239 | WARNING | Line exceeds 132 characters; contains 152 characters (moodle.Files.LineLength.TooLong)
- 1241 | WARNING | Line exceeds 132 characters; contains 137 characters (moodle.Files.LineLength.TooLong)
- 1272 | WARNING | Line exceeds 132 characters; contains 154 characters (moodle.Files.LineLength.TooLong)
- 1506 | WARNING | Line exceeds 132 characters; contains 161 characters (moodle.Files.LineLength.TooLong)
- 1509 | WARNING | Line exceeds 132 characters; contains 157 characters (moodle.Files.LineLength.TooLong)
- 1520 | ERROR   | Line exceeds maximum limit of 180 characters; contains 255 characters (moodle.Files.LineLength.MaxExceeded)
- 1571 | WARNING | Line exceeds 132 characters; contains 180 characters (moodle.Files.LineLength.TooLong)
- 1761 | WARNING | Line exceeds 132 characters; contains 150 characters (moodle.Files.LineLength.TooLong)
- 1764 | WARNING | Line exceeds 132 characters; contains 146 characters (moodle.Files.LineLength.TooLong)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: /home/runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/lib.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 32 | ERROR | Missing docblock for function local_aiskillnavigator_ai_policy_supported_modnames
-    |       | (moodle.Commenting.MissingDocblock.Function)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: .../runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/mistral_ocr_helper.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 33 | ERROR | Inline doc block comments are not allowed; use "// Comment." instead (moodle.Commenting.InlineComment.DocBlock)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: /home/runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/role_guard.php
----------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AFFECTING 1 LINE
----------------------------------------------------------------------------------------------------------------------------------
- 28 | ERROR | Inline doc block comments are not allowed; use "// Comment." instead (moodle.Commenting.InlineComment.DocBlock)
----------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: ...runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/ai_output_formatter.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 382 | WARNING | Line exceeds 132 characters; contains 152 characters (moodle.Files.LineLength.TooLong)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: ...me/runner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/production_guard.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 28 | ERROR | Inline doc block comments are not allowed; use "// Comment." instead (moodle.Commenting.InlineComment.DocBlock)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: ...ner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/material_source_helper.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 0 ERRORS AND 2 WARNINGS AFFECTING 2 LINES
-------------------------------------------------------------------------------------------------------------------------------------
- 512 | WARNING | Line exceeds 132 characters; contains 149 characters (moodle.Files.LineLength.TooLong)
- 625 | WARNING | Line exceeds 132 characters; contains 172 characters (moodle.Files.LineLength.TooLong)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: ...er/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/saved_simulation_helper.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 28 | ERROR | Inline doc block comments are not allowed; use "// Comment." instead (moodle.Commenting.InlineComment.DocBlock)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
-FILE: ...unner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/course_resource_sync.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 725 | WARNING | Line exceeds 132 characters; contains 137 characters (moodle.Files.LineLength.TooLong)
-------------------------------------------------------------------------------------------------------------------------------------
 
 
 FILE: ...nner/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/back_to_course_helper.php
@@ -152,23 +13,13 @@ FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
 ------------------------------------------------------------------------------------------------------------------------------------
 
 
-FILE: ...r/work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/adaptive_learning_helper.php
-------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AFFECTING 1 LINE
-------------------------------------------------------------------------------------------------------------------------------------
- 38 | ERROR | Missing docblock for function local_aiskillnavigator_adaptive_table_exists
-    |       | (moodle.Commenting.MissingDocblock.Function)
-------------------------------------------------------------------------------------------------------------------------------------
-
-
 FILE: ...work/moodle-ai-skill-navigator/moodle-ai-skill-navigator/moodle/local/aiskillnavigator/includes/simulator_materials_helper.php
 ------------------------------------------------------------------------------------------------------------------------------------
-FOUND 1 ERROR AND 1 WARNING AFFECTING 2 LINES
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
 ------------------------------------------------------------------------------------------------------------------------------------
  621 | WARNING | Line exceeds 132 characters; contains 151 characters (moodle.Files.LineLength.TooLong)
- 756 | ERROR   | Inline doc block comments are not allowed; use "// Comment." instead (moodle.Commenting.InlineComment.DocBlock)
 ------------------------------------------------------------------------------------------------------------------------------------
 
-Time: 1.59 secs; Memory: 40MB
+Time: 2.64 secs; Memory: 40MB
 
 PHPCS exit code: 1
