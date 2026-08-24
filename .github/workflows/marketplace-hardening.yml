@@ -23,6 +23,15 @@ jobs:
         with:
           ref: marketplace-readiness
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Install Moodle coding tools
+        run: composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
+
       - name: Repair replacement callback in hardening script
         shell: bash
         run: |
@@ -49,6 +58,13 @@ jobs:
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
           exit 0
 
+      - name: Auto-fix Moodle coding style
+        shell: bash
+        run: |
+          set +e
+          ci/bin/moodle-plugin-ci phpcbf plugins/aiskillnavigator
+          exit 0
+
       - name: Commit generated source fixes
         shell: bash
         run: |
@@ -59,7 +75,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add plugins/aiskillnavigator tools/marketplace_hardening.py tools/localise_page_chrome.py
-          git commit -m "fix: localise Marketplace page chrome"
+          git commit -m "fix: apply Moodle Marketplace coding standards"
           git push origin HEAD:marketplace-readiness
 
       - name: Require no direct request superglobals
