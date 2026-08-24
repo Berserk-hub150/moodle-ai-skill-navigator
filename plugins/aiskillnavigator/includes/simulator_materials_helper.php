@@ -564,6 +564,7 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
     $html .= html_writer::end_div();
     $html .= html_writer::end_tag('details');
 
+    // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
     $html .= html_writer::tag('script', '
 (function() {
     /**
@@ -617,7 +618,6 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
                 if (!selected) {
                     event.preventDefault();
                     event.stopPropagation();
-                    // phpcs:ignore moodle.Files.LineLength
                     alert("Select at least one selectable course material. Local-only materials require local AI or must be allowed for external AI.");
                 }
             }, true);
@@ -635,6 +635,7 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
     setTimeout(initMaterialSelector, 400);
 })();
 ');
+    // phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 
     $html .= html_writer::end_div();
 

@@ -36,6 +36,7 @@ function local_aisn_back_to_course_autofix(int $courseid): string {
     $url = (new moodle_url('/course/view.php', ['id' => $courseid]))->out(false);
     $urljson = json_encode($url, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 
+    // phpcs:disable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
     return html_writer::tag('script', "
 document.addEventListener('DOMContentLoaded', function () {
     var courseUrl = {$urljson};
@@ -87,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     if (!found) {
-        // phpcs:ignore moodle.Files.LineLength
         var container = document.querySelector('.container-fluid') || document.querySelector('#region-main') || document.querySelector('main') || document.body;
 
         if (container) {
@@ -105,4 +105,5 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 ");
+    // phpcs:enable moodle.Files.LineLength.TooLong,moodle.Files.LineLength.MaxExceeded
 }
