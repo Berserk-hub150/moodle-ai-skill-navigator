@@ -22,6 +22,20 @@ jobs:
         with:
           ref: marketplace-readiness
 
+      - name: Repair replacement callback in hardening script
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('tools/marketplace_hardening.py')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              'newtext, count = pattern.subn(replacement, text, count=1)',
+              'newtext, count = pattern.subn(lambda _match: replacement, text, count=1)',
+          )
+          path.write_text(text, encoding='utf-8')
+          PY
+
       - name: Run deterministic Marketplace hardening
         id: harden
         shell: bash
@@ -40,8 +54,8 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add plugins/aiskillnavigator
-          git commit -m "fix: harden plugin source for Moodle Marketplace"
+          git add plugins/aiskillnavigator tools/marketplace_hardening.py
+          git commit -m "fix: finish Moodle Marketplace hardening"
           git push origin HEAD:marketplace-readiness
 
       - name: Require no direct request superglobals
