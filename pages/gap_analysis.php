@@ -347,7 +347,7 @@ local_aiskillnavigator_print_inline_styles();
 
 echo html_writer::start_div('container-fluid');
 
-echo html_writer::tag('h2', 'AI learning-gap analysis');
+echo html_writer::tag('h1', 'AI learning-gap analysis');
 
 echo html_writer::tag(
     'p',
@@ -407,7 +407,7 @@ if ((int)$data['totalattempts'] === 0) {
     echo html_writer::start_div('card mb-4');
     echo html_writer::start_div('card-body');
 
-    echo html_writer::tag('h3', 'Assessment summary');
+    echo html_writer::tag('h2', 'Assessment summary');
 
     echo html_writer::start_tag('table', ['class' => 'table table-striped']);
     echo html_writer::tag(
@@ -436,7 +436,7 @@ if ((int)$data['totalattempts'] === 0) {
     echo html_writer::start_div('card mb-4');
     echo html_writer::start_div('card-body');
 
-    echo html_writer::tag('h3', 'weak abilities');
+    echo html_writer::tag('h2', 'weak abilities');
 
     if (empty($data['skills'])) {
         echo html_writer::div('No ability-level data available yet.', 'alert alert-info');
@@ -488,7 +488,7 @@ if ((int)$data['totalattempts'] === 0) {
 if ($airesult !== '') {
     echo html_writer::start_div('card mb-4');
     echo html_writer::start_div('card-body');
-    echo html_writer::tag('h3', 'AI recommendation');
+    echo html_writer::tag('h2', 'AI recommendation');
     echo html_writer::tag('pre', s($airesult), [
         'style' => 'white-space: pre-wrap; background:#0f172a; color:#e5e7eb; padding:22px; border-radius:18px; line-height:1.55;',
     ]);
