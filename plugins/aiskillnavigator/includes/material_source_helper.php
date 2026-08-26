@@ -903,6 +903,7 @@ function local_aiskillnavigator_material_source_selector_html(
         'type' => 'search',
         'class' => 'aisn-material-search',
         'placeholder' => 'Search course material...',
+        'aria-label' => 'Search course material',
         'data-aisn-material-search' => '1',
     ]);
 
