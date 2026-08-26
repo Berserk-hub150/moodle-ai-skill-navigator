@@ -4872,6 +4872,14 @@ echo html_writer::tag('style', '
     margin-bottom:18px;
 }
 .aisn-p2m-muted { color:#64748b; }
+#prompt:focus-visible,
+#materials:focus-visible,
+.aisn-p2m-card .btn:focus-visible,
+.aisn-p2m-result .btn:focus-visible {
+    outline: 3px solid #2563eb !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.45) !important;
+}
 ');
 
 echo html_writer::start_div('container-fluid');
