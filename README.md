@@ -56,14 +56,14 @@
 
 <p align="center">
   <img
-    src="https://img.shields.io/badge/%236-MOST--STARRED%20MOODLE%20PLUGIN-6C5CE7?style=for-the-badge"
-    alt="#6 most-starred Moodle plugin repository on GitHub"
+    src="https://img.shields.io/badge/%235-MOST--STARRED%20MOODLE%20PLUGIN-6C5CE7?style=for-the-badge"
+    alt="#5 most-starred Moodle plugin repository on GitHub"
     height="36"
   >
 </p>
 
 <p align="center">
-  <strong>🏆 #6 most-starred Moodle plugin repository on GitHub</strong>
+  <strong>🏆 #5 most-starred Moodle plugin repository on GitHub</strong>
 </p>
 
 <p align="center">
