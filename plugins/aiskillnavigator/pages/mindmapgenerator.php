@@ -1003,12 +1003,23 @@ if ($map !== null) {
 
     // phpcs:ignore moodle.Files.LineLength
     echo html_writer::tag('p', 'Drag the canvas, drag nodes, use mouse wheel to zoom, or use the controls below.', ['class' => 'text-muted']);
-
-    echo html_writer::start_div('aisn-mm-controls');
-    echo html_writer::tag('button', 'Zoom -', ['type' => 'button', 'id' => 'aisn-mm-zoom-out']);
-    echo html_writer::tag('button', 'Reset view', ['type' => 'button', 'id' => 'aisn-mm-reset']);
-    echo html_writer::tag('button', 'Zoom +', ['type' => 'button', 'id' => 'aisn-mm-zoom-in']);
-    echo html_writer::end_div();
+echo html_writer::start_div('aisn-mm-controls');
+echo html_writer::tag('button', 'Zoom -', [
+    'type' => 'button',
+    'id' => 'aisn-mm-zoom-out',
+    'aria-label' => 'Zoom out',
+]);
+echo html_writer::tag('button', 'Reset view', [
+    'type' => 'button',
+    'id' => 'aisn-mm-reset',
+    'aria-label' => 'Reset mind map view',
+]);
+echo html_writer::tag('button', 'Zoom +', [
+    'type' => 'button',
+    'id' => 'aisn-mm-zoom-in',
+    'aria-label' => 'Zoom in',
+]);
+echo html_writer::end_div();
 
     echo html_writer::end_div();
 
@@ -1090,10 +1101,12 @@ if ($map !== null) {
         $class = 'aisn-mm-node ' . s($node['type']);
 
         echo html_writer::tag('button', s($node['title']), [
-            'type' => 'button',
-            'class' => $class,
-            'data-id' => s($node['id']),
-        ]);
+    'type' => 'button',
+    'class' => $class,
+    'data-id' => s($node['id']),
+    'aria-label' => 'Select mind map node: ' . s($node['title']),
+]);
+    }
     }
 
     echo html_writer::end_div();
