@@ -1107,7 +1107,7 @@ echo html_writer::end_div();
     'aria-label' => 'Select mind map node: ' . s($node['title']),
 ]);
     }
-    }
+    
 
     echo html_writer::end_div();
 
