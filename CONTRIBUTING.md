@@ -21,12 +21,13 @@ find plugins tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
 for test in tests/*_test.php; do php "$test" || exit 1; done
 find plugins -type f -name '*.js' -print0 | xargs -0 -n1 node --check
 node tests/simulator_material_filter_test.js
+python3 tests/embedded_javascript_test.py
 python3 tools/build_packages.py
 ```
 
 On PowerShell, run each test with `Get-ChildItem tests/*_test.php | ForEach-Object { php $_.FullName; if ($LASTEXITCODE) { throw 'Test failed' } }`.
 
-The standalone tests use controlled doubles for Moodle services and a SQLite fixture for dashboard queries. They do not replace Moodle integration tests. Run the Moodle upgrade and the [manual checklist](docs/manual-test-checklist.md), especially student/teacher permissions, separate groups, provider errors and material approval.
+The standalone tests use controlled doubles for Moodle services and a SQLite fixture for dashboard queries. The embedded-script check renders PHP string literals before checking JavaScript syntax. Moodle Marketplace CI also runs the plugin's PHPUnit tests on Moodle 4.5 with PostgreSQL, including native quiz reports, capabilities and separate groups. Run the Moodle upgrade and the [manual checklist](docs/manual-test-checklist.md) for provider and browser behaviour.
 
 ## Issue triage
 

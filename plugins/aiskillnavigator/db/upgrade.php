@@ -120,7 +120,7 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
             $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
             $table->add_field('title', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
             $table->add_field('assessmenttype', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, 'pre');
-            $table->add_field('focus', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, '');
+            $table->add_field('focus', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
             $table->add_field('difficulty', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, 'medium');
             $table->add_field('quizjson', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
             $table->add_field('sourcemode', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, 'all');
@@ -224,7 +224,7 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
 
-            $field = new xmldb_field('contenthash', XMLDB_TYPE_CHAR, '40', null, XMLDB_NOTNULL, null, '', 'sourcecmid');
+            $field = new xmldb_field('contenthash', XMLDB_TYPE_CHAR, '40', null, XMLDB_NOTNULL, null, null, 'sourcecmid');
             if (!$dbman->field_exists($table, $field)) {
                 $dbman->add_field($table, $field);
             }
@@ -303,7 +303,7 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
             $table->add_field('materialid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
             $table->add_field('topic', XMLDB_TYPE_CHAR, '255', null, null, null, '');
             $table->add_field('level', XMLDB_TYPE_CHAR, '40', null, null, null, '');
-            $table->add_field('title', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, '');
+            $table->add_field('title', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
             $table->add_field('url', XMLDB_TYPE_TEXT, null, null, null, null, null);
             $table->add_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null);
             $table->add_field('source', XMLDB_TYPE_CHAR, '40', null, XMLDB_NOTNULL, null, 'ai_generated');
@@ -383,8 +383,8 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
         if (!$dbman->table_exists($concept)) {
             $concept->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
             $concept->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-            $concept->add_field('name', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, '');
-            $concept->add_field('normalizedname', XMLDB_TYPE_CHAR, '191', null, XMLDB_NOTNULL, null, '');
+            $concept->add_field('name', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+            $concept->add_field('normalizedname', XMLDB_TYPE_CHAR, '191', null, XMLDB_NOTNULL, null, null);
             $concept->add_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null);
             $concept->add_field('confidence', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0');
             $concept->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');

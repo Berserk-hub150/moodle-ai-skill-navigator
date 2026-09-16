@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/aiskillnavigator/db" VERSION="2026080600" COMMENT="XMLDB file for local_aiskillnavigator">
+<XMLDB PATH="local/aiskillnavigator/db" VERSION="2026091600" COMMENT="XMLDB file for local_aiskillnavigator">
   <TABLES>
     <TABLE NAME="local_aiskillnav_material" COMMENT="Teacher course materials">
       <FIELDS>
@@ -9,7 +9,7 @@
         <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true"/>
         <FIELD NAME="materialtype" TYPE="char" LENGTH="50" NOTNULL="true" DEFAULT="text"/>
         <FIELD NAME="sourcecmid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Course module id when this material was imported from a Moodle activity/resource"/>
-        <FIELD NAME="contenthash" TYPE="char" LENGTH="40" NOTNULL="true" DEFAULT="" SEQUENCE="false" COMMENT="SHA1 hash used to detect unchanged duplicated material content"/>
+        <FIELD NAME="contenthash" TYPE="char" LENGTH="40" NOTNULL="true" SEQUENCE="false" COMMENT="SHA1 hash used to detect unchanged duplicated material content"/>
         <FIELD NAME="content" TYPE="text" NOTNULL="true"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
@@ -34,7 +34,7 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="topic" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT=""/>
+        <FIELD NAME="topic" TYPE="char" LENGTH="255" NOTNULL="true"/>
         <FIELD NAME="difficulty" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="medium"/>
         <FIELD NAME="score" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
         <FIELD NAME="maxscore" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
@@ -58,11 +58,11 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="materialid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT=""/>
+        <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true"/>
         <FIELD NAME="chunkindex" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
         <FIELD NAME="chunktext" TYPE="text" NOTNULL="true"/>
         <FIELD NAME="embedding" TYPE="text"/>
-        <FIELD NAME="embeddingmodel" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT=""/>
+        <FIELD NAME="embeddingmodel" TYPE="char" LENGTH="255" NOTNULL="true"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
       </FIELDS>
       <KEYS>
@@ -82,7 +82,7 @@
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
         <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true"/>
         <FIELD NAME="assessmenttype" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="pre"/>
-        <FIELD NAME="focus" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT=""/>
+        <FIELD NAME="focus" TYPE="char" LENGTH="255" NOTNULL="true"/>
         <FIELD NAME="difficulty" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="medium"/>
         <FIELD NAME="quizjson" TYPE="text" NOTNULL="true"/>
         <FIELD NAME="sourcemode" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="all"/>
@@ -181,8 +181,8 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
-        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT=""/>
-        <FIELD NAME="normalizedname" TYPE="char" LENGTH="191" NOTNULL="true" DEFAULT=""/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true"/>
+        <FIELD NAME="normalizedname" TYPE="char" LENGTH="191" NOTNULL="true"/>
         <FIELD NAME="description" TYPE="text"/>
         <FIELD NAME="confidence" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>

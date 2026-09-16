@@ -23,6 +23,10 @@ foreach ($xml->TABLES->TABLE as $table) {
 
     foreach ($table->FIELDS->FIELD as $field) {
         $fields[(string)$field['NAME']] = true;
+        if ((string)$field['TYPE'] === 'char' && (string)$field['NOTNULL'] === 'true'
+                && isset($field['DEFAULT']) && (string)$field['DEFAULT'] === '') {
+            $errors[] = "{$tablename}.{$field['NAME']} has an invalid empty CHAR NOT NULL default.";
+        }
     }
 
     foreach ($table->KEYS->KEY as $key) {

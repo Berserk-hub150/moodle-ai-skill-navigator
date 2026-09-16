@@ -8,6 +8,9 @@
 - Include scored, finished native Moodle quiz attempts in the Teacher dashboard while respecting report permissions and separate groups.
 - Preserve material approval through sync, use source module IDs for renamed materials, and treat remote Ollama endpoints as external.
 - Fix legacy source metadata backfill and prevent Enter in the Simulator Finder material filter from submitting the generation form.
+- Fix apostrophe escaping in generated video suggestion scripts; check embedded JavaScript after PHP rendering.
+- Remove invalid empty CHAR defaults from the install schema so Moodle test installation runs without XMLDB warnings.
+- Add Moodle database integration tests for native quiz reporting, capabilities and separate groups; resolve Moodle coding-standard violations.
 - Replace promotional ranking/contribution content with installation, configuration and troubleshooting guidance; retire automatic micro-contribution merging and generated source-rewrite workflows.
 - Build and verify separate local/block Moodle ZIPs with reproducible contents.
 
