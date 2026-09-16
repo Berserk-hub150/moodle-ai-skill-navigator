@@ -35,7 +35,8 @@ class http_json_client {
     /**
      * Post helper.
      */
-    public function post(string $url, array $payload, array $headers = [], int $timeout = 60): array {
+    public function post(string $url, array $payload, array $headers = [], ?int $timeout = null): array {
+        $timeout = self::request_timeout($timeout);
         $validation = $this->validate_url($url);
 
         if ($validation !== '') {
@@ -89,8 +90,8 @@ class http_json_client {
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => $json,
             CURLOPT_HTTPHEADER => $headers,
-            CURLOPT_CONNECTTIMEOUT => 15,
-            CURLOPT_TIMEOUT => max(10, $timeout),
+            CURLOPT_CONNECTTIMEOUT => min(15, $timeout),
+            CURLOPT_TIMEOUT => $timeout,
             CURLOPT_USERAGENT => 'Moodle local_aiskillnavigator AI client',
             CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_MAXREDIRS => 0,
@@ -156,6 +157,23 @@ class http_json_client {
     }
 
     /**
+     * Resolve the administrator's generation timeout, in seconds.
+     *
+     * @param int|null $timeout Explicit timeout, or null to use the plugin setting.
+     * @return int Timeout bounded to 10–600 seconds; invalid settings use 60 seconds.
+     */
+    public static function request_timeout(?int $timeout = null): int {
+        if ($timeout === null) {
+            $configured = get_config('local_aiskillnavigator', 'requesttimeout');
+            $timeout = filter_var($configured, FILTER_VALIDATE_INT);
+        }
+        if ($timeout === false || $timeout <= 0) {
+            return 60;
+        }
+        return max(10, min(600, $timeout));
+    }
+
+    /**
      * Validate url helper.
      */
     private function validate_url(string $url): string {
@@ -172,12 +190,13 @@ class http_json_client {
         }
 
         $scheme = strtolower((string)$parts['scheme']);
-        $host = strtolower((string)$parts['host']);
+        $host = strtolower(trim((string)$parts['host'], '[]'));
 
-        $localhosts = ['localhost', '127.0.0.1', '::1', 'host.docker.internal'];
+        $localhosts = ['localhost', '127.0.0.1', '::1', 'host.docker.internal', 'ollama'];
+        $islocal = in_array($host, $localhosts, true) || (bool)preg_match('/(^|\.)local$/', $host);
 
         if ($scheme !== 'https') {
-            if ($scheme === 'http' && in_array($host, $localhosts, true)) {
+            if ($scheme === 'http' && $islocal) {
                 return '';
             }
 

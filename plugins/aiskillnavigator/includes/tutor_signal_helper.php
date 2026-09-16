@@ -230,7 +230,7 @@ function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): strin
     $html .= html_writer::tag(
         'p',
         // phpcs:ignore moodle.Files.LineLength
-        'Le domande fatte dagli studenti al tutor diventano segnali didattici: competenze richieste, dubbi ricorrenti e argomenti da rinforzare.',
+        get_string('tutor_analytics_intro', 'local_aiskillnavigator'),
         ['class' => 'text-muted']
     );
 

@@ -1,0 +1,35 @@
+name: Bug report
+description: Report a reproducible problem in AI Skill Navigator.
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: textarea
+    id: behaviour
+    attributes:
+      label: Actual and expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include the tool, role and material/provider mode involved.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      value: |
+        Moodle version:
+        PHP version:
+        Plugin version:
+        Provider and model (if relevant):
+        Browser and OS:
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs or screenshots
+      description: Remove API keys, credentials, private course text and student information.

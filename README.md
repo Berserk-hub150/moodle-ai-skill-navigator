@@ -1,222 +1,96 @@
 # AI Skill Navigator
 
-<p align="center">
-  <img
-    src="assets/readme/hero-banner.png"
-    alt="AI Skill Navigator - AI-powered Moodle learning tools"
-    width="100%"
-  >
-</p>
+[![Plugin CI](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml/badge.svg)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml)
+[![License: GPL v3 or later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 
-<p align="center">
-  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/stargazers">
-    <img src="https://img.shields.io/github/stars/Berserk-hub150/moodle-ai-skill-navigator?style=social" alt="GitHub stars">
-  </a>
-  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/forks">
-    <img src="https://img.shields.io/github/forks/Berserk-hub150/moodle-ai-skill-navigator?style=social" alt="GitHub forks">
-  </a>
-  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22">
-    <img src="https://img.shields.io/github/issues-search/Berserk-hub150/moodle-ai-skill-navigator?query=is%3Aopen%20label%3A%22good%20first%20issue%22&label=good%20first%20issues" alt="Good first issues">
-  </a>
-  <a href="https://www.codetriage.com/Berserk-hub150/moodle-ai-skill-navigator">
-    <img src="https://www.codetriage.com/berserk-hub150/moodle-ai-skill-navigator/badges/users.svg" alt="CodeTriage">
-  </a>
-</p>
+Course-aware tutoring, assessment and teaching tools for Moodle. Teachers choose the course materials available to the AI; students can use them for questions, practice quizzes and revision.
 
-<!-- MICRO-CONTRIBUTIONS-START -->
+## Components
 
-<h2 align="center">🏆 GitHub Rankings</h2>
+| Component | Repository directory | Moodle installation path |
+| --- | --- | --- |
+| Main plugin | `plugins/aiskillnavigator` | `local/aiskillnavigator` |
+| Optional course block | `plugins/block_aiskillnavigator` | `blocks/aiskillnavigator` |
 
-<p align="center">
-  <img
-    src="https://img.shields.io/badge/%231-AI--POWERED%20MOODLE%20PLUGIN-00B894?style=for-the-badge"
-    alt="#1 AI-powered Moodle plugin on GitHub"
-    height="42"
-  >
-</p>
+The block provides links to tools according to the user's course permissions. Each component is installed separately.
 
-<h3 align="center">
-  🤖 #1 most-starred AI-powered Moodle plugin repository on GitHub
-</h3>
+## Features
 
-<p align="center">
-  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/stargazers">
-    <img src="https://img.shields.io/github/stars/Berserk-hub150/moodle-ai-skill-navigator?style=for-the-badge&label=Stars" alt="GitHub Stars">
-  </a>
-  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/forks">
-    <img src="https://img.shields.io/github/forks/Berserk-hub150/moodle-ai-skill-navigator?style=for-the-badge&label=Forks" alt="GitHub Forks">
-  </a>
-  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues">
-    <img src="https://img.shields.io/github/issues/Berserk-hub150/moodle-ai-skill-navigator?style=for-the-badge&label=Open%20Issues" alt="Open Issues">
-  </a>
-  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/Berserk-hub150/moodle-ai-skill-navigator?style=for-the-badge&label=Contributors" alt="Contributors">
-  </a>
-</p>
+| For students | For teachers |
+| --- | --- |
+| Tutor grounded in selected course materials | Material synchronisation and per-material AI permissions |
+| Practice quiz and mind-map generation | Initial and final assessment authoring |
+| Initial/final assessments and adaptive review | Quiz performance dashboard and tutor question analytics |
+| Course learning tools from one entry point | Learning-gap analysis, Course Builder and Simulator Finder |
 
-<p align="center">
-  <img
-    src="https://img.shields.io/badge/%232-MOST--STARRED%20MOODLE--PLUGIN%20TOPIC-6C5CE7?style=for-the-badge"
-    alt="#2 most-starred repository in GitHub's moodle-plugin topic"
-    height="36"
-  >
-</p>
-
-<p align="center">
-  <strong>🏆 #2 most-starred repository in GitHub's <code>moodle-plugin</code> topic</strong>
-</p>
-
-<p align="center">
-  <sub>Ranking based on GitHub stars — September 2026</sub>
-</p>
-
-> **AI-powered Moodle learning tools:** course-aware tutoring, quizzes, mind maps, assessment, adaptive review, RAG, analytics and course-building helpers.
-
----
-
-## 🚀 Make your first open-source PR in 2–5 minutes
-
-New to open source? Start with a **browser-only micro-contribution**.
-
-- ✅ No Moodle installation.
-- ✅ No local development setup.
-- ✅ No coding required for many tasks.
-- ✅ One tiny JSON file per issue.
-- ✅ Small first-time-contributor PRs are prioritized.
-
-### 👉 [Browse 2-5 minute issues](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3Amicro-contribution)
-
-**Pick an issue → Fork → Create one tiny file → Pull Request → Contributor**
-
-⭐ If the project is useful to you, a star helps other Moodle developers discover it. Stars are appreciated, never required.
-
-<!-- MICRO-CONTRIBUTIONS-END -->
-
----
-
-<p align="center">
-  <a href="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml">
-    <img
-      src="https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml/badge.svg"
-      alt="Plugin CI"
-    >
-  </a>
-</p>
-
-AI Skill Navigator is a Moodle plugin suite that adds course-aware AI learning tools for students and teachers.
-
-The package contains:
-
-- `local_aiskillnavigator`: the main local plugin with AI tutor, quiz generation, mind maps, assessments, material/RAG tools, learning-gap analysis, simulator suggestions and course-building helpers.
-- `block_aiskillnavigator`: an optional course block that links users to the tools available for their role.
-
-## Production defaults
-
-The plugin is designed to install safely with conservative defaults:
-
-- The default AI provider is `prototype`, which performs no external AI calls.
-- External AI use for course materials is disabled until an administrator enables it.
-- Per-material approval is required before teacher materials can be sent to external providers.
-- Destructive AI Course Builder actions are disabled by default.
-- Automatic course-resource synchronisation on Moodle events is disabled by default.
-- Automatic block insertion into courses is disabled by default.
-- External MathJax CDN loading is disabled by default.
-
-Administrators can enable optional external services from the plugin settings.
-
-## Main features
-
-- Course-aware AI Tutor.
-- AI Quiz Generator.
-- AI Mind Map Generator.
-- Initial and final assessments.
-- Adaptive review for weak skills.
-- Teacher dashboard and tutor analytics.
-- Course Materials / RAG management.
-- Learning-gap analysis.
-- AI Course Builder with production safety gates.
-- Simulator Finder and saved simulation activities.
-
-## Installation
-
-Install the local plugin in:
-
-```text
-local/aiskillnavigator
-```
-
-Install the optional block in:
-
-```text
-blocks/aiskillnavigator
-```
-
-Then visit:
-
-```text
-Site administration > Notifications
-```
-
-## Configuration
-
-Open:
-
-```text
-Site administration > Plugins > Local plugins > AI Skill Navigator
-```
-
-Important production settings:
-
-- `Provider`: keep `prototype` for first installation checks.
-- `Approve external AI for teacher materials`: disabled by default.
-- `Allow destructive AI Course Builder actions`: disabled by default.
-- `Automatically sync course resources on Moodle events`: disabled by default.
-- `Automatically add the AI Skill Navigator block to courses`: disabled by default.
-- `Enable external MathJax CDN`: disabled by default.
-
-## Privacy
-
-The plugin stores course materials, quiz attempts, assessment attempts, saved simulations and tutor interaction signals. It implements Moodle's Privacy API for metadata, export and deletion of user data. External AI providers are optional and disabled for course materials unless explicitly approved.
+The Teacher dashboard reads both plugin quiz attempts and scored, finished Moodle quiz attempts, subject to quiz reporting permissions and separate-group restrictions. Tutor Analytics summarises successful tutor interactions; its skill and difficulty labels are keyword-based indicators, not grades.
 
 ## Requirements
 
-- Moodle 4.4 or later.
-- PHP version supported by the target Moodle version.
-- Optional cURL support for external AI/search providers.
+- Minimum declared Moodle version: **4.4**. The Moodle integration workflow targets **4.5**.
+- PHP supported by the installed Moodle version. Repository regression checks cover **PHP 8.1–8.3**.
+- PHP cURL for HTTP AI providers; optional document extraction tools depend on the file formats used.
+- An AI provider configured by the site administrator for generated answers. The default `prototype` provider returns fixed demonstration responses and makes no AI network calls.
 
-## Frequently Asked Questions
+## Installation
 
-### What Moodle versions are supported?
+From a clone of this repository, copy the two plugin directories into an existing Moodle installation:
 
-Moodle 4.4 or later.
+```bash
+MOODLE_PATH=/path/to/moodle
+cp -R plugins/aiskillnavigator "$MOODLE_PATH/local/aiskillnavigator"
+cp -R plugins/block_aiskillnavigator "$MOODLE_PATH/blocks/aiskillnavigator"
+```
 
-### Is external AI mandatory?
+For Windows PowerShell:
 
-No. The default AI provider is `prototype`, which performs no external AI calls. External AI is disabled by default and requires an administrator to explicitly enable it.
+```powershell
+$MoodlePath = 'C:\path\to\moodle'
+Copy-Item plugins/aiskillnavigator "$MoodlePath/local/aiskillnavigator" -Recurse
+Copy-Item plugins/block_aiskillnavigator "$MoodlePath/blocks/aiskillnavigator" -Recurse
+```
 
-### Where can course data be sent?
+Visit **Site administration → Notifications** to install or upgrade. For an existing installation, back up the database and replace the installed component's files with the new version before running the upgrade.
 
-Course data is never sent to external AI providers unless an administrator explicitly approves it. Per-material approval is required before any teacher materials can be forwarded to external providers.
+The repository ZIP is not an installable Moodle plugin. See [packaging instructions](MARKETPLACE.md) for separate component ZIPs.
 
-### Where should I start as a first-time contributor?
+## First run
 
-Start with our [good first issues](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) or read [BEGINNER_CONTRIBUTING.md](BEGINNER_CONTRIBUTING.md) for a step-by-step walkthrough.
+1. Open **Site administration → Plugins → Local plugins → AI Skill Navigator** and keep `prototype` selected for the initial interface check.
+2. Add the **AI Skill Navigator** block to a test course, or open `/local/aiskillnavigator/pages/index.php?courseid=COURSE_ID`.
+3. As a teacher, open **Manage teacher materials** and synchronise the course resources. Confirm that each intended resource has readable text.
+4. Configure the provider, endpoint, model and credentials in the plugin settings. Local Ollama and supported external HTTP providers are available.
+5. Test a tutor question and a practice quiz with a student account. Return to the Teacher dashboard and Tutor Analytics to inspect the results.
 
-## Development validation
+For external providers, course materials require both **Approve external AI for teacher materials** in site settings and **Allow external AI** on each material. An Ollama service at a remote URL is treated as external.
 
-The repository includes automated checks for PHP 8.1–8.3, XMLDB parsing, JavaScript syntax, UTF-8 BOM regressions, RAG API compatibility, and safe embedding defaults.
+**AI request timeout (seconds)** controls generation requests across providers. The default is 60 seconds; the supported range is 10–600. A proxy or web server may impose a shorter limit.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the local commands and `docs/manual-test-checklist.md` for Moodle runtime scenarios.
+## Data and defaults
 
-## Packaging
+The plugin stores course materials, plugin quiz/assessment attempts, saved simulations and tutor interaction signals. It implements Moodle Privacy API metadata, export and deletion. Native Moodle quiz attempts remain in Moodle's own tables.
 
-For a Moodle installation package:
+Material approval controls the use of stored course materials. Text typed or pasted directly into an AI tool is sent to the configured provider when that tool is used. Optional web search, OCR and external MathJax have separate settings.
 
-- Place `plugins/aiskillnavigator` at `local/aiskillnavigator`.
-- Place `plugins/block_aiskillnavigator` at `blocks/aiskillnavigator`.
+Destructive Course Builder actions, automatic course-resource synchronisation on events, automatic block insertion and the external MathJax CDN are disabled by default. Review generated assessments and course changes before using them with students.
 
-Do not package the repository root as a single Moodle plugin directory.
+## Troubleshooting and limits
+
+- **No materials:** synchronise from Manage teacher materials, check resource visibility and verify text extraction. Scanned documents may need OCR.
+- **Material cannot be selected:** check the site-level external AI approval and the individual material permission. The Simulator Finder displays the active provider's policy.
+- **API timeout:** increase the request timeout, check the endpoint/model and inspect server or proxy limits. Provider failures are reported separately from invalid assessment JSON.
+- **Empty Tutor Analytics:** ask a question as a student and refresh the report after a successful response. Existing conversations are not retroactively imported.
+- **Missing Moodle quiz result:** previews, unfinished or unscored attempts are excluded. The viewer needs quiz report permission and appropriate group access.
+- **AI output:** model responses, extracted text and suggested simulations need human review. Changing the provider can change output quality and format.
+
+Installation and regression checks do not establish compatibility with every Moodle release, theme, provider or production environment. Run the [manual test checklist](docs/manual-test-checklist.md) on your deployment target.
+
+## Development
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, validation and issue triage, [architecture](docs/architecture-overview.md) for the code structure, and [release notes](docs/RELEASE_NOTES.md) for changes.
+
+Bug reports should include reproduction steps, Moodle/PHP versions and relevant provider configuration, with secrets and student data removed.
 
 ## License
 
-GPL v3 or later.
+[GNU GPL v3 or later](LICENSE).

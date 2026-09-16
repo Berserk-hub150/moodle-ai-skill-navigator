@@ -29,6 +29,7 @@ require_once(__DIR__ . '/../includes/ui_style_helper.php');
 require_once(__DIR__ . '/../includes/course_resource_sync.php');
 require_once(__DIR__ . '/../includes/material_source_helper.php');
 require_once(__DIR__ . '/../includes/knowledge_graph_helper.php');
+require_once(__DIR__ . '/../includes/ai_response_guard.php');
 
 use local_aiskillnavigator\service\ai_provider_factory;
 use local_aiskillnavigator\service\embedding_service;
@@ -783,7 +784,9 @@ if ($action === 'generate') {
 
     if ($error === '') {
         if ($quiz === null) {
-            $error = 'The AI response could not be parsed as valid assessment JSON.';
+            $error = local_aiskillnavigator_ai_response_is_error($rawresponse)
+                ? ($rawresponse !== '' ? $rawresponse : get_string('ai_empty_response', 'local_aiskillnavigator'))
+                : 'The AI response could not be parsed as valid assessment JSON.';
         } else {
             $record = new stdClass();
             $record->courseid = $courseid;

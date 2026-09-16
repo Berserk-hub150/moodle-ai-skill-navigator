@@ -117,6 +117,15 @@ function local_aiskillnavigator_set_material_ai_policy(int $materialid, int $cou
 
     $DB->update_record('local_aiskillnav_material', $material);
 
+    // Sync identifies resources by sourcecmid; titles may have been renamed.
+    $cmid = (int)($material->sourcecmid ?? 0);
+    if ($cmid <= 0 && preg_match('/^\[Course #[0-9]+ \/ cm #([0-9]+)\]/', (string)$material->title, $matches)) {
+        $cmid = (int)$matches[1];
+    }
+    if ($cmid > 0 && ($material->materialtype ?? '') === 'course_resource') {
+        set_config('cm_external_ai_' . $cmid, $externalallowed ? '1' : '0', 'local_aiskillnavigator');
+    }
+
     return true;
 }
 

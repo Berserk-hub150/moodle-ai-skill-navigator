@@ -1,38 +1,15 @@
-## What changed?
+## Problem
 
-Describe the change in a few sentences.
+What user-visible problem does this resolve? Include reproduction steps or link the issue.
 
-## Related issue
+## Change
 
-Closes #
+Explain the resulting behaviour and any upgrade or compatibility impact.
 
 ## Validation
 
-- [ ] I tested the changed behavior or documentation.
-- [ ] PHP files pass php -l when applicable.
-- [ ] JavaScript files pass node --check when applicable.
-- [ ] No credentials, API keys, student data, or private course material are included.
-- [ ] The Pull Request is focused on one issue.
+List the tests run and their results. State any runtime scenarios that remain untested.
 
-## First contribution?
+## Related issue
 
-Welcome. Small good first issue Pull Requests are prioritized for review.
-
-<!-- MICRO-PR-START -->
-
-### Micro-contribution checklist
-
-If this PR closes a `micro-contribution` issue:
-
-- [ ] I changed only the requested tiny file.
-- [ ] I replaced all placeholders.
-- [ ] The content is original and contains no private data or secrets.
-- [ ] I linked the issue with `Closes #...`.
-
-<!-- MICRO-PR-END -->
-
-
-## Support the project
-
-If you enjoyed contributing or find AI Skill Navigator useful, consider starring the repository.
-A star is appreciated, but it is never required for review or merge.
+Use `Closes #...` only when this change fully resolves the issue.

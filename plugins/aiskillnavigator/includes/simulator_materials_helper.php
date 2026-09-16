@@ -171,7 +171,7 @@ function local_aisn_sim_material_selectable(stdClass $material): bool {
         return local_aiskillnavigator_material_can_be_sent_to_current_ai($material);
     }
 
-    return true;
+    return false;
 }
 
 /**
@@ -460,6 +460,8 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
 }
 ');
 
+    $html .= html_writer::div(s(local_aiskillnavigator_provider_privacy_notice()), 'alert alert-info');
+
     $html .= html_writer::tag('div', '1. Course material', [
         'class' => 'aisn-material-selector-title',
     ]);
@@ -472,7 +474,7 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
 
     if (empty($materials)) {
         $html .= html_writer::div(
-            'No selectable course materials found. Add material in Moodle Edit mode or with AI Course Builder.',
+            'No readable course materials found. Add a Moodle resource, then synchronise it from Manage teacher materials.',
             'aisn-empty'
         );
 
@@ -498,6 +500,7 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
         'type' => 'search',
         'class' => 'aisn-material-search',
         'placeholder' => 'Search course material...',
+        'aria-label' => 'Filter course materials by title or text',
         'data-aisn-material-search' => '1',
     ]);
 
@@ -520,7 +523,7 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
         $html .= html_writer::start_tag('label', [
             'class' => $rowclass,
             'data-aisn-material-row' => '1',
-            'data-search' => s(core_text::strtolower($title . ' ' . $content)),
+            'data-search' => core_text::strtolower($title . ' ' . $content),
         ]);
 
         $inputattrs = [
@@ -551,7 +554,7 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
 
         if (!$selectable) {
             $html .= html_writer::span(
-                'Not selectable with the current AI provider. Enable local AI or allow this material for external AI.',
+                'Unavailable for this provider. Check the site approval notice above and this material\'s external AI permission.',
                 'aisn-material-disabled-note'
             );
         }
@@ -591,6 +594,13 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
 
         if (search && search.dataset.ready !== "1") {
             search.dataset.ready = "1";
+
+            search.addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            });
 
             search.addEventListener("input", function() {
                 const q = String(search.value || "").toLowerCase().trim();

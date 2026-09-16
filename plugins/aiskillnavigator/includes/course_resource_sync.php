@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/material_exclusion_helper.php');
+require_once(__DIR__ . '/material_ai_policy.php');
 require_once(__DIR__ . '/pdf_text_extractor.php');
 require_once(__DIR__ . '/ocr_helper.php');
 require_once(__DIR__ . '/mistral_ocr_helper.php');
@@ -309,8 +310,15 @@ if (!function_exists('local_aisn_crs_policy_for_cmid')) {
     /**
      * Local aisn crs policy for cmid helper.
      */
-    function local_aisn_crs_policy_for_cmid(int $cmid): array {
-        $allowed = local_aiskillnavigator_course_module_external_ai_allowed($cmid);
+    function local_aisn_crs_policy_for_cmid(int $cmid, ?stdClass $existing = null): array {
+        $stored = $cmid > 0 ? get_config('local_aiskillnavigator', 'cm_external_ai_' . $cmid) : false;
+        // Preserve explicit approval on legacy material rows until a module policy is saved.
+        // A stored module denial always takes precedence over an older row's approval.
+        if ($stored === false || $stored === null || $stored === '') {
+            $allowed = $existing !== null && local_aiskillnavigator_material_external_allowed($existing) ? 1 : 0;
+        } else {
+            $allowed = (string)$stored === '1' ? 1 : 0;
+        }
         return [$allowed, $allowed ? 'external_allowed' : 'local_only'];
     }
 }
@@ -530,7 +538,7 @@ if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
             $hash = local_aisn_crs_content_hash($content);
             $sourcetitle = local_aisn_crs_title_for_document($courseid, $cmid, (string)($doc['title'] ?? 'Course material'));
             $existing = local_aisn_crs_find_existing_material($courseid, $cmid, $sourcetitle, $hash);
-            [$cmexternalallowed, $aipolicy] = local_aisn_crs_policy_for_cmid($cmid);
+            [$cmexternalallowed, $aipolicy] = local_aisn_crs_policy_for_cmid($cmid, $existing ?: null);
 
             if ($existing) {
                 $needsupdate = false;
@@ -560,6 +568,11 @@ if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
                     $needsupdate = true;
                 }
 
+                $needsupdate = $needsupdate
+                    || (local_aisn_crs_field_exists('local_aiskillnav_material', 'sourcecmid')
+                        && (int)($existing->sourcecmid ?? 0) !== $cmid)
+                    || (local_aisn_crs_field_exists('local_aiskillnav_material', 'contenthash')
+                        && (string)($existing->contenthash ?? '') !== $hash);
                 $existing = local_aisn_crs_set_optional_material_fields($existing, $cmid, $hash);
 
                 if ($needsupdate || $force) {
@@ -568,20 +581,7 @@ if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
                     $updated++;
                     $changedids[] = (int)$existing->id;
                 } else {
-                    // Backfill sourcecmid/contenthash on old rows without reindexing if no content changed.
-                    if (
-                        // phpcs:ignore moodle.Files.LineLength
-                        (local_aisn_crs_field_exists('local_aiskillnav_material', 'sourcecmid') && (int)($existing->sourcecmid ?? 0) !== $cmid) ||
-                        // phpcs:ignore moodle.Files.LineLength
-                        (local_aisn_crs_field_exists('local_aiskillnav_material', 'contenthash') && (string)($existing->contenthash ?? '') !== $hash)
-                    ) {
-                        $existing = local_aisn_crs_set_optional_material_fields($existing, $cmid, $hash);
-                        $existing->timemodified = time();
-                        $DB->update_record('local_aiskillnav_material', $existing);
-                        $updated++;
-                    } else {
-                        $skipped++;
-                    }
+                    $skipped++;
                 }
 
                 continue;

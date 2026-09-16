@@ -27,4 +27,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git subtree split --prefix=plugins/aiskillnavigator -b marketplace-dist-build
-          git push origin marketplace-dist-build:marketplace-dist --force
+          git push origin marketplace-dist-build:marketplace-dist

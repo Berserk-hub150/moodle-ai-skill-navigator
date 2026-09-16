@@ -1,6 +1,6 @@
 # Manual test checklist
 
-Use this checklist before a thesis demo or a marketplace release test.
+Use a disposable Moodle site and test accounts before a release. Record the Moodle/PHP versions and provider used.
 
 ## General checks
 
@@ -45,3 +45,13 @@ Use this checklist before a thesis demo or a marketplace release test.
 - Verify that each Moodle material has an explicit AI access policy.
 - Verify that Privacy API classes are present.
 - Verify that no .bak, backup, zip, tar.gz, env, log or development scripts are included in plugin folders.
+## Reliability regressions (1.0.5)
+
+- Ask the tutor in English, Italian and another language in both manual and selected-material modes. Repeat with source materials in a different language; the response should follow the question or explicit language request.
+- Disable browser JavaScript, submit a tutor question, and verify one signal appears in Tutor Analytics. A failed provider response must not create a signal.
+- Configure a generation timeout of 180 seconds; verify with a deliberately delayed test endpoint and check web-server/proxy limits separately.
+- Finish a normal Moodle quiz and confirm it appears alongside plugin attempts. Exclude previews, unscored attempts and attempts in another course. Test a non-editing teacher in separate groups and a user without quiz reporting permission.
+- Rename a material with a source module ID, allow external AI, resynchronise, and verify the policy remains. Revoke it and verify that a later sync cannot restore the old approval.
+- Configure Ollama with a remote HTTPS endpoint and verify that unapproved materials cannot be sent.
+- Type part of a material title in Simulator Finder, press Enter, and verify that the list filters without submitting generation. Clear the filter and verify that all rows return.
+- Install each generated ZIP in its own Moodle plugin directory and run the upgrade from 1.0.4.

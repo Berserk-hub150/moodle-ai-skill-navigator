@@ -98,7 +98,7 @@ class custom_http_ai_provider implements ai_provider_interface {
         }
 
         $client = new provider\http_json_client();
-        $response = $client->post($this->endpoint, $payload, $this->build_headers(), 75);
+        $response = $client->post($this->endpoint, $payload, $this->build_headers());
 
         if ($this->responsepath === '_raw') {
             $raw = trim((string)($response['raw'] ?? ''));

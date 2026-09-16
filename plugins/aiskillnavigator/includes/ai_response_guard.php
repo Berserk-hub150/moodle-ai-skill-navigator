@@ -22,13 +22,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
-$plugin = new stdClass();
-
-$plugin->component = 'local_aiskillnavigator';
-$plugin->version = 2026091600;
-$plugin->requires = 2024042200;
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.0.5';
+/**
+ * Recognise failure strings returned by the existing provider interface.
+ *
+ * @param string $response Provider output.
+ * @return bool Whether generation failed.
+ */
+function local_aiskillnavigator_ai_response_is_error(string $response): bool {
+    return trim($response) === '' || (bool)preg_match(
+        '/^(?:AI (?:error|generation failed|provider not available)|Errore(?:\s|:))/iu',
+        trim($response)
+    );
+}

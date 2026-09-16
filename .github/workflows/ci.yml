@@ -24,26 +24,17 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: curl, dom, json, libxml, mbstring, simplexml, zip
+          extensions: curl, dom, json, libxml, mbstring, pdo_sqlite, simplexml, sqlite3, zip
           coverage: none
 
       - name: Lint PHP files
         run: find plugins tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
 
-      - name: Validate XMLDB schema
-        run: php tests/xmldb_schema_test.php
-
-      - name: Run embedding configuration tests
-        run: php tests/embedding_config_test.php
-
-      - name: Run RAG API contract tests
-        run: php tests/embedding_contract_test.php
-
-      - name: Run RAG indexing regression tests
-        run: php tests/rag_indexing_test.php
-
-      - name: Reject UTF-8 BOM in PHP files
-        run: php tests/php_bom_test.php
+      - name: Run standalone regression tests
+        run: |
+          for test in tests/*_test.php; do
+            php "$test" || exit 1
+          done
 
   javascript-quality:
     name: JavaScript syntax
@@ -60,3 +51,6 @@ jobs:
 
       - name: Check JavaScript syntax
         run: find plugins -type f -name '*.js' -print0 | xargs -0 -n1 node --check
+
+      - name: Test Simulator Finder material filtering
+        run: node tests/simulator_material_filter_test.js

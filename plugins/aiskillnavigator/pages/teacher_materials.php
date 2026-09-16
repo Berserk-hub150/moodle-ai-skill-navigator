@@ -217,21 +217,7 @@ function local_aisn_tm_material_policy_external_allowed(stdClass $material): boo
 function local_aisn_tm_set_policy(stdClass $material, bool $externalallowed): void {
     global $DB;
 
-    $material->externalaiallowed = $externalallowed ? 1 : 0;
-    $material->aipolicy = $externalallowed ? 'external_allowed' : 'local_only';
-    $material->timemodified = time();
-
-    $DB->update_record('local_aiskillnav_material', $material);
-
-    $cmid = local_aisn_tm_cm_id_from_title((string)$material->title);
-
-    if ($cmid > 0) {
-        set_config(
-            'cm_external_ai_' . $cmid,
-            $externalallowed ? '1' : '0',
-            'local_aiskillnavigator'
-        );
-    }
+    local_aiskillnavigator_set_material_ai_policy((int)$material->id, (int)$material->courseid, $externalallowed);
 
     if (function_exists('local_aisn_kg_rebuild_material') && function_exists('local_aisn_kg_delete_material')) {
         if ($externalallowed) {

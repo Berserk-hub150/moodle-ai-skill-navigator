@@ -1,5 +1,16 @@
 # Release notes
 
+## 1.0.5
+
+- Make generation timeouts configurable for every HTTP AI provider and distinguish provider failures from malformed assessment JSON.
+- Respect the learner's response language across tutor modes; remove conflicting Italian-only instructions.
+- Record successful tutor interactions on the server and explain how Tutor Analytics is populated.
+- Include scored, finished native Moodle quiz attempts in the Teacher dashboard while respecting report permissions and separate groups.
+- Preserve material approval through sync, use source module IDs for renamed materials, and treat remote Ollama endpoints as external.
+- Fix legacy source metadata backfill and prevent Enter in the Simulator Finder material filter from submitting the generation form.
+- Replace promotional ranking/contribution content with installation, configuration and troubleshooting guidance; retire automatic micro-contribution merging and generated source-rewrite workflows.
+- Build and verify separate local/block Moodle ZIPs with reproducible contents.
+
 ## 1.0.4 - Final runtime hardening
 
 Main improvements:

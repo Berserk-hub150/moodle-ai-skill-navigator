@@ -64,7 +64,7 @@ if (!function_exists('local_aisn_prod_is_local_host')) {
      * Local aisn prod is local host helper.
      */
     function local_aisn_prod_is_local_host(string $host): bool {
-        $host = strtolower(trim($host));
+        $host = strtolower(trim($host, " \t\n\r\0\x0B[]"));
         if ($host === '') {
             return false;
         }
@@ -98,10 +98,12 @@ if (!function_exists('local_aisn_prod_current_ai_is_local')) {
         if ($provider === '' || $provider === 'prototype') {
             return true;
         }
-        if (in_array($provider, ['ollama', 'local', 'local_ollama'], true)) {
+        $endpoint = local_aisn_prod_endpoint();
+        // These providers have local defaults, but may be configured with a remote URL.
+        if ($endpoint === '' && in_array($provider, ['ollama', 'local', 'local_ollama', 'lmstudio'], true)) {
             return true;
         }
-        return local_aisn_prod_endpoint_is_local(local_aisn_prod_endpoint());
+        return local_aisn_prod_endpoint_is_local($endpoint);
     }
 }
 

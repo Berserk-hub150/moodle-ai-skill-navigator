@@ -72,7 +72,7 @@ class anthropic_ai_provider extends abstract_curl_ai_provider {
             'Content-Type: application/json',
             'x-api-key: ' . $this->apikey,
             'anthropic-version: 2023-06-01',
-        ], 90);
+        ]);
 
         if (empty($response['ok'])) {
             return $this->error($response);

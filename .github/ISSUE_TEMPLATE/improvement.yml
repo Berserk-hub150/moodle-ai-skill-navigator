@@ -1,0 +1,23 @@
+name: Improvement
+description: Propose a scoped improvement to an existing tool or workflow.
+title: "[Improvement] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: Which Moodle workflow is difficult or missing?
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Proposed behaviour and acceptance criteria
+      description: Describe a complete change that can be tested.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Existing work or alternatives
+      description: Link related issues or pull requests if available.

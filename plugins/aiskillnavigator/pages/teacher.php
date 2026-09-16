@@ -29,7 +29,7 @@ require_once(__DIR__ . '/../includes/tutor_signal_helper.php');
 require_once(__DIR__ . '/../includes/ui_style_helper.php');
 require_once(__DIR__ . '/../includes/course_resource_sync.php');
 
-global $PAGE, $OUTPUT, $DB;
+global $PAGE, $OUTPUT, $DB, $USER;
 
 $courseid = optional_param('courseid', SITEID, PARAM_INT);
 $course = get_course($courseid);
@@ -50,14 +50,7 @@ $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/teacher.php', ['cou
 $PAGE->set_title(get_string('page_teacher_title', 'local_aiskillnavigator'));
 $PAGE->set_heading(get_string('page_teacher_heading', 'local_aiskillnavigator'));
 
-$attempts = $DB->get_records_sql(
-    "SELECT a.*, u.firstname, u.lastname, u.email
-       FROM {local_aiskillnav_attempt} a
-       JOIN {user} u ON u.id = a.userid
-      WHERE a.courseid = :courseid
-   ORDER BY a.timecreated DESC",
-    ['courseid' => $courseid]
-);
+$attempts = (new \local_aiskillnavigator\service\quiz_attempt_repository())->for_course((int)$courseid);
 
 $materialcount = $DB->count_records('local_aiskillnav_material', ['courseid' => $courseid]);
 
@@ -242,7 +235,7 @@ echo html_writer::tag(
 
 echo html_writer::tag(
     'p',
-    'This dashboard shows saved course materials, aggregated quiz results, weak topics and students at risk.',
+    'This dashboard includes AI Skill Navigator quizzes and scored, finished Moodle quiz attempts you can report on. Moodle quiz names are used as topics; these indicators are not the Moodle gradebook.',
     ['class' => 'lead']
 );
 
@@ -388,6 +381,7 @@ if (empty($attempts)) {
     echo html_writer::tag('th', 'Date');
     echo html_writer::tag('th', 'Student');
     echo html_writer::tag('th', 'Topic');
+    echo html_writer::tag('th', 'Source');
     echo html_writer::tag('th', 'Difficulty');
     echo html_writer::tag('th', 'Score');
     echo html_writer::tag('th', 'Percentage');
@@ -410,7 +404,8 @@ if (empty($attempts)) {
         echo html_writer::tag('td', userdate($attempt->timecreated));
         echo html_writer::tag('td', s(fullname($studentuser)));
         echo html_writer::tag('td', s($attempt->topic));
-        echo html_writer::tag('td', s($attempt->difficulty));
+        echo html_writer::tag('td', s($attempt->source));
+        echo html_writer::tag('td', s($attempt->difficulty !== '' ? $attempt->difficulty : '—'));
         echo html_writer::tag('td', s($attempt->score . '/' . $attempt->maxscore));
         echo html_writer::tag('td', s($attempt->percentage . '%'));
         echo html_writer::end_tag('tr');
