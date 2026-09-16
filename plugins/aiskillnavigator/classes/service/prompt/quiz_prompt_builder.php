@@ -31,6 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * Quiz prompt builder implementation.
  */
 class quiz_prompt_builder extends base_prompt_helper {
+    /** @var int Maximum characters included from each material. */
     private const MATERIAL_LIMIT = 2600;
     /** @var quiz_rules Rules. */
     private quiz_rules $rules;

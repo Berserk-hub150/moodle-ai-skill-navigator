@@ -576,7 +576,9 @@ function local_aisn_cb_extract_named_section_title(string $prompt): ?string {
         // phpcs:ignore moodle.Files.LineLength
         '/\bsezione\s+(?:chiamata|chiamato|di nome|intitolata|intitolato)\s+["“”\'«»]?(.+?)(?:["“”\'«»]|\s+(?:mettendoci|mettici|metti|inserendo|contenente|che contiene|con|e\s+per quanto riguarda)\b|[\r\n.;:]|$)/iu',
         // phpcs:ignore moodle.Files.LineLength
-        '/\b(?:crea|creami|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\s+["“”\'«»]?(.+?)(?:["“”\'«»]|\s+(?:mettendoci|mettici|metti|inserendo|contenente|che contiene|con|e\s+per quanto riguarda)\b|[\r\n.;:]|$)/iu',
+        '/\b(?:crea|creami|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?'
+            . 'sezione\s+["“”\'«»]?(.+?)(?:["“”\'«»]|\s+'
+            . '(?:mettendoci|mettici|metti|inserendo|contenente|che contiene|con|e\s+per quanto riguarda)\b|[\r\n.;:]|$)/iu',
     ];
 
     foreach ($patterns as $pattern) {
@@ -945,7 +947,8 @@ function local_aisn_cb_attach_files_to_section(int $courseid, int $userid, stdCl
         $existingcmid = local_aisn_cb_existing_resource_cmid($courseid, $sectionnum, $resourcename);
 
         if ($existingcmid > 0) {
-            $logs[] = 'File "' . $filename . '" già presente nella sezione "' . (string)$section->name . '": duplicato non creato.';
+            $logs[] = 'File "' . $filename . '" già presente nella sezione "'
+                . (string)$section->name . '": duplicato non creato.';
             continue;
         }
 
@@ -1109,8 +1112,10 @@ function local_aisn_cb_extract_create_section_titles(string $prompt): array {
     }
 
     $patterns = [
-        '/(?:crea|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\s+["“”\'«»]([^"“”\'«»]+)["“”\'«»]/iu',
-        '/(?:crea|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\s+([^\.;\n\r]+)/iu',
+        '/(?:crea|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?'
+            . 'sezione\s+["“”\'«»]([^"“”\'«»]+)["“”\'«»]/iu',
+        '/(?:crea|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?'
+            . 'sezione\s+([^\.;\n\r]+)/iu',
     ];
 
     foreach ($patterns as $pattern) {
@@ -1167,9 +1172,13 @@ function local_aisn_cb_set_section_summary_html(stdClass $section, string $html)
 function local_aisn_cb_extract_text_section_request(string $prompt): ?array {
     $patterns = [
         // phpcs:ignore moodle.Files.LineLength
-        '/\b(?:crea|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\s+(?:chiamata|chiamato|di nome|intitolata|intitolato)?\s*["“”\'«»]?(.+?)["“”\'«»]?\s+(?:mettendoci|mettici|metti|inserendo|con|contenente|che contiene)\s+(?:questo\s+)?(?:testo|contenuto)\s*:?\s*([\s\S]+)/iu',
+        '/\b(?:crea|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?'
+            . 'sezione\s+(?:chiamata|chiamato|di nome|intitolata|intitolato)?\s*["“”\'«»]?(.+?)["“”\'«»]?\s+'
+            . '(?:mettendoci|mettici|metti|inserendo|con|contenente|che contiene)'
+            . '\s+(?:questo\s+)?(?:testo|contenuto)\s*:?\s*([\s\S]+)/iu',
         // phpcs:ignore moodle.Files.LineLength
-        '/\b(?:crea|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\s+["“”\'«»]?([^"“”\'«»\r\n:]+)["“”\'«»]?\s*:\s*([\s\S]+)/iu',
+        '/\b(?:crea|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?'
+            . 'sezione\s+["“”\'«»]?([^"“”\'«»\r\n:]+)["“”\'«»]?\s*:\s*([\s\S]+)/iu',
     ];
 
     foreach ($patterns as $pattern) {
@@ -1435,9 +1444,13 @@ function local_aisn_cb_safe_wants_one_section_per_file(string $prompt): bool {
 function local_aisn_cb_safe_extract_text_section(string $prompt): ?array {
     $patterns = [
         // phpcs:ignore moodle.Files.LineLength
-        '/\b(?:crea|creami|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\s+(?:chiamata|chiamato|di nome|intitolata|intitolato)?\s*["“”\'«»]?(.+?)["“”\'«»]?\s+(?:mettendoci|mettici|metti|inserendo|contenente|che contiene|con)\s+(?:questo\s+)?(?:testo|contenuto)?\s*:?\s*([\s\S]+)/iu',
+        '/\b(?:crea|creami|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?'
+            . 'sezione\s+(?:chiamata|chiamato|di nome|intitolata|intitolato)?\s*["“”\'«»]?(.+?)["“”\'«»]?\s+'
+            . '(?:mettendoci|mettici|metti|inserendo|contenente|che contiene|con)'
+            . '\s+(?:questo\s+)?(?:testo|contenuto)?\s*:?\s*([\s\S]+)/iu',
         // phpcs:ignore moodle.Files.LineLength
-        '/\b(?:crea|creami|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\s+["“”\'«»]?([^"“”\'«»\r\n:]+)["“”\'«»]?\s*:\s*([\s\S]+)/iu',
+        '/\b(?:crea|creami|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?'
+            . 'sezione\s+["“”\'«»]?([^"“”\'«»\r\n:]+)["“”\'«»]?\s*:\s*([\s\S]+)/iu',
     ];
 
     foreach ($patterns as $pattern) {
@@ -1767,7 +1780,8 @@ function local_aisn_cb_content_edit_extract(string $prompt): ?array {
 
     $replacepatterns = [
         // phpcs:ignore moodle.Files.LineLength
-        '/(?:nel|nella|dentro\s+il|all’interno\s+del|all\'interno\s+del)?\s*contenuto\s+della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?\s+sostituisci\s+(.+?)\s+con\s+(.+)$/iu',
+        '/(?:nel|nella|dentro\s+il|all’interno\s+del|all\'interno\s+del)?\s*contenuto\s+'
+            . 'della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?\s+sostituisci\s+(.+?)\s+con\s+(.+)$/iu',
         '/(?:nella\s+sezione|sezione)\s+["“”\'«»]?(.+?)["“”\'«»]?\s+sostituisci\s+(.+?)\s+con\s+(.+)$/iu',
     ];
 
@@ -1790,8 +1804,10 @@ function local_aisn_cb_content_edit_extract(string $prompt): ?array {
 
     $removepatterns = [
         // phpcs:ignore moodle.Files.LineLength
-        '/(?:nel|nella|dentro\s+il|all’interno\s+del|all\'interno\s+del)?\s*contenuto\s+della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?\s+(?:togli|rimuovi|elimina|cancella)\s+(.+)$/iu',
-        '/(?:togli|rimuovi|elimina|cancella)\s+(.+?)\s+(?:dal|dalla)\s+contenuto\s+della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?$/iu',
+        '/(?:nel|nella|dentro\s+il|all’interno\s+del|all\'interno\s+del)?\s*contenuto\s+'
+            . 'della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?\s+(?:togli|rimuovi|elimina|cancella)\s+(.+)$/iu',
+        '/(?:togli|rimuovi|elimina|cancella)\s+(.+?)\s+(?:dal|dalla)\s+contenuto\s+'
+            . 'della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?$/iu',
         '/(?:togli|rimuovi|elimina|cancella)\s+(.+?)\s+(?:dalla|nella)\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?$/iu',
     ];
 
@@ -2026,9 +2042,11 @@ function local_aisn_cb_brutal_content_extract(string $prompt): ?array {
 
     $replacepatterns = [
         // phpcs:ignore moodle.Files.LineLength
-        '/^(?:nel|nella|dentro\s+il)?\s*contenuto\s+della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?\s+sostituisci\s+(.+?)\s+con\s+(.+)$/iu',
+        '/^(?:nel|nella|dentro\s+il)?\s*contenuto\s+'
+            . 'della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?\s+sostituisci\s+(.+?)\s+con\s+(.+)$/iu',
         // phpcs:ignore moodle.Files.LineLength
-        '/^sostituisci\s+(.+?)\s+con\s+(.+?)\s+(?:nel|nella|dal|dalla)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)\s+["“”\'«»]?(.+?)["“”\'«»]?\s*$/iu',
+        '/^sostituisci\s+(.+?)\s+con\s+(.+?)\s+(?:nel|nella|dal|dalla)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)'
+            . '\s+["“”\'«»]?(.+?)["“”\'«»]?\s*$/iu',
     ];
 
     foreach ($replacepatterns as $i => $pattern) {
@@ -2055,9 +2073,12 @@ function local_aisn_cb_brutal_content_extract(string $prompt): ?array {
     }
 
     $removepatterns = [
-        '/^(?:nel|nella|dentro\s+il)?\s*contenuto\s+della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?\s+' . $removeverb . '\s+(.+)$/iu',
+        '/^(?:nel|nella|dentro\s+il)?\s*contenuto\s+'
+            . 'della\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?'
+            . '\s+' . $removeverb . '\s+(.+)$/iu',
         // phpcs:ignore moodle.Files.LineLength
-        '/^' . $removeverb . '\s+(.+?)\s+(?:dal|dalla|nel|nella)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)\s+["“”\'«»]?(.+?)["“”\'«»]?\s*$/iu',
+        '/^' . $removeverb . '\s+(.+?)\s+(?:dal|dalla|nel|nella)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)'
+            . '\s+["“”\'«»]?(.+?)["“”\'«»]?\s*$/iu',
         '/^' . $removeverb . '\s+(.+?)\s+(?:dalla|nella)\s+sezione\s+["“”\'«»]?(.+?)["“”\'«»]?\s*$/iu',
     ];
 
@@ -2371,7 +2392,8 @@ function local_aisn_cb_ui_editor_v2_section_from_prompt(int $courseid, string $p
     $patterns = [
         '/(?:contenuto\s+della\s+sezione|sezione)\s+["“”\'«»]([^"“”\'«»]+)["“”\'«»]/iu',
         '/(?:contenuto\s+della\s+sezione|sezione)\s+([A-Za-z0-9À-ÿ _\-.]+?)(?:\s+dal|\s+nel|\s+con|\s+e\s+|\s*$)/iu',
-        '/(?:dal|dalla|nel|nella)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)\s+["“”\'«»]?([A-Za-z0-9À-ÿ _\-.]+)["“”\'«»]?/iu',
+        '/(?:dal|dalla|nel|nella)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)'
+            . '\s+["“”\'«»]?([A-Za-z0-9À-ÿ _\-.]+)["“”\'«»]?/iu',
     ];
 
     foreach ($patterns as $pattern) {
@@ -2618,8 +2640,11 @@ function local_aisn_cb_ui_editor_v2_extract_remove_text(string $prompt): string 
 
     $patterns = [
         // phpcs:ignore moodle.Files.LineLength
-        '/^' . $removeverb . '\s+(.+?)\s+(?:dal|dalla|nel|nella)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)\s+["“”\'«»]?.+?["“”\'«»]?\s*$/iu',
-        '/^(?:nel|nella)?\s*contenuto\s+della\s+sezione\s+["“”\'«»]?.+?["“”\'«»]?\s+' . $removeverb . '\s+(.+)$/iu',
+        '/^' . $removeverb . '\s+(.+?)\s+(?:dal|dalla|nel|nella)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)'
+            . '\s+["“”\'«»]?.+?["“”\'«»]?\s*$/iu',
+        '/^(?:nel|nella)?\s*contenuto\s+'
+            . 'della\s+sezione\s+["“”\'«»]?.+?["“”\'«»]?'
+            . '\s+' . $removeverb . '\s+(.+)$/iu',
     ];
 
     foreach ($patterns as $pattern) {
@@ -2637,7 +2662,8 @@ function local_aisn_cb_ui_editor_v2_extract_remove_text(string $prompt): string 
 function local_aisn_cb_ui_editor_v2_extract_replace(string $prompt): ?array {
     $patterns = [
         // phpcs:ignore moodle.Files.LineLength
-        '/sostituisci\s+(.+?)\s+con\s+(.+?)\s+(?:nel|nella|dal|dalla)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)\s+["“”\'«»]?.+?["“”\'«»]?\s*$/iu',
+        '/sostituisci\s+(.+?)\s+con\s+(.+?)\s+(?:nel|nella|dal|dalla)\s+(?:contenuto\s+(?:della\s+)?sezione|sezione)'
+            . '\s+["“”\'«»]?.+?["“”\'«»]?\s*$/iu',
         '/(?:contenuto\s+della\s+sezione|sezione)\s+["“”\'«»]?.+?["“”\'«»]?\s+sostituisci\s+(.+?)\s+con\s+(.+)$/iu',
     ];
 
@@ -4395,7 +4421,15 @@ function local_aisn_cb_ai_delete_material(int $courseid, string $sectionref, str
  * Local aisn cb ai move material helper.
  */
 // phpcs:ignore moodle.Files.LineLength
-function local_aisn_cb_ai_move_material(int $courseid, string $fromsection, string $destinationsection, string $materialname): string {
+/**
+ * Move an existing course material to the requested section.
+ */
+function local_aisn_cb_ai_move_material(
+    int $courseid,
+    string $fromsection,
+    string $destinationsection,
+    string $materialname
+): string {
     global $DB;
 
     $cm = local_aisn_cb_ai_mat_find_cm($courseid, $fromsection, $materialname);

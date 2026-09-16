@@ -25,7 +25,7 @@
 // phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
-/**
+/*
  * Saved simulation helper.
  *
  * This helper keeps saved simulator exercises clean:

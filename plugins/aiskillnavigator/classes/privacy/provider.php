@@ -41,6 +41,7 @@ use core_privacy\local\request\writer;
  * Provider implementation.
  */
 class provider implements core_userlist_provider, metadata_provider, request_provider {
+    /** @var array Tables whose rows are owned by a Moodle user. */
     private const USER_TABLES = [
         'local_aiskillnav_material',
         'local_aiskillnav_attempt',

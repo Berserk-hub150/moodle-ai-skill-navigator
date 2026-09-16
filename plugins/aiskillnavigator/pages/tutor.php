@@ -185,7 +185,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $answer = '';
             } else {
                 local_aiskillnavigator_tutor_signal_store(
-                    (int)$courseid, (int)$USER->id, $question, $sourcemode, $usedmaterialnames, $answer
+                    (int)$courseid,
+                    (int)$USER->id,
+                    $question,
+                    $sourcemode,
+                    $usedmaterialnames,
+                    $answer
                 );
             }
         }

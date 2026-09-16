@@ -25,12 +25,12 @@
 // phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
-$aisnDocumentOcrHelper = __DIR__ . '/document_ocr_toggle_helper.php';
-if (file_exists($aisnDocumentOcrHelper)) {
-    require_once($aisnDocumentOcrHelper);
+$aisndocumentocrhelper = __DIR__ . '/document_ocr_toggle_helper.php';
+if (file_exists($aisndocumentocrhelper)) {
+    require_once($aisndocumentocrhelper);
 }
 
-/**
+/*
  * Optional Mistral OCR helper.
  *
  * Strategy:

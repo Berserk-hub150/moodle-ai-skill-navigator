@@ -31,6 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * Xr prompt builder implementation.
  */
 class xr_prompt_builder extends base_prompt_helper {
+    /** @var int Maximum characters included from each material. */
     private const MATERIAL_LIMIT = 3200;
     /** @var xr_intro Intro. */
     private xr_intro $intro;

@@ -88,7 +88,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!found) {
         // phpcs:ignore moodle.Files.LineLength
-        var container = document.querySelector('.container-fluid') || document.querySelector('#region-main') || document.querySelector('main') || document.body;
+        var container = document.querySelector('.container-fluid') ||
+            document.querySelector('#region-main') ||
+            document.querySelector('main') ||
+            document.body;
 
         if (container) {
             var wrap = document.createElement('div');

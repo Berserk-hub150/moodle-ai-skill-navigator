@@ -74,7 +74,10 @@ function local_aiskillnavigator_mm_bad_score(string $label): int {
     }
 
     $score = 0;
-    $badpatterns = ['Ãƒ', 'Ã‚', 'Ã¢â‚¬', 'â€™', 'â€œ', 'Ã¢â‚¬\u009d', 'â€“', 'â€”', 'ï¿½', 'Æ’Ã†', 'â€šÃ‚'];
+    $badpatterns = [
+        'Ãƒ', 'Ã‚', 'Ã¢â‚¬', 'â€™', 'â€œ', 'Ã¢â‚¬\u009d', 'â€“',
+        'â€”', 'ï¿½', 'Æ’Ã†', 'â€šÃ‚',
+    ];
     foreach ($badpatterns as $badpattern) {
         if (strpos($label, $badpattern) !== false) {
             $score += 100;
@@ -1289,7 +1292,8 @@ if ($map !== null) {
 
         if (!node.webexample || !node.webexample.url) {
             // phpcs:ignore moodle.Files.LineLength
-            box.innerHTML = '<div class="aisn-mm-web-example-empty">Nessun esempio online collegato a questo nodo. La mappa resta basata sui materiali/argomento inserito.</div>';
+            box.innerHTML = '<div class="aisn-mm-web-example-empty">Nessun esempio online collegato a questo nodo. ' +
+                'La mappa resta basata sui materiali/argomento inserito.</div>';
             return;
         }
 
@@ -1299,7 +1303,8 @@ if ($map !== null) {
             '<div class="aisn-mm-web-example-card">' +
             '<h4>Esempio online collegato</h4>' +
             // phpcs:ignore moodle.Files.LineLength
-            '<a href="' + escapeHtml(ex.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(ex.title || ex.url) + '</a>' +
+            '<a href="' + escapeHtml(ex.url) + '" target="_blank" rel="noopener noreferrer">' +
+            escapeHtml(ex.title || ex.url) + '</a>' +
             (ex.snippet ? '<p>' + escapeHtml(ex.snippet) + '</p>' : '') +
             '<p>' + escapeHtml(ex.activity || '') + '</p>' +
             '</div>';
@@ -1482,7 +1487,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // phpcs:ignore moodle.Files.LineLength
-    var courseUrl = '/course/view.php?id=' + encodeURIComponent(String(new URLSearchParams(window.location.search).get('courseid') || new URLSearchParams(window.location.search).get('id') || '2'));
+    var courseUrl = '/course/view.php?id=' +
+        encodeURIComponent(String(new URLSearchParams(window.location.search).get('courseid') ||
+            new URLSearchParams(window.location.search).get('id') ||
+            '2'));
 
     var btn = document.createElement('a');
     btn.id = 'aisn-force-mindmap-back-to-course';
@@ -1526,8 +1534,14 @@ if (!function_exists('local_aisn_mindmap_polish_prof')) {
 .aisn-mm-rendered{background:#f8fafc;border:1px solid #e2e8f0;border-radius:24px;padding:22px;margin-top:18px}
 .aisn-mm-title{font-size:1.6rem;font-weight:900;color:#0f172a;margin:0 0 8px}
 .aisn-mm-summary{color:#64748b;margin:0 0 18px;line-height:1.55}
-// phpcs:ignore moodle.Files.LineLength
-.aisn-mm-central{background:linear-gradient(135deg,#0f6cbf,#2563eb);color:#fff;border-radius:18px;padding:18px 20px;margin-bottom:18px;box-shadow:0 14px 28px rgba(15,108,191,.18)}
+.aisn-mm-central{
+    background:linear-gradient(135deg,#0f6cbf,#2563eb);
+    color:#fff;
+    border-radius:18px;
+    padding:18px 20px;
+    margin-bottom:18px;
+    box-shadow:0 14px 28px rgba(15,108,191,.18)
+}
 .aisn-mm-central strong{display:block;font-size:1.1rem;margin-bottom:4px}
 .aisn-mm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
 .aisn-mm-branch{background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
@@ -1539,38 +1553,85 @@ if (!function_exists('local_aisn_mindmap_polish_prof')) {
 .aisn-mm-json-hidden{display:none!important}
 </style>
 <script id="aisn-mindmap-polish-prof-v1-js">
-(function(){
-/**
- * Esc helper.
- */
-// phpcs:ignore moodle.Files.LineLength
-/**
- * Esc helper.
- */
-// phpcs:ignore moodle.Files.LineLength
-function esc(s){return String(s||'').replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m];});}
-/**
- * Parse helper.
- */
-// phpcs:ignore moodle.Files.LineLength
-// phpcs:ignore moodle.Strings.ForbiddenStrings.Found
-/**
- * Parse helper.
- */
-// phpcs:ignore moodle.Files.LineLength
-// phpcs:ignore moodle.Strings.ForbiddenStrings.Found
-function parse(t){t=(t||'').trim();if(!t||t.indexOf('{')<0||t.indexOf('branches')<0)return null;t=t.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();try{var d=JSON.parse(t);return d&&d.branches?d:null;}catch(e){return null;}}
-/**
- * Render helper.
- */
-// phpcs:ignore moodle.Files.LineLength
-/**
- * Render helper.
- */
-// phpcs:ignore moodle.Files.LineLength
-function render(d){var h='<div class="aisn-mm-rendered">';h+='<h3 class="aisn-mm-title">'+esc(d.title||d.central_topic||'Mind map')+'</h3>';if(d.summary)h+='<p class="aisn-mm-summary">'+esc(d.summary)+'</p>';h+='<div class="aisn-mm-central"><strong>'+esc(d.central_topic||d.title||'Tema centrale')+'</strong><span>'+esc(d.central_description||'')+'</span></div>';h+='<div class="aisn-mm-grid">';(d.branches||[]).forEach(function(b){h+='<div class="aisn-mm-branch"><h4>'+esc(b.title||'Ramo')+'</h4>';if(b.description)h+='<p>'+esc(b.description)+'</p>';(b.children||[]).forEach(function(c){h+='<div class="aisn-mm-child"><strong>'+esc(c.title||'Nodo')+'</strong><span>'+esc(c.description||'')+'</span></div>';});h+='</div>';});h+='</div></div>';return h;}
-// phpcs:ignore moodle.Files.LineLength
-document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('pre').forEach(function(pre){var d=parse(pre.textContent);if(!d)return;var div=document.createElement('div');div.innerHTML=render(d);pre.classList.add('aisn-mm-json-hidden');pre.parentNode.insertBefore(div.firstElementChild,pre);});});
+(function() {
+    /**
+     * Esc helper.
+     */
+    // phpcs:ignore moodle.Files.LineLength
+    /**
+     * Esc helper.
+     */
+    // phpcs:ignore moodle.Files.LineLength
+    function esc(s) {
+        return String(s || '').replace(/[&<>"']/g, function(m) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            } [m];
+        });
+    }
+    /**
+     * Parse helper.
+     */
+    // phpcs:ignore moodle.Files.LineLength
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
+    /**
+     * Parse helper.
+     */
+    // phpcs:ignore moodle.Files.LineLength
+    // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
+    function parse(t) {
+        t = (t || '').trim();
+        if (!t || t.indexOf('{') < 0 || t.indexOf('branches') < 0) return null;
+        t = t.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+        try {
+            var d = JSON.parse(t);
+            return d && d.branches ? d : null;
+        } catch (e) {
+            return null;
+        }
+    }
+    /**
+     * Render helper.
+     */
+    // phpcs:ignore moodle.Files.LineLength
+    /**
+     * Render helper.
+     */
+    // phpcs:ignore moodle.Files.LineLength
+    function render(d) {
+        var h = '<div class="aisn-mm-rendered">';
+        h += '<h3 class="aisn-mm-title">' + esc(d.title || d.central_topic || 'Mind map') + '</h3>';
+        if (d.summary) h += '<p class="aisn-mm-summary">' + esc(d.summary) + '</p>';
+        h += '<div class="aisn-mm-central"><strong>' + esc(d.central_topic || d.title || 'Tema centrale') +
+            '</strong><span>' + esc(d.central_description || '') + '</span></div>';
+        h += '<div class="aisn-mm-grid">';
+        (d.branches || []).forEach(function(b) {
+            h += '<div class="aisn-mm-branch"><h4>' + esc(b.title || 'Ramo') + '</h4>';
+            if (b.description) h += '<p>' + esc(b.description) + '</p>';
+            (b.children || []).forEach(function(c) {
+                h += '<div class="aisn-mm-child"><strong>' + esc(c.title || 'Nodo') +
+                    '</strong><span>' + esc(c.description || '') + '</span></div>';
+            });
+            h += '</div>';
+        });
+        h += '</div></div>';
+        return h;
+    }
+    // phpcs:ignore moodle.Files.LineLength
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('pre').forEach(function(pre) {
+            var d = parse(pre.textContent);
+            if (!d) return;
+            var div = document.createElement('div');
+            div.innerHTML = render(d);
+            pre.classList.add('aisn-mm-json-hidden');
+            pre.parentNode.insertBefore(div.firstElementChild, pre);
+        });
+    });
 })();
 </script>
 HTML;
@@ -1631,7 +1692,7 @@ function local_aiskillnavigator_mindmap_live_web_assets(int $courseid): string {
 </style>
 
 <script id="aisn-mindmap-live-web-v1-js">
-(function () {
+(function() {
     const endpoint = {$endpointjson};
 
     /**
@@ -1639,7 +1700,13 @@ function local_aiskillnavigator_mindmap_live_web_assets(int $courseid): string {
      */
     function escapeHtml(value) {
         return String(value || "").replace(/[&<>"']/g, function(m) {
-            return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"}[m];
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                "\\"": "&quot;",
+                "'": "&#039;"
+            } [m];
         });
     }
 
@@ -1682,19 +1749,23 @@ function local_aiskillnavigator_mindmap_live_web_assets(int $courseid): string {
             return;
         }
 
-        box.innerHTML = '<div class="aisn-mm-live-loading">Cerco esempio online per: ' + escapeHtml(title) + '...</div>';
+        box.innerHTML = '<div class="aisn-mm-live-loading">Cerco esempio online per: ' + escapeHtml(title) +
+            '...</div>';
 
         const url = endpoint +
             "&title=" + encodeURIComponent(title) +
             "&topic=" + encodeURIComponent(currentTopic());
 
         try {
-            const response = await fetch(url, {credentials: "same-origin"});
+            const response = await fetch(url, {
+                credentials: "same-origin"
+            });
             const data = await response.json();
 
             if (!data.ok) {
                 // phpcs:ignore moodle.Files.LineLength
-                box.innerHTML = '<div class="aisn-mm-live-muted">' + escapeHtml(data.message || "Nessun esempio online trovato.") + '</div>';
+                box.innerHTML = '<div class="aisn-mm-live-muted">' + escapeHtml(data.message ||
+                    "Nessun esempio online trovato.") + '</div>';
                 return;
             }
 
@@ -1702,34 +1773,40 @@ function local_aiskillnavigator_mindmap_live_web_assets(int $courseid): string {
                 '<div class="aisn-mm-live-card">' +
                 '<h4>Esempio online collegato</h4>' +
                 // phpcs:ignore moodle.Files.LineLength
-                '<a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(data.title || data.url) + '</a>' +
+                '<a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' +
+                escapeHtml(data.title || data.url) + '</a>' +
                 (data.snippet ? '<p>' + escapeHtml(data.snippet) + '</p>' : '') +
                 '<p>' + escapeHtml(data.activity || '') + '</p>' +
-                '<p><small>Fonte trovata tramite Search API: ' + escapeHtml(data.provider || '') + '</small></p>' +
+                '<p><small>Fonte trovata tramite Search API: ' + escapeHtml(data.provider || '') +
+                '</small></p>' +
                 '</div>';
         } catch (e) {
             // phpcs:ignore moodle.Files.LineLength
-            box.innerHTML = '<div class="aisn-mm-live-muted">Errore durante la ricerca online. Controlla configurazione Search API.</div>';
+            box.innerHTML =
+                '<div class="aisn-mm-live-muted">Errore durante la ricerca online. Controlla configurazione Search API.</div>';
         }
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const box = ensureBox();
         if (box) {
             // phpcs:ignore moodle.Files.LineLength
-            box.innerHTML = '<div class="aisn-mm-live-muted">Clicca un ramo o sotto-concetto della mappa per caricare un esempio online collegato.</div>';
+            box.innerHTML =
+                '<div class="aisn-mm-live-muted">Clicca un ramo o sotto-concetto della mappa ' +
+                'per caricare un esempio online collegato.</div>';
         }
     });
 
-    document.addEventListener("click", function (event) {
-        const node = event.target.closest(".aisn-mm-node, [data-node-id], [data-id], .aisn-mm-branch, .aisn-mm-child");
+    document.addEventListener("click", function(event) {
+        const node = event.target.closest(
+            ".aisn-mm-node, [data-node-id], [data-id], .aisn-mm-branch, .aisn-mm-child");
         if (!node) {
             return;
         }
 
         const title = (node.textContent || "").trim();
 
-        setTimeout(function () {
+        setTimeout(function() {
             loadExample(title);
         }, 120);
     });

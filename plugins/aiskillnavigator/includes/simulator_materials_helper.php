@@ -628,7 +628,8 @@ function local_aisn_sim_material_selector_html(int $courseid): string {
                     event.preventDefault();
                     event.stopPropagation();
                     // phpcs:ignore moodle.Files.LineLength
-                    alert("Select at least one selectable course material. Local-only materials require local AI or must be allowed for external AI.");
+                    alert("Select at least one course material. " +
+                        "Check the current provider and material permissions if all materials are disabled.");
                 }
             }, true);
         }
@@ -763,7 +764,7 @@ function local_aisn_sim_save_generated(
     }
 }
 
-/**
+/*
  * AISN_SIM_DEDUPE_CORE_SAFE_V3
  * Dedupe sicuro per simulazioni salvate.
  */

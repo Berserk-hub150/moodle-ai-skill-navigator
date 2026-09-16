@@ -29,6 +29,9 @@ defined('MOODLE_INTERNAL') || die();
  * Adds an AI privacy checkbox to Moodle activity/resource edit forms.
  */
 
+/**
+ * Return Moodle module types that support per-material AI policy.
+ */
 function local_aiskillnavigator_ai_policy_supported_modnames(): array {
     return [
         'resource',

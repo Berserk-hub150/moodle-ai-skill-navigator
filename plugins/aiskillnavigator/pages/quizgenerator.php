@@ -62,7 +62,7 @@ $PAGE->set_heading(get_string('quizgenerator', 'local_aiskillnavigator'));
 $topic = optional_param('topic', '', PARAM_TEXT);
 $difficulty = optional_param('difficulty', 'medium', PARAM_ALPHA);
 
-// -1 = argomento libero senza materiali.
+// Manual mode (-1) uses the topic without course materials.
 // 0 = tutti i materiali leggibili.
 // >0 = singolo materiale selezionato.
 $materialid = optional_param('materialid', -1, PARAM_INT);
@@ -884,7 +884,7 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
 </style>
 
 <script id="aisn-quiz-video-remediation-v1-js">
-(function () {
+(function() {
     const endpoint = {$endpointjson};
 
     /**
@@ -892,7 +892,13 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
      */
     function escapeHtml(value) {
         return String(value || "").replace(/[&<>"']/g, function(m) {
-            return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"}[m];
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                "\\"": "&quot;",
+                "'": "&#039;"
+            } [m];
         });
     }
 
@@ -925,7 +931,7 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
      */
     function findQuestionCards() {
         return Array.from(document.querySelectorAll(".card, .aisn-card, section, div"))
-            .filter(function (el) {
+            .filter(function(el) {
                 const h = el.querySelector("h2,h3,h4");
                 return h && /^Question\\s+\\d+/i.test((h.textContent || "").trim());
             });
@@ -958,7 +964,7 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
         let n = h.nextElementSibling;
         while (n) {
             const t = cleanLine(n.textContent || "");
-            if (t && !/^padding$|^margin$|^gap$/i.test(t) && !t.includes("Correct answer")) {
+            if (t && !/^padding\$|^margin\$|^gap\$/i.test(t) && !t.includes("Correct answer")) {
                 return t;
             }
             n = n.nextElementSibling;
@@ -973,7 +979,8 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
         const checked = card.querySelector('input[type="radio"]:checked');
         if (!checked) return false;
 
-        const checkedText = cleanLine((checked.closest("label") || checked.parentElement || checked).textContent || "");
+        const checkedText = cleanLine((checked.closest("label") || checked.parentElement || checked).textContent ||
+            "");
         if (checkedText.includes("Correct answer")) return false;
 
         return true;
@@ -1001,7 +1008,9 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
             "&topic=" + encodeURIComponent(topic);
 
         try {
-            const response = await fetch(url, {credentials: "same-origin"});
+            const response = await fetch(url, {
+                credentials: "same-origin"
+            });
             const data = await response.json();
 
             if (!data.ok) {
@@ -1010,7 +1019,8 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
                 return;
             }
 
-            const label = data.isvideo ? "Video consigliato dopo l'errore" : "Risorsa consigliata dopo l'errore";
+            const label = data.isvideo ? "Video consigliato dopo l'errore" :
+            "Risorsa consigliata dopo l'errore";
 
             box.className = "aisn-video-remediation-card";
             box.innerHTML =
@@ -1018,18 +1028,20 @@ function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): st
                 "<h4>Recupero adattivo guidato dall'errore</h4>" +
                 '<p><strong>Ability to improve:</strong> ' + escapeHtml(skill) + '</p>' +
                 // phpcs:ignore moodle.Files.LineLength
-                '<p><a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(data.title || data.url) + '</a></p>' +
+                '<p><a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' +
+                escapeHtml(data.title || data.url) + '</a></p>' +
                 (data.snippet ? '<p>' + escapeHtml(data.snippet) + '</p>' : '') +
                 '<p><strong>Mini-attivita:</strong> ' + escapeHtml(data.activity || '') + '</p>' +
-                '<p><small>Fonte trovata tramite Search API: ' + escapeHtml(data.provider || '') + '</small></p>';
+                '<p><small>Fonte trovata tramite Search API: ' + escapeHtml(data.provider || '') +
+                '</small></p>';
         } catch (e) {
             box.className = "aisn-video-remediation-muted";
             box.textContent = "Errore durante la ricerca online. Controlla configurazione Search API.";
         }
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(function () {
+    document.addEventListener("DOMContentLoaded", function() {
+        setTimeout(function() {
             findQuestionCards().forEach(attachVideo);
         }, 300);
     });
@@ -1045,27 +1057,33 @@ HTML;
 function local_aiskillnavigator_quiz_video_dedupe_guard(): string {
     return <<<'HTML'
 <script id="aisn-video-dedupe-v1">
-(function () {
+(function() {
     /**
      * Dedupe helper.
      */
     function dedupe() {
         // phpcs:ignore moodle.Files.LineLength
-        document.querySelectorAll(".aisn-video-remediation-card, .aisn-video-remediation-loading, .aisn-video-remediation-muted").forEach(function (card) {
-            var parent = card.parentElement;
-            if (!parent) return;
+        document.querySelectorAll(
+                ".aisn-video-remediation-card, " +
+            ".aisn-video-remediation-loading, .aisn-video-remediation-muted")
+            .forEach(function(card) {
+                var parent = card.parentElement;
+                if (!parent) return;
 
-            // phpcs:ignore moodle.Files.LineLength
-            var cards = parent.querySelectorAll(".aisn-video-remediation-card, .aisn-video-remediation-loading, .aisn-video-remediation-muted");
-            if (cards.length <= 1) return;
+                // phpcs:ignore moodle.Files.LineLength
+                var cards = parent.querySelectorAll(
+                    ".aisn-video-remediation-card, " +
+            ".aisn-video-remediation-loading, .aisn-video-remediation-muted"
+                    );
+                if (cards.length <= 1) return;
 
-            cards.forEach(function (c, index) {
-                if (index > 0) c.remove();
+                cards.forEach(function(c, index) {
+                    if (index > 0) c.remove();
+                });
             });
-        });
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         dedupe();
         setTimeout(dedupe, 500);
         setTimeout(dedupe, 1500);
@@ -1088,7 +1106,7 @@ HTML;
 function local_aiskillnavigator_quiz_clean_video_labels(): string {
     return <<<'HTML'
 <script id="aisn-clean-video-labels-final-v1">
-(function () {
+(function() {
     /**
      * Cleancard helper.
      */
@@ -1105,7 +1123,7 @@ function local_aiskillnavigator_quiz_clean_video_labels(): string {
             h4.textContent = "Recupero adattivo guidato dall'errore";
         }
 
-        card.querySelectorAll("p").forEach(function (p) {
+        card.querySelectorAll("p").forEach(function(p) {
             var txt = p.textContent || "";
 
             if (txt.indexOf("Mini-") !== -1 || txt.indexOf("Mini") !== -1) {
@@ -1114,7 +1132,9 @@ function local_aiskillnavigator_quiz_clean_video_labels(): string {
                     p.innerHTML = "<strong>Mini-attivita:</strong> " + txt.substring(idx);
                 } else {
                     // phpcs:ignore moodle.Files.LineLength
-                    p.innerHTML = "<strong>Mini-attivita:</strong> Guarda la risorsa consigliata, poi riprova spiegando il concetto in 3 righe.";
+                    p.innerHTML =
+                        "<strong>Mini-attivita:</strong> Guarda la risorsa consigliata, " +
+                        "poi riprova spiegando il concetto in 3 righe.";
                 }
             }
         });
@@ -1127,7 +1147,7 @@ function local_aiskillnavigator_quiz_clean_video_labels(): string {
         document.querySelectorAll(".aisn-video-remediation-card").forEach(cleanCard);
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         run();
         setTimeout(run, 100);
         setTimeout(run, 400);
@@ -1135,7 +1155,7 @@ function local_aiskillnavigator_quiz_clean_video_labels(): string {
         setTimeout(run, 2500);
     });
 
-    new MutationObserver(function () {
+    new MutationObserver(function() {
         run();
     }).observe(document.documentElement, {
         childList: true,
@@ -1153,13 +1173,19 @@ HTML;
 function local_aiskillnavigator_quiz_video_rescue_final(): string {
     return <<<'HTML'
 <script id="aisn-quiz-video-rescue-final-v1">
-(function () {
+(function() {
     /**
      * Escapehtml helper.
      */
     function escapeHtml(value) {
         return String(value || "").replace(/[&<>"']/g, function(m) {
-            return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m];
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                "\"": "&quot;",
+                "'": "&#039;"
+            } [m];
         });
     }
 
@@ -1230,15 +1256,18 @@ function local_aiskillnavigator_quiz_video_rescue_final(): string {
     function renderFallback(box, skill, question) {
         box.className = "aisn-video-remediation-card";
         box.innerHTML =
-            '<span class="aisn-video-remediation-chip">Video consigliato dopo l\\'errore</span>' +
-            '<h4>Recupero adattivo guidato dall\\'errore</h4>' +
+            '<span class="aisn-video-remediation-chip">Video consigliato dopo l\'errore</span>' +
+            '<h4>Recupero adattivo guidato dall\'errore</h4>' +
             '<p><strong>Ability to improve:</strong> ' + escapeHtml(skill) + '</p>' +
             // phpcs:ignore moodle.Files.LineLength
-            '<p><a href="' + escapeHtml(youtubeFallbackUrl(skill, question)) + '" target="_blank" rel="noopener noreferrer">Apri ricerca video YouTube mirata</a></p>' +
+            '<p><a href="' + escapeHtml(youtubeFallbackUrl(skill, question)) +
+            '" target="_blank" rel="noopener noreferrer">Apri ricerca video YouTube mirata</a></p>' +
             // phpcs:ignore moodle.Files.LineLength
-            '<p>La ricerca automatica sta impiegando troppo tempo, quindi viene proposta una ricerca video mirata sulla competenza da recuperare.</p>' +
+            '<p>La ricerca automatica sta impiegando troppo tempo, ' +
+            'quindi viene proposta una ricerca video mirata sulla competenza da recuperare.</p>' +
             // phpcs:ignore moodle.Files.LineLength
-            '<p><strong>Mini-attivita:</strong> guarda una spiegazione pertinente e poi riscrivi in 3 righe il concetto collegato.</p>' +
+            '<p><strong>Mini-attivita:</strong> guarda una spiegazione pertinente ' +
+            'e poi riscrivi in 3 righe il concetto collegato.</p>' +
             '<p><small>Fonte: fallback YouTube mirato</small></p>';
     }
 
@@ -1254,11 +1283,12 @@ function local_aiskillnavigator_quiz_video_rescue_final(): string {
         const h4 = card.querySelector("h4");
         if (h4) h4.textContent = "Recupero adattivo guidato dall'errore";
 
-        card.querySelectorAll("p").forEach(function (p) {
+        card.querySelectorAll("p").forEach(function(p) {
             const txt = p.textContent || "";
             if (txt.indexOf("Mini-") !== -1) {
                 const idx = txt.indexOf("Guarda");
-                const rest = idx >= 0 ? txt.substring(idx) : "guarda la risorsa consigliata e rispiega il concetto in 3 righe.";
+                const rest = idx >= 0 ? txt.substring(idx) :
+                    "guarda la risorsa consigliata e rispiega il concetto in 3 righe.";
                 p.innerHTML = "<strong>Mini-attivita:</strong> " + escapeHtml(rest);
             }
         });
@@ -1269,41 +1299,43 @@ function local_aiskillnavigator_quiz_video_rescue_final(): string {
      */
     function rescue() {
         // phpcs:ignore moodle.Files.LineLength
-        document.querySelectorAll(".aisn-video-remediation-loading, .aisn-video-remediation-card, .aisn-video-remediation-muted").forEach(function (box) {
-            const card = findQuestionCard(box);
+        document.querySelectorAll(
+                ".aisn-video-remediation-loading, .aisn-video-remediation-card, .aisn-video-remediation-muted")
+            .forEach(function(box) {
+                const card = findQuestionCard(box);
 
-            if (!isWrongQuestion(card)) {
-                box.remove();
-                return;
-            }
-
-            if (box.classList.contains("aisn-video-remediation-card")) {
-                cleanCardLabels(box);
-                return;
-            }
-
-            if (!box.classList.contains("aisn-video-remediation-loading")) {
-                return;
-            }
-
-            if (box.dataset.rescueAttached === "1") {
-                return;
-            }
-
-            box.dataset.rescueAttached = "1";
-
-            const skill = extractSkill(card);
-            const question = extractQuestion(card);
-
-            setTimeout(function () {
-                if (box.isConnected && box.classList.contains("aisn-video-remediation-loading")) {
-                    renderFallback(box, skill, question);
+                if (!isWrongQuestion(card)) {
+                    box.remove();
+                    return;
                 }
-            }, 6000);
-        });
+
+                if (box.classList.contains("aisn-video-remediation-card")) {
+                    cleanCardLabels(box);
+                    return;
+                }
+
+                if (!box.classList.contains("aisn-video-remediation-loading")) {
+                    return;
+                }
+
+                if (box.dataset.rescueAttached === "1") {
+                    return;
+                }
+
+                box.dataset.rescueAttached = "1";
+
+                const skill = extractSkill(card);
+                const question = extractQuestion(card);
+
+                setTimeout(function() {
+                    if (box.isConnected && box.classList.contains("aisn-video-remediation-loading")) {
+                        renderFallback(box, skill, question);
+                    }
+                }, 6000);
+            });
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         rescue();
         setTimeout(rescue, 300);
         setTimeout(rescue, 1200);
@@ -1386,7 +1418,7 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
 </style>
 
 <script id="aisn-tavily-video-v1-js">
-(function () {
+(function() {
     const endpoint = {$endpointjson};
 
     /**
@@ -1405,7 +1437,13 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
      */
     function escapeHtml(value) {
         return String(value || "").replace(/[&<>"']/g, function(m) {
-            return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"}[m];
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                "\\"": "&quot;",
+                "'": "&#039;"
+            } [m];
         });
     }
 
@@ -1437,7 +1475,7 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
      */
     function findQuestionCards() {
         return Array.from(document.querySelectorAll(".card, .aisn-card, section, div"))
-            .filter(function (el) {
+            .filter(function(el) {
                 const h = el.querySelector("h2,h3,h4");
                 if (!h) return false;
                 if (!/^Question\\s+\\d+/i.test(clean(h.textContent))) return false;
@@ -1481,7 +1519,9 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
                 t &&
                 !t.includes("Correct answer") &&
                 !t.includes("Your answer") &&
-                !/^required$|^mandatory$|^necessary$|^compulsory$|^padding$|^margin$|^gap$|^src$|^alt$|^title$|^width$/i.test(t)
+                !
+                /^required\$|^mandatory\$|^necessary\$|^compulsory\$|^padding\$|^margin\$|^gap\$|^src\$|^alt\$|^title\$|^width\$/i
+                .test(t)
             ) {
                 return t.slice(0, 180);
             }
@@ -1503,10 +1543,12 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
             '<h4>Recupero adattivo guidato dall\\'errore</h4>' +
             '<p><strong>Ability to improve:</strong> ' + escapeHtml(skill) + '</p>' +
             // phpcs:ignore moodle.Files.LineLength
-            '<p><a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(fixLabels(data.title || data.url)) + '</a></p>' +
+            '<p><a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(
+                fixLabels(data.title || data.url)) + '</a></p>' +
             (data.snippet ? '<p>' + escapeHtml(fixLabels(data.snippet)) + '</p>' : '') +
             // phpcs:ignore moodle.Files.LineLength
-            '<p><strong>Mini-attivita:</strong> ' + escapeHtml(fixLabels(data.activity || "Guarda la risorsa e rispiega il concetto in 3 righe.")) + '</p>' +
+            '<p><strong>Mini-attivita:</strong> ' + escapeHtml(fixLabels(data.activity ||
+                "Guarda la risorsa e rispiega il concetto in 3 righe.")) + '</p>' +
             '<p><small>Fonte trovata tramite Search API: ' + escapeHtml(data.provider || "tavily") + '</small></p>';
     }
 
@@ -1517,7 +1559,11 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
         if (!isWrong(card)) return;
 
         // phpcs:ignore moodle.Files.LineLength
-        card.querySelectorAll(".aisn-direct-youtube-card, .aisn-video-remediation-card, .aisn-video-remediation-loading, .aisn-video-remediation-muted, .aisn-tavily-video-card, .aisn-tavily-video-loading, .aisn-tavily-video-muted").forEach(function (el) {
+        card.querySelectorAll(
+            ".aisn-direct-youtube-card, .aisn-video-remediation-card, " +
+            ".aisn-video-remediation-loading, .aisn-video-remediation-muted, " +
+            ".aisn-tavily-video-card, .aisn-tavily-video-loading, .aisn-tavily-video-muted"
+            ).forEach(function(el) {
             el.remove();
         });
 
@@ -1530,7 +1576,7 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
         card.appendChild(box);
 
         const controller = new AbortController();
-        const timer = setTimeout(function () {
+        const timer = setTimeout(function() {
             controller.abort();
         }, 12000);
 
@@ -1559,7 +1605,8 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
         } catch (e) {
             clearTimeout(timer);
             box.className = "aisn-tavily-video-muted";
-            box.textContent = "Timeout Tavily o errore di rete. Riprova o controlla la configurazione Search API.";
+            box.textContent =
+                "Timeout Tavily o errore di rete. Riprova o controlla la configurazione Search API.";
         }
     }
 
@@ -1568,14 +1615,17 @@ function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string 
      */
     function run() {
         // phpcs:ignore moodle.Files.LineLength
-        document.querySelectorAll(".aisn-direct-youtube-card, .aisn-video-remediation-card, .aisn-video-remediation-loading, .aisn-video-remediation-muted").forEach(function (el) {
+        document.querySelectorAll(
+            ".aisn-direct-youtube-card, .aisn-video-remediation-card, " +
+            ".aisn-video-remediation-loading, .aisn-video-remediation-muted"
+            ).forEach(function(el) {
             el.remove();
         });
 
         findQuestionCards().forEach(addCard);
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         run();
         setTimeout(run, 500);
         setTimeout(run, 1500);
@@ -1650,7 +1700,7 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
 </style>
 
 <script id="aisn-tavily-final-v1-js">
-(function () {
+(function() {
     const endpoint = {$endpointjson};
 
     /**
@@ -1669,7 +1719,13 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
      */
     function escapeHtml(value) {
         return String(value || "").replace(/[&<>"']/g, function(m) {
-            return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"}[m];
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                "\\"": "&quot;",
+                "'": "&#039;"
+            } [m];
         });
     }
 
@@ -1678,7 +1734,7 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
      */
     function findQuestionCards() {
         return Array.from(document.querySelectorAll(".card, .aisn-card, section, div"))
-            .filter(function (el) {
+            .filter(function(el) {
                 const h = el.querySelector("h2,h3,h4");
                 if (!h) return false;
                 if (!/^Question\\s+\\d+/i.test(clean(h.textContent))) return false;
@@ -1722,7 +1778,9 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
                 t &&
                 !t.includes("Correct answer") &&
                 !t.includes("Your answer") &&
-                !/^required$|^mandatory$|^necessary$|^compulsory$|^padding$|^margin$|^gap$|^src$|^alt$|^title$|^width$/i.test(t)
+                !
+                /^required\$|^mandatory\$|^necessary\$|^compulsory\$|^padding\$|^margin\$|^gap\$|^src\$|^alt\$|^title\$|^width\$/i
+                .test(t)
             ) {
                 return t.slice(0, 180);
             }
@@ -1738,10 +1796,11 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
     function removeAllOldCards(card) {
         card.querySelectorAll(
             ".aisn-direct-youtube-card, " +
-            ".aisn-video-remediation-card, .aisn-video-remediation-loading, .aisn-video-remediation-muted, " +
+            ".aisn-video-remediation-card, " +
+            ".aisn-video-remediation-loading, .aisn-video-remediation-muted, " +
             ".aisn-tavily-video-card, .aisn-tavily-video-loading, .aisn-tavily-video-muted, " +
             ".aisn-tavily-final-card, .aisn-tavily-final-loading, .aisn-tavily-final-muted"
-        ).forEach(function (el) {
+        ).forEach(function(el) {
             el.remove();
         });
     }
@@ -1758,10 +1817,12 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
             '<h4>Recupero adattivo guidato dall\\'errore</h4>' +
             '<p><strong>Ability to improve:</strong> ' + escapeHtml(skill) + '</p>' +
             // phpcs:ignore moodle.Files.LineLength
-            '<p><a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(data.title || data.url) + '</a></p>' +
+            '<p><a href="' + escapeHtml(data.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(data
+                .title || data.url) + '</a></p>' +
             (data.snippet ? '<p>' + escapeHtml(data.snippet) + '</p>' : '') +
             // phpcs:ignore moodle.Files.LineLength
-            '<p><strong>Mini-attivita:</strong> ' + escapeHtml(data.activity || "Guarda la risorsa e rispiega il concetto in 3 righe.") + '</p>' +
+            '<p><strong>Mini-attivita:</strong> ' + escapeHtml(data.activity ||
+                "Guarda la risorsa e rispiega il concetto in 3 righe.") + '</p>' +
             '<p><small>Fonte trovata tramite Search API: ' + escapeHtml(data.provider || "tavily") + '</small></p>';
     }
 
@@ -1772,8 +1833,9 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
         }
 
         if (card.dataset.aisnTavilyFinalDone === "1") {
-            const cards = card.querySelectorAll(".aisn-tavily-final-card, .aisn-tavily-final-loading, .aisn-tavily-final-muted");
-            cards.forEach(function (el, i) {
+            const cards = card.querySelectorAll(
+                ".aisn-tavily-final-card, .aisn-tavily-final-loading, .aisn-tavily-final-muted");
+            cards.forEach(function(el, i) {
                 if (i > 0) el.remove();
             });
             return;
@@ -1796,7 +1858,9 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
             "&topic=" + encodeURIComponent(document.title || "");
 
         try {
-            const response = await fetch(url, {credentials: "same-origin"});
+            const response = await fetch(url, {
+                credentials: "same-origin"
+            });
             const data = await response.json();
 
             if (!data.ok) {
@@ -1819,7 +1883,7 @@ function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $cours
         findQuestionCards().forEach(addSingleCard);
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         run();
         setTimeout(run, 500);
         setTimeout(run, 1500);

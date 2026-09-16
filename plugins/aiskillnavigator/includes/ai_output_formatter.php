@@ -379,7 +379,9 @@ CSS;
         }
 
         // phpcs:ignore moodle.Files.LineLength
-        const hasMarkdownTable = text.split(/\n/).some((line, idx, arr) => isTableLine(line) && idx + 1 < arr.length && isTableSeparator(arr[idx + 1]));
+        const hasMarkdownTable = text.split(/\n/).some((line, idx, arr) =>
+            isTableLine(line) && idx + 1 < arr.length && isTableSeparator(arr[idx + 1])
+        );
         const hasMath = text.split(/\n/).some(looksMath);
         const hasList = text.split(/\n/).some(line => /^[-*]\s+/.test(line.trim()) || /^\d+\.\s+/.test(line.trim()));
 

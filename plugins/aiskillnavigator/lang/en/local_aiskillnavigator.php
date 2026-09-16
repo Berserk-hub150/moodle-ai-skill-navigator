@@ -25,6 +25,7 @@
 // phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
+$string['ai_empty_response'] = 'The AI provider returned no response. Check the provider settings and try again.';
 $string['ai_recommendation'] = 'AI recommendation prototype';
 $string['aitutor'] = 'AI Tutor';
 $string['apikey'] = 'AI API key';
@@ -157,6 +158,8 @@ $string['settings_provider_openai'] = 'OpenAI API';
 $string['settings_provider_openai_compatible'] = 'Generic OpenAI-compatible API';
 $string['settings_provider_openrouter'] = 'OpenRouter multi-LLM gateway';
 $string['settings_provider_prototype'] = 'Prototype/demo provider - no external calls';
+$string['settings_requesttimeout'] = 'AI request timeout (seconds)';
+$string['settings_requesttimeout_desc'] = 'Maximum wait for a generation response from any AI provider. Default: 60 seconds. Values are bounded to 10–600 seconds; invalid or non-positive values use the default. Web server and proxy timeouts may also need adjustment.';
 $string['settings_searchapikey'] = 'Search API key';
 $string['settings_searchapikey_desc'] = 'Do not put this key in code or GitHub. Store it only in Moodle settings.';
 $string['settings_searchendpoint'] = 'Search endpoint';
@@ -172,12 +175,9 @@ $string['settings_searchprovider_tavily'] = 'Tavily Search API';
 $string['simulator_material_unreadable'] = 'The selected material has no readable text.';
 $string['simulator_select_material'] = 'Select at least one course material before generating a simulator exercise.';
 $string['skills'] = 'Skills';
+
 $string['studentdashboard'] = 'Student dashboard';
 $string['teacherdashboard'] = 'Teacher dashboard';
-$string['tutor_question'] = 'Ask a question';
-
-$string['settings_requesttimeout'] = 'AI request timeout (seconds)';
-$string['settings_requesttimeout_desc'] = 'Maximum wait for a generation response from any AI provider. Default: 60 seconds. Values are bounded to 10–600 seconds; invalid or non-positive values use the default. Web server and proxy timeouts may also need adjustment.';
-$string['ai_empty_response'] = 'The AI provider returned no response. Check the provider settings and try again.';
-$string['tutor_analytics_intro'] = 'This report summarises questions answered by the AI Tutor in this course. It updates automatically after successful tutor responses.';
 $string['tutor_analytics_help'] = 'To populate the report, open Student tools > AI Tutor with a student account and ask a question. Then return here or refresh this page. Normal Moodle quiz attempts appear in the Teacher dashboard instead. Skill and difficulty labels are keyword-based indicators, not grades.';
+$string['tutor_analytics_intro'] = 'This report summarises questions answered by the AI Tutor in this course. It updates automatically after successful tutor responses.';
+$string['tutor_question'] = 'Ask a question';

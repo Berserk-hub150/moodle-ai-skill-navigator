@@ -31,6 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * Mindmap prompt builder implementation.
  */
 class mindmap_prompt_builder extends base_prompt_helper {
+    /** @var int Maximum characters included from each material. */
     private const MATERIAL_LIMIT = 2600;
     /** @var mindmap_rules Rules. */
     private mindmap_rules $rules;

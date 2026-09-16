@@ -53,9 +53,12 @@ foreach (glob(__DIR__ . '/material/*.php') as $materialhelper) {
  * Material extractor implementation.
  */
 class material_extractor {
+    /** @var int Maximum source file size in bytes. */
     private const MAX_BYTES = 26214400;
+    /** @var int Maximum extracted text length. */
     private const MAX_CHARS = 120000;
 
+    /** @var array File extensions supported by the extraction pipeline. */
     private const ALLOWED_EXTENSIONS = [
         'txt', 'md', 'csv', 'json', 'xml', 'html', 'htm',
         'css', 'js', 'ts', 'sql', 'cs', 'java', 'py', 'cpp', 'c',

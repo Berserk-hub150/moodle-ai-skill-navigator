@@ -54,3 +54,12 @@ jobs:
 
       - name: Test Simulator Finder material filtering
         run: node tests/simulator_material_filter_test.js
+
+      - name: Set up PHP for rendered scripts
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Check rendered embedded JavaScript
+        run: python3 tests/embedded_javascript_test.py

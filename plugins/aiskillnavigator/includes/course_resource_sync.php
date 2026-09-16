@@ -715,7 +715,15 @@ if (!function_exists('local_aiskillnavigator_extract_files_from_area')) {
      * Local aiskillnavigator extract files from area helper.
      */
     // phpcs:ignore moodle.Files.LineLength
-    function local_aiskillnavigator_extract_files_from_area(int $contextid, string $component, string $filearea, int $cmid = 0): string {
+    /**
+     * Extract supported files from a Moodle file area.
+     */
+    function local_aiskillnavigator_extract_files_from_area(
+        int $contextid,
+        string $component,
+        string $filearea,
+        int $cmid = 0
+    ): string {
         $fs = get_file_storage();
         $files = $fs->get_area_files($contextid, $component, $filearea, false, 'filename', false);
 
@@ -764,12 +772,12 @@ if (!function_exists('local_aiskillnavigator_extract_stored_file_text')) {
             }
         }
 
-        $rawtextExtensions = [
+        $rawtextextensions = [
             'txt', 'md', 'csv', 'json', 'xml', 'html', 'htm',
             'php', 'js', 'css', 'sql', 'cs', 'java', 'py', 'cpp', 'c',
         ];
 
-        if (in_array($extension, $rawtextExtensions, true)) {
+        if (in_array($extension, $rawtextextensions, true)) {
             return local_aiskillnavigator_limit_material_text((string)$file->get_content());
         }
 

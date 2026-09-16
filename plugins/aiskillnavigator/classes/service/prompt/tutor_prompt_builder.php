@@ -33,6 +33,7 @@ require_once(__DIR__ . '/shared/response_language.php');
  * Tutor prompt builder implementation.
  */
 class tutor_prompt_builder extends base_prompt_helper {
+    /** @var int Maximum characters included from each material. */
     private const MATERIAL_LIMIT = 2200;
 
     /**

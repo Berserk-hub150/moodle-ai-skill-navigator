@@ -502,7 +502,14 @@ function local_aiskillnavigator_material_source_selected_ids_from_request(array 
  * Local aiskillnavigator material source selected materials helper.
  */
 // phpcs:ignore moodle.Files.LineLength
-function local_aiskillnavigator_material_source_selected_materials(array $readablematerials, string $sourcemode, array $selectedmaterialids): array {
+/**
+ * Select readable materials according to the requested source mode.
+ */
+function local_aiskillnavigator_material_source_selected_materials(
+    array $readablematerials,
+    string $sourcemode,
+    array $selectedmaterialids
+): array {
     if ($sourcemode === 'manual') {
         return [];
     }
@@ -608,7 +615,17 @@ function local_aisn_prod_filter_rag_results_by_ai_policy(array $results, int $co
  * Local aiskillnavigator material source search helper.
  */
 // phpcs:ignore moodle.Files.LineLength
-function local_aiskillnavigator_material_source_search($embeddingservice, string $query, int $courseid, int $limit, string $sourcemode, array $selectedmaterialids): array {
+/**
+ * Search eligible course materials for the requested topic.
+ */
+function local_aiskillnavigator_material_source_search(
+    $embeddingservice,
+    string $query,
+    int $courseid,
+    int $limit,
+    string $sourcemode,
+    array $selectedmaterialids
+): array {
     if ($sourcemode === 'manual') {
         return [];
     }

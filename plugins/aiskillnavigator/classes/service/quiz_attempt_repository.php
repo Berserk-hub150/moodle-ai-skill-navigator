@@ -24,9 +24,9 @@
 
 namespace local_aiskillnavigator\service;
 
-defined('MOODLE_INTERNAL') || die();
-
-/** Read quiz results without copying Moodle attempts into plugin-owned storage. */
+/**
+ * Read quiz results without copying Moodle attempts into plugin-owned storage.
+ */
 class quiz_attempt_repository {
     /**
      * Return plugin attempts and scored, finished Moodle quiz attempts, newest first.
@@ -60,8 +60,10 @@ class quiz_attempt_repository {
             }
             $key = 'quizid' . (int)$cm->id;
             $condition = 'q.id = :' . $key;
-            if (groups_get_activity_groupmode($cm) == SEPARATEGROUPS
-                    && !has_capability('moodle/site:accessallgroups', $context)) {
+            if (
+                groups_get_activity_groupmode($cm) == SEPARATEGROUPS
+                && !has_capability('moodle/site:accessallgroups', $context)
+            ) {
                 $groups = groups_get_all_groups($courseid, $USER->id, $cm->groupingid, 'g.id');
                 if (!$groups) {
                     continue;

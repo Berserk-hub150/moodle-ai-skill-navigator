@@ -31,6 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * Summary prompt builder implementation.
  */
 class summary_prompt_builder extends base_prompt_helper {
+    /** @var int Maximum characters included from each material. */
     private const MATERIAL_LIMIT = 3000;
 
     /**

@@ -575,31 +575,62 @@ function local_aisn_ass_render_edit_form(stdClass $assessment, array $quiz, int 
      * Cardhtml helper.
      */
     function cardHtml(key) {
-        // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
+
         return `
 <div class="card mb-3 aisn-question-card" data-question-card="1">
   <div class="card-body">
     <h4 data-question-title="1">Question</h4>
     <input type="hidden" name="qkey[]" value="${escapeHtml(key)}">
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group"><label>Question text</label><textarea name="question[${escapeHtml(key)}]" class="form-control" rows="3" required></textarea></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Option A</label><input type="text" name="option[${escapeHtml(key)}][]" class="form-control"></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Option B</label><input type="text" name="option[${escapeHtml(key)}][]" class="form-control"></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Option C</label><input type="text" name="option[${escapeHtml(key)}][]" class="form-control"></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Option D</label><input type="text" name="option[${escapeHtml(key)}][]" class="form-control"></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Correct answer</label><select name="correct_index[${escapeHtml(key)}]" class="form-control"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Ability</label><input type="text" name="ability[${escapeHtml(key)}]" class="form-control"></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Explanation</label><textarea name="explanation[${escapeHtml(key)}]" class="form-control" rows="2"></textarea></div>
+
+    <div class="form-group">
+        <label>Question text</label>
+        <textarea name="question[${escapeHtml(key)}]" class="form-control" rows="3" required>
+        </textarea>
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Option A</label>
+        <input type="text" name="option[${escapeHtml(key)}][]" class="form-control">
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Option B</label>
+        <input type="text" name="option[${escapeHtml(key)}][]" class="form-control">
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Option C</label>
+        <input type="text" name="option[${escapeHtml(key)}][]" class="form-control">
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Option D</label>
+        <input type="text" name="option[${escapeHtml(key)}][]" class="form-control">
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Correct answer</label>
+        <select name="correct_index[${escapeHtml(key)}]" class="form-control">
+        <option value="0">A</option>
+        <option value="1">B</option>
+        <option value="2">C</option>
+        <option value="3">D</option>
+        </select>
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Ability</label>
+        <input type="text" name="ability[${escapeHtml(key)}]" class="form-control">
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Explanation</label>
+        <textarea name="explanation[${escapeHtml(key)}]" class="form-control" rows="2">
+        </textarea>
+        </div>
     <button type="button" class="btn btn-outline-danger btn-sm mt-3" data-remove-question="1">Remove question</button>
   </div>
-// phpcs:ignore moodle.Strings.ForbiddenStrings.Found
+
 </div>`;
     }
 

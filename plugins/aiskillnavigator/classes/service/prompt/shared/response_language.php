@@ -24,9 +24,9 @@
 
 namespace local_aiskillnavigator\service\prompt;
 
-defined('MOODLE_INTERNAL') || die();
-
-/** Response language rules shared by tutor entry points. */
+/**
+ * Response language rules shared by tutor entry points.
+ */
 class response_language {
     /**
      * Respect the learner's language independently of the source material.

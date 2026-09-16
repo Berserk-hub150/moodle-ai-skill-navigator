@@ -35,6 +35,9 @@ defined('MOODLE_INTERNAL') || die();
  * - collects wrong examples so the LLM can generate similar-but-not-identical practice.
  */
 
+/**
+ * Check whether the adaptive learning storage table is installed.
+ */
 function local_aiskillnavigator_adaptive_table_exists(string $tablename): bool {
     global $DB;
 

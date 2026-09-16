@@ -235,7 +235,8 @@ echo html_writer::tag(
 
 echo html_writer::tag(
     'p',
-    'This dashboard includes AI Skill Navigator quizzes and scored, finished Moodle quiz attempts you can report on. Moodle quiz names are used as topics; these indicators are not the Moodle gradebook.',
+    'This dashboard includes AI Skill Navigator quizzes and scored, finished Moodle quiz attempts you can report on. '
+        . 'Moodle quiz names are used as topics; these indicators are not the Moodle gradebook.',
     ['class' => 'lead']
 );
 
