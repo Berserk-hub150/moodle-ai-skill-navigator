@@ -74,6 +74,8 @@ if (!function_exists('local_aisn_mistral_ocr_api_key')) {
 if (!function_exists('local_aisn_mistral_ocr_supported_extension')) {
     /**
      * Local aisn mistral ocr supported extension helper.
+     *
+     * @param string $extension Extension.
      */
     function local_aisn_mistral_ocr_supported_extension(string $extension): bool {
         $extension = strtolower(trim($extension));
@@ -88,6 +90,8 @@ if (!function_exists('local_aisn_mistral_ocr_supported_extension')) {
 if (!function_exists('local_aisn_mistral_ocr_mime_type')) {
     /**
      * Local aisn mistral ocr mime type helper.
+     *
+     * @param string $filename Filename.
      */
     function local_aisn_mistral_ocr_mime_type(string $filename): string {
         $extension = strtolower((string)pathinfo($filename, PATHINFO_EXTENSION));
@@ -157,6 +161,8 @@ if (!function_exists('local_aisn_mistral_ocr_model')) {
 if (!function_exists('local_aisn_mistral_ocr_can_send_external')) {
     /**
      * Local aisn mistral ocr can send external helper.
+     *
+     * @param int $cmid Course module ID.
      */
     function local_aisn_mistral_ocr_can_send_external(int $cmid): bool {
         if ($cmid <= 0) {
@@ -174,6 +180,10 @@ if (!function_exists('local_aisn_mistral_ocr_can_send_external')) {
 if (!function_exists('local_aisn_mistral_ocr_extract_path')) {
     /**
      * Local aisn mistral ocr extract path helper.
+     *
+     * @param string $path Path.
+     * @param string $filename Filename.
+     * @param int $cmid Course module ID.
      */
     function local_aisn_mistral_ocr_extract_path(string $path, string $filename, int $cmid = 0): string {
         // AISN_COURSE_SCOPED_OCR_GATE_V1.
@@ -340,6 +350,9 @@ if (!function_exists('local_aisn_mistral_ocr_extract_path')) {
 if (!function_exists('local_aisn_mistral_ocr_extract_stored_file')) {
     /**
      * Local aisn mistral ocr extract stored file helper.
+     *
+     * @param stored_file $file File.
+     * @param int $cmid Course module ID.
      */
     function local_aisn_mistral_ocr_extract_stored_file(stored_file $file, int $cmid = 0): string {
         $filename = $file->get_filename();

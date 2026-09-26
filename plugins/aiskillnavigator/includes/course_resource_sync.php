@@ -35,6 +35,8 @@ require_once(__DIR__ . '/knowledge_graph_helper.php');
 if (!function_exists('local_aisn_crs_table_exists')) {
     /**
      * Local aisn crs table exists helper.
+     *
+     * @param string $tablename Tablename.
      */
     function local_aisn_crs_table_exists(string $tablename): bool {
         global $DB;
@@ -51,6 +53,9 @@ if (!function_exists('local_aisn_crs_table_exists')) {
 if (!function_exists('local_aisn_crs_field_exists')) {
     /**
      * Local aisn crs field exists helper.
+     *
+     * @param string $tablename Tablename.
+     * @param string $fieldname Fieldname.
      */
     function local_aisn_crs_field_exists(string $tablename, string $fieldname): bool {
         global $DB;
@@ -79,6 +84,8 @@ if (!function_exists('local_aisn_crs_field_exists')) {
 if (!function_exists('local_aiskillnavigator_course_module_external_ai_allowed')) {
     /**
      * Local aiskillnavigator course module external ai allowed helper.
+     *
+     * @param int $cmid Course module ID.
      */
     function local_aiskillnavigator_course_module_external_ai_allowed(int $cmid): int {
         if ($cmid <= 0) {
@@ -93,6 +100,8 @@ if (!function_exists('local_aiskillnavigator_course_module_external_ai_allowed')
 if (!function_exists('local_aisn_crs_content_hash')) {
     /**
      * Local aisn crs content hash helper.
+     *
+     * @param string $content Content to process.
      */
     function local_aisn_crs_content_hash(string $content): string {
         $content = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -122,6 +131,8 @@ if (!function_exists('local_aisn_crs_large_file_threshold')) {
 if (!function_exists('local_aisn_crs_file_size')) {
     /**
      * Local aisn crs file size helper.
+     *
+     * @param stored_file $file File.
      */
     function local_aisn_crs_file_size(stored_file $file): int {
         try {
@@ -135,6 +146,8 @@ if (!function_exists('local_aisn_crs_file_size')) {
 if (!function_exists('local_aisn_crs_is_large_file')) {
     /**
      * Local aisn crs is large file helper.
+     *
+     * @param stored_file $file File.
      */
     function local_aisn_crs_is_large_file(stored_file $file): bool {
         $size = local_aisn_crs_file_size($file);
@@ -145,6 +158,9 @@ if (!function_exists('local_aisn_crs_is_large_file')) {
 if (!function_exists('local_aisn_crs_extraction_note')) {
     /**
      * Local aisn crs extraction note helper.
+     *
+     * @param stored_file $file File.
+     * @param string $reason Reason.
      */
     function local_aisn_crs_extraction_note(stored_file $file, string $reason): string {
         $name = trim((string)$file->get_filename());
@@ -157,6 +173,10 @@ if (!function_exists('local_aisn_crs_extraction_note')) {
 if (!function_exists('local_aisn_crs_title_for_document')) {
     /**
      * Local aisn crs title for document helper.
+     *
+     * @param int $courseid Moodle course ID.
+     * @param int $cmid Course module ID.
+     * @param string $title Title.
      */
     function local_aisn_crs_title_for_document(int $courseid, int $cmid, string $title): string {
         $title = trim((string)$title) !== '' ? trim((string)$title) : ('Course module ' . $cmid);
@@ -169,6 +189,8 @@ if (!function_exists('local_aisn_crs_title_for_document')) {
 if (!function_exists('local_aisn_crs_cmid_from_title')) {
     /**
      * Local aisn crs cmid from title helper.
+     *
+     * @param string $title Title.
      */
     function local_aisn_crs_cmid_from_title(string $title): int {
         if (function_exists('local_aisn_course_cm_id_from_material_title')) {
@@ -186,6 +208,8 @@ if (!function_exists('local_aisn_crs_cmid_from_title')) {
 if (!function_exists('local_aisn_crs_material_cmid')) {
     /**
      * Local aisn crs material cmid helper.
+     *
+     * @param stdClass $material Material.
      */
     function local_aisn_crs_material_cmid(stdClass $material): int {
         if (isset($material->sourcecmid) && (int)$material->sourcecmid > 0) {
@@ -199,12 +223,15 @@ if (!function_exists('local_aisn_crs_material_cmid')) {
 if (!function_exists('local_aisn_crs_get_records')) {
     /**
      * Local aisn crs get records helper.
+     *
+     * @param array $conditions Conditions.
+     * @param string $sort Sort.
      */
     function local_aisn_crs_get_records(array $conditions, string $sort = 'timemodified DESC, id DESC'): array {
         global $DB;
 
         try {
-            return $DB->get_records('local_aiskillnav_material', $conditions, $sort);
+            return $DB->get_records('local_aiskillnavigator_material', $conditions, $sort);
         } catch (Throwable $e) {
             debugging('AI Skill Navigator material lookup failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return [];
@@ -215,6 +242,8 @@ if (!function_exists('local_aisn_crs_get_records')) {
 if (!function_exists('local_aisn_crs_first_record')) {
     /**
      * Local aisn crs first record helper.
+     *
+     * @param array $records Records.
      */
     function local_aisn_crs_first_record(array $records): ?stdClass {
         foreach ($records as $record) {
@@ -228,11 +257,16 @@ if (!function_exists('local_aisn_crs_first_record')) {
 if (!function_exists('local_aisn_crs_find_existing_material')) {
     /**
      * Local aisn crs find existing material helper.
+     *
+     * @param int $courseid Moodle course ID.
+     * @param int $cmid Course module ID.
+     * @param string $title Title.
+     * @param string $contenthash Contenthash.
      */
     function local_aisn_crs_find_existing_material(int $courseid, int $cmid, string $title, string $contenthash): ?stdClass {
         global $DB;
 
-        if ($cmid > 0 && local_aisn_crs_field_exists('local_aiskillnav_material', 'sourcecmid')) {
+        if ($cmid > 0 && local_aisn_crs_field_exists('local_aiskillnavigator_material', 'sourcecmid')) {
             $found = local_aisn_crs_first_record(local_aisn_crs_get_records([
                 'courseid' => $courseid,
                 'materialtype' => 'course_resource',
@@ -264,7 +298,7 @@ if (!function_exists('local_aisn_crs_find_existing_material')) {
 
             try {
                 // phpcs:ignore moodle.Files.LineLength
-                $found = local_aisn_crs_first_record($DB->get_records_select('local_aiskillnav_material', $select, $params, 'timemodified DESC, id DESC'));
+                $found = local_aisn_crs_first_record($DB->get_records_select('local_aiskillnavigator_material', $select, $params, 'timemodified DESC, id DESC'));
                 if ($found) {
                     return $found;
                 }
@@ -273,7 +307,7 @@ if (!function_exists('local_aisn_crs_find_existing_material')) {
             }
         }
 
-        if ($contenthash !== '' && local_aisn_crs_field_exists('local_aiskillnav_material', 'contenthash')) {
+        if ($contenthash !== '' && local_aisn_crs_field_exists('local_aiskillnavigator_material', 'contenthash')) {
             $found = local_aisn_crs_first_record(local_aisn_crs_get_records([
                 'courseid' => $courseid,
                 'materialtype' => 'course_resource',
@@ -292,13 +326,17 @@ if (!function_exists('local_aisn_crs_find_existing_material')) {
 if (!function_exists('local_aisn_crs_set_optional_material_fields')) {
     /**
      * Local aisn crs set optional material fields helper.
+     *
+     * @param stdClass $record Record.
+     * @param int $cmid Course module ID.
+     * @param string $contenthash Contenthash.
      */
     function local_aisn_crs_set_optional_material_fields(stdClass $record, int $cmid, string $contenthash): stdClass {
-        if (local_aisn_crs_field_exists('local_aiskillnav_material', 'sourcecmid')) {
+        if (local_aisn_crs_field_exists('local_aiskillnavigator_material', 'sourcecmid')) {
             $record->sourcecmid = $cmid;
         }
 
-        if (local_aisn_crs_field_exists('local_aiskillnav_material', 'contenthash')) {
+        if (local_aisn_crs_field_exists('local_aiskillnavigator_material', 'contenthash')) {
             $record->contenthash = $contenthash;
         }
 
@@ -309,6 +347,9 @@ if (!function_exists('local_aisn_crs_set_optional_material_fields')) {
 if (!function_exists('local_aisn_crs_policy_for_cmid')) {
     /**
      * Local aisn crs policy for cmid helper.
+     *
+     * @param int $cmid Course module ID.
+     * @param stdClass|null $existing Existing.
      */
     function local_aisn_crs_policy_for_cmid(int $cmid, ?stdClass $existing = null): array {
         $stored = $cmid > 0 ? get_config('local_aiskillnavigator', 'cm_external_ai_' . $cmid) : false;
@@ -326,6 +367,8 @@ if (!function_exists('local_aisn_crs_policy_for_cmid')) {
 if (!function_exists('local_aisn_crs_delete_materials')) {
     /**
      * Local aisn crs delete materials helper.
+     *
+     * @param array $materialids Stored material IDs.
      */
     function local_aisn_crs_delete_materials(array $materialids): int {
         global $DB;
@@ -336,23 +379,23 @@ if (!function_exists('local_aisn_crs_delete_materials')) {
             return 0;
         }
 
-        if (local_aisn_crs_table_exists('local_aiskillnav_chunk')) {
+        if (local_aisn_crs_table_exists('local_aiskillnavigator_chunk')) {
             [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mid');
-            $DB->delete_records_select('local_aiskillnav_chunk', 'materialid ' . $insql, $params);
+            $DB->delete_records_select('local_aiskillnavigator_chunk', 'materialid ' . $insql, $params);
         }
 
-        if (local_aisn_crs_table_exists('local_aisn_kg_source')) {
+        if (local_aisn_crs_table_exists('local_aiskillnavigator_kg_source')) {
             [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'kgs');
-            $DB->delete_records_select('local_aisn_kg_source', 'materialid ' . $insql, $params);
+            $DB->delete_records_select('local_aiskillnavigator_kg_source', 'materialid ' . $insql, $params);
         }
 
-        if (local_aisn_crs_table_exists('local_aisn_kg_relation')) {
+        if (local_aisn_crs_table_exists('local_aiskillnavigator_kg_relation')) {
             [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'kgr');
-            $DB->delete_records_select('local_aisn_kg_relation', 'materialid ' . $insql, $params);
+            $DB->delete_records_select('local_aiskillnavigator_kg_relation', 'materialid ' . $insql, $params);
         }
 
         [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mat');
-        $DB->delete_records_select('local_aiskillnav_material', 'id ' . $insql, $params);
+        $DB->delete_records_select('local_aiskillnavigator_material', 'id ' . $insql, $params);
 
         return count($materialids);
     }
@@ -361,6 +404,8 @@ if (!function_exists('local_aisn_crs_delete_materials')) {
 if (!function_exists('local_aisn_crs_is_prompt_material')) {
     /**
      * Local aisn crs is prompt material helper.
+     *
+     * @param stdClass $material Material.
      */
     function local_aisn_crs_is_prompt_material(stdClass $material): bool {
         $title = strtolower((string)($material->title ?? ''));
@@ -371,6 +416,9 @@ if (!function_exists('local_aisn_crs_is_prompt_material')) {
 if (!function_exists('local_aisn_crs_better_material')) {
     /**
      * Local aisn crs better material helper.
+     *
+     * @param stdClass $current Current.
+     * @param stdClass $candidate Candidate.
      */
     function local_aisn_crs_better_material(stdClass $current, stdClass $candidate): stdClass {
         $currentprompt = local_aisn_crs_is_prompt_material($current);
@@ -394,6 +442,8 @@ if (!function_exists('local_aisn_crs_better_material')) {
 if (!function_exists('local_aisn_crs_material_duplicate_key')) {
     /**
      * Local aisn crs material duplicate key helper.
+     *
+     * @param stdClass $material Material.
      */
     function local_aisn_crs_material_duplicate_key(stdClass $material): string {
         // AISN_DB_DUPLICATE_KEY_CONTENT_FIRST_V1.
@@ -443,15 +493,17 @@ if (!function_exists('local_aisn_crs_material_duplicate_key')) {
 if (!function_exists('local_aisn_crs_cleanup_duplicate_course_resources')) {
     /**
      * Local aisn crs cleanup duplicate course resources helper.
+     *
+     * @param int $courseid Moodle course ID.
      */
     function local_aisn_crs_cleanup_duplicate_course_resources(int $courseid): int {
         global $DB;
 
-        if (!local_aisn_crs_table_exists('local_aiskillnav_material')) {
+        if (!local_aisn_crs_table_exists('local_aiskillnavigator_material')) {
             return 0;
         }
 
-        $records = $DB->get_records('local_aiskillnav_material', [
+        $records = $DB->get_records('local_aiskillnavigator_material', [
             'courseid' => $courseid,
             'materialtype' => 'course_resource',
         ], 'timemodified DESC, id DESC');
@@ -496,6 +548,10 @@ if (!function_exists('local_aisn_crs_cleanup_duplicate_course_resources')) {
 if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
     /**
      * Local aiskillnavigator sync course resources helper.
+     *
+     * @param int $courseid Moodle course ID.
+     * @param int $userid Moodle user ID.
+     * @param bool $force Force.
      */
     function local_aiskillnavigator_sync_course_resources(int $courseid, int $userid = 0, bool $force = false): array {
         global $DB, $USER;
@@ -506,7 +562,7 @@ if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
             return ['created' => 0, 'updated' => 0, 'skipped' => 0, 'duplicatesdeleted' => 0];
         }
 
-        if ($courseid <= SITEID || !local_aisn_crs_table_exists('local_aiskillnav_material')) {
+        if ($courseid <= SITEID || !local_aisn_crs_table_exists('local_aiskillnavigator_material')) {
             return ['created' => 0, 'updated' => 0, 'skipped' => 0, 'duplicatesdeleted' => 0];
         }
 
@@ -569,15 +625,15 @@ if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
                 }
 
                 $needsupdate = $needsupdate
-                    || (local_aisn_crs_field_exists('local_aiskillnav_material', 'sourcecmid')
+                    || (local_aisn_crs_field_exists('local_aiskillnavigator_material', 'sourcecmid')
                         && (int)($existing->sourcecmid ?? 0) !== $cmid)
-                    || (local_aisn_crs_field_exists('local_aiskillnav_material', 'contenthash')
+                    || (local_aisn_crs_field_exists('local_aiskillnavigator_material', 'contenthash')
                         && (string)($existing->contenthash ?? '') !== $hash);
                 $existing = local_aisn_crs_set_optional_material_fields($existing, $cmid, $hash);
 
                 if ($needsupdate || $force) {
                     $existing->timemodified = time();
-                    $DB->update_record('local_aiskillnav_material', $existing);
+                    $DB->update_record('local_aiskillnavigator_material', $existing);
                     $updated++;
                     $changedids[] = (int)$existing->id;
                 } else {
@@ -599,7 +655,7 @@ if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
             $record->timemodified = time();
             $record = local_aisn_crs_set_optional_material_fields($record, $cmid, $hash);
 
-            $newid = $DB->insert_record('local_aiskillnav_material', $record);
+            $newid = $DB->insert_record('local_aiskillnavigator_material', $record);
             $created++;
             $changedids[] = (int)$newid;
         }
@@ -630,6 +686,8 @@ if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
 if (!function_exists('local_aiskillnavigator_collect_course_resource_documents')) {
     /**
      * Local aiskillnavigator collect course resource documents helper.
+     *
+     * @param int $courseid Moodle course ID.
      */
     function local_aiskillnavigator_collect_course_resource_documents(int $courseid): array {
         global $DB;
@@ -717,6 +775,11 @@ if (!function_exists('local_aiskillnavigator_extract_files_from_area')) {
     // phpcs:ignore moodle.Files.LineLength
     /**
      * Extract supported files from a Moodle file area.
+     *
+     * @param int $contextid Contextid.
+     * @param string $component Component.
+     * @param string $filearea Filearea.
+     * @param int $cmid Course module ID.
      */
     function local_aiskillnavigator_extract_files_from_area(
         int $contextid,
@@ -751,6 +814,9 @@ if (!function_exists('local_aiskillnavigator_extract_files_from_area')) {
 if (!function_exists('local_aiskillnavigator_extract_stored_file_text')) {
     /**
      * Local aiskillnavigator extract stored file text helper.
+     *
+     * @param stored_file $file File.
+     * @param int $cmid Course module ID.
      */
     function local_aiskillnavigator_extract_stored_file_text(stored_file $file, int $cmid = 0): string {
         $filename = strtolower($file->get_filename());
@@ -804,6 +870,8 @@ if (!function_exists('local_aiskillnavigator_extract_stored_file_text')) {
 if (!function_exists('local_aiskillnavigator_extract_docx_text')) {
     /**
      * Local aiskillnavigator extract docx text helper.
+     *
+     * @param stored_file $file File.
      */
     function local_aiskillnavigator_extract_docx_text(stored_file $file): string {
         $tmpdir = make_temp_directory('local_aiskillnavigator/course_import');
@@ -847,6 +915,8 @@ if (!function_exists('local_aiskillnavigator_extract_docx_text')) {
 if (!function_exists('local_aiskillnavigator_extract_pptx_text')) {
     /**
      * Local aiskillnavigator extract pptx text helper.
+     *
+     * @param stored_file $file File.
      */
     function local_aiskillnavigator_extract_pptx_text(stored_file $file): string {
         $tmpdir = make_temp_directory('local_aiskillnavigator/course_import');
@@ -886,6 +956,8 @@ if (!function_exists('local_aiskillnavigator_extract_pptx_text')) {
 if (!function_exists('local_aiskillnavigator_extract_image_text')) {
     /**
      * Local aiskillnavigator extract image text helper.
+     *
+     * @param stored_file $file File.
      */
     function local_aiskillnavigator_extract_image_text(stored_file $file): string {
         $tmpdir = make_temp_directory('local_aiskillnavigator/course_import');
@@ -911,6 +983,8 @@ if (!function_exists('local_aiskillnavigator_extract_image_text')) {
 if (!function_exists('local_aiskillnavigator_extract_pdf_text_if_possible')) {
     /**
      * Local aiskillnavigator extract pdf text if possible helper.
+     *
+     * @param stored_file $file File.
      */
     function local_aiskillnavigator_extract_pdf_text_if_possible(stored_file $file): string {
         $tmpdir = make_temp_directory('local_aiskillnavigator/course_import');
@@ -939,6 +1013,8 @@ if (!function_exists('local_aiskillnavigator_extract_pdf_text_if_possible')) {
 if (!function_exists('local_aiskillnavigator_clean_html_text')) {
     /**
      * Local aiskillnavigator clean html text helper.
+     *
+     * @param string $html Html.
      */
     function local_aiskillnavigator_clean_html_text(string $html): string {
         $text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -950,6 +1026,8 @@ if (!function_exists('local_aiskillnavigator_clean_html_text')) {
 if (!function_exists('local_aiskillnavigator_limit_material_text')) {
     /**
      * Local aiskillnavigator limit material text helper.
+     *
+     * @param string $text Text to process.
      */
     function local_aiskillnavigator_limit_material_text(string $text): string {
         $text = trim((string)preg_replace('/\s+/u', ' ', $text));
@@ -965,6 +1043,8 @@ if (!function_exists('local_aiskillnavigator_limit_material_text')) {
 if (!function_exists('local_aiskillnavigator_course_resource_document_is_prompt_generated')) {
     /**
      * Local aiskillnavigator course resource document is prompt generated helper.
+     *
+     * @param array $doc Doc.
      */
     function local_aiskillnavigator_course_resource_document_is_prompt_generated(array $doc): bool {
         $title = strtolower((string)($doc['title'] ?? ''));
@@ -977,6 +1057,8 @@ if (!function_exists('local_aiskillnavigator_course_resource_document_is_prompt_
 if (!function_exists('local_aiskillnavigator_course_resource_clean_title')) {
     /**
      * Local aiskillnavigator course resource clean title helper.
+     *
+     * @param string $title Title.
      */
     function local_aiskillnavigator_course_resource_clean_title(string $title): string {
         $title = trim($title);
@@ -993,6 +1075,8 @@ if (!function_exists('local_aiskillnavigator_course_resource_clean_title')) {
 if (!function_exists('local_aiskillnavigator_course_resource_filename_key')) {
     /**
      * Local aiskillnavigator course resource filename key helper.
+     *
+     * @param array $doc Doc.
      */
     function local_aiskillnavigator_course_resource_filename_key(array $doc): string {
         $title = local_aiskillnavigator_course_resource_clean_title((string)($doc['title'] ?? ''));
@@ -1014,6 +1098,8 @@ if (!function_exists('local_aiskillnavigator_course_resource_filename_key')) {
 if (!function_exists('local_aiskillnavigator_course_resource_body_key')) {
     /**
      * Local aiskillnavigator course resource body key helper.
+     *
+     * @param array $doc Doc.
      */
     function local_aiskillnavigator_course_resource_body_key(array $doc): string {
         $content = (string)($doc['content'] ?? '');
@@ -1033,6 +1119,8 @@ if (!function_exists('local_aiskillnavigator_course_resource_body_key')) {
 if (!function_exists('local_aiskillnavigator_course_resource_document_duplicate_key')) {
     /**
      * Local aiskillnavigator course resource document duplicate key helper.
+     *
+     * @param array $doc Doc.
      */
     function local_aiskillnavigator_course_resource_document_duplicate_key(array $doc): string {
         // AISN_DUPLICATE_KEY_CONTENT_FIRST_V1.
@@ -1066,6 +1154,8 @@ if (!function_exists('local_aiskillnavigator_course_resource_document_duplicate_
 if (!function_exists('local_aiskillnavigator_dedupe_course_resource_documents')) {
     /**
      * Local aiskillnavigator dedupe course resource documents helper.
+     *
+     * @param array $documents Documents.
      */
     function local_aiskillnavigator_dedupe_course_resource_documents(array $documents): array {
         $normalfilenames = [];
@@ -1112,6 +1202,9 @@ if (!function_exists('local_aiskillnavigator_dedupe_course_resource_documents'))
 if (!function_exists('local_aiskillnavigator_try_index_synced_materials')) {
     /**
      * Local aiskillnavigator try index synced materials helper.
+     *
+     * @param int $courseid Moodle course ID.
+     * @param array $materialids Stored material IDs.
      */
     function local_aiskillnavigator_try_index_synced_materials(int $courseid, array $materialids): void {
         if (empty($materialids) || !class_exists('\local_aiskillnavigator\service\embedding_service')) {

@@ -62,84 +62,128 @@ class ai_prompt_builder {
 
     /**
      * Tutor prompt helper.
+     *
+     * @param string $question Question.
      */
     public function tutor_prompt(string $question): string {
         return $this->builders['tutor']->plain($question);
     }
     /**
      * Tutor with materials prompt helper.
+     *
+     * @param string $question Question.
+     * @param array $materials Course materials used for this operation.
      */
     public function tutor_with_materials_prompt(string $question, array $materials): string {
         return $this->builders['tutor']->with_materials($question, $materials);
     }
     /**
      * Tutor with rag prompt helper.
+     *
+     * @param string $question Question.
+     * @param string $ragcontext Ragcontext.
      */
     public function tutor_with_rag_prompt(string $question, string $ragcontext): string {
         return $this->builders['tutor']->with_rag($question, $ragcontext);
     }
     /**
      * Quiz prompt helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $difficulty Requested difficulty level.
      */
     public function quiz_prompt(string $topic, string $difficulty): string {
         return $this->builders['quiz']->plain($topic, $difficulty);
     }
     /**
      * Quiz from materials prompt helper.
+     *
+     * @param string $focus Focus.
+     * @param string $difficulty Requested difficulty level.
+     * @param array $materials Course materials used for this operation.
      */
     public function quiz_from_materials_prompt(string $focus, string $difficulty, array $materials): string {
         return $this->builders['quiz']->from_materials($focus, $difficulty, $materials);
     }
     /**
      * Quiz with rag prompt helper.
+     *
+     * @param string $focus Focus.
+     * @param string $difficulty Requested difficulty level.
+     * @param string $ragcontext Ragcontext.
      */
     public function quiz_with_rag_prompt(string $focus, string $difficulty, string $ragcontext): string {
         return $this->builders['quiz']->with_rag($focus, $difficulty, $ragcontext);
     }
     /**
      * Mindmap prompt helper.
+     *
+     * @param string $topic Requested learning topic.
      */
     public function mindmap_prompt(string $topic): string {
         return $this->builders['mindmap']->plain($topic);
     }
     /**
      * Mindmap from materials prompt helper.
+     *
+     * @param string $focus Focus.
+     * @param array $materials Course materials used for this operation.
      */
     public function mindmap_from_materials_prompt(string $focus, array $materials): string {
         return $this->builders['mindmap']->from_materials($focus, $materials);
     }
     /**
      * Mindmap with rag prompt helper.
+     *
+     * @param string $focus Focus.
+     * @param string $ragcontext Ragcontext.
      */
     public function mindmap_with_rag_prompt(string $focus, string $ragcontext): string {
         return $this->builders['mindmap']->with_rag($focus, $ragcontext);
     }
     /**
      * Xr scenario prompt helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $environment Environment.
      */
     public function xr_scenario_prompt(string $topic, string $environment): string {
         return $this->builders['xr']->plain($topic, $environment);
     }
     /**
      * Xr scenario from materials prompt helper.
+     *
+     * @param string $focus Focus.
+     * @param string $environment Environment.
+     * @param array $materials Course materials used for this operation.
      */
     public function xr_scenario_from_materials_prompt(string $focus, string $environment, array $materials): string {
         return $this->builders['xr']->from_materials($focus, $environment, $materials);
     }
     /**
      * Xr scenario with rag prompt helper.
+     *
+     * @param string $focus Focus.
+     * @param string $environment Environment.
+     * @param string $ragcontext Ragcontext.
      */
     public function xr_scenario_with_rag_prompt(string $focus, string $environment, string $ragcontext): string {
         return $this->builders['xr']->with_rag($focus, $environment, $ragcontext);
     }
     /**
      * Summarize materials prompt helper.
+     *
+     * @param string $focus Focus.
+     * @param array $materials Course materials used for this operation.
      */
     public function summarize_materials_prompt(string $focus, array $materials): string {
         return $this->builders['summary']->from_materials($focus, $materials);
     }
     /**
      * Summarize rag prompt helper.
+     *
+     * @param string $focus Focus.
+     * @param string $ragcontext Ragcontext.
      */
     public function summarize_rag_prompt(string $focus, string $ragcontext): string {
         return $this->builders['summary']->with_rag($focus, $ragcontext);

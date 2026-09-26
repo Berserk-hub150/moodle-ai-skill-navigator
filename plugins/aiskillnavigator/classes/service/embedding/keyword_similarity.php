@@ -34,6 +34,9 @@ defined('MOODLE_INTERNAL') || die();
 class keyword_similarity {
     /**
      * Score helper.
+     *
+     * @param string $query Query.
+     * @param string $text Text to process.
      */
     public function score(string $query, string $text): float {
         $querywords = $this->words($query);
@@ -51,6 +54,8 @@ class keyword_similarity {
 
     /**
      * Words helper.
+     *
+     * @param string $text Text to process.
      */
     private function words(string $text): array {
         $text = \core_text::strtolower($text);

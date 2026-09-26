@@ -52,7 +52,7 @@ $PAGE->set_heading(get_string('page_teacher_heading', 'local_aiskillnavigator'))
 
 $attempts = (new \local_aiskillnavigator\service\quiz_attempt_repository())->for_course((int)$courseid);
 
-$materialcount = $DB->count_records('local_aiskillnav_material', ['courseid' => $courseid]);
+$materialcount = $DB->count_records('local_aiskillnavigator_material', ['courseid' => $courseid]);
 
 $totalattempts = count($attempts);
 $classaverage = 0;
@@ -192,6 +192,8 @@ foreach ($students as $student) {
 
 /**
  * Local aiskillnavigator teacher badge class helper.
+ *
+ * @param int $percentage Percentage.
  */
 function local_aiskillnavigator_teacher_badge_class(int $percentage): string {
     if ($percentage >= 80) {
@@ -207,6 +209,8 @@ function local_aiskillnavigator_teacher_badge_class(int $percentage): string {
 
 /**
  * Local aiskillnavigator teacher status text helper.
+ *
+ * @param int $percentage Percentage.
  */
 function local_aiskillnavigator_teacher_status_text(int $percentage): string {
     if ($percentage >= 80) {

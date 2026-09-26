@@ -28,6 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 if (!function_exists('local_aisn_fix_mojibake')) {
     /**
      * Local aisn fix mojibake helper.
+     *
+     * @param string $text Text to process.
      */
     function local_aisn_fix_mojibake(string $text): string {
         $map = [

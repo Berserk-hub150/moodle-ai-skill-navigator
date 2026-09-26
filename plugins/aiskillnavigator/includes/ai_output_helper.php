@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Local aiskillnavigator mojibake score helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aiskillnavigator_mojibake_score(string $text): int {
     $bad = ['Ã', 'Â', 'â€', 'â€™', 'â€œ', 'â€', 'â€“', 'â€”', '�'];
@@ -42,6 +44,8 @@ function local_aiskillnavigator_mojibake_score(string $text): int {
 
 /**
  * Local aiskillnavigator fix mojibake helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aiskillnavigator_fix_mojibake(string $text): string {
     $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -105,6 +109,8 @@ function local_aiskillnavigator_fix_mojibake(string $text): string {
 
 /**
  * Local aiskillnavigator fix mojibake recursive helper.
+ *
+ * @param mixed $value Value to process.
  */
 function local_aiskillnavigator_fix_mojibake_recursive($value) {
     if (is_string($value)) {
@@ -132,6 +138,8 @@ function local_aiskillnavigator_fix_mojibake_recursive($value) {
 
 /**
  * Local aiskillnavigator render ai inline helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aiskillnavigator_render_ai_inline(string $text): string {
     $safe = s(local_aiskillnavigator_fix_mojibake($text));
@@ -142,6 +150,8 @@ function local_aiskillnavigator_render_ai_inline(string $text): string {
 
 /**
  * Local aiskillnavigator render ai answer helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aiskillnavigator_render_ai_answer(string $text): string {
     $text = local_aiskillnavigator_fix_mojibake($text);

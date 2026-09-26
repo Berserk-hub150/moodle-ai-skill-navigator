@@ -31,6 +31,9 @@ defined('MOODLE_INTERNAL') || die();
 if (!function_exists('local_aisn_prod_bool_config')) {
     /**
      * Local aisn prod bool config helper.
+     *
+     * @param string $name Name.
+     * @param bool $default Default.
      */
     function local_aisn_prod_bool_config(string $name, bool $default = false): bool {
         $value = get_config('local_aiskillnavigator', $name);
@@ -62,6 +65,8 @@ if (!function_exists('local_aisn_prod_endpoint')) {
 if (!function_exists('local_aisn_prod_is_local_host')) {
     /**
      * Local aisn prod is local host helper.
+     *
+     * @param string $host Host.
      */
     function local_aisn_prod_is_local_host(string $host): bool {
         $host = strtolower(trim($host, " \t\n\r\0\x0B[]"));
@@ -78,6 +83,8 @@ if (!function_exists('local_aisn_prod_is_local_host')) {
 if (!function_exists('local_aisn_prod_endpoint_is_local')) {
     /**
      * Local aisn prod endpoint is local helper.
+     *
+     * @param string $endpoint Endpoint.
      */
     function local_aisn_prod_endpoint_is_local(string $endpoint): bool {
         $endpoint = trim($endpoint);
@@ -119,6 +126,8 @@ if (!function_exists('local_aisn_prod_external_ai_globally_enabled')) {
 if (!function_exists('local_aisn_prod_material_external_flag')) {
     /**
      * Local aisn prod material external flag helper.
+     *
+     * @param stdClass $material Material.
      */
     function local_aisn_prod_material_external_flag(stdClass $material): bool {
         if (isset($material->externalaiallowed)) {
@@ -134,6 +143,8 @@ if (!function_exists('local_aisn_prod_material_external_flag')) {
 if (!function_exists('local_aisn_prod_can_send_material_to_current_ai')) {
     /**
      * Local aisn prod can send material to current ai helper.
+     *
+     * @param stdClass $material Material.
      */
     function local_aisn_prod_can_send_material_to_current_ai(stdClass $material): bool {
         if (local_aisn_prod_current_ai_is_local()) {
@@ -166,6 +177,8 @@ if (!function_exists('local_aisn_prod_external_block_message')) {
 if (!function_exists('local_aisn_prod_endpoint_is_allowed')) {
     /**
      * Local aisn prod endpoint is allowed helper.
+     *
+     * @param string $endpoint Endpoint.
      */
     function local_aisn_prod_endpoint_is_allowed(string $endpoint): bool {
         $endpoint = trim($endpoint);
@@ -192,6 +205,8 @@ if (!function_exists('local_aisn_prod_course_builder_destructive_enabled')) {
 if (!function_exists('local_aisn_prod_course_builder_action_allowed')) {
     /**
      * Local aisn prod course builder action allowed helper.
+     *
+     * @param string $action Action.
      */
     function local_aisn_prod_course_builder_action_allowed(string $action): bool {
         $action = strtolower(trim($action));
@@ -235,6 +250,9 @@ if (!function_exists('local_aisn_prod_course_builder_action_allowed')) {
 if (!function_exists('local_aisn_prod_clean_request_text')) {
     /**
      * Local aisn prod clean request text helper.
+     *
+     * @param string $text Text to process.
+     * @param int $maxchars Maximum character count.
      */
     function local_aisn_prod_clean_request_text(string $text, int $maxchars = 12000): string {
         $text = trim($text);

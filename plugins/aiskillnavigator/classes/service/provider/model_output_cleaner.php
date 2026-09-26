@@ -34,6 +34,8 @@ defined('MOODLE_INTERNAL') || die();
 class model_output_cleaner {
     /**
      * Clean helper.
+     *
+     * @param string $text Text to process.
      */
     public function clean(string $text): string {
         $text = trim($text);

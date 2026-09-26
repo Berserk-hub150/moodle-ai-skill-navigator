@@ -43,20 +43,22 @@ use core_privacy\local\request\writer;
 class provider implements core_userlist_provider, metadata_provider, request_provider {
     /** @var array Tables whose rows are owned by a Moodle user. */
     private const USER_TABLES = [
-        'local_aiskillnav_material',
-        'local_aiskillnav_attempt',
-        'local_aiskillnav_assessment',
-        'local_aiskillnav_ass_att',
-        'local_aiskillnav_sim',
-        'local_aiskillnav_tutor_sig',
+        'local_aiskillnavigator_material',
+        'local_aiskillnavigator_attempt',
+        'local_aiskillnavigator_assessment',
+        'local_aiskillnavigator_ass_att',
+        'local_aiskillnavigator_sim',
+        'local_aiskillnavigator_tutor_sig',
     ];
 
     /**
      * Get metadata helper.
+     *
+     * @param collection $collection Collection.
      */
     public static function get_metadata(collection $collection): collection {
         $collection->add_database_table(
-            'local_aiskillnav_material',
+            'local_aiskillnavigator_material',
             [
                 'courseid' => 'privacy:metadata:courseid',
                 'userid' => 'privacy:metadata:userid',
@@ -68,11 +70,11 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
                 'timecreated' => 'privacy:metadata:timecreated',
                 'timemodified' => 'privacy:metadata:timemodified',
             ],
-            'privacy:metadata:local_aiskillnav_material'
+            'privacy:metadata:local_aiskillnavigator_material'
         );
 
         $collection->add_database_table(
-            'local_aiskillnav_attempt',
+            'local_aiskillnavigator_attempt',
             [
                 'courseid' => 'privacy:metadata:courseid',
                 'userid' => 'privacy:metadata:userid',
@@ -85,11 +87,11 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
                 'answersjson' => 'privacy:metadata:content',
                 'timecreated' => 'privacy:metadata:timecreated',
             ],
-            'privacy:metadata:local_aiskillnav_attempt'
+            'privacy:metadata:local_aiskillnavigator_attempt'
         );
 
         $collection->add_database_table(
-            'local_aiskillnav_chunk',
+            'local_aiskillnavigator_chunk',
             [
                 'materialid' => 'privacy:metadata:content',
                 'courseid' => 'privacy:metadata:courseid',
@@ -98,11 +100,11 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
                 'embeddingmodel' => 'privacy:metadata:content',
                 'timecreated' => 'privacy:metadata:timecreated',
             ],
-            'privacy:metadata:local_aiskillnav_chunk'
+            'privacy:metadata:local_aiskillnavigator_chunk'
         );
 
         $collection->add_database_table(
-            'local_aiskillnav_assessment',
+            'local_aiskillnavigator_assessment',
             [
                 'courseid' => 'privacy:metadata:courseid',
                 'userid' => 'privacy:metadata:userid',
@@ -116,11 +118,11 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
                 'timecreated' => 'privacy:metadata:timecreated',
                 'timemodified' => 'privacy:metadata:timemodified',
             ],
-            'privacy:metadata:local_aiskillnav_assessment'
+            'privacy:metadata:local_aiskillnavigator_assessment'
         );
 
         $collection->add_database_table(
-            'local_aiskillnav_ass_att',
+            'local_aiskillnavigator_ass_att',
             [
                 'assessmentid' => 'privacy:metadata:content',
                 'courseid' => 'privacy:metadata:courseid',
@@ -131,11 +133,11 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
                 'answersjson' => 'privacy:metadata:content',
                 'timecreated' => 'privacy:metadata:timecreated',
             ],
-            'privacy:metadata:local_aiskillnav_ass_att'
+            'privacy:metadata:local_aiskillnavigator_ass_att'
         );
 
         $collection->add_database_table(
-            'local_aiskillnav_sim',
+            'local_aiskillnavigator_sim',
             [
                 'courseid' => 'privacy:metadata:courseid',
                 'userid' => 'privacy:metadata:userid',
@@ -148,11 +150,11 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
                 'timecreated' => 'privacy:metadata:timecreated',
                 'timemodified' => 'privacy:metadata:timemodified',
             ],
-            'privacy:metadata:local_aiskillnav_sim'
+            'privacy:metadata:local_aiskillnavigator_sim'
         );
 
         $collection->add_database_table(
-            'local_aiskillnav_tutor_sig',
+            'local_aiskillnavigator_tutor_sig',
             [
                 'courseid' => 'privacy:metadata:courseid',
                 'userid' => 'privacy:metadata:userid',
@@ -165,7 +167,7 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
                 'answerpreview' => 'privacy:metadata:content',
                 'timecreated' => 'privacy:metadata:timecreated',
             ],
-            'privacy:metadata:local_aiskillnav_tutor_sig'
+            'privacy:metadata:local_aiskillnavigator_tutor_sig'
         );
 
         $collection->add_external_location_link(
@@ -182,6 +184,8 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
 
     /**
      * Get contexts for userid helper.
+     *
+     * @param int $userid Moodle user ID.
      */
     public static function get_contexts_for_userid(int $userid): contextlist {
         $contextlist = new contextlist();
@@ -205,6 +209,8 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
 
     /**
      * Export user data helper.
+     *
+     * @param approved_contextlist $contextlist Contextlist.
      */
     public static function export_user_data(approved_contextlist $contextlist): void {
         global $DB;
@@ -239,6 +245,8 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
 
     /**
      * Delete data for all users in context helper.
+     *
+     * @param \context $context Moodle context.
      */
     public static function delete_data_for_all_users_in_context(\context $context): void {
         global $DB;
@@ -249,8 +257,8 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
 
         $courseid = (int)$context->instanceid;
 
-        if (self::table_exists('local_aiskillnav_material')) {
-            $materialids = $DB->get_fieldset_select('local_aiskillnav_material', 'id', 'courseid = ?', [$courseid]);
+        if (self::table_exists('local_aiskillnavigator_material')) {
+            $materialids = $DB->get_fieldset_select('local_aiskillnavigator_material', 'id', 'courseid = ?', [$courseid]);
             self::delete_material_related($materialids);
         }
 
@@ -260,9 +268,13 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
             }
         }
 
-        foreach (['local_aisn_kg_source', 'local_aisn_kg_relation', 'local_aisn_kg_concept'] as $table) {
+        foreach ([
+            'local_aiskillnavigator_kg_source',
+            'local_aiskillnavigator_kg_relation',
+            'local_aiskillnavigator_kg_concept',
+        ] as $table) {
             if (self::table_exists($table)) {
-                if ($table === 'local_aisn_kg_concept' || $table === 'local_aisn_kg_relation') {
+                if ($table === 'local_aiskillnavigator_kg_concept' || $table === 'local_aiskillnavigator_kg_relation') {
                     $DB->delete_records($table, ['courseid' => $courseid]);
                 }
             }
@@ -271,6 +283,8 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
 
     /**
      * Delete data for user helper.
+     *
+     * @param approved_contextlist $contextlist Contextlist.
      */
     public static function delete_data_for_user(approved_contextlist $contextlist): void {
         $userid = (int)$contextlist->get_user()->id;
@@ -282,6 +296,8 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
 
     /**
      * Get users in context helper.
+     *
+     * @param userlist $userlist Userlist.
      */
     public static function get_users_in_context(userlist $userlist): void {
         $context = $userlist->get_context();
@@ -310,6 +326,8 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
 
     /**
      * Delete data for users helper.
+     *
+     * @param approved_userlist $userlist Userlist.
      */
     public static function delete_data_for_users(approved_userlist $userlist): void {
         self::delete_userids_in_context($userlist->get_context(), $userlist->get_userids());
@@ -317,6 +335,9 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
 
     /**
      * Delete userids in context helper.
+     *
+     * @param \context $context Moodle context.
+     * @param array $userids Moodle user IDs.
      */
     private static function delete_userids_in_context(\context $context, array $userids): void {
         global $DB;
@@ -334,37 +355,37 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
 
         [$usersql, $userparams] = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED, 'aisnuser');
 
-        if (self::table_exists('local_aiskillnav_material')) {
+        if (self::table_exists('local_aiskillnavigator_material')) {
             $params = array_merge(['courseid' => $courseid], $userparams);
             $materialids = $DB->get_fieldset_select(
-                'local_aiskillnav_material',
+                'local_aiskillnavigator_material',
                 'id',
                 'courseid = :courseid AND userid ' . $usersql,
                 $params
             );
             self::delete_material_related($materialids);
-            $DB->delete_records_select('local_aiskillnav_material', 'courseid = :courseid AND userid ' . $usersql, $params);
+            $DB->delete_records_select('local_aiskillnavigator_material', 'courseid = :courseid AND userid ' . $usersql, $params);
         }
 
-        if (self::table_exists('local_aiskillnav_assessment')) {
+        if (self::table_exists('local_aiskillnavigator_assessment')) {
             $params = array_merge(['courseid' => $courseid], $userparams);
             $assessmentids = $DB->get_fieldset_select(
-                'local_aiskillnav_assessment',
+                'local_aiskillnavigator_assessment',
                 'id',
                 'courseid = :courseid AND userid ' . $usersql,
                 $params
             );
 
-            if (!empty($assessmentids) && self::table_exists('local_aiskillnav_ass_att')) {
+            if (!empty($assessmentids) && self::table_exists('local_aiskillnavigator_ass_att')) {
                 [$asssql, $assparams] = $DB->get_in_or_equal($assessmentids, SQL_PARAMS_NAMED, 'aisnass');
-                $DB->delete_records_select('local_aiskillnav_ass_att', 'assessmentid ' . $asssql, $assparams);
+                $DB->delete_records_select('local_aiskillnavigator_ass_att', 'assessmentid ' . $asssql, $assparams);
             }
 
-            $DB->delete_records_select('local_aiskillnav_assessment', 'courseid = :courseid AND userid ' . $usersql, $params);
+            $DB->delete_records_select('local_aiskillnavigator_assessment', 'courseid = :courseid AND userid ' . $usersql, $params);
         }
 
         // phpcs:ignore moodle.Files.LineLength
-        foreach (['local_aiskillnav_attempt', 'local_aiskillnav_ass_att', 'local_aiskillnav_sim', 'local_aiskillnav_tutor_sig'] as $table) {
+        foreach (['local_aiskillnavigator_attempt', 'local_aiskillnavigator_ass_att', 'local_aiskillnavigator_sim', 'local_aiskillnavigator_tutor_sig'] as $table) {
             if (!self::table_exists($table)) {
                 continue;
             }
@@ -376,6 +397,8 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
 
     /**
      * Delete material related helper.
+     *
+     * @param array $materialids Stored material IDs.
      */
     private static function delete_material_related(array $materialids): void {
         global $DB;
@@ -389,16 +412,20 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
         [$sql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'aisnmat');
         $conceptids = [];
 
-        if (self::table_exists('local_aisn_kg_source')) {
+        if (self::table_exists('local_aiskillnavigator_kg_source')) {
             $conceptids = $DB->get_fieldset_select(
-                'local_aisn_kg_source',
+                'local_aiskillnavigator_kg_source',
                 'conceptid',
                 'materialid ' . $sql,
                 $params
             );
         }
 
-        foreach (['local_aiskillnav_chunk', 'local_aisn_kg_source', 'local_aisn_kg_relation'] as $table) {
+        foreach ([
+            'local_aiskillnavigator_chunk',
+            'local_aiskillnavigator_kg_source',
+            'local_aiskillnavigator_kg_relation',
+        ] as $table) {
             if (self::table_exists($table)) {
                 $DB->delete_records_select($table, 'materialid ' . $sql, $params);
             }
@@ -409,6 +436,8 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
 
     /**
      * Delete orphan concepts helper.
+     *
+     * @param array $conceptids Conceptids.
      */
     private static function delete_orphan_concepts(array $conceptids): void {
         global $DB;
@@ -417,8 +446,8 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
 
         if (
             empty($conceptids) ||
-            !self::table_exists('local_aisn_kg_concept') ||
-            !self::table_exists('local_aisn_kg_source')
+            !self::table_exists('local_aiskillnavigator_kg_concept') ||
+            !self::table_exists('local_aiskillnavigator_kg_source')
         ) {
             return;
         }
@@ -426,8 +455,8 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
         [$sql, $params] = $DB->get_in_or_equal($conceptids, SQL_PARAMS_NAMED, 'aisnconcept');
         $orphans = $DB->get_fieldset_sql(
             "SELECT c.id
-               FROM {local_aisn_kg_concept} c
-          LEFT JOIN {local_aisn_kg_source} s ON s.conceptid = c.id
+               FROM {local_aiskillnavigator_kg_concept} c
+          LEFT JOIN {local_aiskillnavigator_kg_source} s ON s.conceptid = c.id
               WHERE c.id {$sql}
                 AND s.id IS NULL",
             $params
@@ -443,7 +472,7 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
             'aisnorph'
         );
 
-        if (self::table_exists('local_aisn_kg_relation')) {
+        if (self::table_exists('local_aiskillnavigator_kg_relation')) {
             [$sourcesql, $sourceparams] = $DB->get_in_or_equal(
                 $orphans,
                 SQL_PARAMS_NAMED,
@@ -456,17 +485,19 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
             );
 
             $DB->delete_records_select(
-                'local_aisn_kg_relation',
+                'local_aiskillnavigator_kg_relation',
                 'sourceconceptid ' . $sourcesql . ' OR targetconceptid ' . $targetsql,
                 array_merge($sourceparams, $targetparams)
             );
         }
 
-        $DB->delete_records_select('local_aisn_kg_concept', 'id ' . $orphansql, $orphanparams);
+        $DB->delete_records_select('local_aiskillnavigator_kg_concept', 'id ' . $orphansql, $orphanparams);
     }
 
     /**
      * Table exists helper.
+     *
+     * @param string $table Table.
      */
     private static function table_exists(string $table): bool {
         global $DB;

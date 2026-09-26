@@ -77,6 +77,8 @@ class ai_provider_config {
 
     /**
      * Default model helper.
+     *
+     * @param string $provider Provider.
      */
     private function default_model(string $provider): string {
         $defaults = [
@@ -103,6 +105,8 @@ class ai_provider_config {
 
     /**
      * Default endpoint helper.
+     *
+     * @param string $provider Provider.
      */
     private function default_endpoint(string $provider): string {
         $defaults = [

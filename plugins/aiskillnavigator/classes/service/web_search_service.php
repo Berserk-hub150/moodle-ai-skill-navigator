@@ -67,6 +67,9 @@ class web_search_service {
 
     /**
      * Search helper.
+     *
+     * @param string $query Query.
+     * @param int $limit Limit.
      */
     public function search(string $query, int $limit = 5): array {
         $query = trim($query);
@@ -93,6 +96,9 @@ class web_search_service {
 
     /**
      * Search tavily helper.
+     *
+     * @param string $query Query.
+     * @param int $limit Limit.
      */
     private function search_tavily(string $query, int $limit): array {
         $endpoint = $this->endpoint !== '' ? $this->endpoint : 'https://api.tavily.com/search';
@@ -131,6 +137,9 @@ class web_search_service {
 
     /**
      * Search brave helper.
+     *
+     * @param string $query Query.
+     * @param int $limit Limit.
      */
     private function search_brave(string $query, int $limit): array {
         $endpoint = $this->endpoint !== '' ? $this->endpoint : 'https://api.search.brave.com/res/v1/web/search';
@@ -167,6 +176,9 @@ class web_search_service {
 
     /**
      * Search serpapi helper.
+     *
+     * @param string $query Query.
+     * @param int $limit Limit.
      */
     private function search_serpapi(string $query, int $limit): array {
         $endpoint = $this->endpoint !== '' ? $this->endpoint : 'https://serpapi.com/search.json';
@@ -203,6 +215,10 @@ class web_search_service {
 
     /**
      * Post json helper.
+     *
+     * @param string $url Url.
+     * @param array $payload Payload.
+     * @param array $headers Headers.
      */
     private function post_json(string $url, array $payload, array $headers): array {
         $validation = $this->validate_url($url);
@@ -249,6 +265,9 @@ class web_search_service {
 
     /**
      * Get json helper.
+     *
+     * @param string $url Url.
+     * @param array $headers Headers.
      */
     private function get_json(string $url, array $headers): array {
         $validation = $this->validate_url($url);
@@ -288,6 +307,8 @@ class web_search_service {
 
     /**
      * Exec json helper.
+     *
+     * @param mixed $curl Curl.
      */
     private function exec_json($curl): array {
         $raw = curl_exec($curl);
@@ -320,6 +341,9 @@ class web_search_service {
 
     /**
      * Normalise headers helper.
+     *
+     * @param array $headers Headers.
+     * @param bool $jsonbody Jsonbody.
      */
     private function normalise_headers(array $headers, bool $jsonbody): array {
         $out = [];
@@ -348,6 +372,8 @@ class web_search_service {
 
     /**
      * Validate url helper.
+     *
+     * @param string $url Url.
      */
     private function validate_url(string $url): string {
         $url = trim($url);
@@ -388,6 +414,8 @@ class web_search_service {
 
     /**
      * Is public ip helper.
+     *
+     * @param string $ip Ip.
      */
     private function is_public_ip(string $ip): bool {
         return filter_var(
@@ -399,6 +427,9 @@ class web_search_service {
 
     /**
      * Clean results helper.
+     *
+     * @param array $rows Rows.
+     * @param int $limit Limit.
      */
     private function clean_results(array $rows, int $limit): array {
         $clean = [];
@@ -437,6 +468,8 @@ class web_search_service {
 
     /**
      * Is safe result url helper.
+     *
+     * @param string $url Url.
      */
     private function is_safe_result_url(string $url): bool {
         $parts = parse_url(trim($url));

@@ -33,6 +33,8 @@ defined('MOODLE_INTERNAL') || die();
 class ai_recommendation_service {
     /**
      * Generate student recommendation helper.
+     *
+     * @param array $profile Profile.
      */
     public function generate_student_recommendation(array $profile): string {
         $gap = $profile['main_gap'] ?? 'the weakest skill';
@@ -44,6 +46,8 @@ class ai_recommendation_service {
 
     /**
      * Generate teacher recommendation helper.
+     *
+     * @param array $overview Overview.
      */
     public function generate_teacher_recommendation(array $overview): string {
         if (empty($overview['weakestskills'])) {

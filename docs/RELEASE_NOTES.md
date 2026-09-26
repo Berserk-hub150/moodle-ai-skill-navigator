@@ -2,12 +2,14 @@
 
 ## 1.0.5
 
+- Rename legacy database tables to the `local_aiskillnavigator_` prefix during Moodle upgrade. The migration preserves IDs, records and relationships, resumes after interruption and refuses conflicting destination tables. Update any custom SQL reports using the old prefixes.
 - Make generation timeouts configurable for every HTTP AI provider and distinguish provider failures from malformed assessment JSON.
 - Respect the learner's response language across tutor modes; remove conflicting Italian-only instructions.
 - Record successful tutor interactions on the server and explain how Tutor Analytics is populated.
 - Include scored, finished native Moodle quiz attempts in the Teacher dashboard while respecting report permissions and separate groups.
 - Preserve material approval through sync, use source module IDs for renamed materials, and treat remote Ollama endpoints as external.
 - Fix legacy source metadata backfill and prevent Enter in the Simulator Finder material filter from submitting the generation form.
+- Label fallback mind maps as generic templates and show actionable guidance when the AI returns unusable output.
 - Fix apostrophe escaping in generated video suggestion scripts; check embedded JavaScript after PHP rendering.
 - Remove invalid empty CHAR defaults from the install schema so Moodle test installation runs without XMLDB warnings.
 - Add Moodle database integration tests for native quiz reporting, capabilities and separate groups; resolve Moodle coding-standard violations.

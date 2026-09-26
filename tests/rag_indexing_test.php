@@ -34,7 +34,7 @@ class fake_moodle_database {
     }
 
     public function get_record(string $table, array $conditions) {
-        if ($table === 'local_aiskillnav_material' && (int)$conditions['id'] === (int)$this->material->id) {
+        if ($table === 'local_aiskillnavigator_material' && (int)$conditions['id'] === (int)$this->material->id) {
             return clone $this->material;
         }
 

@@ -51,6 +51,8 @@ function local_aisn_upload_max_bytes(): int {
 
 /**
  * Local aisn upload error message helper.
+ *
+ * @param int $error Error.
  */
 function local_aisn_upload_error_message(int $error): string {
     switch ($error) {
@@ -76,6 +78,9 @@ function local_aisn_upload_error_message(int $error): string {
 
 /**
  * Local aisn upload validate uploaded file helper.
+ *
+ * @param array $file File.
+ * @param bool $mustbehttpupload Mustbehttpupload.
  */
 function local_aisn_upload_validate_uploaded_file(array $file, bool $mustbehttpupload = true): array {
     $error = (int)($file['error'] ?? UPLOAD_ERR_NO_FILE);

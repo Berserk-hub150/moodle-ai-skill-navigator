@@ -42,7 +42,7 @@ class quiz_attempt_repository {
 
         $attempts = array_values($DB->get_records_sql(
             "SELECT a.*, u.firstname, u.lastname, u.email
-               FROM {local_aiskillnav_attempt} a
+               FROM {local_aiskillnavigator_attempt} a
                JOIN {user} u ON u.id = a.userid
               WHERE a.courseid = :courseid AND u.deleted = 0",
             ['courseid' => $courseid]

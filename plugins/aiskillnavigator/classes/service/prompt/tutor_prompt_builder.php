@@ -38,6 +38,8 @@ class tutor_prompt_builder extends base_prompt_helper {
 
     /**
      * Plain helper.
+     *
+     * @param string $question Question.
      */
     public function plain(string $question): string {
         return "Act as a university course tutor.\n"
@@ -50,6 +52,9 @@ class tutor_prompt_builder extends base_prompt_helper {
 
     /**
      * With materials helper.
+     *
+     * @param string $question Question.
+     * @param array $materials Course materials used for this operation.
      */
     public function with_materials(string $question, array $materials): string {
         return "Act as a university course tutor.\n"
@@ -63,6 +68,9 @@ class tutor_prompt_builder extends base_prompt_helper {
 
     /**
      * With rag helper.
+     *
+     * @param string $question Question.
+     * @param string $ragcontext Ragcontext.
      */
     public function with_rag(string $question, string $ragcontext): string {
         return "Act as a university course tutor.\n"

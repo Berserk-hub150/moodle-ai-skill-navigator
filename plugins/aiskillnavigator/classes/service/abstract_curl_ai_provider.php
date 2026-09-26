@@ -45,6 +45,10 @@ abstract class abstract_curl_ai_provider implements ai_provider_interface {
 
     /**
      * Construct helper.
+     *
+     * @param string $endpoint Endpoint.
+     * @param string $model Model.
+     * @param string $apikey Apikey.
      */
     public function __construct(string $endpoint, string $model, string $apikey = '') {
         $this->endpoint = rtrim(trim($endpoint), '/');
@@ -54,6 +58,11 @@ abstract class abstract_curl_ai_provider implements ai_provider_interface {
 
     /**
      * Post json and extract answer helper.
+     *
+     * @param string $url Url.
+     * @param array $payload Payload.
+     * @param array $headers Headers.
+     * @param string $format Format.
      */
     protected function post_json_and_extract_answer(string $url, array $payload, array $headers, string $format): string {
         $client = new provider\http_json_client();
@@ -65,6 +74,8 @@ abstract class abstract_curl_ai_provider implements ai_provider_interface {
 
     /**
      * Clean model output helper.
+     *
+     * @param string $answer Answer.
      */
     protected function clean_model_output(string $answer): string {
         return (new provider\model_output_cleaner())->clean($answer);

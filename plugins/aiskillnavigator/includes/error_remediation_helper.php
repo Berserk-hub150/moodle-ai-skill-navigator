@@ -95,6 +95,8 @@ HTML;
 
 /**
  * Local aiskillnavigator error remediation pick resource helper.
+ *
+ * @param string $query Query.
  */
 function local_aiskillnavigator_error_remediation_pick_resource(string $query): array {
     if (!class_exists('\local_aiskillnavigator\service\web_search_service')) {
@@ -156,6 +158,12 @@ function local_aiskillnavigator_error_remediation_pick_resource(string $query): 
 
 /**
  * Local aiskillnavigator error remediation card helper.
+ *
+ * @param array $question Question.
+ * @param int $selectedanswer Selectedanswer.
+ * @param int $correctindex Correctindex.
+ * @param string $topic Requested learning topic.
+ * @param int $courseid Moodle course ID.
  */
 function local_aiskillnavigator_error_remediation_card(
     array $question,

@@ -34,6 +34,8 @@ defined('MOODLE_INTERNAL') || die();
 class mindmap_workflow extends base_workflow {
     /**
      * Plain helper.
+     *
+     * @param string $topic Requested learning topic.
      */
     public function plain(string $topic): string {
         return $this->provider->generate($this->prompts->mindmap_prompt($topic), 1500);
@@ -41,6 +43,9 @@ class mindmap_workflow extends base_workflow {
 
     /**
      * Materials helper.
+     *
+     * @param string $focus Focus.
+     * @param array $materials Course materials used for this operation.
      */
     public function materials(string $focus, array $materials): string {
         if (empty($materials)) {
@@ -52,6 +57,9 @@ class mindmap_workflow extends base_workflow {
 
     /**
      * Rag helper.
+     *
+     * @param string $focus Focus.
+     * @param string $context Moodle context.
      */
     public function rag(string $focus, string $context): string {
         if (trim($context) === '') {

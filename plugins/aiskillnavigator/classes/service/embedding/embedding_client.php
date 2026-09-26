@@ -36,6 +36,8 @@ class embedding_client {
 
     /**
      * Construct helper.
+     *
+     * @param embedding_config $config Config.
      */
     public function __construct(embedding_config $config) {
         $this->config = $config;
@@ -43,6 +45,8 @@ class embedding_client {
 
     /**
      * Generate helper.
+     *
+     * @param string $text Text to process.
      */
     public function generate(string $text): ?array {
         $text = trim($text);
@@ -64,6 +68,8 @@ class embedding_client {
 
     /**
      * Ollama helper.
+     *
+     * @param string $text Text to process.
      */
     private function ollama(string $text): ?array {
         $url = rtrim($this->config->endpoint, '/') . '/api/embeddings';
@@ -74,6 +80,8 @@ class embedding_client {
 
     /**
      * Openai helper.
+     *
+     * @param string $text Text to process.
      */
     private function openai(string $text): ?array {
         $headers = $this->config->apikey !== '' ? ['Authorization: Bearer ' . $this->config->apikey] : [];
@@ -101,6 +109,8 @@ class embedding_client {
 
     /**
      * Custom helper.
+     *
+     * @param string $text Text to process.
      */
     private function custom(string $text): ?array {
         if ($this->config->endpoint === '') {
@@ -141,6 +151,9 @@ class embedding_client {
 
     /**
      * Render template helper.
+     *
+     * @param string $template Template.
+     * @param array $values Values.
      */
     private function render_template(string $template, array $values): string {
         foreach ($values as $key => $value) {
@@ -152,6 +165,8 @@ class embedding_client {
 
     /**
      * Escape json string helper.
+     *
+     * @param string $value Value to process.
      */
     private function escape_json_string(string $value): string {
         $encoded = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -194,6 +209,9 @@ class embedding_client {
 
     /**
      * Value by path helper.
+     *
+     * @param array $data Data.
+     * @param string $path Path.
      */
     private function value_by_path(array $data, string $path) {
         $path = trim($path) !== '' ? trim($path) : 'data.0.embedding';

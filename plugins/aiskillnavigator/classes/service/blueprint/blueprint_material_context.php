@@ -34,6 +34,9 @@ defined('MOODLE_INTERNAL') || die();
 class blueprint_material_context {
     /**
      * Build helper.
+     *
+     * @param array $materials Course materials used for this operation.
+     * @param int $limit Limit.
      */
     public function build(array $materials, int $limit): string {
         $context = '';
@@ -77,6 +80,11 @@ class blueprint_material_context {
 
     /**
      * Identity key helper.
+     *
+     * @param \stdClass $material Material.
+     * @param string $title Title.
+     * @param string $type Type.
+     * @param string $content Content to process.
      */
     private function identity_key(\stdClass $material, string $title, string $type, string $content): string {
         if (!empty($material->id)) {

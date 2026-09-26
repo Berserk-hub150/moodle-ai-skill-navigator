@@ -34,6 +34,8 @@ defined('MOODLE_INTERNAL') || die();
 class sentence_chunker {
     /**
      * Split helper.
+     *
+     * @param string $text Text to process.
      */
     public function split(string $text): array {
         $sentences = preg_split('/(?<=[.!?])\s+/u', trim($text));

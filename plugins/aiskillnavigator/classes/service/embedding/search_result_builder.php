@@ -34,6 +34,9 @@ defined('MOODLE_INTERNAL') || die();
 class search_result_builder {
     /**
      * Make helper.
+     *
+     * @param \stdClass $chunk Chunk.
+     * @param float $similarity Similarity.
      */
     public function make(\stdClass $chunk, float $similarity): \stdClass {
         $result = new \stdClass();

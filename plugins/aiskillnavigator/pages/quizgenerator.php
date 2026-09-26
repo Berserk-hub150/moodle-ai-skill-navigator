@@ -103,6 +103,8 @@ if ($sourcemode === 'selected' && empty($selectedmaterialids)) {
 
 /**
  * Local aiskillnavigator clean ai json response helper.
+ *
+ * @param string $raw Raw.
  */
 function local_aiskillnavigator_clean_ai_json_response(string $raw): string {
     $clean = trim($raw);
@@ -140,6 +142,8 @@ function local_aiskillnavigator_clean_ai_json_response(string $raw): string {
 
 /**
  * Local aiskillnavigator repair json helper.
+ *
+ * @param string $json Json.
  */
 function local_aiskillnavigator_repair_json(string $json): string {
     $json = trim($json);
@@ -194,6 +198,8 @@ function local_aiskillnavigator_repair_json(string $json): string {
 
 /**
  * Local aisn quiz clean rag source title helper.
+ *
+ * @param string $title Title.
  */
 function local_aisn_quiz_clean_rag_source_title(string $title): string {
     $title = preg_replace('/(?:Ãƒ|Ã‚|Ã‚|Ã¢â‚¬|â€™|â€šÃ‚|Æ’Ã†)[\s\S]*/u', '', $title);
@@ -204,6 +210,8 @@ function local_aisn_quiz_clean_rag_source_title(string $title): string {
 
 /**
  * Local aiskillnavigator extract quiz json helper.
+ *
+ * @param string $raw Raw.
  */
 function local_aiskillnavigator_extract_quiz_json(string $raw): ?array {
     $cleanresult = local_aiskillnavigator_clean_ai_json_response($raw);
@@ -294,6 +302,8 @@ function local_aiskillnavigator_extract_quiz_json(string $raw): ?array {
 
 /**
  * Local aiskillnavigator material short title helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aiskillnavigator_material_short_title(stdClass $material): string {
     $title = trim((string) ($material->title ?? 'Materiale senza titolo'));
@@ -346,7 +356,7 @@ if ($action === 'grade') {
         $record->answersjson = json_encode($studentanswers, JSON_UNESCAPED_UNICODE);
         $record->timecreated = time();
 
-        $DB->insert_record('local_aiskillnav_attempt', $record);
+        $DB->insert_record('local_aiskillnavigator_attempt', $record);
 
         $savedmessage = 'Quiz attempt saved in the student profile.';
     }
@@ -821,6 +831,8 @@ echo $OUTPUT->footer();
 
 /**
  * Local aiskillnavigator quiz video remediation assets helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aiskillnavigator_quiz_video_remediation_assets(int $courseid): string {
     // phpcs:ignore moodle.Files.LineLength
@@ -1355,6 +1367,8 @@ HTML;
 
 /**
  * Local aiskillnavigator quiz tavily video assets helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aiskillnavigator_quiz_tavily_video_assets(int $courseid): string {
     // phpcs:ignore moodle.Files.LineLength
@@ -1638,6 +1652,8 @@ HTML;
 
 /**
  * Local aiskillnavigator quiz tavily video assets final single helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aiskillnavigator_quiz_tavily_video_assets_final_single(int $courseid): string {
     // phpcs:ignore moodle.Files.LineLength

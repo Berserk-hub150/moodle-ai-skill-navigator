@@ -52,6 +52,9 @@ class prototype_mindmap_response {
 
     /**
      * Branch helper.
+     *
+     * @param string $title Title.
+     * @param string $description Description.
      */
     private function branch(string $title, string $description): array {
         return [

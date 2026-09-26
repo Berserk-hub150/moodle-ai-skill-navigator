@@ -55,7 +55,7 @@ final class quiz_attempt_repository_test extends \advanced_testcase {
         $this->assertSame(75, $attempts[0]->percentage);
         $this->assertSame('Moodle quiz', $attempts[0]->source);
         $this->assertEquals($quiz->name, $attempts[0]->topic);
-        $this->assertSame(0, $DB->count_records('local_aiskillnav_attempt'));
+        $this->assertSame(0, $DB->count_records('local_aiskillnavigator_attempt'));
     }
 
     /**

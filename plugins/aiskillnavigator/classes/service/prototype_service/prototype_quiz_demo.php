@@ -34,6 +34,9 @@ defined('MOODLE_INTERNAL') || die();
 class prototype_quiz_demo {
     /**
      * Get helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $difficulty Requested difficulty level.
      */
     public function get(string $topic, string $difficulty): array {
         $topic = trim($topic) !== '' ? trim($topic) : 'Digital Twin';
@@ -54,6 +57,9 @@ class prototype_quiz_demo {
 
     /**
      * Mcq helper.
+     *
+     * @param string $question Question.
+     * @param string $correct Correct.
      */
     private function mcq(string $question, string $correct): array {
         return [

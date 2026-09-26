@@ -48,6 +48,9 @@ abstract class base_prompt_helper {
 
     /**
      * Default if empty helper.
+     *
+     * @param string $value Value to process.
+     * @param string $default Default.
      */
     protected function default_if_empty(string $value, string $default): string {
         return $this->text->fallback($value, $default);
@@ -55,6 +58,9 @@ abstract class base_prompt_helper {
 
     /**
      * Material context helper.
+     *
+     * @param array $materials Course materials used for this operation.
+     * @param int $limit Limit.
      */
     protected function material_context(array $materials, int $limit): string {
         return $this->materials->build($materials, $limit);

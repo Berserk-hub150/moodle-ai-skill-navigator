@@ -51,6 +51,8 @@ $PAGE->set_title(get_string('page_teacher_materials_title', 'local_aiskillnaviga
 $PAGE->set_heading(get_string('page_teacher_materials_heading', 'local_aiskillnavigator'));
 /**
  * Local aisn tm table exists helper.
+ *
+ * @param string $name Name.
  */
 function local_aisn_tm_table_exists(string $name): bool {
     global $DB;
@@ -59,11 +61,14 @@ function local_aisn_tm_table_exists(string $name): bool {
 
 /**
  * Local aisn tm get material helper.
+ *
+ * @param int $materialid Stored material ID.
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_tm_get_material(int $materialid, int $courseid): stdClass {
     global $DB;
 
-    $material = $DB->get_record('local_aiskillnav_material', [
+    $material = $DB->get_record('local_aiskillnavigator_material', [
         'id' => $materialid,
         'courseid' => $courseid,
     ]);
@@ -77,17 +82,19 @@ function local_aisn_tm_get_material(int $materialid, int $courseid): stdClass {
 
 /**
  * Local aisn tm visible course materials helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_tm_visible_course_materials(int $courseid): array {
     global $DB;
 
-    if (!local_aisn_tm_table_exists('local_aiskillnav_material')) {
+    if (!local_aisn_tm_table_exists('local_aiskillnavigator_material')) {
         return [];
     }
 
     local_aiskillnavigator_sync_course_resources($courseid, 0, true);
 
-    $records = $DB->get_records('local_aiskillnav_material', [
+    $records = $DB->get_records('local_aiskillnavigator_material', [
         'courseid' => $courseid,
         'materialtype' => 'course_resource',
     ], 'timemodified DESC, id DESC');
@@ -133,6 +140,8 @@ function local_aisn_tm_visible_course_materials(int $courseid): array {
 
 /**
  * Local aisn tm cm id from title helper.
+ *
+ * @param string $title Title.
  */
 function local_aisn_tm_cm_id_from_title(string $title): int {
     if (preg_match('/^\[Course #[0-9]+ \/ cm #([0-9]+)\]/', $title, $matches)) {
@@ -144,6 +153,8 @@ function local_aisn_tm_cm_id_from_title(string $title): int {
 
 /**
  * Local aisn tm clean course title helper.
+ *
+ * @param string $title Title.
  */
 function local_aisn_tm_clean_course_title(string $title): string {
     $title = preg_replace('/^\[Course #[0-9]+ \/ cm #[0-9]+\]\s*/', '', $title);
@@ -152,6 +163,9 @@ function local_aisn_tm_clean_course_title(string $title): string {
 
 /**
  * Local aisn tm excerpt helper.
+ *
+ * @param string $content Content to process.
+ * @param int $max Max.
  */
 function local_aisn_tm_excerpt(string $content, int $max = 600): string {
     $content = trim(preg_replace('/\s+/u', ' ', strip_tags($content)));
@@ -165,11 +179,13 @@ function local_aisn_tm_excerpt(string $content, int $max = 600): string {
 
 /**
  * Local aisn tm chunk counts helper.
+ *
+ * @param array $materials Course materials used for this operation.
  */
 function local_aisn_tm_chunk_counts(array $materials): array {
     global $DB;
 
-    if (empty($materials) || !local_aisn_tm_table_exists('local_aiskillnav_chunk')) {
+    if (empty($materials) || !local_aisn_tm_table_exists('local_aiskillnavigator_chunk')) {
         return [];
     }
 
@@ -177,7 +193,7 @@ function local_aisn_tm_chunk_counts(array $materials): array {
     [$insql, $params] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'mid');
 
     $sql = "SELECT materialid, COUNT(1) AS chunks
-              FROM {local_aiskillnav_chunk}
+              FROM {local_aiskillnavigator_chunk}
              WHERE materialid $insql
           GROUP BY materialid";
 
@@ -194,6 +210,8 @@ function local_aisn_tm_chunk_counts(array $materials): array {
 
 /**
  * Local aisn tm material policy external allowed helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aisn_tm_material_policy_external_allowed(stdClass $material): bool {
     if (function_exists('local_aiskillnavigator_material_external_allowed')) {
@@ -213,6 +231,9 @@ function local_aisn_tm_material_policy_external_allowed(stdClass $material): boo
 
 /**
  * Local aisn tm set policy helper.
+ *
+ * @param stdClass $material Material.
+ * @param bool $externalallowed Externalallowed.
  */
 function local_aisn_tm_set_policy(stdClass $material, bool $externalallowed): void {
     global $DB;
@@ -230,6 +251,8 @@ function local_aisn_tm_set_policy(stdClass $material, bool $externalallowed): vo
 
 /**
  * Local aisn tm material cmid helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aisn_tm_material_cmid(stdClass $material): int {
     if (isset($material->sourcecmid) && (int)$material->sourcecmid > 0) {
@@ -257,6 +280,8 @@ function local_aisn_tm_material_cmid(stdClass $material): int {
 
 /**
  * Local aisn tm delete material helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aisn_tm_delete_material(stdClass $material): void {
     global $DB;
@@ -279,13 +304,13 @@ function local_aisn_tm_delete_material(stdClass $material): void {
 
         // Raccogli eventuali duplicati dello stesso course module.
         try {
-            if (local_aisn_tm_table_exists('local_aiskillnav_material')) {
+            if (local_aisn_tm_table_exists('local_aiskillnavigator_material')) {
                 $dbman = $DB->get_manager();
-                $table = new xmldb_table('local_aiskillnav_material');
+                $table = new xmldb_table('local_aiskillnavigator_material');
                 $sourcefield = new xmldb_field('sourcecmid');
 
                 if ($dbman->field_exists($table, $sourcefield)) {
-                    $samecm = $DB->get_records('local_aiskillnav_material', [
+                    $samecm = $DB->get_records('local_aiskillnavigator_material', [
                         'courseid' => $courseid,
                         'materialtype' => 'course_resource',
                         'sourcecmid' => $cmid,
@@ -304,7 +329,7 @@ function local_aisn_tm_delete_material(stdClass $material): void {
                     'title' => '[Course #' . $courseid . ' / cm #' . $cmid . ']%',
                 ];
 
-                $sametitle = $DB->get_records_select('local_aiskillnav_material', $select, $params);
+                $sametitle = $DB->get_records_select('local_aiskillnavigator_material', $select, $params);
 
                 foreach ($sametitle as $row) {
                     $materialids[] = (int)$row->id;
@@ -337,14 +362,14 @@ function local_aisn_tm_delete_material(stdClass $material): void {
         }
     }
 
-    if (!empty($materialids) && local_aisn_tm_table_exists('local_aiskillnav_chunk')) {
+    if (!empty($materialids) && local_aisn_tm_table_exists('local_aiskillnavigator_chunk')) {
         [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mid');
-        $DB->delete_records_select('local_aiskillnav_chunk', 'materialid ' . $insql, $params);
+        $DB->delete_records_select('local_aiskillnavigator_chunk', 'materialid ' . $insql, $params);
     }
 
-    if (!empty($materialids) && local_aisn_tm_table_exists('local_aiskillnav_material')) {
+    if (!empty($materialids) && local_aisn_tm_table_exists('local_aiskillnavigator_material')) {
         [$insql, $params] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mat');
-        $DB->delete_records_select('local_aiskillnav_material', 'id ' . $insql, $params);
+        $DB->delete_records_select('local_aiskillnavigator_material', 'id ' . $insql, $params);
     }
 
     if ($courseid > SITEID) {

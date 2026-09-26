@@ -34,6 +34,8 @@ defined('MOODLE_INTERNAL') || die();
 class prototype_output_router {
     /**
      * Route helper.
+     *
+     * @param string $prompt User prompt sent to the AI provider.
      */
     public function route(string $prompt): string {
         $lower = strtolower($prompt);

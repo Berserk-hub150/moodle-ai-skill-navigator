@@ -58,6 +58,9 @@ $PAGE->set_title(get_string('page_tutor_title', 'local_aiskillnavigator'));
 $PAGE->set_heading(get_string('page_tutor_heading', 'local_aiskillnavigator'));
 /**
  * Local aiskillnavigator tutor limit context helper.
+ *
+ * @param string $text Text to process.
+ * @param int $limit Limit.
  */
 function local_aiskillnavigator_tutor_limit_context(string $text, int $limit = 9000): string {
     $text = local_aiskillnavigator_fix_mojibake(trim($text));
@@ -72,6 +75,8 @@ function local_aiskillnavigator_tutor_limit_context(string $text, int $limit = 9
 
 /**
  * Local aisn tutor cleanup answer helper.
+ *
+ * @param string $answer Answer.
  */
 function local_aisn_tutor_cleanup_answer(string $answer): string {
     $answer = trim($answer);
@@ -97,6 +102,9 @@ function local_aisn_tutor_cleanup_answer(string $answer): string {
 }
 /**
  * Local aiskillnavigator tutor call ai helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
+ * @param string $systemprompt System instructions for the provider.
  */
 function local_aiskillnavigator_tutor_call_ai(string $prompt, string $systemprompt): string {
     try {

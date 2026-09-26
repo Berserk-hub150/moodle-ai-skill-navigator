@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/aiskillnavigator/db" VERSION="2026091600" COMMENT="XMLDB file for local_aiskillnavigator">
+<XMLDB PATH="local/aiskillnavigator/db" VERSION="2026092500" COMMENT="XMLDB file for local_aiskillnavigator">
   <TABLES>
-    <TABLE NAME="local_aiskillnav_material" COMMENT="Teacher course materials">
+    <TABLE NAME="local_aiskillnavigator_material" COMMENT="Teacher course materials">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
@@ -29,7 +29,7 @@
       </INDEXES>
     </TABLE>
 
-    <TABLE NAME="local_aiskillnav_attempt" COMMENT="Student generated quiz attempts">
+    <TABLE NAME="local_aiskillnavigator_attempt" COMMENT="Student generated quiz attempts">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
@@ -53,7 +53,7 @@
       </INDEXES>
     </TABLE>
 
-    <TABLE NAME="local_aiskillnav_chunk" COMMENT="RAG chunks and embeddings">
+    <TABLE NAME="local_aiskillnavigator_chunk" COMMENT="RAG chunks and embeddings">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="materialid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
@@ -75,7 +75,7 @@
       </INDEXES>
     </TABLE>
 
-    <TABLE NAME="local_aiskillnav_assessment" COMMENT="Teacher diagnostic assessments">
+    <TABLE NAME="local_aiskillnavigator_assessment" COMMENT="Teacher diagnostic assessments">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
@@ -102,7 +102,7 @@
       </INDEXES>
     </TABLE>
 
-    <TABLE NAME="local_aiskillnav_ass_att" COMMENT="Student diagnostic assessment attempts">
+    <TABLE NAME="local_aiskillnavigator_ass_att" COMMENT="Student diagnostic assessment attempts">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="assessmentid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
@@ -124,7 +124,7 @@
       </INDEXES>
     </TABLE>
 
-    <TABLE NAME="local_aiskillnav_sim" COMMENT="AI simulator links generated from course materials">
+    <TABLE NAME="local_aiskillnavigator_sim" COMMENT="AI simulator links generated from course materials">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
@@ -153,7 +153,7 @@
       </INDEXES>
     </TABLE>
 
-    <TABLE NAME="local_aiskillnav_tutor_sig" COMMENT="Tutor analytics signals">
+    <TABLE NAME="local_aiskillnavigator_tutor_sig" COMMENT="Tutor analytics signals">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
@@ -177,7 +177,7 @@
       </INDEXES>
     </TABLE>
 
-    <TABLE NAME="local_aisn_kg_concept" COMMENT="AI Skill Navigator knowledge graph concepts">
+    <TABLE NAME="local_aiskillnavigator_kg_concept" COMMENT="AI Skill Navigator knowledge graph concepts">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
@@ -197,7 +197,7 @@
       </INDEXES>
     </TABLE>
 
-    <TABLE NAME="local_aisn_kg_source" COMMENT="AI Skill Navigator knowledge graph evidence sources">
+    <TABLE NAME="local_aiskillnavigator_kg_source" COMMENT="AI Skill Navigator knowledge graph evidence sources">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="conceptid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
@@ -216,7 +216,7 @@
       </INDEXES>
     </TABLE>
 
-    <TABLE NAME="local_aisn_kg_relation" COMMENT="AI Skill Navigator knowledge graph relations">
+    <TABLE NAME="local_aiskillnavigator_kg_relation" COMMENT="AI Skill Navigator knowledge graph relations">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>

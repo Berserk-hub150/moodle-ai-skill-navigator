@@ -34,6 +34,8 @@ defined('MOODLE_INTERNAL') || die();
 class slide_xml_reader {
     /**
      * Text helper.
+     *
+     * @param string $xml Xml.
      */
     public function text(string $xml): string {
         $previous = libxml_use_internal_errors(true);

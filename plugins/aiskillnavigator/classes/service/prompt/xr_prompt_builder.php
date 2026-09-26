@@ -52,6 +52,9 @@ class xr_prompt_builder extends base_prompt_helper {
 
     /**
      * Plain helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $environment Environment.
      */
     public function plain(string $topic, string $environment): string {
         $topic = $this->default_if_empty($topic, 'Digital Twin and IoT');
@@ -61,6 +64,10 @@ class xr_prompt_builder extends base_prompt_helper {
 
     /**
      * From materials helper.
+     *
+     * @param string $focus Focus.
+     * @param string $environment Environment.
+     * @param array $materials Course materials used for this operation.
      */
     public function from_materials(string $focus, string $environment, array $materials): string {
         $topic = $this->default_if_empty($focus, 'Materiali del docente');
@@ -72,6 +79,10 @@ class xr_prompt_builder extends base_prompt_helper {
 
     /**
      * With rag helper.
+     *
+     * @param string $focus Focus.
+     * @param string $environment Environment.
+     * @param string $ragcontext Ragcontext.
      */
     public function with_rag(string $focus, string $environment, string $ragcontext): string {
         $topic = $this->default_if_empty($focus, 'Materiali del docente');
@@ -81,6 +92,11 @@ class xr_prompt_builder extends base_prompt_helper {
 
     /**
      * Make helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $environment Environment.
+     * @param string $context Moodle context.
+     * @param bool $usesources Usesources.
      */
     private function make(string $topic, string $environment, string $context, bool $usesources): string {
         return $this->intro->get($topic, $environment, $context)

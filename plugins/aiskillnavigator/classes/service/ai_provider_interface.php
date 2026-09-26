@@ -34,6 +34,10 @@ defined('MOODLE_INTERNAL') || die();
 interface ai_provider_interface {
     /**
      * Generate helper.
+     *
+     * @param string $prompt User prompt sent to the AI provider.
+     * @param int $maxtokens Maximum output token count.
+     * @param string $systemprompt System instructions for the provider.
      */
     public function generate(string $prompt, int $maxtokens = 1200, string $systemprompt = ''): string;
 

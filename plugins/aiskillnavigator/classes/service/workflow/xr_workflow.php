@@ -34,6 +34,9 @@ defined('MOODLE_INTERNAL') || die();
 class xr_workflow extends base_workflow {
     /**
      * Plain helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $environment Environment.
      */
     public function plain(string $topic, string $environment): string {
         return $this->provider->generate($this->prompts->xr_scenario_prompt($topic, $environment), 2800);
@@ -41,6 +44,10 @@ class xr_workflow extends base_workflow {
 
     /**
      * Materials helper.
+     *
+     * @param string $focus Focus.
+     * @param string $environment Environment.
+     * @param array $materials Course materials used for this operation.
      */
     public function materials(string $focus, string $environment, array $materials): string {
         if (empty($materials)) {
@@ -52,6 +59,10 @@ class xr_workflow extends base_workflow {
 
     /**
      * Rag helper.
+     *
+     * @param string $focus Focus.
+     * @param string $environment Environment.
+     * @param string $context Moodle context.
      */
     public function rag(string $focus, string $environment, string $context): string {
         if (trim($context) === '') {

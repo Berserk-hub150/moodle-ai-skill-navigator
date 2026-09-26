@@ -43,14 +43,14 @@ class sqlite_moodle_db {
 $DB = new sqlite_moodle_db();
 $DB->pdo->exec(<<<SQL
 CREATE TABLE user (id INTEGER PRIMARY KEY, firstname TEXT, lastname TEXT, email TEXT, deleted INTEGER);
-CREATE TABLE local_aiskillnav_attempt (id INTEGER PRIMARY KEY, courseid INTEGER, userid INTEGER, topic TEXT, difficulty TEXT,
+CREATE TABLE local_aiskillnavigator_attempt (id INTEGER PRIMARY KEY, courseid INTEGER, userid INTEGER, topic TEXT, difficulty TEXT,
     score REAL, maxscore REAL, percentage INTEGER, timecreated INTEGER);
 CREATE TABLE quiz (id INTEGER PRIMARY KEY, course INTEGER, name TEXT, sumgrades REAL);
 CREATE TABLE quiz_attempts (id INTEGER PRIMARY KEY, quiz INTEGER, userid INTEGER, sumgrades REAL, timefinish INTEGER, state TEXT, preview INTEGER);
 CREATE TABLE groups_members (groupid INTEGER, userid INTEGER);
 INSERT INTO user VALUES (1, 'Student', 'One', 'one@example.test', 0), (2, 'Student', 'Two', 'two@example.test', 0), (3, 'Deleted', 'User', 'deleted@example.test', 1);
 INSERT INTO groups_members VALUES (7, 1), (8, 2);
-INSERT INTO local_aiskillnav_attempt VALUES (1, 42, 1, 'AI topic', 'easy', 2, 4, 50, 100), (2, 99, 1, 'Other course', 'easy', 1, 1, 100, 999);
+INSERT INTO local_aiskillnavigator_attempt VALUES (1, 42, 1, 'AI topic', 'easy', 2, 4, 50, 100), (2, 99, 1, 'Other course', 'easy', 1, 1, 100, 999);
 INSERT INTO quiz VALUES (1, 42, 'Databases', 10), (2, 42, 'Zero grade', 0), (3, 42, 'Restricted', 10), (4, 42, 'Grouped quiz', 10), (5, 99, 'Other course', 10);
 INSERT INTO quiz_attempts VALUES
  (1, 1, 1, 7.5, 300, 'finished', 0),

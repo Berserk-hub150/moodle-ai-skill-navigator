@@ -55,6 +55,9 @@ header('Content-Type: application/json; charset=utf-8');
 
 /**
  * Local aisn clean text helper.
+ *
+ * @param string $text Text to process.
+ * @param int $max Max.
  */
 function local_aisn_clean_text(string $text, int $max = 700): string {
     $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');

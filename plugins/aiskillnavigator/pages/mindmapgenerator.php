@@ -66,6 +66,8 @@ $PAGE->set_heading(get_string('page_mindmapgenerator_heading', 'local_aiskillnav
 
 /**
  * Local aiskillnavigator mm bad score helper.
+ *
+ * @param string $label Label.
  */
 function local_aiskillnavigator_mm_bad_score(string $label): int {
     $label = trim($label);
@@ -97,6 +99,9 @@ function local_aiskillnavigator_mm_bad_score(string $label): int {
 
 /**
  * Local aiskillnavigator mm clean text helper.
+ *
+ * @param mixed $value Value to process.
+ * @param string $fallback Fallback.
  */
 function local_aiskillnavigator_mm_clean_text($value, string $fallback = ''): string {
     $text = trim((string)$value);
@@ -181,6 +186,9 @@ function local_aiskillnavigator_mm_clean_text($value, string $fallback = ''): st
 }
 /**
  * Local aiskillnavigator mm clean array helper.
+ *
+ * @param mixed $value Value to process.
+ * @param string $fallback Fallback.
  */
 function local_aiskillnavigator_mm_clean_array($value, string $fallback = '') {
     if (is_string($value)) {
@@ -208,6 +216,9 @@ function local_aiskillnavigator_mm_clean_array($value, string $fallback = '') {
 
 /**
  * Local aiskillnavigator mm call ai helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
+ * @param string $systemprompt System instructions for the provider.
  */
 function local_aiskillnavigator_mm_call_ai(string $prompt, string $systemprompt): string {
     try {
@@ -234,6 +245,8 @@ function local_aiskillnavigator_mm_call_ai(string $prompt, string $systemprompt)
 
 /**
  * Local aiskillnavigator mm extract json helper.
+ *
+ * @param string $raw Raw.
  */
 function local_aiskillnavigator_mm_extract_json(string $raw): ?array {
     $raw = trim($raw);
@@ -262,13 +275,16 @@ function local_aiskillnavigator_mm_extract_json(string $raw): ?array {
 
 /**
  * Local aiskillnavigator mm fallback helper.
+ *
+ * @param string $topic Requested learning topic.
  */
 function local_aiskillnavigator_mm_fallback(string $topic): array {
     $topic = local_aiskillnavigator_mm_clean_text($topic, 'Argomento');
 
     return [
         'title' => $topic,
-        'subtitle' => 'Mappa concettuale generata automaticamente',
+        'subtitle' => get_string('mindmap_fallbacksubtitle', 'local_aiskillnavigator'),
+        'fallback' => true,
         'center' => $topic,
         'branches' => [
             [
@@ -309,12 +325,15 @@ function local_aiskillnavigator_mm_fallback(string $topic): array {
 
 /**
  * Local aiskillnavigator mm normalize helper.
+ *
+ * @param array $data Data.
+ * @param string $topic Requested learning topic.
  */
 function local_aiskillnavigator_mm_normalize(array $data, string $topic): array {
     $fallback = local_aiskillnavigator_mm_fallback($topic);
 
     $title = local_aiskillnavigator_mm_clean_text((string)($data['title'] ?? ''), $fallback['title']);
-    $subtitle = local_aiskillnavigator_mm_clean_text((string)($data['subtitle'] ?? ''), $fallback['subtitle']);
+    $subtitle = local_aiskillnavigator_mm_clean_text((string)($data['subtitle'] ?? ''), '');
     $center = local_aiskillnavigator_mm_clean_text((string)($data['center'] ?? ''), $topic !== '' ? $topic : $fallback['center']);
 
     $branches = [];
@@ -351,7 +370,8 @@ function local_aiskillnavigator_mm_normalize(array $data, string $topic): array 
         }
     }
 
-    if (empty($branches)) {
+    $usedfallback = empty($branches);
+    if ($usedfallback) {
         $branches = $fallback['branches'];
     }
 
@@ -360,11 +380,14 @@ function local_aiskillnavigator_mm_normalize(array $data, string $topic): array 
         'subtitle' => $subtitle,
         'center' => $center,
         'branches' => array_slice($branches, 0, 7),
+        'fallback' => $usedfallback,
     ];
 }
 
 /**
  * Local aiskillnavigator mm material context helper.
+ *
+ * @param array $materials Course materials used for this operation.
  */
 function local_aiskillnavigator_mm_material_context(array $materials): string {
     $parts = [];
@@ -385,6 +408,10 @@ function local_aiskillnavigator_mm_material_context(array $materials): string {
 
 /**
  * Local aiskillnavigator mm generate helper.
+ *
+ * @param array $materials Course materials used for this operation.
+ * @param string $topic Requested learning topic.
+ * @param string $difficulty Requested difficulty level.
  */
 function local_aiskillnavigator_mm_generate(array $materials, string $topic, string $difficulty): array {
     $topic = local_aiskillnavigator_mm_clean_text($topic, '');
@@ -425,6 +452,9 @@ function local_aiskillnavigator_mm_generate(array $materials, string $topic, str
 
 /**
  * Local aiskillnavigator mm add web examples helper.
+ *
+ * @param array $nodes Nodes.
+ * @param string $topic Requested learning topic.
  */
 function local_aiskillnavigator_mm_add_web_examples(array $nodes, string $topic): array {
     if (!class_exists('\local_aiskillnavigator\service\web_search_service')) {
@@ -486,6 +516,8 @@ function local_aiskillnavigator_mm_add_web_examples(array $nodes, string $topic)
 }
 /**
  * Local aiskillnavigator mm flatten helper.
+ *
+ * @param array $map Map.
  */
 function local_aiskillnavigator_mm_flatten(array $map): array {
     $nodes = [];
@@ -840,6 +872,9 @@ echo html_writer::tag('p', 'Course: ' . s($course->fullname), ['class' => 'text-
 if ($error !== '') {
     echo html_writer::div(s($error), 'alert alert-danger');
 }
+if (!empty($map['fallback'])) {
+    echo $OUTPUT->notification(get_string('mindmap_fallbacknotice', 'local_aiskillnavigator'), 'warning');
+}
 
 echo html_writer::start_tag('form', [
     'method' => 'post',
@@ -909,6 +944,9 @@ echo html_writer::end_tag('form');
 
 /**
  * Local aiskillnavigator mm web enrich nodes helper.
+ *
+ * @param array $nodes Nodes.
+ * @param string $topic Requested learning topic.
  */
 function local_aiskillnavigator_mm_web_enrich_nodes(array $nodes, string $topic): array {
     if (!class_exists('\local_aiskillnavigator\service\web_search_service')) {
@@ -1640,6 +1678,8 @@ HTML;
 
 /**
  * Local aiskillnavigator mindmap live web assets helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aiskillnavigator_mindmap_live_web_assets(int $courseid): string {
     // phpcs:ignore moodle.Files.LineLength

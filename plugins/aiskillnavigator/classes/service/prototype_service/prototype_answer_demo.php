@@ -34,6 +34,8 @@ defined('MOODLE_INTERNAL') || die();
 class prototype_answer_demo {
     /**
      * Get helper.
+     *
+     * @param string $question Question.
      */
     public function get(string $question): array {
         $question = trim($question) !== '' ? trim($question) : 'What is the relationship between IoT and Digital Twin?';

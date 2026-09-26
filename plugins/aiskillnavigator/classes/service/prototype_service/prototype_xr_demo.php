@@ -34,6 +34,9 @@ defined('MOODLE_INTERNAL') || die();
 class prototype_xr_demo {
     /**
      * Get helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $environment Environment.
      */
     public function get(string $topic, string $environment): array {
         $topic = trim($topic) !== '' ? trim($topic) : 'Digital Twin and IoT';

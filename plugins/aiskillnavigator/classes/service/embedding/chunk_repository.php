@@ -34,14 +34,19 @@ defined('MOODLE_INTERNAL') || die();
 class chunk_repository {
     /**
      * Delete material helper.
+     *
+     * @param int $materialid Stored material ID.
      */
     public function delete_material(int $materialid): void {
         global $DB;
-        $DB->delete_records('local_aiskillnav_chunk', ['materialid' => $materialid]);
+        $DB->delete_records('local_aiskillnavigator_chunk', ['materialid' => $materialid]);
     }
 
     /**
      * Count helper.
+     *
+     * @param int $courseid Moodle course ID.
+     * @param int $materialid Stored material ID.
      */
     public function count(int $courseid, int $materialid = 0): int {
         global $DB;
@@ -51,11 +56,14 @@ class chunk_repository {
             $conditions['materialid'] = $materialid;
         }
 
-        return $DB->count_records('local_aiskillnav_chunk', $conditions);
+        return $DB->count_records('local_aiskillnavigator_chunk', $conditions);
     }
 
     /**
      * Load helper.
+     *
+     * @param int $courseid Moodle course ID.
+     * @param int $materialid Stored material ID.
      */
     public function load(int $courseid, int $materialid = 0): array {
         global $DB;
@@ -65,14 +73,16 @@ class chunk_repository {
             $conditions['materialid'] = $materialid;
         }
 
-        return $DB->get_records('local_aiskillnav_chunk', $conditions);
+        return $DB->get_records('local_aiskillnavigator_chunk', $conditions);
     }
 
     /**
      * Insert helper.
+     *
+     * @param \stdClass $record Record.
      */
     public function insert(\stdClass $record): void {
         global $DB;
-        $DB->insert_record('local_aiskillnav_chunk', $record);
+        $DB->insert_record('local_aiskillnavigator_chunk', $record);
     }
 }

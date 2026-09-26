@@ -52,6 +52,8 @@ Copy-Item plugins/block_aiskillnavigator "$MoodlePath/blocks/aiskillnavigator" -
 
 Visit **Site administration → Notifications** to install or upgrade. For an existing installation, back up the database and replace the installed component's files with the new version before running the upgrade.
 
+Version 1.0.5 migrates the plugin's legacy table names to the `local_aiskillnavigator_` prefix while preserving their data. Update custom SQL reports that reference `local_aiskillnav_*` or `local_aisn_kg_*` tables.
+
 The repository ZIP is not an installable Moodle plugin. See [packaging instructions](MARKETPLACE.md) for separate component ZIPs.
 
 ## First run

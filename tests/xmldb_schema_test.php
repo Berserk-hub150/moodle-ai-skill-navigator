@@ -13,6 +13,9 @@ $tablenames = [];
 
 foreach ($xml->TABLES->TABLE as $table) {
     $tablename = (string)$table['NAME'];
+    if (!str_starts_with($tablename, 'local_aiskillnavigator_')) {
+        $errors[] = "Table {$tablename} must use the full component prefix.";
+    }
 
     if (isset($tablenames[$tablename])) {
         $errors[] = "Duplicate table {$tablename}.";

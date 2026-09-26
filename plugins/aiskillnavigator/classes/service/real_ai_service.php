@@ -39,6 +39,9 @@ class real_ai_service {
 
     /**
      * Construct helper.
+     *
+     * @param ai_provider_interface|null $provider Provider.
+     * @param ai_prompt_builder|null $prompts Prompts.
      */
     public function __construct(?ai_provider_interface $provider = null, ?ai_prompt_builder $prompts = null) {
         // phpcs:ignore moodle.Files.LineLength
@@ -61,6 +64,8 @@ class real_ai_service {
 
     /**
      * Ask tutor helper.
+     *
+     * @param string $q Q.
      */
     public function ask_tutor(string $q): string {
         return $this->facade->ask_tutor($q);
@@ -68,6 +73,9 @@ class real_ai_service {
 
     /**
      * Ask with course materials helper.
+     *
+     * @param string $q Q.
+     * @param array $m M.
      */
     public function ask_with_course_materials(string $q, array $m): string {
         return $this->can_use_teacher_materials()
@@ -77,6 +85,9 @@ class real_ai_service {
 
     /**
      * Ask with rag context helper.
+     *
+     * @param string $q Q.
+     * @param string $c C.
      */
     public function ask_with_rag_context(string $q, string $c): string {
         return $this->can_use_teacher_materials()
@@ -86,6 +97,9 @@ class real_ai_service {
 
     /**
      * Generate quiz helper.
+     *
+     * @param string $t T.
+     * @param string $d D.
      */
     public function generate_quiz(string $t, string $d): string {
         return $this->facade->generate_quiz($t, $d);
@@ -93,6 +107,10 @@ class real_ai_service {
 
     /**
      * Generate quiz from course materials helper.
+     *
+     * @param string $f F.
+     * @param string $d D.
+     * @param array $m M.
      */
     public function generate_quiz_from_course_materials(string $f, string $d, array $m): string {
         return $this->can_use_teacher_materials()
@@ -102,6 +120,10 @@ class real_ai_service {
 
     /**
      * Generate quiz with rag context helper.
+     *
+     * @param string $f F.
+     * @param string $d D.
+     * @param string $c C.
      */
     public function generate_quiz_with_rag_context(string $f, string $d, string $c): string {
         return $this->can_use_teacher_materials()
@@ -111,6 +133,8 @@ class real_ai_service {
 
     /**
      * Generate mindmap helper.
+     *
+     * @param string $t T.
      */
     public function generate_mindmap(string $t): string {
         return $this->facade->generate_mindmap($t);
@@ -118,6 +142,9 @@ class real_ai_service {
 
     /**
      * Generate mindmap from course materials helper.
+     *
+     * @param string $f F.
+     * @param array $m M.
      */
     public function generate_mindmap_from_course_materials(string $f, array $m): string {
         return $this->can_use_teacher_materials()
@@ -127,6 +154,9 @@ class real_ai_service {
 
     /**
      * Generate mindmap with rag context helper.
+     *
+     * @param string $f F.
+     * @param string $c C.
      */
     public function generate_mindmap_with_rag_context(string $f, string $c): string {
         return $this->can_use_teacher_materials()
@@ -136,6 +166,9 @@ class real_ai_service {
 
     /**
      * Generate xr scenario helper.
+     *
+     * @param string $t T.
+     * @param string $e E.
      */
     public function generate_xr_scenario(string $t, string $e): string {
         return $this->facade->generate_xr_scenario($t, $e);
@@ -143,6 +176,10 @@ class real_ai_service {
 
     /**
      * Generate xr scenario from course materials helper.
+     *
+     * @param string $f F.
+     * @param string $e E.
+     * @param array $m M.
      */
     public function generate_xr_scenario_from_course_materials(string $f, string $e, array $m): string {
         return $this->can_use_teacher_materials()
@@ -152,6 +189,10 @@ class real_ai_service {
 
     /**
      * Generate xr scenario with rag context helper.
+     *
+     * @param string $f F.
+     * @param string $e E.
+     * @param string $c C.
      */
     public function generate_xr_scenario_with_rag_context(string $f, string $e, string $c): string {
         return $this->can_use_teacher_materials()
@@ -161,6 +202,9 @@ class real_ai_service {
 
     /**
      * Summarize course materials helper.
+     *
+     * @param string $f F.
+     * @param array $m M.
      */
     public function summarize_course_materials(string $f, array $m): string {
         return $this->can_use_teacher_materials()
@@ -170,6 +214,9 @@ class real_ai_service {
 
     /**
      * Summarize with rag context helper.
+     *
+     * @param string $f F.
+     * @param string $c C.
      */
     public function summarize_with_rag_context(string $f, string $c): string {
         return $this->can_use_teacher_materials()

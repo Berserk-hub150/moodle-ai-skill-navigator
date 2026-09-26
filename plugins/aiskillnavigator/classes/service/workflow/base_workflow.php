@@ -42,6 +42,9 @@ abstract class base_workflow {
 
     /**
      * Construct helper.
+     *
+     * @param ai_provider_interface $provider Provider.
+     * @param ai_prompt_builder $prompts Prompts.
      */
     public function __construct(ai_provider_interface $provider, ai_prompt_builder $prompts) {
         $this->provider = $provider;
@@ -50,6 +53,9 @@ abstract class base_workflow {
 
     /**
      * Fallback helper.
+     *
+     * @param string $value Value to process.
+     * @param string $fallback Fallback.
      */
     protected function fallback(string $value, string $fallback): string {
         $value = trim($value);

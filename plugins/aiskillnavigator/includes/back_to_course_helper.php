@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Local aisn back to course autofix helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_back_to_course_autofix(int $courseid): string {
     if ($courseid <= 0) {

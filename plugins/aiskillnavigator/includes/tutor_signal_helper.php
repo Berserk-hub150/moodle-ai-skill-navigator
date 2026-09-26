@@ -34,7 +34,7 @@ function local_aiskillnavigator_tutor_signal_ensure_table(): void {
     require_once($CFG->libdir . '/ddllib.php');
 
     $dbman = $DB->get_manager();
-    $table = new xmldb_table('local_aiskillnav_tutor_sig');
+    $table = new xmldb_table('local_aiskillnavigator_tutor_sig');
 
     if ($dbman->table_exists($table)) {
         return;
@@ -62,6 +62,9 @@ function local_aiskillnavigator_tutor_signal_ensure_table(): void {
 
 /**
  * Local aiskillnavigator tutor signal contains helper.
+ *
+ * @param string $text Text to process.
+ * @param array $needles Needles.
  */
 function local_aiskillnavigator_tutor_signal_contains(string $text, array $needles): bool {
     $text = core_text::strtolower($text);
@@ -77,6 +80,9 @@ function local_aiskillnavigator_tutor_signal_contains(string $text, array $needl
 
 /**
  * Local aiskillnavigator tutor signal classify skill helper.
+ *
+ * @param string $question Question.
+ * @param string $answer Answer.
  */
 function local_aiskillnavigator_tutor_signal_classify_skill(string $question, string $answer): string {
     $text = $question . ' ' . $answer;
@@ -102,6 +108,8 @@ function local_aiskillnavigator_tutor_signal_classify_skill(string $question, st
 
 /**
  * Local aiskillnavigator tutor signal classify type helper.
+ *
+ * @param string $question Question.
  */
 function local_aiskillnavigator_tutor_signal_classify_type(string $question): string {
     // phpcs:ignore moodle.Files.LineLength
@@ -126,6 +134,9 @@ function local_aiskillnavigator_tutor_signal_classify_type(string $question): st
 
 /**
  * Local aiskillnavigator tutor signal classify difficulty helper.
+ *
+ * @param string $question Question.
+ * @param string $answer Answer.
  */
 function local_aiskillnavigator_tutor_signal_classify_difficulty(string $question, string $answer): string {
     $text = $question . ' ' . $answer;
@@ -144,6 +155,13 @@ function local_aiskillnavigator_tutor_signal_classify_difficulty(string $questio
 
 /**
  * Local aiskillnavigator tutor signal store helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $userid Moodle user ID.
+ * @param string $question Question.
+ * @param string $sourcemode Sourcemode.
+ * @param array $usedmaterials Usedmaterials.
+ * @param string $answer Answer.
  */
 function local_aiskillnavigator_tutor_signal_store(
     int $courseid,
@@ -174,7 +192,7 @@ function local_aiskillnavigator_tutor_signal_store(
         $record->answerpreview = core_text::substr(trim(strip_tags($answer)), 0, 1200);
         $record->timecreated = time();
 
-        $DB->insert_record('local_aiskillnav_tutor_sig', $record);
+        $DB->insert_record('local_aiskillnavigator_tutor_sig', $record);
     } catch (Throwable $e) {
         debugging('AI Skill Navigator tutor signal store failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
     }
@@ -182,6 +200,8 @@ function local_aiskillnavigator_tutor_signal_store(
 
 /**
  * Local aiskillnavigator tutor signal teacher panel helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): string {
     global $DB, $OUTPUT;
@@ -192,13 +212,13 @@ function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): strin
         return html_writer::div('Tutor analytics unavailable: ' . s($e->getMessage()), 'alert alert-warning');
     }
 
-    $total = $DB->count_records('local_aiskillnav_tutor_sig', ['courseid' => $courseid]);
+    $total = $DB->count_records('local_aiskillnavigator_tutor_sig', ['courseid' => $courseid]);
 
     $skills = $DB->get_records_sql(
         "SELECT " . $DB->sql_compare_text('skill', 120) . " AS skillkey,
                 MIN(skill) AS skill,
                 COUNT(1) AS total
-           FROM {local_aiskillnav_tutor_sig}
+           FROM {local_aiskillnavigator_tutor_sig}
           WHERE courseid = :courseid
        GROUP BY " . $DB->sql_compare_text('skill', 120) . "
        ORDER BY total DESC",
@@ -211,7 +231,7 @@ function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): strin
         "SELECT " . $DB->sql_compare_text('requesttype', 80) . " AS typekey,
                 MIN(requesttype) AS requesttype,
                 COUNT(1) AS total
-           FROM {local_aiskillnav_tutor_sig}
+           FROM {local_aiskillnavigator_tutor_sig}
           WHERE courseid = :courseid
        GROUP BY " . $DB->sql_compare_text('requesttype', 80) . "
        ORDER BY total DESC",
@@ -220,7 +240,7 @@ function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): strin
         6
     );
 
-    $recent = $DB->get_records('local_aiskillnav_tutor_sig', ['courseid' => $courseid], 'timecreated DESC', '*', 0, 5);
+    $recent = $DB->get_records('local_aiskillnavigator_tutor_sig', ['courseid' => $courseid], 'timecreated DESC', '*', 0, 5);
 
     $html = '';
     $html .= html_writer::start_div('card mb-4 border-info');

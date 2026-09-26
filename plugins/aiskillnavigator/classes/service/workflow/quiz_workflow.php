@@ -34,6 +34,9 @@ defined('MOODLE_INTERNAL') || die();
 class quiz_workflow extends base_workflow {
     /**
      * Plain helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $difficulty Requested difficulty level.
      */
     public function plain(string $topic, string $difficulty): string {
         return $this->provider->generate($this->prompts->quiz_prompt($topic, $difficulty), 2200);
@@ -41,6 +44,10 @@ class quiz_workflow extends base_workflow {
 
     /**
      * Materials helper.
+     *
+     * @param string $focus Focus.
+     * @param string $difficulty Requested difficulty level.
+     * @param array $materials Course materials used for this operation.
      */
     public function materials(string $focus, string $difficulty, array $materials): string {
         if (empty($materials)) {
@@ -52,6 +59,10 @@ class quiz_workflow extends base_workflow {
 
     /**
      * Rag helper.
+     *
+     * @param string $focus Focus.
+     * @param string $difficulty Requested difficulty level.
+     * @param string $context Moodle context.
      */
     public function rag(string $focus, string $difficulty, string $context): string {
         if (trim($context) === '') {

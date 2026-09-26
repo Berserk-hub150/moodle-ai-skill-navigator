@@ -49,6 +49,8 @@ class mindmap_prompt_builder extends base_prompt_helper {
 
     /**
      * Plain helper.
+     *
+     * @param string $topic Requested learning topic.
      */
     public function plain(string $topic): string {
         $topic = $this->default_if_empty($topic, 'Digital Twin');
@@ -61,6 +63,9 @@ class mindmap_prompt_builder extends base_prompt_helper {
 
     /**
      * From materials helper.
+     *
+     * @param string $focus Focus.
+     * @param array $materials Course materials used for this operation.
      */
     public function from_materials(string $focus, array $materials): string {
         $topic = $this->default_if_empty($focus, 'Materiali del docente');
@@ -74,6 +79,9 @@ class mindmap_prompt_builder extends base_prompt_helper {
 
     /**
      * With rag helper.
+     *
+     * @param string $focus Focus.
+     * @param string $ragcontext Ragcontext.
      */
     public function with_rag(string $focus, string $ragcontext): string {
         return $this->from_materials($focus, [(object) ['content' => $ragcontext]]);

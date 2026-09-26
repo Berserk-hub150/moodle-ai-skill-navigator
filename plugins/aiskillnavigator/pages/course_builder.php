@@ -55,6 +55,8 @@ $PAGE->set_heading(get_string('page_course_builder_heading', 'local_aiskillnavig
 
 /**
  * Local aisn cb low helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aisn_cb_low(string $text): string {
     return core_text::strtolower(trim($text));
@@ -62,6 +64,9 @@ function local_aisn_cb_low(string $text): string {
 
 /**
  * Local aisn cb clean helper.
+ *
+ * @param string $text Text to process.
+ * @param int $max Max.
  */
 function local_aisn_cb_clean(string $text, int $max = 800): string {
     $text = trim(strip_tags($text));
@@ -83,6 +88,8 @@ function local_aisn_cb_clean(string $text, int $max = 800): string {
 
 /**
  * Local aisn cb section text helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aisn_cb_section_text(string $text): string {
     $text = strip_tags($text);
@@ -104,6 +111,8 @@ function local_aisn_cb_section_text(string $text): string {
 
 /**
  * Local aisn cb section key helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aisn_cb_section_key(string $text): string {
     $text = local_aisn_cb_low(local_aisn_cb_section_text($text));
@@ -114,6 +123,8 @@ function local_aisn_cb_section_key(string $text): string {
 
 /**
  * Local aisn cb section tokens helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aisn_cb_section_tokens(string $text): array {
     $text = local_aisn_cb_low(local_aisn_cb_section_text($text));
@@ -127,6 +138,9 @@ function local_aisn_cb_section_tokens(string $text): array {
 
 /**
  * Local aisn cb all tokens match helper.
+ *
+ * @param array $needles Needles.
+ * @param string $haystack Haystack.
  */
 function local_aisn_cb_all_tokens_match(array $needles, string $haystack): bool {
     if (empty($needles)) {
@@ -146,6 +160,9 @@ function local_aisn_cb_all_tokens_match(array $needles, string $haystack): bool 
 
 /**
  * Local aisn cb clean section title helper.
+ *
+ * @param string $title Title.
+ * @param int $max Max.
  */
 function local_aisn_cb_clean_section_title(string $title, int $max = 120): string {
     $title = local_aisn_cb_section_text($title);
@@ -163,6 +180,8 @@ function local_aisn_cb_clean_section_title(string $title, int $max = 120): strin
 
 /**
  * Local aisn cb next section helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_cb_next_section(int $courseid): int {
     global $DB;
@@ -173,6 +192,9 @@ function local_aisn_cb_next_section(int $courseid): int {
 
 /**
  * Local aisn cb get section helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $sectionnum Sectionnum.
  */
 function local_aisn_cb_get_section(int $courseid, int $sectionnum): ?stdClass {
     global $DB;
@@ -182,6 +204,9 @@ function local_aisn_cb_get_section(int $courseid, int $sectionnum): ?stdClass {
 
 /**
  * Local aisn cb find section helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $ref Ref.
  */
 function local_aisn_cb_find_section(int $courseid, string $ref): ?stdClass {
     global $DB;
@@ -254,6 +279,10 @@ function local_aisn_cb_find_section(int $courseid, string $ref): ?stdClass {
 
 /**
  * Local aisn cb create section helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $title Title.
+ * @param string $summary Summary.
  */
 function local_aisn_cb_create_section(int $courseid, string $title, string $summary = ''): stdClass {
     global $DB;
@@ -295,6 +324,10 @@ function local_aisn_cb_create_section(int $courseid, string $title, string $summ
 
 /**
  * Local aisn cb ensure section helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $title Title.
+ * @param string $summary Summary.
  */
 function local_aisn_cb_ensure_section(int $courseid, string $title, string $summary = ''): stdClass {
     $section = local_aisn_cb_find_section($courseid, $title);
@@ -308,6 +341,10 @@ function local_aisn_cb_ensure_section(int $courseid, string $title, string $summ
 
 /**
  * Local aisn cb update section helper.
+ *
+ * @param stdClass $section Section.
+ * @param string $title Title.
+ * @param string $summary Summary.
  */
 function local_aisn_cb_update_section(stdClass $section, string $title = '', string $summary = ''): void {
     global $DB;
@@ -328,6 +365,9 @@ function local_aisn_cb_update_section(stdClass $section, string $title = '', str
 
 /**
  * Local aisn cb set visibility helper.
+ *
+ * @param stdClass $section Section.
+ * @param bool $visible Visible.
  */
 function local_aisn_cb_set_visibility(stdClass $section, bool $visible): void {
     global $DB;
@@ -340,6 +380,8 @@ function local_aisn_cb_set_visibility(stdClass $section, bool $visible): void {
 
 /**
  * Local aisn cb is section zero alias helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aisn_cb_is_section_zero_alias(string $text): bool {
     $key = local_aisn_cb_section_key($text);
@@ -364,6 +406,9 @@ function local_aisn_cb_is_section_zero_alias(string $text): bool {
 
 /**
  * Local aisn cb delete modules in section helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $sectionnum Sectionnum.
  */
 function local_aisn_cb_delete_modules_in_section(int $courseid, int $sectionnum): int {
     global $DB;
@@ -399,6 +444,8 @@ function local_aisn_cb_delete_modules_in_section(int $courseid, int $sectionnum)
 
 /**
  * Local aisn cb clear section zero helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_cb_clear_section_zero(int $courseid): void {
     global $DB;
@@ -421,6 +468,8 @@ function local_aisn_cb_clear_section_zero(int $courseid): void {
 
 /**
  * Local aisn cb delete all sections helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_cb_delete_all_sections(int $courseid): array {
     global $DB;
@@ -474,6 +523,8 @@ function local_aisn_cb_delete_all_sections(int $courseid): array {
 
 /**
  * Local aisn cb prompt wants clear course helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_prompt_wants_clear_course(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
@@ -500,6 +551,8 @@ function local_aisn_cb_prompt_wants_clear_course(string $prompt): bool {
 
 /**
  * Local aisn cb prompt mentions files or materials helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_prompt_mentions_files_or_materials(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
@@ -517,6 +570,8 @@ function local_aisn_cb_prompt_mentions_files_or_materials(string $prompt): bool 
 
 /**
  * Local aisn cb prompt singular section request helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_prompt_singular_section_request(string $prompt): bool {
     return (bool)preg_match('/\b(?:una|unica|sola|solo una|1)\s+sezione\b/iu', $prompt)
@@ -526,6 +581,8 @@ function local_aisn_cb_prompt_singular_section_request(string $prompt): bool {
 
 /**
  * Local aisn cb command title clean helper.
+ *
+ * @param string $raw Raw.
  */
 function local_aisn_cb_command_title_clean(string $raw): string {
     $title = html_entity_decode(strip_tags($raw), ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -568,6 +625,8 @@ function local_aisn_cb_command_title_clean(string $raw): string {
 
 /**
  * Local aisn cb extract named section title helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_extract_named_section_title(string $prompt): ?string {
     $patterns = [
@@ -596,6 +655,9 @@ function local_aisn_cb_extract_named_section_title(string $prompt): ?string {
 }
 /**
  * Local aisn cb delete section helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param stdClass $section Section.
  */
 function local_aisn_cb_delete_section(int $courseid, stdClass $section): string {
     $sectionnum = (int)($section->section ?? -1);
@@ -627,6 +689,10 @@ function local_aisn_cb_delete_section(int $courseid, stdClass $section): string 
 
 /**
  * Local aisn cb duplicate section helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param stdClass $source Source.
+ * @param string $newtitle Newtitle.
  */
 function local_aisn_cb_duplicate_section(int $courseid, stdClass $source, string $newtitle = ''): stdClass {
     $title = $newtitle !== '' ? $newtitle : ((string)$source->name . ' - copia');
@@ -636,6 +702,10 @@ function local_aisn_cb_duplicate_section(int $courseid, stdClass $source, string
 
 /**
  * Local aisn cb move section helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param stdClass $section Section.
+ * @param int $destination Destination.
  */
 function local_aisn_cb_move_section(int $courseid, stdClass $section, int $destination): string {
     $destination = max(1, $destination);
@@ -653,6 +723,8 @@ function local_aisn_cb_move_section(int $courseid, stdClass $section, int $desti
 
 /**
  * Local aisn cb file signature helper.
+ *
+ * @param array $file File.
  */
 function local_aisn_cb_file_signature(array $file): string {
     $name = core_text::strtolower(clean_param((string)($file['name'] ?? ''), PARAM_FILE));
@@ -669,6 +741,8 @@ function local_aisn_cb_file_signature(array $file): string {
 
 /**
  * Local aisn cb dedupe files helper.
+ *
+ * @param array $files Files.
  */
 function local_aisn_cb_dedupe_files(array $files): array {
     $seen = [];
@@ -738,6 +812,8 @@ function local_aisn_cb_uploaded_files(): array {
 
 /**
  * Local aisn cb resource identity helper.
+ *
+ * @param string $name Name.
  */
 function local_aisn_cb_resource_identity(string $name): string {
     $name = html_entity_decode(strip_tags($name), ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -753,6 +829,10 @@ function local_aisn_cb_resource_identity(string $name): string {
 
 /**
  * Local aisn cb existing resource cmid helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $sectionnum Sectionnum.
+ * @param string $resourcename Resourcename.
  */
 function local_aisn_cb_existing_resource_cmid(int $courseid, int $sectionnum, string $resourcename): int {
     global $DB;
@@ -801,6 +881,8 @@ function local_aisn_cb_existing_resource_cmid(int $courseid, int $sectionnum, st
 
 /**
  * Local aisn cb cleanup duplicate resources in course helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_cb_cleanup_duplicate_resources_in_course(int $courseid): int {
     global $DB;
@@ -860,6 +942,11 @@ function local_aisn_cb_cleanup_duplicate_resources_in_course(int $courseid): int
 
 /**
  * Local aisn cb create resource from file helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $sectionnum Sectionnum.
+ * @param array $file File.
+ * @param string $resourcename Resourcename.
  */
 function local_aisn_cb_create_resource_from_file(int $courseid, int $sectionnum, array $file, string $resourcename): int {
     global $DB, $USER;
@@ -930,6 +1017,11 @@ function local_aisn_cb_create_resource_from_file(int $courseid, int $sectionnum,
 
 /**
  * Local aisn cb attach files to section helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $userid Moodle user ID.
+ * @param stdClass $section Section.
+ * @param array $files Files.
  */
 function local_aisn_cb_attach_files_to_section(int $courseid, int $userid, stdClass $section, array $files): array {
     $logs = [];
@@ -972,6 +1064,8 @@ function local_aisn_cb_attach_files_to_section(int $courseid, int $userid, stdCl
 
 /**
  * Local aisn cb sync resources helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_cb_sync_resources(int $courseid): void {
     global $CFG, $USER;
@@ -1012,6 +1106,8 @@ function local_aisn_cb_sync_resources(int $courseid): void {
 
 /**
  * Local aisn cb filename to section title helper.
+ *
+ * @param string $filename Filename.
  */
 function local_aisn_cb_filename_to_section_title(string $filename): string {
     $filename = clean_param($filename, PARAM_FILE);
@@ -1031,6 +1127,8 @@ function local_aisn_cb_filename_to_section_title(string $filename): string {
 
 /**
  * Local aisn cb prompt wants one section per file helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_prompt_wants_one_section_per_file(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
@@ -1049,6 +1147,8 @@ function local_aisn_cb_prompt_wants_one_section_per_file(string $prompt): bool {
 
 /**
  * Local aisn cb extract delete target helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_extract_delete_target(string $prompt): ?string {
     if (local_aisn_cb_prompt_wants_clear_course($prompt)) {
@@ -1076,6 +1176,8 @@ function local_aisn_cb_extract_delete_target(string $prompt): ?string {
 
 /**
  * Local aisn cb extract target section helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_extract_target_section(string $prompt): ?string {
     $named = local_aisn_cb_extract_named_section_title($prompt);
@@ -1102,6 +1204,8 @@ function local_aisn_cb_extract_target_section(string $prompt): ?string {
 
 /**
  * Local aisn cb extract create section titles helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_extract_create_section_titles(string $prompt): array {
     $titles = [];
@@ -1136,6 +1240,8 @@ function local_aisn_cb_extract_create_section_titles(string $prompt): array {
 
 /**
  * Local aisn cb prompt text to html helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aisn_cb_prompt_text_to_html(string $text): string {
     $text = trim((string)$text);
@@ -1154,6 +1260,9 @@ function local_aisn_cb_prompt_text_to_html(string $text): string {
 
 /**
  * Local aisn cb set section summary html helper.
+ *
+ * @param stdClass $section Section.
+ * @param string $html Html.
  */
 function local_aisn_cb_set_section_summary_html(stdClass $section, string $html): void {
     global $DB;
@@ -1168,6 +1277,8 @@ function local_aisn_cb_set_section_summary_html(stdClass $section, string $html)
 
 /**
  * Local aisn cb extract text section request helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_extract_text_section_request(string $prompt): ?array {
     $patterns = [
@@ -1205,6 +1316,8 @@ function local_aisn_cb_extract_text_section_request(string $prompt): ?array {
 
 /**
  * Local aisn cb prompt wants existing file routing helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_prompt_wants_existing_file_routing(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
@@ -1230,6 +1343,9 @@ function local_aisn_cb_prompt_wants_existing_file_routing(string $prompt): bool 
 
 /**
  * Local aisn cb find section by candidates helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param array $candidates Candidates.
  */
 function local_aisn_cb_find_section_by_candidates(int $courseid, array $candidates): ?stdClass {
     foreach ($candidates as $candidate) {
@@ -1251,6 +1367,9 @@ function local_aisn_cb_find_section_by_candidates(int $courseid, array $candidat
 
 /**
  * Local aisn cb existing section for filename helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $filename Filename.
  */
 function local_aisn_cb_existing_section_for_filename(int $courseid, string $filename): ?stdClass {
     $filename = clean_param($filename, PARAM_FILE);
@@ -1332,6 +1451,10 @@ function local_aisn_cb_existing_section_for_filename(int $courseid, string $file
 
 /**
  * Local aisn cb attach files to existing sections helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $userid Moodle user ID.
+ * @param array $files Files.
  */
 function local_aisn_cb_attach_files_to_existing_sections(int $courseid, int $userid, array $files): array {
     $logs = [];
@@ -1365,6 +1488,8 @@ function local_aisn_cb_attach_files_to_existing_sections(int $courseid, int $use
 // AISN_EXISTING_SECTION_ROUTING_FIX.
 /**
  * Local aisn cb safe title clean helper.
+ *
+ * @param string $title Title.
  */
 function local_aisn_cb_safe_title_clean(string $title): string {
     $title = trim((string)$title);
@@ -1399,6 +1524,8 @@ function local_aisn_cb_safe_title_clean(string $title): string {
 
 /**
  * Local aisn cb safe is conservative helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_safe_is_conservative(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
@@ -1420,6 +1547,8 @@ function local_aisn_cb_safe_is_conservative(string $prompt): bool {
 
 /**
  * Local aisn cb safe wants create section helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_safe_wants_create_section(string $prompt): bool {
     return preg_match('/\b(?:crea|creami|aggiungi|inserisci)\s+(?:una\s+|unica\s+|sola\s+|nuova\s+)?sezione\b/iu', $prompt) === 1;
@@ -1427,6 +1556,8 @@ function local_aisn_cb_safe_wants_create_section(string $prompt): bool {
 
 /**
  * Local aisn cb safe wants one section per file helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_safe_wants_one_section_per_file(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
@@ -1440,6 +1571,8 @@ function local_aisn_cb_safe_wants_one_section_per_file(string $prompt): bool {
 
 /**
  * Local aisn cb safe extract text section helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_safe_extract_text_section(string $prompt): ?array {
     $patterns = [
@@ -1474,6 +1607,8 @@ function local_aisn_cb_safe_extract_text_section(string $prompt): ?array {
 
 /**
  * Local aisn cb safe body to html helper.
+ *
+ * @param string $body Body.
  */
 function local_aisn_cb_safe_body_to_html(string $body): string {
     $body = trim((string)$body);
@@ -1543,6 +1678,9 @@ function local_aisn_cb_safe_body_to_html(string $body): string {
 
 /**
  * Local aisn cb safe set section summary helper.
+ *
+ * @param stdClass $section Section.
+ * @param string $html Html.
  */
 function local_aisn_cb_safe_set_section_summary(stdClass $section, string $html): void {
     global $DB;
@@ -1557,6 +1695,8 @@ function local_aisn_cb_safe_set_section_summary(stdClass $section, string $html)
 
 /**
  * Local aisn cb safe extract target helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_safe_extract_target(string $prompt): ?string {
     $patterns = [
@@ -1592,6 +1732,8 @@ function local_aisn_cb_safe_extract_target(string $prompt): ?string {
 
 /**
  * Local aisn cb safe section candidates for file helper.
+ *
+ * @param string $filename Filename.
  */
 function local_aisn_cb_safe_section_candidates_for_file(string $filename): array {
     $filename = clean_param($filename, PARAM_FILE);
@@ -1666,6 +1808,9 @@ function local_aisn_cb_safe_section_candidates_for_file(string $filename): array
 
 /**
  * Local aisn cb safe find section for file helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $filename Filename.
  */
 function local_aisn_cb_safe_find_section_for_file(int $courseid, string $filename): ?stdClass {
     foreach (local_aisn_cb_safe_section_candidates_for_file($filename) as $candidate) {
@@ -1681,6 +1826,10 @@ function local_aisn_cb_safe_find_section_for_file(int $courseid, string $filenam
 
 /**
  * Local aisn cb safe attach existing helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $userid Moodle user ID.
+ * @param array $files Files.
  */
 function local_aisn_cb_safe_attach_existing(int $courseid, int $userid, array $files): array {
     $logs = [];
@@ -1713,6 +1862,8 @@ function local_aisn_cb_safe_attach_existing(int $courseid, int $userid, array $f
 
 /**
  * Local aisn cb safe extract section list helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_safe_extract_section_list(string $prompt): array {
     $p = local_aisn_cb_low($prompt);
@@ -1750,6 +1901,8 @@ function local_aisn_cb_safe_extract_section_list(string $prompt): array {
 
 /**
  * Local aisn cb content edit clean value helper.
+ *
+ * @param string $value Value to process.
  */
 function local_aisn_cb_content_edit_clean_value(string $value): string {
     $value = trim((string)$value);
@@ -1761,6 +1914,8 @@ function local_aisn_cb_content_edit_clean_value(string $value): string {
 
 /**
  * Local aisn cb content edit clean section name helper.
+ *
+ * @param string $value Value to process.
  */
 function local_aisn_cb_content_edit_clean_section_name(string $value): string {
     $value = local_aisn_cb_content_edit_clean_value($value);
@@ -1774,6 +1929,8 @@ function local_aisn_cb_content_edit_clean_section_name(string $value): string {
 
 /**
  * Local aisn cb content edit extract helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_content_edit_extract(string $prompt): ?array {
     $prompt = trim((string)$prompt);
@@ -1836,6 +1993,8 @@ function local_aisn_cb_content_edit_extract(string $prompt): ?array {
 
 /**
  * Local aisn cb content edit repair flat summary helper.
+ *
+ * @param string $summary Summary.
  */
 function local_aisn_cb_content_edit_repair_flat_summary(string $summary): string {
     $hasstructure = preg_match('/<(h[1-6]|ul|ol|li|p|div)\b/i', $summary) === 1;
@@ -1879,6 +2038,9 @@ function local_aisn_cb_content_edit_repair_flat_summary(string $summary): string
 
 /**
  * Local aisn cb content edit update summary helper.
+ *
+ * @param stdClass $section Section.
+ * @param string $summary Summary.
  */
 function local_aisn_cb_content_edit_update_summary(stdClass $section, string $summary): void {
     global $DB;
@@ -1893,6 +2055,10 @@ function local_aisn_cb_content_edit_update_summary(stdClass $section, string $su
 
 /**
  * Local aisn cb content edit try handle helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $prompt User prompt sent to the AI provider.
+ * @param array $files Files.
  */
 function local_aisn_cb_content_edit_try_handle(int $courseid, string $prompt, array $files): ?array {
     if (!empty($files)) {
@@ -1956,6 +2122,8 @@ function local_aisn_cb_content_edit_try_handle(int $courseid, string $prompt, ar
 // AISN_CB_CONTENT_EDIT_PATCH.
 /**
  * Local aisn cb brutal content clean value helper.
+ *
+ * @param string $value Value to process.
  */
 function local_aisn_cb_brutal_content_clean_value(string $value): string {
     $value = trim((string)$value);
@@ -1967,6 +2135,8 @@ function local_aisn_cb_brutal_content_clean_value(string $value): string {
 
 /**
  * Local aisn cb brutal content clean section helper.
+ *
+ * @param string $value Value to process.
  */
 function local_aisn_cb_brutal_content_clean_section(string $value): string {
     $value = local_aisn_cb_brutal_content_clean_value($value);
@@ -1980,6 +2150,9 @@ function local_aisn_cb_brutal_content_clean_section(string $value): string {
 
 /**
  * Local aisn cb brutal find section helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $sectionname Sectionname.
  */
 function local_aisn_cb_brutal_find_section(int $courseid, string $sectionname): ?stdClass {
     global $DB;
@@ -2017,6 +2190,8 @@ function local_aisn_cb_brutal_find_section(int $courseid, string $sectionname): 
 
 /**
  * Local aisn cb brutal content extract helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_brutal_content_extract(string $prompt): ?array {
     $prompt = trim((string)$prompt);
@@ -2107,6 +2282,9 @@ function local_aisn_cb_brutal_content_extract(string $prompt): ?array {
 
 /**
  * Local aisn cb brutal remove text helper.
+ *
+ * @param string $summary Summary.
+ * @param string $needle Needle.
  */
 function local_aisn_cb_brutal_remove_text(string $summary, string $needle): string {
     $needle = local_aisn_cb_brutal_content_clean_value($needle);
@@ -2138,6 +2316,8 @@ function local_aisn_cb_brutal_remove_text(string $summary, string $needle): stri
 
 /**
  * Local aisn cb brutal repair summary helper.
+ *
+ * @param string $summary Summary.
  */
 function local_aisn_cb_brutal_repair_summary(string $summary): string {
     $summary = trim((string)$summary);
@@ -2230,6 +2410,9 @@ function local_aisn_cb_brutal_repair_summary(string $summary): string {
 
 /**
  * Local aisn cb brutal update summary helper.
+ *
+ * @param stdClass $section Section.
+ * @param string $summary Summary.
  */
 function local_aisn_cb_brutal_update_summary(stdClass $section, string $summary): void {
     global $DB;
@@ -2244,6 +2427,10 @@ function local_aisn_cb_brutal_update_summary(stdClass $section, string $summary)
 
 /**
  * Local aisn cb brutal content edit try handle helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $prompt User prompt sent to the AI provider.
+ * @param array $files Files.
  */
 function local_aisn_cb_brutal_content_edit_try_handle(int $courseid, string $prompt, array $files): ?array {
     if (!empty($files)) {
@@ -2313,6 +2500,8 @@ function local_aisn_cb_brutal_content_edit_try_handle(int $courseid, string $pro
 // AISN_CB_BRUTAL_CONTENT_EDIT_PATCH.
 /**
  * Local aisn cb ui editor v2 low helper.
+ *
+ * @param string $value Value to process.
  */
 function local_aisn_cb_ui_editor_v2_low(string $value): string {
     $value = trim((string)$value);
@@ -2326,6 +2515,8 @@ function local_aisn_cb_ui_editor_v2_low(string $value): string {
 
 /**
  * Local aisn cb ui editor v2 clean helper.
+ *
+ * @param string $value Value to process.
  */
 function local_aisn_cb_ui_editor_v2_clean(string $value): string {
     $value = trim((string)$value);
@@ -2337,6 +2528,8 @@ function local_aisn_cb_ui_editor_v2_clean(string $value): string {
 
 /**
  * Local aisn cb ui editor v2 clean section helper.
+ *
+ * @param string $value Value to process.
  */
 function local_aisn_cb_ui_editor_v2_clean_section(string $value): string {
     $value = local_aisn_cb_ui_editor_v2_clean($value);
@@ -2350,6 +2543,9 @@ function local_aisn_cb_ui_editor_v2_clean_section(string $value): string {
 
 /**
  * Local aisn cb ui editor v2 find section helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $sectionname Sectionname.
  */
 function local_aisn_cb_ui_editor_v2_find_section(int $courseid, string $sectionname): ?stdClass {
     global $DB;
@@ -2387,6 +2583,9 @@ function local_aisn_cb_ui_editor_v2_find_section(int $courseid, string $sectionn
 
 /**
  * Local aisn cb ui editor v2 section from prompt helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_ui_editor_v2_section_from_prompt(int $courseid, string $prompt): ?stdClass {
     $patterns = [
@@ -2430,6 +2629,8 @@ function local_aisn_cb_ui_editor_v2_section_from_prompt(int $courseid, string $p
 
 /**
  * Local aisn cb ui editor v2 color from prompt helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_ui_editor_v2_color_from_prompt(string $prompt): ?array {
     $p = local_aisn_cb_ui_editor_v2_low($prompt);
@@ -2463,6 +2664,8 @@ function local_aisn_cb_ui_editor_v2_color_from_prompt(string $prompt): ?array {
 
 /**
  * Local aisn cb ui editor v2 wants color helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_ui_editor_v2_wants_color(string $prompt): bool {
     $p = local_aisn_cb_ui_editor_v2_low($prompt);
@@ -2478,6 +2681,8 @@ function local_aisn_cb_ui_editor_v2_wants_color(string $prompt): bool {
 
 /**
  * Local aisn cb ui editor v2 wants repair helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_ui_editor_v2_wants_repair(string $prompt): bool {
     $p = local_aisn_cb_ui_editor_v2_low($prompt);
@@ -2490,6 +2695,8 @@ function local_aisn_cb_ui_editor_v2_wants_repair(string $prompt): bool {
 
 /**
  * Local aisn cb ui editor v2 wants remove helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_ui_editor_v2_wants_remove(string $prompt): bool {
     $p = local_aisn_cb_ui_editor_v2_low($prompt);
@@ -2508,6 +2715,8 @@ function local_aisn_cb_ui_editor_v2_wants_remove(string $prompt): bool {
 
 /**
  * Local aisn cb ui editor v2 wants replace helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_ui_editor_v2_wants_replace(string $prompt): bool {
     $p = local_aisn_cb_ui_editor_v2_low($prompt);
@@ -2517,6 +2726,8 @@ function local_aisn_cb_ui_editor_v2_wants_replace(string $prompt): bool {
 
 /**
  * Local aisn cb ui editor v2 repair exam summary helper.
+ *
+ * @param string $summary Summary.
  */
 function local_aisn_cb_ui_editor_v2_repair_exam_summary(string $summary): string {
     $summary = trim((string)$summary);
@@ -2609,6 +2820,8 @@ function local_aisn_cb_ui_editor_v2_repair_exam_summary(string $summary): string
 
 /**
  * Local aisn cb ui editor v2 strip existing date color helper.
+ *
+ * @param string $summary Summary.
  */
 function local_aisn_cb_ui_editor_v2_strip_existing_date_color(string $summary): string {
     return preg_replace(
@@ -2620,6 +2833,9 @@ function local_aisn_cb_ui_editor_v2_strip_existing_date_color(string $summary): 
 
 /**
  * Local aisn cb ui editor v2 color dates helper.
+ *
+ * @param string $summary Summary.
+ * @param string $hex Hex.
  */
 function local_aisn_cb_ui_editor_v2_color_dates(string $summary, string $hex): string {
     $summary = local_aisn_cb_ui_editor_v2_repair_exam_summary($summary);
@@ -2634,6 +2850,8 @@ function local_aisn_cb_ui_editor_v2_color_dates(string $summary, string $hex): s
 
 /**
  * Local aisn cb ui editor v2 extract remove text helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_ui_editor_v2_extract_remove_text(string $prompt): string {
     $removeverb = '(?:eliminami|eliminiami|elimina|rimuovimi|rimuovi|toglimi|togli|cancellami|cancella|levami|leva)';
@@ -2658,6 +2876,8 @@ function local_aisn_cb_ui_editor_v2_extract_remove_text(string $prompt): string 
 
 /**
  * Local aisn cb ui editor v2 extract replace helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_ui_editor_v2_extract_replace(string $prompt): ?array {
     $patterns = [
@@ -2681,6 +2901,9 @@ function local_aisn_cb_ui_editor_v2_extract_replace(string $prompt): ?array {
 
 /**
  * Local aisn cb ui editor v2 remove text helper.
+ *
+ * @param string $summary Summary.
+ * @param string $needle Needle.
  */
 function local_aisn_cb_ui_editor_v2_remove_text(string $summary, string $needle): string {
     $needle = local_aisn_cb_ui_editor_v2_clean($needle);
@@ -2700,6 +2923,9 @@ function local_aisn_cb_ui_editor_v2_remove_text(string $summary, string $needle)
 
 /**
  * Local aisn cb ui editor v2 update helper.
+ *
+ * @param stdClass $section Section.
+ * @param string $summary Summary.
  */
 function local_aisn_cb_ui_editor_v2_update(stdClass $section, string $summary): void {
     global $DB;
@@ -2714,6 +2940,10 @@ function local_aisn_cb_ui_editor_v2_update(stdClass $section, string $summary): 
 
 /**
  * Local aisn cb ui editor v2 try handle helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $prompt User prompt sent to the AI provider.
+ * @param array $files Files.
  */
 function local_aisn_cb_ui_editor_v2_try_handle(int $courseid, string $prompt, array $files): ?array {
     if (!empty($files)) {
@@ -2828,6 +3058,8 @@ function local_aisn_cb_ui_editor_v2_try_handle(int $courseid, string $prompt, ar
 // AISN_CB_UI_CONTENT_EDITOR_V2.
 /**
  * Local aisn cb ai editor is content prompt helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aisn_cb_ai_editor_is_content_prompt(string $prompt): bool {
     $p = local_aisn_cb_low($prompt);
@@ -2856,6 +3088,8 @@ function local_aisn_cb_ai_editor_is_content_prompt(string $prompt): bool {
 
 /**
  * Local aisn cb ai editor clean html helper.
+ *
+ * @param string $html Html.
  */
 function local_aisn_cb_ai_editor_clean_html(string $html): string {
     $html = trim((string)$html);
@@ -2879,6 +3113,8 @@ function local_aisn_cb_ai_editor_clean_html(string $html): string {
 
 /**
  * Local aisn cb ai editor parse json helper.
+ *
+ * @param string $raw Raw.
  */
 function local_aisn_cb_ai_editor_parse_json(string $raw): ?array {
     $raw = trim((string)$raw);
@@ -2904,6 +3140,8 @@ function local_aisn_cb_ai_editor_parse_json(string $raw): ?array {
 
 /**
  * Local aisn cb ai editor sections context helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_cb_ai_editor_sections_context(int $courseid): array {
     global $DB;
@@ -2936,6 +3174,9 @@ function local_aisn_cb_ai_editor_sections_context(int $courseid): array {
 
 /**
  * Local aisn cb ai editor find target section helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param array $data Data.
  */
 function local_aisn_cb_ai_editor_find_target_section(int $courseid, array $data): ?stdClass {
     if (isset($data['section_number']) && is_numeric($data['section_number'])) {
@@ -2961,6 +3202,10 @@ function local_aisn_cb_ai_editor_find_target_section(int $courseid, array $data)
 
 /**
  * Local aisn cb ai editor try handle helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $teacherprompt Teacherprompt.
+ * @param array $files Files.
  */
 function local_aisn_cb_ai_editor_try_handle(int $courseid, string $teacherprompt, array $files): ?array {
     if (!empty($files)) {
@@ -3099,6 +3344,11 @@ function local_aisn_cb_ai_editor_try_handle(int $courseid, string $teacherprompt
 // AISN_AI_SECTION_EDITOR_V1.
 /**
  * Local aisn cb safe router helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $userid Moodle user ID.
+ * @param string $prompt User prompt sent to the AI provider.
+ * @param array $files Files.
  */
 function local_aisn_cb_safe_router(int $courseid, int $userid, string $prompt, array $files): ?array {
     // AISN_AI_SECTION_EDITOR_V1_HOOK.
@@ -3216,6 +3466,11 @@ function local_aisn_cb_safe_router(int $courseid, int $userid, string $prompt, a
 // AISN_CB_SAFE_ROUTER_PATCH.
 /**
  * Local aisn cb execute direct helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $userid Moodle user ID.
+ * @param string $prompt User prompt sent to the AI provider.
+ * @param array $files Files.
  */
 function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt, array $files): array {
     $logs = [];
@@ -3432,6 +3687,8 @@ function local_aisn_cb_execute_direct(int $courseid, int $userid, string $prompt
 
 /**
  * Local aisn cb sections for ai helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_cb_sections_for_ai(int $courseid): array {
     global $DB;
@@ -3465,6 +3722,8 @@ function local_aisn_cb_sections_for_ai(int $courseid): array {
 
 /**
  * Local aisn cb files for ai helper.
+ *
+ * @param array $files Files.
  */
 function local_aisn_cb_files_for_ai(array $files): array {
     $out = [];
@@ -3482,6 +3741,8 @@ function local_aisn_cb_files_for_ai(array $files): array {
 
 /**
  * Local aisn cb extract json actions helper.
+ *
+ * @param string $raw Raw.
  */
 function local_aisn_cb_extract_json_actions(string $raw): array {
     $raw = trim($raw);
@@ -3507,6 +3768,8 @@ function local_aisn_cb_extract_json_actions(string $raw): array {
 
 /**
  * Local aisn cb ai datefacts context helper.
+ *
+ * @param array $sections Sections.
  */
 function local_aisn_cb_ai_datefacts_context(array $sections): array {
     $today = new DateTimeImmutable(date('Y-m-d'));
@@ -3588,6 +3851,8 @@ function local_aisn_cb_ai_datefacts_context(array $sections): array {
 // AISN_AI_DATE_CONTEXT_HELPER_V1.
 /**
  * Local aisn cb ai material title from module helper.
+ *
+ * @param stdClass $row Row.
  */
 function local_aisn_cb_ai_material_title_from_module(stdClass $row): string {
     global $DB;
@@ -3622,6 +3887,8 @@ function local_aisn_cb_ai_material_title_from_module(stdClass $row): string {
 
 /**
  * Local aisn cb ai material catalog helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_cb_ai_material_catalog(int $courseid): array {
     global $DB;
@@ -3673,6 +3940,8 @@ function local_aisn_cb_ai_material_catalog(int $courseid): array {
 
 /**
  * Local aisn cb ai clean json response helper.
+ *
+ * @param string $raw Raw.
  */
 function local_aisn_cb_ai_clean_json_response(string $raw): string {
     $clean = trim($raw);
@@ -3695,6 +3964,8 @@ function local_aisn_cb_ai_clean_json_response(string $raw): string {
 
 /**
  * Local aisn cb ai decode actions helper.
+ *
+ * @param string $raw Raw.
  */
 function local_aisn_cb_ai_decode_actions(string $raw): array {
     $json = local_aisn_cb_ai_clean_json_response($raw);
@@ -3722,6 +3993,9 @@ function local_aisn_cb_ai_decode_actions(string $raw): array {
 
 /**
  * Local aisn cb ai normalize material actions helper.
+ *
+ * @param array $actions Actions.
+ * @param array $materialcatalog Materialcatalog.
  */
 function local_aisn_cb_ai_normalize_material_actions(array $actions, array $materialcatalog): array {
     $bycmid = [];
@@ -3783,6 +4057,10 @@ function local_aisn_cb_ai_normalize_material_actions(array $actions, array $mate
 
 /**
  * Local aisn cb ai plan actions helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $teacherprompt Teacherprompt.
+ * @param array $files Files.
  */
 function local_aisn_cb_ai_plan_actions(int $courseid, string $teacherprompt, array $files): array {
     if (!class_exists('\local_aiskillnavigator\service\ai_provider_factory')) {
@@ -3885,6 +4163,9 @@ function local_aisn_cb_ai_plan_actions(int $courseid, string $teacherprompt, arr
 
 /**
  * Local aisn cb pick files helper.
+ *
+ * @param array $files Files.
+ * @param array $wanted Wanted.
  */
 function local_aisn_cb_pick_files(array $files, array $wanted): array {
     if (empty($wanted)) {
@@ -3911,6 +4192,8 @@ function local_aisn_cb_pick_files(array $files, array $wanted): array {
 
 /**
  * Local aisn cb ai clean safe html helper.
+ *
+ * @param string $html Html.
  */
 function local_aisn_cb_ai_clean_safe_html(string $html): string {
     $html = trim((string)$html);
@@ -3934,6 +4217,9 @@ function local_aisn_cb_ai_clean_safe_html(string $html): string {
 
 /**
  * Local aisn cb ai section from action helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param array $action Action.
  */
 function local_aisn_cb_ai_section_from_action(int $courseid, array $action): ?stdClass {
     $target = trim((string)($action['target'] ?? ''));
@@ -3951,6 +4237,8 @@ function local_aisn_cb_ai_section_from_action(int $courseid, array $action): ?st
 
 /**
  * Local aisn cb delete material normalize helper.
+ *
+ * @param string $value Value to process.
  */
 function local_aisn_cb_delete_material_normalize(string $value): string {
     $value = trim((string)$value);
@@ -3967,6 +4255,8 @@ function local_aisn_cb_delete_material_normalize(string $value): string {
 
 /**
  * Local aisn cb delete material tokens helper.
+ *
+ * @param string $value Value to process.
  */
 function local_aisn_cb_delete_material_tokens(string $value): array {
     $value = trim((string)$value);
@@ -3994,6 +4284,9 @@ function local_aisn_cb_delete_material_tokens(string $value): array {
 
 /**
  * Local aisn cb delete material score helper.
+ *
+ * @param string $needle Needle.
+ * @param string $candidate Candidate.
  */
 function local_aisn_cb_delete_material_score(string $needle, string $candidate): int {
     $needlekey = local_aisn_cb_delete_material_normalize($needle);
@@ -4024,6 +4317,10 @@ function local_aisn_cb_delete_material_score(string $needle, string $candidate):
 
 /**
  * Local aisn cb delete material find cm helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $sectionref Sectionref.
+ * @param string $materialname Materialname.
  */
 function local_aisn_cb_delete_material_find_cm(int $courseid, string $sectionref, string $materialname): ?stdClass {
     global $DB;
@@ -4084,6 +4381,10 @@ function local_aisn_cb_delete_material_find_cm(int $courseid, string $sectionref
 
 /**
  * Local aisn cb delete material from course helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $sectionref Sectionref.
+ * @param string $materialname Materialname.
  */
 function local_aisn_cb_delete_material_from_course(int $courseid, string $sectionref, string $materialname): string {
     global $DB;
@@ -4102,12 +4403,12 @@ function local_aisn_cb_delete_material_from_course(int $courseid, string $sectio
             local_aisn_course_material_set_excluded($courseid, $cmid, true);
         }
 
-        if ($DB->get_manager()->table_exists(new xmldb_table('local_aiskillnav_material'))) {
-            $table = new xmldb_table('local_aiskillnav_material');
+        if ($DB->get_manager()->table_exists(new xmldb_table('local_aiskillnavigator_material'))) {
+            $table = new xmldb_table('local_aiskillnavigator_material');
             $field = new xmldb_field('sourcecmid');
 
             if ($DB->get_manager()->field_exists($table, $field)) {
-                $materials = $DB->get_records('local_aiskillnav_material', [
+                $materials = $DB->get_records('local_aiskillnavigator_material', [
                     'courseid' => $courseid,
                     'sourcecmid' => $cmid,
                 ]);
@@ -4117,7 +4418,7 @@ function local_aisn_cb_delete_material_from_course(int $courseid, string $sectio
                         local_aisn_kg_delete_material((int)$material->id);
                     }
 
-                    $DB->delete_records('local_aiskillnav_material', ['id' => (int)$material->id]);
+                    $DB->delete_records('local_aiskillnavigator_material', ['id' => (int)$material->id]);
                 }
             }
         }
@@ -4136,6 +4437,8 @@ function local_aisn_cb_delete_material_from_course(int $courseid, string $sectio
 
 /**
  * Local aisn cb ai mat norm helper.
+ *
+ * @param string $value Value to process.
  */
 function local_aisn_cb_ai_mat_norm(string $value): string {
     $value = trim((string)$value);
@@ -4150,6 +4453,8 @@ function local_aisn_cb_ai_mat_norm(string $value): string {
 
 /**
  * Local aisn cb ai mat tokens helper.
+ *
+ * @param string $value Value to process.
  */
 function local_aisn_cb_ai_mat_tokens(string $value): array {
     $value = trim((string)$value);
@@ -4177,6 +4482,9 @@ function local_aisn_cb_ai_mat_tokens(string $value): array {
 
 /**
  * Local aisn cb ai mat score helper.
+ *
+ * @param string $needle Needle.
+ * @param string $candidate Candidate.
  */
 function local_aisn_cb_ai_mat_score(string $needle, string $candidate): int {
     $needlekey = local_aisn_cb_ai_mat_norm($needle);
@@ -4207,6 +4515,8 @@ function local_aisn_cb_ai_mat_score(string $needle, string $candidate): int {
 
 /**
  * Local aisn cb ai mat get title helper.
+ *
+ * @param stdClass $cmrow Cmrow.
  */
 function local_aisn_cb_ai_mat_get_title(stdClass $cmrow): string {
     global $DB;
@@ -4239,6 +4549,10 @@ function local_aisn_cb_ai_mat_get_title(stdClass $cmrow): string {
 
 /**
  * Local aisn cb ai mat find cm helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $sectionref Sectionref.
+ * @param string $materialname Materialname.
  */
 function local_aisn_cb_ai_mat_find_cm(int $courseid, string $sectionref, string $materialname): ?stdClass {
     global $DB;
@@ -4298,6 +4612,9 @@ function local_aisn_cb_ai_mat_find_cm(int $courseid, string $sectionref, string 
 
 /**
  * Local aisn cb ai mat remove from sequence helper.
+ *
+ * @param string $sequence Sequence.
+ * @param int $cmid Course module ID.
  */
 function local_aisn_cb_ai_mat_remove_from_sequence(string $sequence, int $cmid): string {
     $items = array_values(array_filter(explode(',', trim($sequence)), static function ($item) use ($cmid): bool {
@@ -4309,6 +4626,9 @@ function local_aisn_cb_ai_mat_remove_from_sequence(string $sequence, int $cmid):
 
 /**
  * Local aisn cb ai mat add to sequence helper.
+ *
+ * @param string $sequence Sequence.
+ * @param int $cmid Course module ID.
  */
 function local_aisn_cb_ai_mat_add_to_sequence(string $sequence, int $cmid): string {
     $items = array_values(array_filter(explode(',', trim($sequence)), static function ($item): bool {
@@ -4324,13 +4644,17 @@ function local_aisn_cb_ai_mat_add_to_sequence(string $sequence, int $cmid): stri
 
 /**
  * Local aisn cb ai mat update material record title helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $cmid Course module ID.
+ * @param string $newname Newname.
  */
 function local_aisn_cb_ai_mat_update_material_record_title(int $courseid, int $cmid, string $newname): void {
     global $DB;
 
     try {
         $manager = $DB->get_manager();
-        $table = new xmldb_table('local_aiskillnav_material');
+        $table = new xmldb_table('local_aiskillnavigator_material');
 
         if (!$manager->table_exists($table)) {
             return;
@@ -4342,7 +4666,7 @@ function local_aisn_cb_ai_mat_update_material_record_title(int $courseid, int $c
             return;
         }
 
-        $materials = $DB->get_records('local_aiskillnav_material', [
+        $materials = $DB->get_records('local_aiskillnavigator_material', [
             'courseid' => $courseid,
             'sourcecmid' => $cmid,
         ]);
@@ -4354,7 +4678,7 @@ function local_aisn_cb_ai_mat_update_material_record_title(int $courseid, int $c
                 $material->timemodified = time();
             }
 
-            $DB->update_record('local_aiskillnav_material', $material);
+            $DB->update_record('local_aiskillnavigator_material', $material);
         }
     } catch (Throwable $e) {
         debugging('AI Course Builder material table title update failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
@@ -4363,6 +4687,10 @@ function local_aisn_cb_ai_mat_update_material_record_title(int $courseid, int $c
 
 /**
  * Local aisn cb ai delete material helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $sectionref Sectionref.
+ * @param string $materialname Materialname.
  */
 function local_aisn_cb_ai_delete_material(int $courseid, string $sectionref, string $materialname): string {
     global $DB;
@@ -4382,13 +4710,13 @@ function local_aisn_cb_ai_delete_material(int $courseid, string $sectionref, str
         }
 
         $manager = $DB->get_manager();
-        $table = new xmldb_table('local_aiskillnav_material');
+        $table = new xmldb_table('local_aiskillnavigator_material');
 
         if ($manager->table_exists($table)) {
             $field = new xmldb_field('sourcecmid');
 
             if ($manager->field_exists($table, $field)) {
-                $materials = $DB->get_records('local_aiskillnav_material', [
+                $materials = $DB->get_records('local_aiskillnavigator_material', [
                     'courseid' => $courseid,
                     'sourcecmid' => $cmid,
                 ]);
@@ -4398,7 +4726,7 @@ function local_aisn_cb_ai_delete_material(int $courseid, string $sectionref, str
                         local_aisn_kg_delete_material((int)$material->id);
                     }
 
-                    $DB->delete_records('local_aiskillnav_material', ['id' => (int)$material->id]);
+                    $DB->delete_records('local_aiskillnavigator_material', ['id' => (int)$material->id]);
                 }
             }
         }
@@ -4423,6 +4751,11 @@ function local_aisn_cb_ai_delete_material(int $courseid, string $sectionref, str
 // phpcs:ignore moodle.Files.LineLength
 /**
  * Move an existing course material to the requested section.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $fromsection Fromsection.
+ * @param string $destinationsection Destinationsection.
+ * @param string $materialname Materialname.
  */
 function local_aisn_cb_ai_move_material(
     int $courseid,
@@ -4461,6 +4794,11 @@ function local_aisn_cb_ai_move_material(
 
 /**
  * Local aisn cb ai rename material helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $sectionref Sectionref.
+ * @param string $materialname Materialname.
+ * @param string $newname Newname.
  */
 function local_aisn_cb_ai_rename_material(int $courseid, string $sectionref, string $materialname, string $newname): string {
     global $DB;
@@ -4500,6 +4838,11 @@ function local_aisn_cb_ai_rename_material(int $courseid, string $sectionref, str
 
 /**
  * Local aisn cb ai set material visibility helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $sectionref Sectionref.
+ * @param string $materialname Materialname.
+ * @param bool $visible Visible.
  */
 function local_aisn_cb_ai_set_material_visibility(int $courseid, string $sectionref, string $materialname, bool $visible): string {
     global $DB;
@@ -4530,6 +4873,9 @@ function local_aisn_cb_ai_set_material_visibility(int $courseid, string $section
 
 /**
  * Local aisn cb ai clear section content helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $sectionref Sectionref.
  */
 function local_aisn_cb_ai_clear_section_content(int $courseid, string $sectionref): string {
     global $DB;
@@ -4556,6 +4902,11 @@ function local_aisn_cb_ai_clear_section_content(int $courseid, string $sectionre
 
 /**
  * Local aisn cb execute ai actions helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $userid Moodle user ID.
+ * @param array $actions Actions.
+ * @param array $files Files.
  */
 function local_aisn_cb_execute_ai_actions(int $courseid, int $userid, array $actions, array $files): array {
     $logs = [];
@@ -4821,6 +5172,11 @@ function local_aisn_cb_execute_ai_actions(int $courseid, int $userid, array $act
 
 /**
  * Local aisn cb execute prompt helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $userid Moodle user ID.
+ * @param string $prompt User prompt sent to the AI provider.
+ * @param array $files Files.
  */
 function local_aisn_cb_execute_prompt(int $courseid, int $userid, string $prompt, array $files): array {
     $actions = local_aisn_cb_ai_plan_actions($courseid, $prompt, $files);

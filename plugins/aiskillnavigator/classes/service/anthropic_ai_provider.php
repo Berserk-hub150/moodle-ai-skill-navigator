@@ -44,6 +44,10 @@ class anthropic_ai_provider extends abstract_curl_ai_provider {
 
     /**
      * Generate helper.
+     *
+     * @param string $prompt User prompt sent to the AI provider.
+     * @param int $maxtokens Maximum output token count.
+     * @param string $systemprompt System instructions for the provider.
      */
     public function generate(string $prompt, int $maxtokens = 1200, string $systemprompt = ''): string {
         if (trim($this->apikey) === '') {
@@ -108,6 +112,8 @@ class anthropic_ai_provider extends abstract_curl_ai_provider {
 
     /**
      * Error helper.
+     *
+     * @param array $response Response.
      */
     private function error(array $response): string {
         $status = (int)($response['status'] ?? 0);

@@ -39,6 +39,8 @@ class length_chunker {
 
     /**
      * Split helper.
+     *
+     * @param string $text Text to process.
      */
     public function split(string $text): array {
         $chunks = [];

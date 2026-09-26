@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Xmldb local aiskillnavigator upgrade helper.
+ *
+ * @param mixed $oldversion Previously installed plugin version.
  */
 function xmldb_local_aiskillnavigator_upgrade($oldversion) {
     global $DB;
@@ -224,7 +226,8 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
 
-            $field = new xmldb_field('contenthash', XMLDB_TYPE_CHAR, '40', null, XMLDB_NOTNULL, null, null, 'sourcecmid');
+            // Add as nullable so populated legacy material tables can be upgraded.
+            $field = new xmldb_field('contenthash', XMLDB_TYPE_CHAR, '40', null, null, null, null, 'sourcecmid');
             if (!$dbman->field_exists($table, $field)) {
                 $dbman->add_field($table, $field);
             }
@@ -267,6 +270,8 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
             $DB->execute("UPDATE {local_aiskillnav_material}
                              SET contenthash = ''
                            WHERE contenthash IS NULL");
+            $field = new xmldb_field('contenthash', XMLDB_TYPE_CHAR, '40', null, XMLDB_NOTNULL, null, null, 'sourcecmid');
+            $dbman->change_field_notnull($table, $field);
         }
 
         $table = new xmldb_table('local_aiskillnav_chunk');
@@ -473,7 +478,7 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
                 null,
                 XMLDB_NOTNULL,
                 null,
-                '',
+                null,
                 'embedding'
             );
 
@@ -542,6 +547,11 @@ function xmldb_local_aiskillnavigator_upgrade($oldversion) {
         }
 
         upgrade_plugin_savepoint(true, 2026080600, 'local', 'aiskillnavigator');
+    }
+
+    if ($oldversion < 2026092500) {
+        \local_aiskillnavigator\upgrade\table_names::migrate();
+        upgrade_plugin_savepoint(true, 2026092500, 'local', 'aiskillnavigator');
     }
 
     return true;

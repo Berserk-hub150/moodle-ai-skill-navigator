@@ -34,6 +34,11 @@ defined('MOODLE_INTERNAL') || die();
 class http_json_client {
     /**
      * Post helper.
+     *
+     * @param string $url Url.
+     * @param array $payload Payload.
+     * @param array $headers Headers.
+     * @param int|null $timeout Timeout.
      */
     public function post(string $url, array $payload, array $headers = [], ?int $timeout = null): array {
         $timeout = self::request_timeout($timeout);
@@ -130,6 +135,8 @@ class http_json_client {
 
     /**
      * Normalise headers helper.
+     *
+     * @param array $headers Headers.
      */
     private function normalise_headers(array $headers): array {
         $out = [];
@@ -175,6 +182,8 @@ class http_json_client {
 
     /**
      * Validate url helper.
+     *
+     * @param string $url Url.
      */
     private function validate_url(string $url): string {
         $url = trim($url);
@@ -218,6 +227,8 @@ class http_json_client {
 
     /**
      * Is public ip helper.
+     *
+     * @param string $ip Ip.
      */
     private function is_public_ip(string $ip): bool {
         return filter_var(

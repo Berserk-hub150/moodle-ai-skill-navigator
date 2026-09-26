@@ -29,6 +29,9 @@ require_once(__DIR__ . '/document_ocr_toggle_helper.php');
 
 /**
  * Local aiskillnavigator render tool url helper.
+ *
+ * @param string $path Path.
+ * @param int $courseid Moodle course ID.
  */
 function local_aiskillnavigator_render_tool_url(string $path, int $courseid): moodle_url {
     $params = [];
@@ -42,6 +45,9 @@ function local_aiskillnavigator_render_tool_url(string $path, int $courseid): mo
 
 /**
  * Local aiskillnavigator render tool card helper.
+ *
+ * @param array $tool Tool.
+ * @param int $courseid Moodle course ID.
  */
 function local_aiskillnavigator_render_tool_card(array $tool, int $courseid): string {
     $html = html_writer::start_div('card mb-3');
@@ -64,6 +70,9 @@ function local_aiskillnavigator_render_tool_card(array $tool, int $courseid): st
 
 /**
  * Local aiskillnavigator render block tool button helper.
+ *
+ * @param array $tool Tool.
+ * @param int $courseid Moodle course ID.
  */
 function local_aiskillnavigator_render_block_tool_button(array $tool, int $courseid): string {
     return html_writer::link(
@@ -75,6 +84,10 @@ function local_aiskillnavigator_render_block_tool_button(array $tool, int $cours
 
 /**
  * Local aiskillnavigator render block section helper.
+ *
+ * @param string $title Title.
+ * @param array $tools Tools.
+ * @param int $courseid Moodle course ID.
  */
 function local_aiskillnavigator_render_block_section(string $title, array $tools, int $courseid): string {
     if (empty($tools)) {

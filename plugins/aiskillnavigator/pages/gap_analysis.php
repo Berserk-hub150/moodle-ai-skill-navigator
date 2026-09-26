@@ -46,6 +46,8 @@ $PAGE->set_heading(get_string('page_gap_analysis_heading', 'local_aiskillnavigat
 
 /**
  * Local aiskillnavigator gap table exists helper.
+ *
+ * @param string $tablename Tablename.
  */
 function local_aiskillnavigator_gap_table_exists(string $tablename): bool {
     global $DB;
@@ -54,6 +56,9 @@ function local_aiskillnavigator_gap_table_exists(string $tablename): bool {
 
 /**
  * Local aiskillnavigator gap call ai helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
+ * @param string $systemprompt System instructions for the provider.
  */
 function local_aiskillnavigator_gap_call_ai(string $prompt, string $systemprompt): string {
     try {
@@ -80,13 +85,15 @@ function local_aiskillnavigator_gap_call_ai(string $prompt, string $systemprompt
 
 /**
  * Local aiskillnavigator gap collect helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aiskillnavigator_gap_collect(int $courseid): array {
     global $DB;
 
     if (
-        !local_aiskillnavigator_gap_table_exists('local_aiskillnav_assessment') ||
-        !local_aiskillnavigator_gap_table_exists('local_aiskillnav_ass_att')
+        !local_aiskillnavigator_gap_table_exists('local_aiskillnavigator_assessment') ||
+        !local_aiskillnavigator_gap_table_exists('local_aiskillnavigator_ass_att')
     ) {
         return [
             'assessments' => [],
@@ -98,7 +105,7 @@ function local_aiskillnavigator_gap_collect(int $courseid): array {
     }
 
     $assessments = $DB->get_records(
-        'local_aiskillnav_assessment',
+        'local_aiskillnavigator_assessment',
         ['courseid' => $courseid],
         'timecreated ASC'
     );
@@ -111,7 +118,7 @@ function local_aiskillnavigator_gap_collect(int $courseid): array {
 
     foreach ($assessments as $assessment) {
         $attempts = $DB->get_records(
-            'local_aiskillnav_ass_att',
+            'local_aiskillnavigator_ass_att',
             ['assessmentid' => (int)$assessment->id],
             'timecreated ASC'
         );
