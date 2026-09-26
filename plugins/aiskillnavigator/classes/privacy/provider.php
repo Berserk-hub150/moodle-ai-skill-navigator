@@ -268,11 +268,12 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
             }
         }
 
-        foreach ([
+        $coursetables = [
             'local_aiskillnavigator_kg_source',
             'local_aiskillnavigator_kg_relation',
             'local_aiskillnavigator_kg_concept',
-        ] as $table) {
+        ];
+        foreach ($coursetables as $table) {
             if (self::table_exists($table)) {
                 if ($table === 'local_aiskillnavigator_kg_concept' || $table === 'local_aiskillnavigator_kg_relation') {
                     $DB->delete_records($table, ['courseid' => $courseid]);
@@ -421,11 +422,12 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
             );
         }
 
-        foreach ([
+        $materialtables = [
             'local_aiskillnavigator_chunk',
             'local_aiskillnavigator_kg_source',
             'local_aiskillnavigator_kg_relation',
-        ] as $table) {
+        ];
+        foreach ($materialtables as $table) {
             if (self::table_exists($table)) {
                 $DB->delete_records_select($table, 'materialid ' . $sql, $params);
             }
