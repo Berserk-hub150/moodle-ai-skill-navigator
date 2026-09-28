@@ -349,6 +349,7 @@ $searchservice = new \local_aiskillnavigator\service\web_search_service();
 $searchenabled = $searchservice->is_enabled();
 
 if ($action === 'generate') {
+    \local_aiskillnavigator\service\request_access::require_write($context, 'local/aiskillnavigator:managematerials');
     if (!confirm_sesskey()) {
         $error = 'Invalid session key. Reload the page and try again.';
     } else if (trim($topic) === '') {

@@ -183,3 +183,9 @@ $string['teacherdashboard'] = 'Teacher dashboard';
 $string['tutor_analytics_help'] = 'To populate the report, open Student tools > AI Tutor with a student account and ask a question. Then return here or refresh this page. Normal Moodle quiz attempts appear in the Teacher dashboard instead. Skill and difficulty labels are keyword-based indicators, not grades.';
 $string['tutor_analytics_intro'] = 'This report summarises questions answered by the AI Tutor in this course. It updates automatically after successful tutor responses.';
 $string['tutor_question'] = 'Ask a question';
+
+$string['invalidgeneratedquiz'] = 'The provider returned an invalid quiz. Generate a new quiz.';
+$string['expiredpracticequiz'] = 'This practice quiz is unavailable or has expired. Generate a new quiz in this course.';
+$string['invalidrequestmethod'] = 'Use the form to submit this action.';
+
+$string['assessmentquestionslocked'] = 'This assessment already has student attempts. Create a new assessment to change its questions; existing results have been preserved.';

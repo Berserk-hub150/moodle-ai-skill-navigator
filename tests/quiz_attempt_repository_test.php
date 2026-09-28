@@ -7,8 +7,12 @@ $USER = (object)['id' => 50];
 $allowed = [101 => true, 102 => true, 103 => false, 104 => true];
 $allgroups = false;
 $groups = [7 => (object)['id' => 7]];
+class context_course { public static function instance($id) { return (object)['id' => $id]; } }
+function get_course($id) { return (object)['id' => $id, 'groupmode' => 0]; }
+function groups_get_course_groupmode($course) { return $course->groupmode; }
 class context_module { public static function instance($id) { return (object)['id' => $id]; } }
 function has_capability($capability, $context) {
+    if ($capability === 'local/aiskillnavigator:viewteacher') { return true; }
     return $capability === 'mod/quiz:viewreports' ? ($GLOBALS['allowed'][$context->id] ?? false) : $GLOBALS['allgroups'];
 }
 function groups_get_activity_groupmode($cm) { return $cm->groupmode; }
@@ -64,6 +68,7 @@ INSERT INTO quiz_attempts VALUES
  (9, 5, 1, 10, 900, 'finished', 0),
  (10, 1, 3, 10, 950, 'finished', 0);
 SQL);
+require_once(__DIR__ . '/../plugins/aiskillnavigator/classes/service/report_access.php');
 require_once(__DIR__ . '/../plugins/aiskillnavigator/classes/service/quiz_attempt_repository.php');
 $repository = new local_aiskillnavigator\service\quiz_attempt_repository();
 $attempts = $repository->for_course(42);

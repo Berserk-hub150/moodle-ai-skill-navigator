@@ -117,11 +117,7 @@ function local_aiskillnavigator_gap_collect(int $courseid): array {
     $studentsatrisk = [];
 
     foreach ($assessments as $assessment) {
-        $attempts = $DB->get_records(
-            'local_aiskillnavigator_ass_att',
-            ['assessmentid' => (int)$assessment->id],
-            'timecreated ASC'
-        );
+        $attempts = \local_aiskillnavigator\service\report_access::assessment_attempts($courseid, (int)$assessment->id);
 
         $quiz = json_decode((string)$assessment->quizjson, true);
         $questions = is_array($quiz) && !empty($quiz['questions']) && is_array($quiz['questions'])

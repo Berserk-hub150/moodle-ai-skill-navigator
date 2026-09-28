@@ -40,12 +40,13 @@ class quiz_attempt_repository {
     public function for_course(int $courseid): array {
         global $DB, $USER;
 
+        [$scope, $scopeparams] = report_access::condition($courseid, 'a.userid');
         $attempts = array_values($DB->get_records_sql(
             "SELECT a.*, u.firstname, u.lastname, u.email
                FROM {local_aiskillnavigator_attempt} a
                JOIN {user} u ON u.id = a.userid
-              WHERE a.courseid = :courseid AND u.deleted = 0",
-            ['courseid' => $courseid]
+              WHERE a.courseid = :courseid AND u.deleted = 0 AND ($scope)",
+            $scopeparams + ['courseid' => $courseid]
         ));
         foreach ($attempts as $attempt) {
             $attempt->source = 'AI Skill Navigator';

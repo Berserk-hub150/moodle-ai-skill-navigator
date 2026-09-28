@@ -29,8 +29,8 @@ defined('MOODLE_INTERNAL') || die();
  * Central role guards for AI Skill Navigator.
  *
  * Goal:
- * - students use only student tools;
- * - teachers use only teacher tools;
+ * - access follows the capabilities granted in this course;
+ * - users with multiple roles may use both tool sets;
  * - site admins can use both sides for testing/demo;
  * - every check is course-context based.
  */
@@ -62,15 +62,6 @@ if (!function_exists('local_aisn_require_student_area')) {
         }
 
         require_capability('local/aiskillnavigator:viewstudent', $context);
-
-        if (local_aisn_is_course_teacher_like($context)) {
-            throw new required_capability_exception(
-                $context,
-                'local/aiskillnavigator:viewstudent',
-                'nopermissions',
-                ''
-            );
-        }
     }
 }
 

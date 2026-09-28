@@ -32,6 +32,17 @@ defined('MOODLE_INTERNAL') || die();
  */
 class observer {
     /**
+     * Delete plugin-owned data when Moodle permanently deletes its course.
+     *
+     * @param \core\event\course_deleted $event Deleted course.
+     */
+    public static function course_deleted(\core\event\course_deleted $event): void {
+        $courseid = (int)$event->objectid;
+        \local_aiskillnavigator\privacy\provider::delete_course_data($courseid);
+        unset_config('document_ocr_enabled_course_' . $courseid, 'local_aiskillnavigator');
+    }
+
+    /**
      * Course created helper.
      *
      * @param \core\event\course_created $event Event.

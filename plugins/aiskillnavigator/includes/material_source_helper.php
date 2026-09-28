@@ -448,20 +448,10 @@ function local_aisn_matlist_dedupe($materials): array {
  * @param bool $includeall Includeall.
  */
 function local_aiskillnavigator_material_source_get_readable_materials(int $courseid, bool $includeall = true): array {
-    global $DB, $CFG;
+    global $DB;
 
     if (!$DB->get_manager()->table_exists(new xmldb_table('local_aiskillnavigator_material'))) {
         return [];
-    }
-
-    $syncfile = $CFG->dirroot . '/local/aiskillnavigator/includes/course_resource_sync.php';
-
-    if (file_exists($syncfile)) {
-        require_once($syncfile);
-
-        if (function_exists('local_aiskillnavigator_sync_course_resources')) {
-            local_aiskillnavigator_sync_course_resources($courseid, 0, false);
-        }
     }
 
     $records = $DB->get_records(
@@ -477,7 +467,6 @@ function local_aiskillnavigator_material_source_get_readable_materials(int $cour
         return [];
     }
 
-    $modinfo = get_fast_modinfo($courseid);
     $bycmid = [];
 
     foreach ($records as $record) {
@@ -491,7 +480,7 @@ function local_aiskillnavigator_material_source_get_readable_materials(int $cour
             continue;
         }
 
-        if (empty($modinfo->cms[$cmid]) || empty($modinfo->cms[$cmid]->visible)) {
+        if (!\local_aiskillnavigator\service\material_access::can_read($record)) {
             continue;
         }
 

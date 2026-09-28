@@ -22,13 +22,23 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
-defined('MOODLE_INTERNAL') || die();
+namespace local_aiskillnavigator\service;
 
-$plugin = new stdClass();
-
-$plugin->component = 'local_aiskillnavigator';
-$plugin->version = 2026092800;
-$plugin->requires = 2024042200;
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.0.6';
+/**
+ * Require a write capability, POST and a valid session key before a mutation.
+ */
+class request_access {
+    /**
+     * Validate a state-changing request.
+     *
+     * @param \context $context Course context.
+     * @param string $capability Required write capability.
+     */
+    public static function require_write(\context $context, string $capability): void {
+        require_capability($capability, $context);
+        if (!data_submitted()) {
+            throw new \moodle_exception('invalidrequestmethod', 'local_aiskillnavigator');
+        }
+        require_sesskey();
+    }
+}

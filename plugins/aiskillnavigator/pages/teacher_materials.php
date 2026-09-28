@@ -289,6 +289,10 @@ function local_aisn_tm_delete_material(stdClass $material): void {
     $courseid = (int)($material->courseid ?? 0);
     $materialid = (int)($material->id ?? 0);
     $cmid = local_aisn_tm_material_cmid($material);
+    if ($cmid > 0) {
+        get_coursemodule_from_id('', $cmid, $courseid, false, MUST_EXIST);
+        require_capability('moodle/course:manageactivities', context_module::instance($cmid));
+    }
 
     $materialids = [];
 
@@ -378,7 +382,7 @@ function local_aisn_tm_delete_material(stdClass $material): void {
 }
 
 if ($action !== '' && $materialid > 0) {
-    require_sesskey();
+    \local_aiskillnavigator\service\request_access::require_write($context, 'local/aiskillnavigator:managematerials');
 
     $material = local_aisn_tm_get_material($materialid, $courseid);
 
@@ -536,7 +540,7 @@ foreach ($materials as $material) {
 
     echo html_writer::start_div('mt-3');
     if ($externalallowed) {
-        echo html_writer::link(
+        echo $OUTPUT->single_button(
             new moodle_url('/local/aiskillnavigator/pages/teacher_materials.php', [
                 'courseid' => $courseid,
                 'materialid' => $materialid,
@@ -544,10 +548,10 @@ foreach ($materials as $material) {
                 'sesskey' => sesskey(),
             ]),
             'Restrict to local AI only',
-            ['class' => 'btn btn-warning btn-sm mr-2']
+            'post'
         );
     } else {
-        echo html_writer::link(
+        echo $OUTPUT->single_button(
             new moodle_url('/local/aiskillnavigator/pages/teacher_materials.php', [
                 'courseid' => $courseid,
                 'materialid' => $materialid,
@@ -555,11 +559,11 @@ foreach ($materials as $material) {
                 'sesskey' => sesskey(),
             ]),
             'Allow external AI',
-            ['class' => 'btn btn-success btn-sm mr-2']
+            'post'
         );
     }
 
-    echo html_writer::link(
+    echo $OUTPUT->single_button(
         new moodle_url('/local/aiskillnavigator/pages/teacher_materials.php', [
             'courseid' => $courseid,
             'materialid' => $materialid,
@@ -567,7 +571,7 @@ foreach ($materials as $material) {
             'sesskey' => sesskey(),
         ]),
         'Delete from course and RAG',
-        ['class' => 'btn btn-danger btn-sm']
+        'post'
     );
 
     echo html_writer::end_div();

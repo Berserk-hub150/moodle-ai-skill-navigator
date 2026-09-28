@@ -218,7 +218,7 @@ if ($assessmentid > 0 && local_aiskillnavigator_assessment_table_exists('local_a
 }
 
 if ($action === 'submit' && $selectedassessment && $quiz) {
-    require_sesskey();
+    \local_aiskillnavigator\service\request_access::require_write($context, 'local/aiskillnavigator:viewstudent');
 
     $score = 0;
     $answers = [];

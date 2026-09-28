@@ -913,70 +913,7 @@ function local_aisn_kg_stats(int $courseid): array {
  * @param int $limitedges Limitedges.
  */
 function local_aisn_kg_graph_data(int $courseid, int $limitnodes = 80, int $limitedges = 160): array {
-    global $DB;
-
-    local_aisn_kg_ensure_schema();
-
-    $concepts = $DB->get_records_sql(
-        "SELECT c.*,
-                COUNT(DISTINCT s.id) AS sourcecount,
-                COUNT(DISTINCT r.id) AS relationcount
-           FROM {local_aiskillnavigator_kg_concept} c
-      LEFT JOIN {local_aiskillnavigator_kg_source} s ON s.conceptid = c.id
-      LEFT JOIN {local_aiskillnavigator_kg_relation} r ON r.sourceconceptid = c.id OR r.targetconceptid = c.id
-          WHERE c.courseid = :courseid
-       GROUP BY c.id, c.courseid, c.name, c.normalizedname, c.description, c.confidence, c.timecreated, c.timemodified
-       ORDER BY sourcecount DESC, relationcount DESC, c.confidence DESC, c.name ASC",
-        ['courseid' => $courseid],
-        0,
-        $limitnodes
-    );
-
-    $ids = array_map('intval', array_keys($concepts));
-    $nodes = [];
-    $edges = [];
-
-    foreach ($concepts as $concept) {
-        $nodes[] = [
-            'id' => (int)$concept->id,
-            'label' => format_string($concept->name),
-            'confidence' => (int)$concept->confidence,
-            'sources' => (int)$concept->sourcecount,
-            'relations' => (int)$concept->relationcount,
-            'description' => local_aisn_kg_substr((string)$concept->description, 0, 300),
-        ];
-    }
-
-    if (!empty($ids)) {
-        [$sourceinsql, $sourceparams] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'kgsrc');
-        [$targetinsql, $targetparams] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'kgtgt');
-        $params = array_merge(['courseid' => $courseid], $sourceparams, $targetparams);
-
-        $relations = $DB->get_records_sql(
-            "SELECT r.*
-               FROM {local_aiskillnavigator_kg_relation} r
-              WHERE r.courseid = :courseid
-                AND r.sourceconceptid {$sourceinsql}
-                AND r.targetconceptid {$targetinsql}
-           ORDER BY r.confidence DESC, r.id DESC",
-            $params,
-            0,
-            $limitedges
-        );
-
-        foreach ($relations as $relation) {
-            $edges[] = [
-                'id' => (int)$relation->id,
-                'from' => (int)$relation->sourceconceptid,
-                'to' => (int)$relation->targetconceptid,
-                'type' => (string)$relation->relationtype,
-                'confidence' => (int)$relation->confidence,
-                'evidence' => local_aisn_kg_substr((string)$relation->evidence, 0, 300),
-            ];
-        }
-    }
-
-    return ['nodes' => $nodes, 'edges' => $edges];
+    return \local_aiskillnavigator\service\knowledge_graph_reader::read($courseid, $limitnodes, $limitedges);
 }
 
 /**
@@ -987,90 +924,36 @@ function local_aisn_kg_graph_data(int $courseid, int $limitnodes = 80, int $limi
  * @param int $limit Limit.
  */
 function local_aisn_kg_prompt_context(int $courseid, string $focus = '', int $limit = 28): string {
-    global $DB;
-
-    local_aisn_kg_ensure_schema();
-
+    $graph = \local_aiskillnavigator\service\knowledge_graph_reader::read($courseid, 500, 1000);
+    $nodes = $graph['nodes'];
     $focusnorm = local_aisn_kg_normalize($focus);
-    $params = ['courseid' => $courseid];
-    $where = "c.courseid = :courseid";
-
     if ($focusnorm !== '') {
-        $params['focus1'] = '%' . $focusnorm . '%';
-        $params['focus2'] = '%' . $focusnorm . '%';
-        $where .= " AND (c.normalizedname LIKE :focus1 OR LOWER(c.description) LIKE :focus2)";
+        $matching = array_filter($nodes, static function ($node) use ($focusnorm): bool {
+            return strpos(local_aisn_kg_normalize($node['label'] . ' ' . $node['description']), $focusnorm) !== false;
+        });
+        if ($matching) {
+            $nodes = $matching;
+        }
     }
-
-    $concepts = $DB->get_records_sql(
-        "SELECT c.*,
-                COUNT(DISTINCT s.id) AS sourcecount,
-                COUNT(DISTINCT r.id) AS relationcount
-           FROM {local_aiskillnavigator_kg_concept} c
-      LEFT JOIN {local_aiskillnavigator_kg_source} s ON s.conceptid = c.id
-      LEFT JOIN {local_aiskillnavigator_kg_relation} r ON r.sourceconceptid = c.id OR r.targetconceptid = c.id
-          WHERE {$where}
-       GROUP BY c.id, c.courseid, c.name, c.normalizedname, c.description, c.confidence, c.timecreated, c.timemodified
-       ORDER BY sourcecount DESC, relationcount DESC, c.confidence DESC, c.name ASC",
-        $params,
-        0,
-        $limit
-    );
-
-    if (empty($concepts) && $focusnorm !== '') {
-        return local_aisn_kg_prompt_context($courseid, '', $limit);
-    }
-
-    if (empty($concepts)) {
+    $nodes = array_slice($nodes, 0, max(1, min(80, $limit)));
+    if (!$nodes) {
         return '';
     }
-
-    $ids = array_map('intval', array_keys($concepts));
-    $lines = [];
-    $lines[] = "COURSE KNOWLEDGE GRAPH";
-    // phpcs:ignore moodle.Files.LineLength
-    $lines[] = "Use these teacher-approved concepts to choose abilities, prerequisites and distractors. Do not invent facts outside the course materials.";
-
-    foreach ($concepts as $concept) {
-        $line = "- Concept: " . format_string($concept->name) .
-            " | confidence: " . (int)$concept->confidence . "%" .
-            " | sources: " . (int)$concept->sourcecount;
-
-        if (trim((string)$concept->description) !== '') {
-            $line .= " | evidence: " . local_aisn_kg_substr(local_aisn_kg_clean_text((string)$concept->description), 0, 180);
-        }
-
-        $lines[] = $line;
+    $lines = ['COURSE KNOWLEDGE GRAPH', 'Use only the following permitted course evidence.'];
+    $ids = [];
+    foreach ($nodes as $node) {
+        $ids[$node['id']] = $node['label'];
+        $lines[] = '- Concept: ' . $node['label'] . ' | evidence: '
+            . local_aisn_kg_substr(local_aisn_kg_clean_text($node['description']), 0, 180);
     }
-
-    if (!empty($ids)) {
-        [$sourceinsql, $sourceparams] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'kgpsrc');
-        [$targetinsql, $targetparams] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED, 'kgptgt');
-        $relparams = array_merge(['courseid' => $courseid], $sourceparams, $targetparams);
-
-        $relations = $DB->get_records_sql(
-            "SELECT r.relationtype, r.confidence, sc.name AS sourcename, tc.name AS targetname
-               FROM {local_aiskillnavigator_kg_relation} r
-               JOIN {local_aiskillnavigator_kg_concept} sc ON sc.id = r.sourceconceptid
-               JOIN {local_aiskillnavigator_kg_concept} tc ON tc.id = r.targetconceptid
-              WHERE r.courseid = :courseid
-                AND r.sourceconceptid {$sourceinsql}
-                AND r.targetconceptid {$targetinsql}
-           ORDER BY r.confidence DESC, r.id DESC",
-            $relparams,
-            0,
-            24
-        );
-
-        if (!empty($relations)) {
-            $lines[] = "Relations:";
-            foreach ($relations as $relation) {
-                $lines[] = "- " . format_string($relation->sourcename) .
-                    " --" . s($relation->relationtype) . "--> " .
-                    format_string($relation->targetname) .
-                    " (" . (int)$relation->confidence . "%)";
+    $count = 0;
+    foreach ($graph['edges'] as $edge) {
+        if (isset($ids[$edge['from']], $ids[$edge['to']])) {
+            $lines[] = '- ' . $ids[$edge['from']] . ' --' . $edge['type'] . '--> ' . $ids[$edge['to']];
+            if (++$count >= 24) {
+                break;
             }
         }
     }
-
     return implode("\n", $lines);
 }
