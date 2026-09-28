@@ -126,3 +126,7 @@ jobs:
       - name: Moodle integration tests
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: moodle-plugin-ci phpunit
+
+      - name: Browser integration tests
+        if: ${{ !cancelled() && steps.install.outcome == 'success' && matrix.moodle == '4.5' && matrix.db == 'pgsql' }}
+        run: moodle-plugin-ci behat --profile chrome --start-servers --auto-rerun 0 --dump

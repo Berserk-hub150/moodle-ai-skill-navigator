@@ -3,6 +3,8 @@
 define('MOODLE_INTERNAL', true);
 define('SQL_PARAMS_NAMED', 2);
 define('SEPARATEGROUPS', 1);
+class userfields { public static function get_name_fields() { return ['firstname', 'lastname']; } }
+class_alias('userfields', 'core_user\\fields');
 $USER = (object)['id' => 50];
 $allowed = [101 => true, 102 => true, 103 => false, 104 => true];
 $allgroups = false;

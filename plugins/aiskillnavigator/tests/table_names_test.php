@@ -46,7 +46,8 @@ final class table_names_test extends \advanced_testcase {
         set_config('version', 2026080600, 'local_aiskillnavigator');
         try {
             $this->assertTrue(xmldb_local_aiskillnavigator_upgrade(2026080600));
-            $this->assertSame('Existing content', $DB->get_field('local_aiskillnavigator_material', 'content', ['id' => $materialid]));
+            $content = $DB->get_field('local_aiskillnavigator_material', 'content', ['id' => $materialid]);
+            $this->assertSame('Existing content', $content);
             $this->assertEquals(2026092500, get_config('local_aiskillnavigator', 'version'));
         } finally {
             table_names::migrate();

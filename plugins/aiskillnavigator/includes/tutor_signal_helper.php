@@ -354,7 +354,12 @@ function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): strin
         $html .= html_writer::start_tag('tbody');
 
         foreach ($recent as $r) {
-            $user = $DB->get_record('user', ['id' => $r->userid], 'id,firstname,lastname', IGNORE_MISSING);
+            $user = $DB->get_record(
+                'user',
+                ['id' => $r->userid],
+                'id,' . implode(',', \core_user\fields::get_name_fields()),
+                IGNORE_MISSING
+            );
             $student = $user ? fullname($user) : ('User #' . (int)$r->userid);
 
             $html .= html_writer::tag(

@@ -1391,7 +1391,11 @@ if (empty($assessments)) {
             echo html_writer::end_tag('thead');
             echo html_writer::start_tag('tbody');
             foreach ($attempts as $attempt) {
-                $student = $DB->get_record('user', ['id' => $attempt->userid], 'id, firstname, lastname, email');
+                $student = $DB->get_record(
+                    'user',
+                    ['id' => $attempt->userid],
+                    'id,email,' . implode(',', \core_user\fields::get_name_fields())
+                );
                 $studentname = $student ? fullname($student) : 'User ' . $attempt->userid;
                 // phpcs:ignore moodle.Files.LineLength
                 echo html_writer::tag('tr', html_writer::tag('td', s($studentname)) . html_writer::tag('td', (int)$attempt->score . '/' . (int)$attempt->maxscore) . html_writer::tag('td', (int)$attempt->percentage . '%') . html_writer::tag('td', userdate($attempt->timecreated)));
