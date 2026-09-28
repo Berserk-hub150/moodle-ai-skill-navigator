@@ -1,6 +1,7 @@
 # AI Skill Navigator
 
 [![Plugin CI](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml/badge.svg)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml)
+[![Moodle integration](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/moodle-marketplace-ci.yml/badge.svg)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/moodle-marketplace-ci.yml)
 [![License: GPL v3 or later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 
 Course-aware tutoring, assessment and teaching tools for Moodle. Teachers choose the course materials available to the AI; students can use them for questions, practice quizzes and revision.
