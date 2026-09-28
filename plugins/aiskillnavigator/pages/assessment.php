@@ -220,37 +220,19 @@ if ($assessmentid > 0 && local_aiskillnavigator_assessment_table_exists('local_a
 if ($action === 'submit' && $selectedassessment && $quiz) {
     \local_aiskillnavigator\service\request_access::require_write($context, 'local/aiskillnavigator:viewstudent');
 
-    $score = 0;
     $answers = [];
-    $questions = array_values($quiz['questions']);
-    $maxscore = count($questions);
-
-    foreach ($questions as $index => $question) {
-        $answer = optional_param('answer_' . $index, -1, PARAM_INT);
-        $answers[$index] = $answer;
-
-        $correctindex = isset($question['correct_index']) ? (int)$question['correct_index'] : -1;
-
-        if ($answer === $correctindex) {
-            $score++;
-        }
+    foreach (array_keys(array_values($quiz['questions'])) as $index) {
+        $answers[$index] = optional_param('answer_' . $index, -1, PARAM_INT);
     }
-
-    $percentage = $maxscore > 0 ? (int)round(($score / $maxscore) * 100) : 0;
-
-    if (local_aiskillnavigator_assessment_table_exists('local_aiskillnavigator_ass_att')) {
-        $record = new stdClass();
-        $record->assessmentid = (int)$selectedassessment->id;
-        $record->courseid = $courseid;
-        $record->userid = (int)$USER->id;
-        $record->score = $score;
-        $record->maxscore = $maxscore;
-        $record->percentage = $percentage;
-        $record->answersjson = json_encode($answers, JSON_UNESCAPED_UNICODE);
-        $record->timecreated = time();
-
-        $DB->insert_record('local_aiskillnavigator_ass_att', $record);
-    }
+    $result = \local_aiskillnavigator\service\assessment_submission::submit(
+        $courseid,
+        (int)$selectedassessment->id,
+        required_param('revision', PARAM_ALPHANUM),
+        $answers
+    );
+    $score = $result->score;
+    $maxscore = $result->maxscore;
+    $percentage = $result->percentage;
 
     $savedmessage = 'Assessment submitted successfully.';
 }
@@ -290,6 +272,9 @@ if ($selectedassessment && $quiz) {
 
     echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
     echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'submit']);
+    echo html_writer::empty_tag('input', [
+        'type' => 'hidden', 'name' => 'revision', 'value' => hash('sha256', $selectedassessment->quizjson),
+    ]);
 
     $questions = array_values($quiz['questions']);
 

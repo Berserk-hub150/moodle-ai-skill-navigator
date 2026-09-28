@@ -99,57 +99,14 @@ function local_aisn_ass_clean_json(string $raw): string {
  * @param array $question Question.
  */
 function local_aisn_ass_normalize_question(array $question): ?array {
-    $text = trim((string)($question['question'] ?? ''));
-    if ($text === '') {
+    $question['skill'] = $question['ability'] ?? $question['skill'] ?? '';
+    $quiz = \local_aiskillnavigator\service\practice_quiz::normalise(['questions' => [$question]]);
+    if ($quiz === null) {
         return null;
     }
-
-    $options = isset($question['options']) && is_array($question['options'])
-        ? array_values($question['options'])
-        : [];
-
-    $options = array_map(static function ($option): string {
-        return trim((string)$option);
-    }, $options);
-
-    $options = array_slice($options, 0, 4);
-    while (count($options) < 4) {
-        $options[] = '';
-    }
-
-    $nonempty = array_values(array_filter($options, static function ($option): bool {
-        return trim((string)$option) !== '';
-    }));
-
-    if (count($nonempty) < 2) {
-        return null;
-    }
-
-    $correct = (int)($question['correct_index'] ?? 0);
-    $correct = max(0, min(3, $correct));
-
-    if (trim((string)$options[$correct]) === '') {
-        $correct = 0;
-    }
-
-    $ability = trim((string)($question['ability'] ?? $question['skill'] ?? ''));
-    if ($ability === '') {
-        $ability = 'Ability evaluated';
-    }
-
-    $explanation = trim((string)($question['explanation'] ?? ''));
-    if ($explanation === '') {
-        $explanation = 'Correct answer based on the assessment context.';
-    }
-
-    return [
-        'question' => $text,
-        'options' => $options,
-        'correct_index' => $correct,
-        'ability' => $ability,
-        'skill' => $ability,
-        'explanation' => $explanation,
-    ];
+    $normalized = $quiz['questions'][0];
+    $normalized['ability'] = $normalized['skill'];
+    return $normalized;
 }
 
 /**
@@ -168,6 +125,11 @@ function local_aisn_ass_parse_quiz(string $raw): ?array {
         return null;
     }
 
+    foreach (['title', 'topic', 'type'] as $field) {
+        if (isset($decoded[$field]) && !is_string($decoded[$field])) {
+            return null;
+        }
+    }
     $questions = [];
     foreach (array_slice(array_values($decoded['questions']), 0, 20) as $question) {
         if (!is_array($question)) {
@@ -395,7 +357,7 @@ function local_aisn_ass_questions_from_form(): array {
         $normalized = local_aisn_ass_normalize_question([
             'question' => $cleanstring($questionraw[$key] ?? '', PARAM_RAW_TRIMMED),
             'options' => $options,
-            'correct_index' => $cleanint($correctraw[$key] ?? 0),
+            'correct_index' => $cleanint($correctraw[$key] ?? -1),
             'ability' => $cleanstring($abilityraw[$key] ?? '', PARAM_TEXT),
             'explanation' => $cleanstring($explanationraw[$key] ?? '', PARAM_RAW_TRIMMED),
         ]);
@@ -406,7 +368,7 @@ function local_aisn_ass_questions_from_form(): array {
     }
 
     if (empty($questions)) {
-        throw new moodle_exception('At least one valid question with at least two non-empty options is required.');
+        throw new moodle_exception('At least one valid question with four non-empty options and a correct answer is required.');
     }
 
     return $questions;
@@ -577,7 +539,7 @@ function local_aisn_ass_render_edit_form(stdClass $assessment, array $quiz, int 
 
     echo html_writer::start_div('mt-3');
     // phpcs:ignore moodle.Files.LineLength
-    echo html_writer::empty_tag('input', ['type' => 'submit', 'class' => 'btn btn-primary', 'value' => $attemptcount > 0 ? 'Save changes and reset attempts' : 'Save test changes']);
+    echo html_writer::empty_tag('input', ['type' => 'submit', 'class' => 'btn btn-primary', 'value' => 'Save test changes']);
     echo ' ';
     // phpcs:ignore moodle.Files.LineLength
     echo html_writer::link(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid]), 'Cancel', ['class' => 'btn btn-outline-secondary']);
@@ -724,21 +686,31 @@ if ($action === 'edit') {
 if ($action === 'delete') {
     require_sesskey();
     $id = required_param('id', PARAM_INT);
-    $assessment = local_aisn_ass_get_assessment($id, $courseid);
-    if (local_aisn_ass_table_exists('local_aiskillnavigator_ass_att')) {
-        $DB->delete_records('local_aiskillnavigator_ass_att', ['assessmentid' => $assessment->id]);
+    $lock = \local_aiskillnavigator\service\assessment_submission::lock($id);
+    try {
+        $assessment = local_aisn_ass_get_assessment($id, $courseid);
+        if (local_aisn_ass_table_exists('local_aiskillnavigator_ass_att')) {
+            $DB->delete_records('local_aiskillnavigator_ass_att', ['assessmentid' => $assessment->id]);
+        }
+        $DB->delete_records('local_aiskillnavigator_assessment', ['id' => $assessment->id]);
+    } finally {
+        $lock->release();
     }
-    $DB->delete_records('local_aiskillnavigator_assessment', ['id' => $assessment->id]);
     local_aisn_ass_redirect_self($courseid, 'Assessment deleted.');
 }
 
 if ($action === 'toggle') {
     require_sesskey();
     $id = required_param('id', PARAM_INT);
-    $assessment = local_aisn_ass_get_assessment($id, $courseid);
-    $assessment->visible = (int)!$assessment->visible;
-    $assessment->timemodified = time();
-    $DB->update_record('local_aiskillnavigator_assessment', $assessment);
+    $lock = \local_aiskillnavigator\service\assessment_submission::lock($id);
+    try {
+        $assessment = local_aisn_ass_get_assessment($id, $courseid);
+        $assessment->visible = (int)!$assessment->visible;
+        $assessment->timemodified = time();
+        $DB->update_record('local_aiskillnavigator_assessment', $assessment);
+    } finally {
+        $lock->release();
+    }
     // phpcs:ignore moodle.Files.LineLength
     local_aisn_ass_redirect_self($courseid, $assessment->visible ? 'Assessment published to students.' : 'Assessment hidden from students.');
 }
@@ -747,39 +719,44 @@ if ($action === 'update') {
     require_sesskey();
     try {
         $id = required_param('id', PARAM_INT);
-        $assessment = local_aisn_ass_get_assessment($id, $courseid);
-        $attemptcount = local_aisn_ass_get_attempt_count((int)$assessment->id);
-        $oldquizjson = (string)$assessment->quizjson;
+        $lock = \local_aiskillnavigator\service\assessment_submission::lock($id);
+        try {
+            $assessment = local_aisn_ass_get_assessment($id, $courseid);
+            $attemptcount = local_aisn_ass_get_attempt_count((int)$assessment->id);
+            $oldquizjson = (string)$assessment->quizjson;
 
-        $title = required_param('title', PARAM_TEXT);
-        $focus = optional_param('focus', '', PARAM_TEXT);
-        $difficulty = optional_param('difficulty', 'medium', PARAM_ALPHA);
-        $difficulty = in_array($difficulty, ['easy', 'medium', 'hard'], true) ? $difficulty : 'medium';
-        $visible = optional_param('visible', 0, PARAM_BOOL);
-        $questions = local_aisn_ass_questions_from_form();
+            $title = required_param('title', PARAM_TEXT);
+            $focus = optional_param('focus', '', PARAM_TEXT);
+            $difficulty = optional_param('difficulty', 'medium', PARAM_ALPHA);
+            $difficulty = in_array($difficulty, ['easy', 'medium', 'hard'], true) ? $difficulty : 'medium';
+            $visible = optional_param('visible', 0, PARAM_BOOL);
+            $questions = local_aisn_ass_questions_from_form();
 
-        $oldquiz = json_decode($oldquizjson, true);
-        if (!is_array($oldquiz)) {
-            $oldquiz = [];
+            $oldquiz = json_decode($oldquizjson, true);
+            if (!is_array($oldquiz)) {
+                $oldquiz = [];
+            }
+            $oldquestions = array_map('local_aisn_ass_normalize_question', $oldquiz['questions'] ?? []);
+            if ($attemptcount > 0 && $oldquestions != $questions) {
+                throw new moodle_exception('assessmentquestionslocked', 'local_aiskillnavigator');
+            }
+            $oldquiz['title'] = $title;
+            $oldquiz['topic'] = $focus !== '' ? $focus : ($oldquiz['topic'] ?? 'Assessment');
+            $oldquiz['type'] = (string)$assessment->assessmenttype;
+            $oldquiz['questions'] = $questions;
+
+            $newquizjson = json_encode($oldquiz, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+            $assessment->title = $title;
+            $assessment->focus = $focus;
+            $assessment->difficulty = $difficulty;
+            $assessment->visible = $visible ? 1 : 0;
+            $assessment->quizjson = $newquizjson;
+            $assessment->timemodified = time();
+            $DB->update_record('local_aiskillnavigator_assessment', $assessment);
+        } finally {
+            $lock->release();
         }
-        $oldquestions = array_map('local_aisn_ass_normalize_question', $oldquiz['questions'] ?? []);
-        if ($attemptcount > 0 && $oldquestions != $questions) {
-            throw new moodle_exception('assessmentquestionslocked', 'local_aiskillnavigator');
-        }
-        $oldquiz['title'] = $title;
-        $oldquiz['topic'] = $focus !== '' ? $focus : ($oldquiz['topic'] ?? 'Assessment');
-        $oldquiz['type'] = (string)$assessment->assessmenttype;
-        $oldquiz['questions'] = $questions;
-
-        $newquizjson = json_encode($oldquiz, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-
-        $assessment->title = $title;
-        $assessment->focus = $focus;
-        $assessment->difficulty = $difficulty;
-        $assessment->visible = $visible ? 1 : 0;
-        $assessment->quizjson = $newquizjson;
-        $assessment->timemodified = time();
-        $DB->update_record('local_aiskillnavigator_assessment', $assessment);
 
         local_aisn_ass_redirect_self($courseid, 'Assessment updated.');
     } catch (Throwable $e) {
