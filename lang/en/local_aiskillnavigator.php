@@ -25,6 +25,7 @@
 // phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
+$string['ai_empty_response'] = 'The AI provider returned no response. Check the provider settings and try again.';
 $string['ai_recommendation'] = 'AI recommendation prototype';
 $string['aitutor'] = 'AI Tutor';
 $string['apikey'] = 'AI API key';
@@ -36,6 +37,8 @@ $string['local/aiskillnavigator:managematerials'] = 'Manage teacher AI materials
 $string['local/aiskillnavigator:viewstudent'] = 'Use student AI tools';
 $string['local/aiskillnavigator:viewteacher'] = 'Use teacher AI tools';
 $string['main_gap'] = 'Main skill gap';
+$string['mindmap_fallbacknotice'] = 'The AI did not return a usable mind map. A generic study template is shown. Check your topic and selected materials, then try again. If this continues, ask your site administrator to check the AI provider.';
+$string['mindmap_fallbacksubtitle'] = 'Generic study template';
 $string['mindmap_topic'] = 'Mind map topic';
 $string['mindmapgenerator'] = 'AI Mind Map Generator';
 $string['page_adaptive_review_heading'] = 'Adaptive review';
@@ -70,13 +73,13 @@ $string['pluginname'] = 'AI Skill Navigator';
 $string['privacy:metadata:configured_ai_provider'] = 'Optional external AI provider configured by the site administrator.';
 $string['privacy:metadata:content'] = 'User-provided or extracted content.';
 $string['privacy:metadata:courseid'] = 'The course identifier.';
-$string['privacy:metadata:local_aiskillnav_ass_att'] = 'Student attempts on teacher-generated assessments.';
-$string['privacy:metadata:local_aiskillnav_assessment'] = 'Teacher-generated initial and final assessments.';
-$string['privacy:metadata:local_aiskillnav_attempt'] = 'Student AI quiz attempts.';
-$string['privacy:metadata:local_aiskillnav_chunk'] = 'Search chunks generated from course materials.';
-$string['privacy:metadata:local_aiskillnav_material'] = 'Course materials stored for AI-assisted learning.';
-$string['privacy:metadata:local_aiskillnav_sim'] = 'Saved simulator suggestions and activities.';
-$string['privacy:metadata:local_aiskillnav_tutor_sig'] = 'Tutor questions and interaction signals.';
+$string['privacy:metadata:local_aiskillnavigator_ass_att'] = 'Student attempts on teacher-generated assessments.';
+$string['privacy:metadata:local_aiskillnavigator_assessment'] = 'Teacher-generated initial and final assessments.';
+$string['privacy:metadata:local_aiskillnavigator_attempt'] = 'Student AI quiz attempts.';
+$string['privacy:metadata:local_aiskillnavigator_chunk'] = 'Search chunks generated from course materials.';
+$string['privacy:metadata:local_aiskillnavigator_material'] = 'Course materials stored for AI-assisted learning.';
+$string['privacy:metadata:local_aiskillnavigator_sim'] = 'Saved simulator suggestions and activities.';
+$string['privacy:metadata:local_aiskillnavigator_tutor_sig'] = 'Tutor questions and interaction signals.';
 $string['privacy:metadata:timecreated'] = 'The time the record was created.';
 $string['privacy:metadata:timemodified'] = 'The time the record was last modified.';
 $string['privacy:metadata:userid'] = 'The user identifier.';
@@ -157,6 +160,8 @@ $string['settings_provider_openai'] = 'OpenAI API';
 $string['settings_provider_openai_compatible'] = 'Generic OpenAI-compatible API';
 $string['settings_provider_openrouter'] = 'OpenRouter multi-LLM gateway';
 $string['settings_provider_prototype'] = 'Prototype/demo provider - no external calls';
+$string['settings_requesttimeout'] = 'AI request timeout (seconds)';
+$string['settings_requesttimeout_desc'] = 'Maximum wait for a generation response from any AI provider. Default: 60 seconds. Values are bounded to 10–600 seconds; invalid or non-positive values use the default. Web server and proxy timeouts may also need adjustment.';
 $string['settings_searchapikey'] = 'Search API key';
 $string['settings_searchapikey_desc'] = 'Do not put this key in code or GitHub. Store it only in Moodle settings.';
 $string['settings_searchendpoint'] = 'Search endpoint';
@@ -172,6 +177,9 @@ $string['settings_searchprovider_tavily'] = 'Tavily Search API';
 $string['simulator_material_unreadable'] = 'The selected material has no readable text.';
 $string['simulator_select_material'] = 'Select at least one course material before generating a simulator exercise.';
 $string['skills'] = 'Skills';
+
 $string['studentdashboard'] = 'Student dashboard';
 $string['teacherdashboard'] = 'Teacher dashboard';
+$string['tutor_analytics_help'] = 'To populate the report, open Student tools > AI Tutor with a student account and ask a question. Then return here or refresh this page. Normal Moodle quiz attempts appear in the Teacher dashboard instead. Skill and difficulty labels are keyword-based indicators, not grades.';
+$string['tutor_analytics_intro'] = 'This report summarises questions answered by the AI Tutor in this course. It updates automatically after successful tutor responses.';
 $string['tutor_question'] = 'Ask a question';

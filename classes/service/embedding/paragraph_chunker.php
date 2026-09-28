@@ -34,6 +34,8 @@ defined('MOODLE_INTERNAL') || die();
 class paragraph_chunker {
     /**
      * Split helper.
+     *
+     * @param string $text Text to process.
      */
     public function split(string $text): array {
         $text = preg_replace("/\r\n|\r/", "\n", trim($text));
@@ -58,6 +60,8 @@ class paragraph_chunker {
 
     /**
      * Merge helper.
+     *
+     * @param array $paragraphs Paragraphs.
      */
     private function merge(array $paragraphs): array {
         $chunks = [];

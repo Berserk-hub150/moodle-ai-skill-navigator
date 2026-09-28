@@ -37,6 +37,8 @@ function local_aiskillnavigator_current_ai_is_local(): bool {
 
 /**
  * Local aiskillnavigator material external allowed helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aiskillnavigator_material_external_allowed(stdClass $material): bool {
     if (isset($material->externalaiallowed)) {
@@ -52,6 +54,8 @@ function local_aiskillnavigator_material_external_allowed(stdClass $material): b
 
 /**
  * Local aiskillnavigator material can be sent to current ai helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aiskillnavigator_material_can_be_sent_to_current_ai(stdClass $material): bool {
     if (function_exists('local_aisn_prod_can_send_material_to_current_ai')) {
@@ -65,6 +69,8 @@ function local_aiskillnavigator_material_can_be_sent_to_current_ai(stdClass $mat
 
 /**
  * Local aiskillnavigator filter materials for current ai helper.
+ *
+ * @param array $materials Course materials used for this operation.
  */
 function local_aiskillnavigator_filter_materials_for_current_ai(array $materials): array {
     $filtered = [];
@@ -80,6 +86,8 @@ function local_aiskillnavigator_filter_materials_for_current_ai(array $materials
 
 /**
  * Local aiskillnavigator ai policy label helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aiskillnavigator_ai_policy_label(stdClass $material): string {
     return local_aiskillnavigator_material_external_allowed($material)
@@ -89,6 +97,8 @@ function local_aiskillnavigator_ai_policy_label(stdClass $material): string {
 
 /**
  * Local aiskillnavigator ai policy badge class helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aiskillnavigator_ai_policy_badge_class(stdClass $material): string {
     return local_aiskillnavigator_material_external_allowed($material)
@@ -98,11 +108,15 @@ function local_aiskillnavigator_ai_policy_badge_class(stdClass $material): strin
 
 /**
  * Local aiskillnavigator set material ai policy helper.
+ *
+ * @param int $materialid Stored material ID.
+ * @param int $courseid Moodle course ID.
+ * @param bool $externalallowed Externalallowed.
  */
 function local_aiskillnavigator_set_material_ai_policy(int $materialid, int $courseid, bool $externalallowed): bool {
     global $DB;
 
-    $material = $DB->get_record('local_aiskillnav_material', [
+    $material = $DB->get_record('local_aiskillnavigator_material', [
         'id' => $materialid,
         'courseid' => $courseid,
     ]);
@@ -115,7 +129,16 @@ function local_aiskillnavigator_set_material_ai_policy(int $materialid, int $cou
     $material->aipolicy = $externalallowed ? 'external_allowed' : 'local_only';
     $material->timemodified = time();
 
-    $DB->update_record('local_aiskillnav_material', $material);
+    $DB->update_record('local_aiskillnavigator_material', $material);
+
+    // Sync identifies resources by sourcecmid; titles may have been renamed.
+    $cmid = (int)($material->sourcecmid ?? 0);
+    if ($cmid <= 0 && preg_match('/^\[Course #[0-9]+ \/ cm #([0-9]+)\]/', (string)$material->title, $matches)) {
+        $cmid = (int)$matches[1];
+    }
+    if ($cmid > 0 && ($material->materialtype ?? '') === 'course_resource') {
+        set_config('cm_external_ai_' . $cmid, $externalallowed ? '1' : '0', 'local_aiskillnavigator');
+    }
 
     return true;
 }

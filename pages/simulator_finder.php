@@ -70,6 +70,8 @@ $PAGE->set_heading(get_string('page_simulator_finder_heading', 'local_aiskillnav
 
 /**
  * Local aiskillnavigator sim clean helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aiskillnavigator_sim_clean(string $text): string {
     $text = trim($text);
@@ -99,6 +101,9 @@ function local_aiskillnavigator_sim_known_catalogue(): array {
 
 /**
  * Local aiskillnavigator sim call ai helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
+ * @param string $systemprompt System instructions for the provider.
  */
 function local_aiskillnavigator_sim_call_ai(string $prompt, string $systemprompt): string {
     try {
@@ -125,6 +130,8 @@ function local_aiskillnavigator_sim_call_ai(string $prompt, string $systemprompt
 
 /**
  * Local aiskillnavigator sim search context helper.
+ *
+ * @param array $results Results.
  */
 function local_aiskillnavigator_sim_search_context(array $results): string {
     if (empty($results)) {
@@ -149,6 +156,8 @@ function local_aiskillnavigator_sim_search_context(array $results): string {
 
 /**
  * Local aiskillnavigator sim inline format helper.
+ *
+ * @param string $line Line.
  */
 function local_aiskillnavigator_sim_inline_format(string $line): string {
     $line = trim($line);
@@ -183,6 +192,8 @@ function local_aiskillnavigator_sim_inline_format(string $line): string {
 
 /**
  * Local aiskillnavigator sim section title helper.
+ *
+ * @param string $raw Raw.
  */
 function local_aiskillnavigator_sim_section_title(string $raw): string {
     $raw = trim($raw);
@@ -193,6 +204,8 @@ function local_aiskillnavigator_sim_section_title(string $raw): string {
 
 /**
  * Local aiskillnavigator render simulator result helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aiskillnavigator_render_simulator_result(string $text): string {
     $text = local_aiskillnavigator_sim_clean($text);

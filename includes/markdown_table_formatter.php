@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Local aisn mdtable fix text helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aisn_mdtable_fix_text(string $text): string {
     $map = [
@@ -48,6 +50,8 @@ function local_aisn_mdtable_fix_text(string $text): string {
 
 /**
  * Local aisn mdtable is separator helper.
+ *
+ * @param string $line Line.
  */
 function local_aisn_mdtable_is_separator(string $line): bool {
     $line = trim($line);
@@ -63,6 +67,8 @@ function local_aisn_mdtable_is_separator(string $line): bool {
 
 /**
  * Local aisn mdtable is row helper.
+ *
+ * @param string $line Line.
  */
 function local_aisn_mdtable_is_row(string $line): bool {
     return substr_count(trim($line), '|') >= 2;
@@ -70,6 +76,8 @@ function local_aisn_mdtable_is_row(string $line): bool {
 
 /**
  * Local aisn mdtable split row helper.
+ *
+ * @param string $line Line.
  */
 function local_aisn_mdtable_split_row(string $line): array {
     $line = trim(local_aisn_mdtable_fix_text($line));
@@ -89,6 +97,9 @@ function local_aisn_mdtable_split_row(string $line): array {
 
 /**
  * Local aisn mdtable render helper.
+ *
+ * @param array $headers Headers.
+ * @param array $rows Rows.
  */
 function local_aisn_mdtable_render(array $headers, array $rows): string {
     $html = '<div class="aisn-mdtable-wrap"><table class="aisn-mdtable"><thead><tr>';
@@ -116,6 +127,8 @@ function local_aisn_mdtable_render(array $headers, array $rows): string {
 
 /**
  * Local aisn mdtable convert block helper.
+ *
+ * @param string $block Block.
  */
 function local_aisn_mdtable_convert_block(string $block): string {
     $block = preg_replace('/<br\s*\/?>/i', "\n", $block);
@@ -166,6 +179,8 @@ function local_aisn_mdtable_convert_block(string $block): string {
 
 /**
  * Local aisn mdtable filter html helper.
+ *
+ * @param string $html Html.
  */
 function local_aisn_mdtable_filter_html(string $html): string {
     // phpcs:ignore moodle.Files.LineLength

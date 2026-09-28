@@ -37,6 +37,8 @@ class embedding_chunk_record {
 
     /**
      * Construct helper.
+     *
+     * @param embedding_config $config Config.
      */
     public function __construct(embedding_config $config) {
         $this->config = $config;
@@ -44,6 +46,13 @@ class embedding_chunk_record {
 
     /**
      * Make helper.
+     *
+     * @param int $materialid Stored material ID.
+     * @param int $courseid Moodle course ID.
+     * @param string $title Title.
+     * @param int $index Index.
+     * @param string $text Text to process.
+     * @param array $embedding Embedding.
      */
     public function make(int $materialid, int $courseid, string $title, int $index, string $text, array $embedding): \stdClass {
         $record = new \stdClass();

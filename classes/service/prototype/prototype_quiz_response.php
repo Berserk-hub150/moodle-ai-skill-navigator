@@ -53,6 +53,10 @@ class prototype_quiz_response {
 
     /**
      * Question helper.
+     *
+     * @param string $text Text to process.
+     * @param string $answer Answer.
+     * @param string $skill Skill.
      */
     private function question(string $text, string $answer, string $skill): array {
         return [

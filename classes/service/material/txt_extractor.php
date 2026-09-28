@@ -34,6 +34,8 @@ defined('MOODLE_INTERNAL') || die();
 class txt_extractor {
     /**
      * Extract helper.
+     *
+     * @param string $path Path.
      */
     public function extract(string $path): array {
         $content = file_get_contents($path);
@@ -48,6 +50,8 @@ class txt_extractor {
 
     /**
      * Clean helper.
+     *
+     * @param string $text Text to process.
      */
     private function clean(string $text): string {
         $text = html_entity_decode($text, ENT_QUOTES | ENT_XML1, 'UTF-8');

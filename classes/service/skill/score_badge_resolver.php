@@ -34,6 +34,8 @@ defined('MOODLE_INTERNAL') || die();
 class score_badge_resolver {
     /**
      * Get helper.
+     *
+     * @param int $score Score.
      */
     public function get(int $score): string {
         if ($score >= 75) {

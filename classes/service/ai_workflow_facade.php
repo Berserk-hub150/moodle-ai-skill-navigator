@@ -49,6 +49,9 @@ class ai_workflow_facade {
 
     /**
      * Construct helper.
+     *
+     * @param ai_provider_interface $provider Provider.
+     * @param ai_prompt_builder $prompts Prompts.
      */
     public function __construct(ai_provider_interface $provider, ai_prompt_builder $prompts) {
         $this->tutor = new workflow\tutor_workflow($provider, $prompts);
@@ -60,84 +63,128 @@ class ai_workflow_facade {
 
     /**
      * Ask tutor helper.
+     *
+     * @param string $q Q.
      */
     public function ask_tutor(string $q): string {
         return $this->tutor->ask($q);
     }
     /**
      * Ask with course materials helper.
+     *
+     * @param string $q Q.
+     * @param array $m M.
      */
     public function ask_with_course_materials(string $q, array $m): string {
         return $this->tutor->materials($q, $m);
     }
     /**
      * Ask with rag context helper.
+     *
+     * @param string $q Q.
+     * @param string $c C.
      */
     public function ask_with_rag_context(string $q, string $c): string {
         return $this->tutor->rag($q, $c);
     }
     /**
      * Generate quiz helper.
+     *
+     * @param string $t T.
+     * @param string $d D.
      */
     public function generate_quiz(string $t, string $d): string {
         return $this->quiz->plain($t, $d);
     }
     /**
      * Generate quiz from course materials helper.
+     *
+     * @param string $f F.
+     * @param string $d D.
+     * @param array $m M.
      */
     public function generate_quiz_from_course_materials(string $f, string $d, array $m): string {
         return $this->quiz->materials($f, $d, $m);
     }
     /**
      * Generate quiz with rag context helper.
+     *
+     * @param string $f F.
+     * @param string $d D.
+     * @param string $c C.
      */
     public function generate_quiz_with_rag_context(string $f, string $d, string $c): string {
         return $this->quiz->rag($f, $d, $c);
     }
     /**
      * Generate mindmap helper.
+     *
+     * @param string $t T.
      */
     public function generate_mindmap(string $t): string {
         return $this->mindmap->plain($t);
     }
     /**
      * Generate mindmap from course materials helper.
+     *
+     * @param string $f F.
+     * @param array $m M.
      */
     public function generate_mindmap_from_course_materials(string $f, array $m): string {
         return $this->mindmap->materials($f, $m);
     }
     /**
      * Generate mindmap with rag context helper.
+     *
+     * @param string $f F.
+     * @param string $c C.
      */
     public function generate_mindmap_with_rag_context(string $f, string $c): string {
         return $this->mindmap->rag($f, $c);
     }
     /**
      * Generate xr scenario helper.
+     *
+     * @param string $t T.
+     * @param string $e E.
      */
     public function generate_xr_scenario(string $t, string $e): string {
         return $this->xr->plain($t, $e);
     }
     /**
      * Generate xr scenario from course materials helper.
+     *
+     * @param string $f F.
+     * @param string $e E.
+     * @param array $m M.
      */
     public function generate_xr_scenario_from_course_materials(string $f, string $e, array $m): string {
         return $this->xr->materials($f, $e, $m);
     }
     /**
      * Generate xr scenario with rag context helper.
+     *
+     * @param string $f F.
+     * @param string $e E.
+     * @param string $c C.
      */
     public function generate_xr_scenario_with_rag_context(string $f, string $e, string $c): string {
         return $this->xr->rag($f, $e, $c);
     }
     /**
      * Summarize course materials helper.
+     *
+     * @param string $f F.
+     * @param array $m M.
      */
     public function summarize_course_materials(string $f, array $m): string {
         return $this->summary->materials($f, $m);
     }
     /**
      * Summarize with rag context helper.
+     *
+     * @param string $f F.
+     * @param string $c C.
      */
     public function summarize_with_rag_context(string $f, string $c): string {
         return $this->summary->rag($f, $c);

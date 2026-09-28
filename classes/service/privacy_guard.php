@@ -50,6 +50,8 @@ class privacy_guard {
 
     /**
      * Is local endpoint helper.
+     *
+     * @param string $endpoint Endpoint.
      */
     public static function is_local_endpoint(string $endpoint): bool {
         $endpoint = trim($endpoint);

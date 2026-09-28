@@ -37,6 +37,8 @@ class material_context_builder {
 
     /**
      * Construct helper.
+     *
+     * @param text_tools $text Text to process.
      */
     public function __construct(text_tools $text) {
         $this->text = $text;
@@ -44,6 +46,9 @@ class material_context_builder {
 
     /**
      * Build helper.
+     *
+     * @param array $materials Course materials used for this operation.
+     * @param int $limit Limit.
      */
     public function build(array $materials, int $limit): string {
         $context = '';
@@ -80,6 +85,10 @@ class material_context_builder {
 
     /**
      * Read helper.
+     *
+     * @param mixed $material Material.
+     * @param string $field Field.
+     * @param string $default Default.
      */
     private function read($material, string $field, string $default): string {
         if (is_array($material) && array_key_exists($field, $material)) {
@@ -95,6 +104,11 @@ class material_context_builder {
 
     /**
      * Identity key helper.
+     *
+     * @param mixed $material Material.
+     * @param string $title Title.
+     * @param string $type Type.
+     * @param string $content Content to process.
      */
     private function identity_key($material, string $title, string $type, string $content): string {
         $id = $this->read($material, 'id', '');
@@ -112,6 +126,8 @@ class material_context_builder {
 
     /**
      * Normalise helper.
+     *
+     * @param string $value Value to process.
      */
     private function normalise(string $value): string {
         $value = trim((string) preg_replace('/\s+/u', ' ', $value));

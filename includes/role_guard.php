@@ -25,7 +25,7 @@
 // phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
-/**
+/*
  * Central role guards for AI Skill Navigator.
  *
  * Goal:
@@ -38,6 +38,8 @@ defined('MOODLE_INTERNAL') || die();
 if (!function_exists('local_aisn_is_course_teacher_like')) {
     /**
      * Local aisn is course teacher like helper.
+     *
+     * @param context_course $context Moodle context.
      */
     function local_aisn_is_course_teacher_like(context_course $context): bool {
         return has_capability('moodle/course:update', $context)
@@ -51,6 +53,8 @@ if (!function_exists('local_aisn_is_course_teacher_like')) {
 if (!function_exists('local_aisn_require_student_area')) {
     /**
      * Local aisn require student area helper.
+     *
+     * @param context_course $context Moodle context.
      */
     function local_aisn_require_student_area(context_course $context): void {
         if (is_siteadmin()) {
@@ -73,6 +77,8 @@ if (!function_exists('local_aisn_require_student_area')) {
 if (!function_exists('local_aisn_require_teacher_area')) {
     /**
      * Local aisn require teacher area helper.
+     *
+     * @param context_course $context Moodle context.
      */
     function local_aisn_require_teacher_area(context_course $context): void {
         if (is_siteadmin()) {

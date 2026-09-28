@@ -44,7 +44,7 @@ require_capability('local/aiskillnavigator:viewteacher', $context);
 // AISN_PS1_EXPORT_SESSKEY.
 require_sesskey();
 
-$assessment = $DB->get_record('local_aiskillnav_assessment', [
+$assessment = $DB->get_record('local_aiskillnavigator_assessment', [
     'id' => $assessmentid,
     'courseid' => $courseid,
 ], '*', MUST_EXIST);

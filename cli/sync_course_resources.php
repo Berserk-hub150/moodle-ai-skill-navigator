@@ -73,6 +73,9 @@ $force = !empty($options['force']);
 
 /**
  * Local aisn cli print sync result helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param array $result Result.
  */
 function local_aisn_cli_print_sync_result(int $courseid, array $result): void {
     echo "Course resource sync completed for course {$courseid}\n";

@@ -34,6 +34,9 @@ defined('MOODLE_INTERNAL') || die();
 class vector_similarity {
     /**
      * Cosine helper.
+     *
+     * @param array $a A.
+     * @param array $b B.
      */
     public function cosine(array $a, array $b): float {
         $dimensions = min(count($a), count($b));

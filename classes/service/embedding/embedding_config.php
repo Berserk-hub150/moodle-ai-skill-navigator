@@ -146,6 +146,8 @@ class embedding_config {
 
     /**
      * Provider from chat helper.
+     *
+     * @param string $chatprovider Chatprovider.
      */
     private function provider_from_chat(string $chatprovider): string {
         if (in_array($chatprovider, ['ollama', 'local', 'local_ollama'], true)) {
@@ -164,6 +166,12 @@ class embedding_config {
 
     /**
      * Resolve endpoint helper.
+     *
+     * @param string $provider Provider.
+     * @param string $requestedprovider Requestedprovider.
+     * @param string $chatprovider Chatprovider.
+     * @param string $chatendpoint Chatendpoint.
+     * @param string $embeddingendpoint Embeddingendpoint.
      */
     private function resolve_endpoint(
         string $provider,

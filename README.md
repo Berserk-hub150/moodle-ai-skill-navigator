@@ -1,94 +1,15 @@
-# AI Skill Navigator
+# AI Skill Navigator — local plugin
 
-AI Skill Navigator is a Moodle plugin suite that adds course-aware AI learning tools for students and teachers.
+Course-aware tutoring, quizzes, mind maps, assessments and teaching tools for Moodle.
 
-The package contains:
+Install this directory as `local/aiskillnavigator` and visit **Site administration → Notifications**. The optional `block_aiskillnavigator` component is distributed separately and installs as `blocks/aiskillnavigator`.
 
-- `local_aiskillnavigator`: the main local plugin with AI tutor, quiz generation, mind maps, assessments, material/RAG tools, learning-gap analysis, simulator suggestions and course-building helpers.
-- `block_aiskillnavigator`: an optional course block that links users to the tools available for their role.
+Minimum declared Moodle version: 4.4. The integration workflow targets Moodle 4.5; check the current release and deployment requirements before upgrading.
 
-## Production defaults
+Configure the plugin under **Site administration → Plugins → Local plugins → AI Skill Navigator**. Start with the `prototype` provider for fixed demonstration responses. Real generation requires a configured provider and model. The generation timeout is configurable from 10 to 600 seconds.
 
-The plugin is designed to install safely with conservative defaults:
+Stored course materials require site-level and per-material approval before being sent to an external provider. Text typed directly into AI tools is sent to the chosen provider. Remote Ollama endpoints count as external. Destructive Course Builder actions and automatic synchronisation are disabled by default.
 
-- The default AI provider is `prototype`, which performs no external AI calls.
-- External AI use for course materials is disabled until an administrator enables it.
-- Per-material approval is required before teacher materials can be sent to external providers.
-- Destructive AI Course Builder actions are disabled by default.
-- Automatic course-resource synchronisation on Moodle events is disabled by default.
-- Automatic block insertion into courses is disabled by default.
-- External MathJax CDN loading is disabled by default.
+Full [installation and usage documentation](https://github.com/Berserk-hub150/moodle-ai-skill-navigator#readme), [bug reports](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/issues), and [release notes](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/blob/main/docs/RELEASE_NOTES.md) are maintained in the repository.
 
-Administrators can enable optional external services from the plugin settings.
-
-## Main features
-
-- Course-aware AI Tutor.
-- AI Quiz Generator.
-- AI Mind Map Generator.
-- Initial and final assessments.
-- Adaptive review for weak skills.
-- Teacher dashboard and tutor analytics.
-- Course Materials / RAG management.
-- Learning-gap analysis.
-- AI Course Builder with production safety gates.
-- Simulator Finder and saved simulation activities.
-
-## Installation
-
-Install the local plugin in:
-
-```text
-local/aiskillnavigator
-```
-
-Install the optional block in:
-
-```text
-blocks/aiskillnavigator
-```
-
-Then visit:
-
-```text
-Site administration > Notifications
-```
-
-## Configuration
-
-Open:
-
-```text
-Site administration > Plugins > Local plugins > AI Skill Navigator
-```
-
-Important production settings:
-
-- `Provider`: keep `prototype` for first installation checks.
-- `Approve external AI for teacher materials`: disabled by default.
-- `Allow destructive AI Course Builder actions`: disabled by default.
-- `Automatically sync course resources on Moodle events`: disabled by default.
-- `Automatically add the AI Skill Navigator block to courses`: disabled by default.
-- `Enable external MathJax CDN`: disabled by default.
-
-## Privacy
-
-The plugin stores course materials, quiz attempts, assessment attempts, saved simulations and tutor interaction signals. It implements Moodle's Privacy API for metadata, export and deletion of user data. External AI providers are optional and disabled for course materials unless explicitly approved.
-
-## Moodle Marketplace package
-
-The Moodle Marketplace package for this component contains only `local_aiskillnavigator` and installs as `local/aiskillnavigator`.
-
-The optional `block_aiskillnavigator` is a separate Moodle component. It is not bundled in the local-plugin Marketplace ZIP and, when distributed through Moodle Marketplace, must be released separately with its dependency on `local_aiskillnavigator` declared.
-
-Marketplace releases are checked with the repository's dedicated Moodle Plugin CI workflow before packaging.
-
-## Requirements
-
-- Moodle 4.4 or later.
-- PHP version supported by the target Moodle version.
-- Optional cURL support for external AI/search providers.
-
-## License
-
-GPL v3 or later.
+Licensed under GNU GPL v3 or later. See LICENSE.

@@ -27,6 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Local aiskillnavigator call ai from page helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
+ * @param string $systemprompt System instructions for the provider.
+ * @param int $maxtokens Maximum output token count.
  */
 function local_aiskillnavigator_call_ai_from_page(string $prompt, string $systemprompt = '', int $maxtokens = 2200): string {
     try {

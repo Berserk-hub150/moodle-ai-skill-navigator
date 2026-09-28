@@ -28,6 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 if (!function_exists('local_aisn_ocr_clean_text')) {
     /**
      * Local aisn ocr clean text helper.
+     *
+     * @param string $text Text to process.
      */
     function local_aisn_ocr_clean_text(string $text): string {
         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -42,6 +44,8 @@ if (!function_exists('local_aisn_ocr_clean_text')) {
 if (!function_exists('local_aisn_ocr_tool_path')) {
     /**
      * Local aisn ocr tool path helper.
+     *
+     * @param string $tool Tool.
      */
     function local_aisn_ocr_tool_path(string $tool): string {
         $tool = preg_replace('/[^a-zA-Z0-9_\-]/', '', $tool);
@@ -117,6 +121,9 @@ if (!function_exists('local_aisn_ocr_status_text')) {
 if (!function_exists('local_aisn_ocr_image_path')) {
     /**
      * Local aisn ocr image path helper.
+     *
+     * @param string $imagepath Imagepath.
+     * @param string $label Label.
      */
     function local_aisn_ocr_image_path(string $imagepath, string $label = ''): string {
         if (!local_aisn_ocr_available()) {
@@ -154,6 +161,10 @@ if (!function_exists('local_aisn_ocr_image_path')) {
 if (!function_exists('local_aisn_zip_extract_entry_to_temp')) {
     /**
      * Local aisn zip extract entry to temp helper.
+     *
+     * @param ZipArchive $zip Zip.
+     * @param int $index Index.
+     * @param string $tmpdir Tmpdir.
      */
     function local_aisn_zip_extract_entry_to_temp(ZipArchive $zip, int $index, string $tmpdir): string {
         $entry = (string)$zip->getNameIndex($index);
@@ -175,6 +186,8 @@ if (!function_exists('local_aisn_zip_extract_entry_to_temp')) {
 if (!function_exists('local_aisn_extract_pptx_xml_text_from_path')) {
     /**
      * Local aisn extract pptx xml text from path helper.
+     *
+     * @param string $path Path.
      */
     function local_aisn_extract_pptx_xml_text_from_path(string $path): string {
         if (!class_exists('ZipArchive') || !is_readable($path)) {
@@ -215,6 +228,8 @@ if (!function_exists('local_aisn_extract_pptx_xml_text_from_path')) {
 if (!function_exists('local_aisn_extract_pptx_chart_text_from_path')) {
     /**
      * Local aisn extract pptx chart text from path helper.
+     *
+     * @param string $path Path.
      */
     function local_aisn_extract_pptx_chart_text_from_path(string $path): string {
         if (!class_exists('ZipArchive') || !is_readable($path)) {
@@ -264,6 +279,10 @@ if (!function_exists('local_aisn_extract_pptx_chart_text_from_path')) {
 if (!function_exists('local_aisn_ocr_zip_images_from_path')) {
     /**
      * Local aisn ocr zip images from path helper.
+     *
+     * @param string $path Path.
+     * @param string $prefix Prefix.
+     * @param string $label Label.
      */
     function local_aisn_ocr_zip_images_from_path(string $path, string $prefix, string $label): string {
         if (!class_exists('ZipArchive') || !is_readable($path) || !local_aisn_ocr_available()) {
@@ -307,6 +326,8 @@ if (!function_exists('local_aisn_ocr_zip_images_from_path')) {
 if (!function_exists('local_aisn_ocr_pptx_images_from_path')) {
     /**
      * Local aisn ocr pptx images from path helper.
+     *
+     * @param string $path Path.
      */
     function local_aisn_ocr_pptx_images_from_path(string $path): string {
         return local_aisn_ocr_zip_images_from_path($path, 'ppt/media/', 'PPTX embedded image');
@@ -316,6 +337,8 @@ if (!function_exists('local_aisn_ocr_pptx_images_from_path')) {
 if (!function_exists('local_aisn_ocr_docx_images_from_path')) {
     /**
      * Local aisn ocr docx images from path helper.
+     *
+     * @param string $path Path.
      */
     function local_aisn_ocr_docx_images_from_path(string $path): string {
         return local_aisn_ocr_zip_images_from_path($path, 'word/media/', 'DOCX embedded image');
@@ -325,6 +348,8 @@ if (!function_exists('local_aisn_ocr_docx_images_from_path')) {
 if (!function_exists('local_aisn_extract_docx_xml_text_from_path')) {
     /**
      * Local aisn extract docx xml text from path helper.
+     *
+     * @param string $path Path.
      */
     function local_aisn_extract_docx_xml_text_from_path(string $path): string {
         if (!class_exists('ZipArchive') || !is_readable($path)) {

@@ -50,6 +50,8 @@ $PAGE->set_heading(get_string('page_adaptive_review_heading', 'local_aiskillnavi
 
 /**
  * Local aiskillnavigator adaptive call ai helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
  */
 function local_aiskillnavigator_adaptive_call_ai(string $prompt): string {
     try {

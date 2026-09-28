@@ -38,6 +38,8 @@ foreach (glob(__DIR__ . '/skill/*.php') as $file) {
 class skill_service {
     /**
      * Get student skill profile helper.
+     *
+     * @param int $userid Moodle user ID.
      */
     public function get_student_skill_profile(int $userid): array {
         return (new skill\student_profile_data())->get($userid);
@@ -52,6 +54,8 @@ class skill_service {
 
     /**
      * Get score badge class helper.
+     *
+     * @param int $score Score.
      */
     public function get_score_badge_class(int $score): string {
         return (new skill\score_badge_resolver())->get($score);

@@ -33,6 +33,9 @@ defined('MOODLE_INTERNAL') || die();
 class text_tools {
     /**
      * Fallback helper.
+     *
+     * @param string $value Value to process.
+     * @param string $default Default.
      */
     public function fallback(string $value, string $default): string {
         $value = trim($value);
@@ -41,6 +44,8 @@ class text_tools {
 
     /**
      * Clean helper.
+     *
+     * @param string $text Text to process.
      */
     public function clean(string $text): string {
         $text = trim($text);
@@ -50,6 +55,9 @@ class text_tools {
 
     /**
      * Cut helper.
+     *
+     * @param string $text Text to process.
+     * @param int $limit Limit.
      */
     public function cut(string $text, int $limit): string {
         if (function_exists('mb_strlen') && function_exists('mb_substr')) {

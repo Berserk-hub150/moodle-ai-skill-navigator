@@ -50,6 +50,8 @@ require_once(__DIR__ . '/../prototype_ai_provider.php');
 class ai_provider_selector {
     /**
      * Create helper.
+     *
+     * @param ai_provider_config $config Config.
      */
     public function create(ai_provider_config $config): ai_provider_interface {
         $provider = strtolower(trim($config->provider));

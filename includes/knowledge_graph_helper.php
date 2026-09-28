@@ -30,6 +30,8 @@ require_once(__DIR__ . '/material_ai_policy.php');
 
 /**
  * Local aisn kg table exists helper.
+ *
+ * @param string $name Name.
  */
 function local_aisn_kg_table_exists(string $name): bool {
     global $DB;
@@ -44,7 +46,7 @@ function local_aisn_kg_ensure_schema(): void {
 
     $dbman = $DB->get_manager();
 
-    $concept = new xmldb_table('local_aisn_kg_concept');
+    $concept = new xmldb_table('local_aiskillnavigator_kg_concept');
 
     if (!$dbman->table_exists($concept)) {
         $concept->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
@@ -61,7 +63,7 @@ function local_aisn_kg_ensure_schema(): void {
         $dbman->create_table($concept);
     }
 
-    $source = new xmldb_table('local_aisn_kg_source');
+    $source = new xmldb_table('local_aiskillnavigator_kg_source');
 
     if (!$dbman->table_exists($source)) {
         $source->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
@@ -77,7 +79,7 @@ function local_aisn_kg_ensure_schema(): void {
         $dbman->create_table($source);
     }
 
-    $relation = new xmldb_table('local_aisn_kg_relation');
+    $relation = new xmldb_table('local_aiskillnavigator_kg_relation');
 
     if (!$dbman->table_exists($relation)) {
         $relation->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
@@ -102,6 +104,8 @@ function local_aisn_kg_ensure_schema(): void {
 
 /**
  * Local aisn kg material allowed for graph helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aisn_kg_material_allowed_for_graph(stdClass $material): bool {
     if (function_exists('local_aiskillnavigator_material_external_allowed')) {
@@ -121,6 +125,8 @@ function local_aisn_kg_material_allowed_for_graph(stdClass $material): bool {
 
 /**
  * Local aisn kg text len helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aisn_kg_text_len(string $text): int {
     return class_exists('core_text') ? core_text::strlen($text) : strlen($text);
@@ -128,6 +134,10 @@ function local_aisn_kg_text_len(string $text): int {
 
 /**
  * Local aisn kg substr helper.
+ *
+ * @param string $text Text to process.
+ * @param int $start Start.
+ * @param int $length Length.
  */
 function local_aisn_kg_substr(string $text, int $start, int $length): string {
     return class_exists('core_text') ? core_text::substr($text, $start, $length) : substr($text, $start, $length);
@@ -135,6 +145,8 @@ function local_aisn_kg_substr(string $text, int $start, int $length): string {
 
 /**
  * Local aisn kg lower helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aisn_kg_lower(string $text): string {
     return class_exists('core_text') ? core_text::strtolower($text) : strtolower($text);
@@ -142,6 +154,8 @@ function local_aisn_kg_lower(string $text): string {
 
 /**
  * Local aisn kg normalize helper.
+ *
+ * @param string $name Name.
  */
 function local_aisn_kg_normalize(string $name): string {
     $name = html_entity_decode(strip_tags($name), ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -159,6 +173,8 @@ function local_aisn_kg_normalize(string $name): string {
 
 /**
  * Local aisn kg clean text helper.
+ *
+ * @param string $text Text to process.
  */
 function local_aisn_kg_clean_text(string $text): string {
     $text = html_entity_decode(strip_tags($text), ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -170,6 +186,9 @@ function local_aisn_kg_clean_text(string $text): string {
 
 /**
  * Local aisn kg sentence excerpt helper.
+ *
+ * @param string $text Text to process.
+ * @param string $term Term.
  */
 function local_aisn_kg_sentence_excerpt(string $text, string $term): string {
     $text = local_aisn_kg_clean_text($text);
@@ -204,6 +223,9 @@ function local_aisn_kg_stopwords(): array {
 
 /**
  * Local aisn kg extract terms helper.
+ *
+ * @param string $text Text to process.
+ * @param int $limit Limit.
  */
 function local_aisn_kg_extract_terms(string $text, int $limit = 36): array {
     $text = local_aisn_kg_clean_text($text);
@@ -326,14 +348,16 @@ function local_aisn_kg_extract_terms(string $text, int $limit = 36): array {
 
 /**
  * Local aisn kg get chunks for material helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aisn_kg_get_chunks_for_material(stdClass $material): array {
     global $DB;
 
     $chunks = [];
 
-    if (local_aisn_kg_table_exists('local_aiskillnav_chunk')) {
-        $records = $DB->get_records('local_aiskillnav_chunk', ['materialid' => (int)$material->id], 'chunkindex ASC, id ASC');
+    if (local_aisn_kg_table_exists('local_aiskillnavigator_chunk')) {
+        $records = $DB->get_records('local_aiskillnavigator_chunk', ['materialid' => (int)$material->id], 'chunkindex ASC, id ASC');
 
         foreach ($records as $record) {
             $text = trim((string)($record->chunktext ?? ''));
@@ -384,12 +408,15 @@ function local_aisn_kg_get_chunks_for_material(stdClass $material): array {
 
 /**
  * Local aisn kg find concept helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $normalizedname Normalizedname.
  */
 function local_aisn_kg_find_concept(int $courseid, string $normalizedname): ?stdClass {
     global $DB;
 
     $records = $DB->get_records(
-        'local_aisn_kg_concept',
+        'local_aiskillnavigator_kg_concept',
         ['courseid' => $courseid, 'normalizedname' => $normalizedname],
         'id ASC',
         '*',
@@ -406,6 +433,9 @@ function local_aisn_kg_find_concept(int $courseid, string $normalizedname): ?std
 
 /**
  * Local aisn kg upsert concept helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param array $term Term.
  */
 function local_aisn_kg_upsert_concept(int $courseid, array $term): int {
     global $DB;
@@ -434,7 +464,7 @@ function local_aisn_kg_upsert_concept(int $courseid, array $term): int {
 
         if ($changed) {
             $existing->timemodified = $now;
-            $DB->update_record('local_aisn_kg_concept', $existing);
+            $DB->update_record('local_aiskillnavigator_kg_concept', $existing);
         }
 
         return (int)$existing->id;
@@ -449,11 +479,16 @@ function local_aisn_kg_upsert_concept(int $courseid, array $term): int {
     $record->timecreated = $now;
     $record->timemodified = $now;
 
-    return (int)$DB->insert_record('local_aisn_kg_concept', $record);
+    return (int)$DB->insert_record('local_aiskillnavigator_kg_concept', $record);
 }
 
 /**
  * Local aisn kg add source helper.
+ *
+ * @param int $conceptid Conceptid.
+ * @param int $materialid Stored material ID.
+ * @param int $chunkid Chunkid.
+ * @param string $evidence Evidence.
  */
 function local_aisn_kg_add_source(int $conceptid, int $materialid, int $chunkid, string $evidence): void {
     global $DB;
@@ -463,7 +498,7 @@ function local_aisn_kg_add_source(int $conceptid, int $materialid, int $chunkid,
     }
 
     if (
-        $DB->record_exists('local_aisn_kg_source', [
+        $DB->record_exists('local_aiskillnavigator_kg_source', [
         'conceptid' => $conceptid,
         'materialid' => $materialid,
         'chunkid' => $chunkid,
@@ -479,11 +514,20 @@ function local_aisn_kg_add_source(int $conceptid, int $materialid, int $chunkid,
     $record->evidence = local_aisn_kg_substr($evidence, 0, 900);
     $record->timecreated = time();
 
-    $DB->insert_record('local_aisn_kg_source', $record);
+    $DB->insert_record('local_aiskillnavigator_kg_source', $record);
 }
 
 /**
  * Local aisn kg add relation helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $sourceid Sourceid.
+ * @param int $targetid Targetid.
+ * @param string $type Type.
+ * @param int $confidence Confidence.
+ * @param int $materialid Stored material ID.
+ * @param int $chunkid Chunkid.
+ * @param string $evidence Evidence.
  */
 function local_aisn_kg_add_relation(
     int $courseid,
@@ -506,7 +550,7 @@ function local_aisn_kg_add_relation(
     }
 
     if (
-        $DB->record_exists('local_aisn_kg_relation', [
+        $DB->record_exists('local_aiskillnavigator_kg_relation', [
         'courseid' => $courseid,
         'sourceconceptid' => $sourceid,
         'targetconceptid' => $targetid,
@@ -529,18 +573,20 @@ function local_aisn_kg_add_relation(
     $record->evidence = local_aisn_kg_substr($evidence, 0, 900);
     $record->timecreated = time();
 
-    $DB->insert_record('local_aisn_kg_relation', $record);
+    $DB->insert_record('local_aiskillnavigator_kg_relation', $record);
 }
 
 /**
  * Local aisn kg delete orphan concepts helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_kg_delete_orphan_concepts(int $courseid): void {
     global $DB;
 
     $sql = "SELECT c.id
-              FROM {local_aisn_kg_concept} c
-         LEFT JOIN {local_aisn_kg_source} s ON s.conceptid = c.id
+              FROM {local_aiskillnavigator_kg_concept} c
+         LEFT JOIN {local_aiskillnavigator_kg_source} s ON s.conceptid = c.id
              WHERE c.courseid = :courseid AND s.id IS NULL";
 
     $orphans = $DB->get_fieldset_sql($sql, ['courseid' => $courseid]);
@@ -550,13 +596,15 @@ function local_aisn_kg_delete_orphan_concepts(int $courseid): void {
     }
 
     [$insql, $params] = $DB->get_in_or_equal($orphans, SQL_PARAMS_NAMED, 'kgc');
-    $DB->delete_records_select('local_aisn_kg_relation', "sourceconceptid {$insql}", $params);
-    $DB->delete_records_select('local_aisn_kg_relation', "targetconceptid {$insql}", $params);
-    $DB->delete_records_select('local_aisn_kg_concept', "id {$insql}", $params);
+    $DB->delete_records_select('local_aiskillnavigator_kg_relation', "sourceconceptid {$insql}", $params);
+    $DB->delete_records_select('local_aiskillnavigator_kg_relation', "targetconceptid {$insql}", $params);
+    $DB->delete_records_select('local_aiskillnavigator_kg_concept', "id {$insql}", $params);
 }
 
 /**
  * Local aisn kg delete material helper.
+ *
+ * @param int $materialid Stored material ID.
  */
 function local_aisn_kg_delete_material(int $materialid): void {
     global $DB;
@@ -567,11 +615,11 @@ function local_aisn_kg_delete_material(int $materialid): void {
         return;
     }
 
-    $material = $DB->get_record('local_aiskillnav_material', ['id' => $materialid]);
+    $material = $DB->get_record('local_aiskillnavigator_material', ['id' => $materialid]);
     $courseid = $material ? (int)$material->courseid : 0;
 
-    $DB->delete_records('local_aisn_kg_relation', ['materialid' => $materialid]);
-    $DB->delete_records('local_aisn_kg_source', ['materialid' => $materialid]);
+    $DB->delete_records('local_aiskillnavigator_kg_relation', ['materialid' => $materialid]);
+    $DB->delete_records('local_aiskillnavigator_kg_source', ['materialid' => $materialid]);
 
     if ($courseid > 0) {
         local_aisn_kg_delete_orphan_concepts($courseid);
@@ -580,13 +628,15 @@ function local_aisn_kg_delete_material(int $materialid): void {
 
 /**
  * Local aisn kg rebuild material helper.
+ *
+ * @param int $materialid Stored material ID.
  */
 function local_aisn_kg_rebuild_material(int $materialid): array {
     global $DB;
 
     local_aisn_kg_ensure_schema();
 
-    $material = $DB->get_record('local_aiskillnav_material', ['id' => $materialid]);
+    $material = $DB->get_record('local_aiskillnavigator_material', ['id' => $materialid]);
 
     if (!$material) {
         local_aisn_kg_delete_material($materialid);
@@ -676,6 +726,8 @@ function local_aisn_kg_rebuild_material(int $materialid): array {
 
 /**
  * Local aisn kg material cmid helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aisn_kg_material_cmid(stdClass $material): int {
     $title = (string)($material->title ?? '');
@@ -693,15 +745,17 @@ function local_aisn_kg_material_cmid(stdClass $material): int {
 
 /**
  * Local aisn kg course materials helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_kg_course_materials(int $courseid): array {
     global $DB;
 
-    if (!local_aisn_kg_table_exists('local_aiskillnav_material')) {
+    if (!local_aisn_kg_table_exists('local_aiskillnavigator_material')) {
         return [];
     }
 
-    $records = $DB->get_records('local_aiskillnav_material', [
+    $records = $DB->get_records('local_aiskillnavigator_material', [
         'courseid' => $courseid,
         'materialtype' => 'course_resource',
     ], 'timemodified DESC, id DESC');
@@ -744,6 +798,8 @@ function local_aisn_kg_course_materials(int $courseid): array {
 
 /**
  * Local aisn kg cleanup stale course helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_kg_cleanup_stale_course(int $courseid): void {
     $materials = local_aisn_kg_course_materials($courseid);
@@ -751,11 +807,11 @@ function local_aisn_kg_cleanup_stale_course(int $courseid): void {
 
     global $DB;
 
-    if (!local_aisn_kg_table_exists('local_aiskillnav_material')) {
+    if (!local_aisn_kg_table_exists('local_aiskillnavigator_material')) {
         return;
     }
 
-    $all = $DB->get_records('local_aiskillnav_material', [
+    $all = $DB->get_records('local_aiskillnavigator_material', [
         'courseid' => $courseid,
         'materialtype' => 'course_resource',
     ], 'id ASC');
@@ -769,19 +825,26 @@ function local_aisn_kg_cleanup_stale_course(int $courseid): void {
 
 /**
  * Local aisn kg rebuild course helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_kg_rebuild_course(int $courseid): array {
     global $DB;
 
     local_aisn_kg_ensure_schema();
 
-    $DB->delete_records('local_aisn_kg_relation', ['courseid' => $courseid]);
-    $conceptids = $DB->get_fieldset_select('local_aisn_kg_concept', 'id', 'courseid = :courseid', ['courseid' => $courseid]);
+    $DB->delete_records('local_aiskillnavigator_kg_relation', ['courseid' => $courseid]);
+    $conceptids = $DB->get_fieldset_select(
+        'local_aiskillnavigator_kg_concept',
+        'id',
+        'courseid = :courseid',
+        ['courseid' => $courseid]
+    );
 
     if (!empty($conceptids)) {
         [$insql, $params] = $DB->get_in_or_equal($conceptids, SQL_PARAMS_NAMED, 'kgc');
-        $DB->delete_records_select('local_aisn_kg_source', "conceptid {$insql}", $params);
-        $DB->delete_records_select('local_aisn_kg_concept', "id {$insql}", $params);
+        $DB->delete_records_select('local_aiskillnavigator_kg_source', "conceptid {$insql}", $params);
+        $DB->delete_records_select('local_aiskillnavigator_kg_concept', "id {$insql}", $params);
     }
 
     $materials = local_aisn_kg_course_materials($courseid);
@@ -798,6 +861,9 @@ function local_aisn_kg_rebuild_course(int $courseid): array {
 
 /**
  * Local aisn kg sync course after material sync helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param array $changedids Changedids.
  */
 function local_aisn_kg_sync_course_after_material_sync(int $courseid, array $changedids = []): void {
     try {
@@ -818,6 +884,8 @@ function local_aisn_kg_sync_course_after_material_sync(int $courseid, array $cha
 
 /**
  * Local aisn kg stats helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_kg_stats(int $courseid): array {
     global $DB;
@@ -825,12 +893,12 @@ function local_aisn_kg_stats(int $courseid): array {
     local_aisn_kg_ensure_schema();
 
     return [
-        'concepts' => $DB->count_records('local_aisn_kg_concept', ['courseid' => $courseid]),
-        'relations' => $DB->count_records('local_aisn_kg_relation', ['courseid' => $courseid]),
+        'concepts' => $DB->count_records('local_aiskillnavigator_kg_concept', ['courseid' => $courseid]),
+        'relations' => $DB->count_records('local_aiskillnavigator_kg_relation', ['courseid' => $courseid]),
         'sources' => (int)$DB->count_records_sql(
             "SELECT COUNT(1)
-               FROM {local_aisn_kg_source} s
-               JOIN {local_aisn_kg_concept} c ON c.id = s.conceptid
+               FROM {local_aiskillnavigator_kg_source} s
+               JOIN {local_aiskillnavigator_kg_concept} c ON c.id = s.conceptid
               WHERE c.courseid = :courseid",
             ['courseid' => $courseid]
         ),
@@ -839,6 +907,10 @@ function local_aisn_kg_stats(int $courseid): array {
 
 /**
  * Local aisn kg graph data helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $limitnodes Limitnodes.
+ * @param int $limitedges Limitedges.
  */
 function local_aisn_kg_graph_data(int $courseid, int $limitnodes = 80, int $limitedges = 160): array {
     global $DB;
@@ -849,9 +921,9 @@ function local_aisn_kg_graph_data(int $courseid, int $limitnodes = 80, int $limi
         "SELECT c.*,
                 COUNT(DISTINCT s.id) AS sourcecount,
                 COUNT(DISTINCT r.id) AS relationcount
-           FROM {local_aisn_kg_concept} c
-      LEFT JOIN {local_aisn_kg_source} s ON s.conceptid = c.id
-      LEFT JOIN {local_aisn_kg_relation} r ON r.sourceconceptid = c.id OR r.targetconceptid = c.id
+           FROM {local_aiskillnavigator_kg_concept} c
+      LEFT JOIN {local_aiskillnavigator_kg_source} s ON s.conceptid = c.id
+      LEFT JOIN {local_aiskillnavigator_kg_relation} r ON r.sourceconceptid = c.id OR r.targetconceptid = c.id
           WHERE c.courseid = :courseid
        GROUP BY c.id, c.courseid, c.name, c.normalizedname, c.description, c.confidence, c.timecreated, c.timemodified
        ORDER BY sourcecount DESC, relationcount DESC, c.confidence DESC, c.name ASC",
@@ -882,7 +954,7 @@ function local_aisn_kg_graph_data(int $courseid, int $limitnodes = 80, int $limi
 
         $relations = $DB->get_records_sql(
             "SELECT r.*
-               FROM {local_aisn_kg_relation} r
+               FROM {local_aiskillnavigator_kg_relation} r
               WHERE r.courseid = :courseid
                 AND r.sourceconceptid {$sourceinsql}
                 AND r.targetconceptid {$targetinsql}
@@ -909,6 +981,10 @@ function local_aisn_kg_graph_data(int $courseid, int $limitnodes = 80, int $limi
 
 /**
  * Local aisn kg prompt context helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $focus Focus.
+ * @param int $limit Limit.
  */
 function local_aisn_kg_prompt_context(int $courseid, string $focus = '', int $limit = 28): string {
     global $DB;
@@ -929,9 +1005,9 @@ function local_aisn_kg_prompt_context(int $courseid, string $focus = '', int $li
         "SELECT c.*,
                 COUNT(DISTINCT s.id) AS sourcecount,
                 COUNT(DISTINCT r.id) AS relationcount
-           FROM {local_aisn_kg_concept} c
-      LEFT JOIN {local_aisn_kg_source} s ON s.conceptid = c.id
-      LEFT JOIN {local_aisn_kg_relation} r ON r.sourceconceptid = c.id OR r.targetconceptid = c.id
+           FROM {local_aiskillnavigator_kg_concept} c
+      LEFT JOIN {local_aiskillnavigator_kg_source} s ON s.conceptid = c.id
+      LEFT JOIN {local_aiskillnavigator_kg_relation} r ON r.sourceconceptid = c.id OR r.targetconceptid = c.id
           WHERE {$where}
        GROUP BY c.id, c.courseid, c.name, c.normalizedname, c.description, c.confidence, c.timecreated, c.timemodified
        ORDER BY sourcecount DESC, relationcount DESC, c.confidence DESC, c.name ASC",
@@ -973,9 +1049,9 @@ function local_aisn_kg_prompt_context(int $courseid, string $focus = '', int $li
 
         $relations = $DB->get_records_sql(
             "SELECT r.relationtype, r.confidence, sc.name AS sourcename, tc.name AS targetname
-               FROM {local_aisn_kg_relation} r
-               JOIN {local_aisn_kg_concept} sc ON sc.id = r.sourceconceptid
-               JOIN {local_aisn_kg_concept} tc ON tc.id = r.targetconceptid
+               FROM {local_aiskillnavigator_kg_relation} r
+               JOIN {local_aiskillnavigator_kg_concept} sc ON sc.id = r.sourceconceptid
+               JOIN {local_aiskillnavigator_kg_concept} tc ON tc.id = r.targetconceptid
               WHERE r.courseid = :courseid
                 AND r.sourceconceptid {$sourceinsql}
                 AND r.targetconceptid {$targetinsql}

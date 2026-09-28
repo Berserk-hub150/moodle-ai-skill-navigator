@@ -158,6 +158,8 @@ if (!function_exists('local_aiskillnavigator_tool_registry')) {
 if (!function_exists('local_aiskillnavigator_get_tools')) {
     /**
      * Local aiskillnavigator get tools helper.
+     *
+     * @param string|null $section Section.
      */
     function local_aiskillnavigator_get_tools(?string $section = null): array {
         $tools = local_aiskillnavigator_tool_registry();
@@ -188,6 +190,9 @@ if (!function_exists('local_aiskillnavigator_get_tool_sections')) {
 if (!function_exists('local_aiskillnavigator_tool_url')) {
     /**
      * Local aiskillnavigator tool url helper.
+     *
+     * @param array $tool Tool.
+     * @param int $courseid Moodle course ID.
      */
     function local_aiskillnavigator_tool_url(array $tool, int $courseid): moodle_url {
         return new moodle_url((string)($tool['path'] ?? '/local/aiskillnavigator/pages/index.php'), ['courseid' => $courseid]);
@@ -197,6 +202,8 @@ if (!function_exists('local_aiskillnavigator_tool_url')) {
 if (!function_exists('local_aiskillnavigator_tools')) {
     /**
      * Local aiskillnavigator tools helper.
+     *
+     * @param string|null $section Section.
      */
     function local_aiskillnavigator_tools(?string $section = null): array {
         return local_aiskillnavigator_get_tools($section);
@@ -215,6 +222,8 @@ if (!function_exists('local_aisn_tool_registry')) {
 if (!function_exists('local_aisn_get_tools')) {
     /**
      * Local aisn get tools helper.
+     *
+     * @param string|null $section Section.
      */
     function local_aisn_get_tools(?string $section = null): array {
         return local_aiskillnavigator_get_tools($section);

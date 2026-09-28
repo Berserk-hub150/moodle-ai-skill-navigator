@@ -23,6 +23,7 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
+require_login();
 
 $courseid = optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT);
 

@@ -53,9 +53,12 @@ foreach (glob(__DIR__ . '/material/*.php') as $materialhelper) {
  * Material extractor implementation.
  */
 class material_extractor {
+    /** @var int Maximum source file size in bytes. */
     private const MAX_BYTES = 26214400;
+    /** @var int Maximum extracted text length. */
     private const MAX_CHARS = 120000;
 
+    /** @var array File extensions supported by the extraction pipeline. */
     private const ALLOWED_EXTENSIONS = [
         'txt', 'md', 'csv', 'json', 'xml', 'html', 'htm',
         'css', 'js', 'ts', 'sql', 'cs', 'java', 'py', 'cpp', 'c',
@@ -65,6 +68,9 @@ class material_extractor {
 
     /**
      * Extract helper.
+     *
+     * @param mixed $file File.
+     * @param string|null $name Name.
      */
     public static function extract($file, ?string $name = null): array {
         if (is_array($file)) {
@@ -81,18 +87,26 @@ class material_extractor {
 
     /**
      * Extract file helper.
+     *
+     * @param mixed $file File.
+     * @param string|null $name Name.
      */
     public static function extract_file($file, ?string $name = null): array {
         return self::extract($file, $name);
     }
     /**
      * Extract material helper.
+     *
+     * @param mixed $file File.
+     * @param string|null $name Name.
      */
     public static function extract_material($file, ?string $name = null): array {
         return self::extract($file, $name);
     }
     /**
      * Extract uploaded file helper.
+     *
+     * @param array $file File.
      */
     public static function extract_uploaded_file(array $file): array {
         return self::extract_from_upload($file);
@@ -100,6 +114,8 @@ class material_extractor {
 
     /**
      * Extract from upload helper.
+     *
+     * @param array $file File.
      */
     public static function extract_from_upload(array $file): array {
         $error = (int)($file['error'] ?? UPLOAD_ERR_NO_FILE);
@@ -126,6 +142,8 @@ class material_extractor {
 
     /**
      * Extract from moodle file helper.
+     *
+     * @param \stored_file $file File.
      */
     public static function extract_from_moodle_file(\stored_file $file): array {
         $tmpdir = make_temp_directory('local_aiskillnavigator/material_extractor');
@@ -142,6 +160,9 @@ class material_extractor {
 
     /**
      * Extract from path helper.
+     *
+     * @param string $path Path.
+     * @param string $name Name.
      */
     public static function extract_from_path(string $path, string $name = ''): array {
         if ($path === '' || !is_readable($path)) {
@@ -193,6 +214,10 @@ class material_extractor {
 
     /**
      * Extract text file helper.
+     *
+     * @param string $path Path.
+     * @param string $filename Filename.
+     * @param string $ext Ext.
      */
     private static function extract_text_file(string $path, string $filename, string $ext): array {
         $text = file_get_contents($path);
@@ -208,6 +233,10 @@ class material_extractor {
 
     /**
      * Extract html file helper.
+     *
+     * @param string $path Path.
+     * @param string $filename Filename.
+     * @param string $ext Ext.
      */
     private static function extract_html_file(string $path, string $filename, string $ext): array {
         $html = file_get_contents($path);
@@ -225,6 +254,10 @@ class material_extractor {
     // AISN_MATERIAL_EXTRACTOR_MISTRAL_FIRST_V1.
     /**
      * Try mistral ocr helper.
+     *
+     * @param string $path Path.
+     * @param string $filename Filename.
+     * @param string $type Type.
      */
     private static function try_mistral_ocr(string $path, string $filename, string $type): ?array {
         if (
@@ -251,6 +284,9 @@ class material_extractor {
     }
     /**
      * Extract pdf helper.
+     *
+     * @param string $path Path.
+     * @param string $filename Filename.
      */
     private static function extract_pdf(string $path, string $filename): array {
         $mistral = self::try_mistral_ocr($path, $filename, 'pdf');
@@ -272,6 +308,9 @@ class material_extractor {
 
     /**
      * Extract pptx helper.
+     *
+     * @param string $path Path.
+     * @param string $filename Filename.
      */
     private static function extract_pptx(string $path, string $filename): array {
         $parts = [];
@@ -302,6 +341,9 @@ class material_extractor {
 
     /**
      * Extract docx helper.
+     *
+     * @param string $path Path.
+     * @param string $filename Filename.
      */
     private static function extract_docx(string $path, string $filename): array {
         $parts = [];
@@ -332,6 +374,8 @@ class material_extractor {
 
     /**
      * Extract docx xml text helper.
+     *
+     * @param string $path Path.
      */
     private static function extract_docx_xml_text(string $path): string {
         if (!class_exists('\\ZipArchive')) {
@@ -370,6 +414,8 @@ class material_extractor {
 
     /**
      * Extract openxml text helper.
+     *
+     * @param string $xml Xml.
      */
     private static function extract_openxml_text(string $xml): string {
         $previous = libxml_use_internal_errors(true);
@@ -404,6 +450,10 @@ class material_extractor {
 
     /**
      * Extract image helper.
+     *
+     * @param string $path Path.
+     * @param string $filename Filename.
+     * @param string $ext Ext.
      */
     private static function extract_image(string $path, string $filename, string $ext): array {
         $text = function_exists('\\local_aisn_ocr_image_path') ? \local_aisn_ocr_image_path($path, $filename) : '';
@@ -427,6 +477,8 @@ class material_extractor {
 
     /**
      * Extension helper.
+     *
+     * @param string $filename Filename.
      */
     private static function extension(string $filename): string {
         return strtolower((string)pathinfo($filename, PATHINFO_EXTENSION));
@@ -434,6 +486,8 @@ class material_extractor {
 
     /**
      * Clean helper.
+     *
+     * @param string $text Text to process.
      */
     private static function clean(string $text): string {
         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -446,6 +500,8 @@ class material_extractor {
 
     /**
      * Limit helper.
+     *
+     * @param string $text Text to process.
      */
     private static function limit(string $text): string {
         if (function_exists('mb_strlen') && function_exists('mb_substr')) {
@@ -462,6 +518,11 @@ class material_extractor {
 
     /**
      * Ok helper.
+     *
+     * @param string $content Content to process.
+     * @param string $type Type.
+     * @param string $filename Filename.
+     * @param string $message Message.
      */
     private static function ok(string $content, string $type, string $filename, string $message): array {
         return ['success' => true, 'content' => $content, 'message' => $message, 'type' => $type, 'filename' => $filename];
@@ -469,6 +530,9 @@ class material_extractor {
 
     /**
      * Fail helper.
+     *
+     * @param string $message Message.
+     * @param string $type Type.
      */
     private static function fail(string $message, string $type): array {
         return ['success' => false, 'content' => '', 'message' => $message, 'type' => $type];
@@ -476,6 +540,8 @@ class material_extractor {
 
     /**
      * Upload error message helper.
+     *
+     * @param int $error Error.
      */
     private static function upload_error_message(int $error): string {
         switch ($error) {

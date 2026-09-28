@@ -41,6 +41,10 @@ class xr_blueprint_prompt {
 
     /**
      * Build helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $environment Environment.
+     * @param string $context Moodle context.
      */
     public function build(string $topic, string $environment, string $context): string {
         $prompt = "Genera un blueprint XR per un plugin Moodle universitario.\n\n"

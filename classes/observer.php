@@ -33,6 +33,8 @@ defined('MOODLE_INTERNAL') || die();
 class observer {
     /**
      * Course created helper.
+     *
+     * @param \core\event\course_created $event Event.
      */
     public static function course_created(\core\event\course_created $event): void {
         $courseid = (int)($event->courseid ?: $event->objectid);
@@ -48,6 +50,8 @@ class observer {
 
     /**
      * Course updated helper.
+     *
+     * @param \core\event\course_updated $event Event.
      */
     public static function course_updated(\core\event\course_updated $event): void {
         $courseid = (int)($event->courseid ?: $event->objectid);
@@ -63,6 +67,8 @@ class observer {
 
     /**
      * Course module created helper.
+     *
+     * @param \core\event\course_module_created $event Event.
      */
     public static function course_module_created(\core\event\course_module_created $event): void {
         if (self::auto_sync_enabled()) {
@@ -72,6 +78,8 @@ class observer {
 
     /**
      * Course module updated helper.
+     *
+     * @param \core\event\course_module_updated $event Event.
      */
     public static function course_module_updated(\core\event\course_module_updated $event): void {
         if (self::auto_sync_enabled()) {
@@ -81,6 +89,8 @@ class observer {
 
     /**
      * Course module deleted helper.
+     *
+     * @param \core\event\course_module_deleted $event Event.
      */
     public static function course_module_deleted(\core\event\course_module_deleted $event): void {
         global $DB;
@@ -95,7 +105,7 @@ class observer {
         unset_config('cm_external_ai_' . $cmid, 'local_aiskillnavigator');
 
         try {
-            if (!self::table_exists('local_aiskillnav_material')) {
+            if (!self::table_exists('local_aiskillnavigator_material')) {
                 return;
             }
 
@@ -108,11 +118,11 @@ class observer {
                 'title' => '%cm #' . $cmid . ']%',
             ];
 
-            $materials = $DB->get_records_select('local_aiskillnav_material', $select, $params);
+            $materials = $DB->get_records_select('local_aiskillnavigator_material', $select, $params);
             $materialids = array_map('intval', array_keys($materials));
 
             self::delete_material_chunks($materialids);
-            $DB->delete_records_select('local_aiskillnav_material', $select, $params);
+            $DB->delete_records_select('local_aiskillnavigator_material', $select, $params);
         } catch (\Throwable $e) {
             debugging('AI Skill Navigator course module cleanup failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
@@ -120,6 +130,8 @@ class observer {
 
     /**
      * Ensure course block helper.
+     *
+     * @param int $courseid Moodle course ID.
      */
     public static function ensure_course_block(int $courseid): void {
         global $DB;
@@ -182,6 +194,9 @@ class observer {
 
     /**
      * Sync course resources helper.
+     *
+     * @param int $courseid Moodle course ID.
+     * @param int $userid Moodle user ID.
      */
     private static function sync_course_resources(int $courseid, int $userid): void {
         global $CFG;
@@ -218,16 +233,18 @@ class observer {
      * The sync helper can be triggered by several Moodle events. If it inserts
      * instead of updating, the same course module appears multiple times in
      * materials, prompts and RAG chunks. Keep one record per course module id.
+     *
+     * @param int $courseid Moodle course ID.
      */
     private static function dedupe_course_resource_materials(int $courseid): void {
         global $DB;
 
-        if (!self::table_exists('local_aiskillnav_material')) {
+        if (!self::table_exists('local_aiskillnavigator_material')) {
             return;
         }
 
         $records = $DB->get_records(
-            'local_aiskillnav_material',
+            'local_aiskillnavigator_material',
             ['courseid' => $courseid, 'materialtype' => 'course_resource'],
             'id ASC',
             'id, courseid, userid, title, materialtype, content, timecreated, timemodified'
@@ -274,13 +291,15 @@ class observer {
         if (!empty($deleteids)) {
             self::delete_material_chunks($deleteids);
             [$insql, $inparams] = $DB->get_in_or_equal($deleteids, SQL_PARAMS_NAMED, 'dup');
-            $DB->delete_records_select('local_aiskillnav_material', 'id ' . $insql, $inparams);
+            $DB->delete_records_select('local_aiskillnavigator_material', 'id ' . $insql, $inparams);
             debugging('AI Skill Navigator removed duplicate course materials: ' . count($deleteids), DEBUG_DEVELOPER);
         }
     }
 
     /**
      * Material identity key helper.
+     *
+     * @param \stdClass $record Record.
      */
     private static function material_identity_key(\stdClass $record): string {
         $title = trim((string)($record->title ?? ''));
@@ -300,6 +319,8 @@ class observer {
 
     /**
      * Normalise key text helper.
+     *
+     * @param string $text Text to process.
      */
     private static function normalise_key_text(string $text): string {
         $text = trim($text);
@@ -314,22 +335,26 @@ class observer {
 
     /**
      * Delete material chunks helper.
+     *
+     * @param array $materialids Stored material IDs.
      */
     private static function delete_material_chunks(array $materialids): void {
         global $DB;
 
         $materialids = array_values(array_unique(array_filter(array_map('intval', $materialids))));
 
-        if (empty($materialids) || !self::table_exists('local_aiskillnav_chunk')) {
+        if (empty($materialids) || !self::table_exists('local_aiskillnavigator_chunk')) {
             return;
         }
 
         [$insql, $inparams] = $DB->get_in_or_equal($materialids, SQL_PARAMS_NAMED, 'mid');
-        $DB->delete_records_select('local_aiskillnav_chunk', 'materialid ' . $insql, $inparams);
+        $DB->delete_records_select('local_aiskillnavigator_chunk', 'materialid ' . $insql, $inparams);
     }
 
     /**
      * Table exists helper.
+     *
+     * @param string $table Table.
      */
     private static function table_exists(string $table): bool {
         global $DB;

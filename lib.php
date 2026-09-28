@@ -29,6 +29,9 @@ defined('MOODLE_INTERNAL') || die();
  * Adds an AI privacy checkbox to Moodle activity/resource edit forms.
  */
 
+/**
+ * Return Moodle module types that support per-material AI policy.
+ */
 function local_aiskillnavigator_ai_policy_supported_modnames(): array {
     return [
         'resource',
@@ -42,6 +45,8 @@ function local_aiskillnavigator_ai_policy_supported_modnames(): array {
 
 /**
  * Local aiskillnavigator ai policy current modname helper.
+ *
+ * @param mixed $formwrapper Formwrapper.
  */
 function local_aiskillnavigator_ai_policy_current_modname($formwrapper): string {
     $modname = '';
@@ -79,6 +84,9 @@ function local_aiskillnavigator_ai_policy_current_modname($formwrapper): string 
 
 /**
  * Local aiskillnavigator coursemodule standard elements helper.
+ *
+ * @param mixed $formwrapper Formwrapper.
+ * @param mixed $mform Moodle form instance.
  */
 function local_aiskillnavigator_coursemodule_standard_elements($formwrapper, $mform): void {
     $modname = local_aiskillnavigator_ai_policy_current_modname($formwrapper);
@@ -118,6 +126,9 @@ function local_aiskillnavigator_coursemodule_standard_elements($formwrapper, $mf
 
 /**
  * Local aiskillnavigator coursemodule edit post actions helper.
+ *
+ * @param mixed $data Data.
+ * @param mixed $course Moodle course record.
  */
 function local_aiskillnavigator_coursemodule_edit_post_actions($data, $course) {
     global $CFG, $USER;
@@ -173,6 +184,10 @@ function local_aiskillnavigator_coursemodule_edit_post_actions($data, $course) {
 
 /**
  * Local aiskillnavigator apply cm ai policy to material helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $cmid Course module ID.
+ * @param bool $externalallowed Externalallowed.
  */
 function local_aiskillnavigator_apply_cm_ai_policy_to_material(
     int $courseid,
@@ -185,11 +200,11 @@ function local_aiskillnavigator_apply_cm_ai_policy_to_material(
         return;
     }
 
-    if (!$DB->get_manager()->table_exists(new xmldb_table('local_aiskillnav_material'))) {
+    if (!$DB->get_manager()->table_exists(new xmldb_table('local_aiskillnavigator_material'))) {
         return;
     }
 
-    $materials = $DB->get_records('local_aiskillnav_material', [
+    $materials = $DB->get_records('local_aiskillnavigator_material', [
         'courseid' => $courseid,
         'materialtype' => 'course_resource',
     ]);
@@ -209,7 +224,7 @@ function local_aiskillnavigator_apply_cm_ai_policy_to_material(
         $material->aipolicy = $externalallowed ? 'external_allowed' : 'local_only';
         $material->timemodified = time();
 
-        $DB->update_record('local_aiskillnav_material', $material);
+        $DB->update_record('local_aiskillnavigator_material', $material);
     }
 }
 

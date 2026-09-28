@@ -33,6 +33,9 @@ defined('MOODLE_INTERNAL') || die();
 class quiz_schema {
     /**
      * Get helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $difficulty Requested difficulty level.
      */
     public function get(string $topic, string $difficulty): string {
         return "Schema JSON:\n"

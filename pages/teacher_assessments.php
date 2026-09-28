@@ -29,6 +29,7 @@ require_once(__DIR__ . '/../includes/ui_style_helper.php');
 require_once(__DIR__ . '/../includes/course_resource_sync.php');
 require_once(__DIR__ . '/../includes/material_source_helper.php');
 require_once(__DIR__ . '/../includes/knowledge_graph_helper.php');
+require_once(__DIR__ . '/../includes/ai_response_guard.php');
 
 use local_aiskillnavigator\service\ai_provider_factory;
 use local_aiskillnavigator\service\embedding_service;
@@ -59,6 +60,8 @@ $rawresponse = '';
 
 /**
  * Local aisn ass table exists helper.
+ *
+ * @param string $tablename Tablename.
  */
 function local_aisn_ass_table_exists(string $tablename): bool {
     global $DB;
@@ -67,6 +70,8 @@ function local_aisn_ass_table_exists(string $tablename): bool {
 
 /**
  * Local aisn ass clean json helper.
+ *
+ * @param string $raw Raw.
  */
 function local_aisn_ass_clean_json(string $raw): string {
     $clean = trim($raw);
@@ -90,6 +95,8 @@ function local_aisn_ass_clean_json(string $raw): string {
 
 /**
  * Local aisn ass normalize question helper.
+ *
+ * @param array $question Question.
  */
 function local_aisn_ass_normalize_question(array $question): ?array {
     $text = trim((string)($question['question'] ?? ''));
@@ -147,6 +154,8 @@ function local_aisn_ass_normalize_question(array $question): ?array {
 
 /**
  * Local aisn ass parse quiz helper.
+ *
+ * @param string $raw Raw.
  */
 function local_aisn_ass_parse_quiz(string $raw): ?array {
     $clean = local_aisn_ass_clean_json($raw);
@@ -184,6 +193,9 @@ function local_aisn_ass_parse_quiz(string $raw): ?array {
 
 /**
  * Local aisn ass context from materials helper.
+ *
+ * @param array $materials Course materials used for this operation.
+ * @param int $limit Limit.
  */
 function local_aisn_ass_context_from_materials(array $materials, int $limit = 7500): string {
     $context = '';
@@ -212,6 +224,11 @@ function local_aisn_ass_context_from_materials(array $materials, int $limit = 75
 
 /**
  * Local aisn ass build prompt helper.
+ *
+ * @param string $type Type.
+ * @param string $focus Focus.
+ * @param string $difficulty Requested difficulty level.
+ * @param string $materialcontext Materialcontext.
  */
 function local_aisn_ass_build_prompt(string $type, string $focus, string $difficulty, string $materialcontext): string {
     $isfinal = $type === 'final';
@@ -259,6 +276,11 @@ function local_aisn_ass_build_prompt(string $type, string $focus, string $diffic
 
 /**
  * Local aisn ass generate helper.
+ *
+ * @param string $type Type.
+ * @param string $focus Focus.
+ * @param string $difficulty Requested difficulty level.
+ * @param string $context Moodle context.
  */
 function local_aisn_ass_generate(string $type, string $focus, string $difficulty, string $context): array {
     $prompt = local_aisn_ass_build_prompt($type, $focus, $difficulty, $context);
@@ -269,6 +291,8 @@ function local_aisn_ass_generate(string $type, string $focus, string $difficulty
 
 /**
  * Local aisn ass badge helper.
+ *
+ * @param string $type Type.
  */
 function local_aisn_ass_badge(string $type): string {
     return $type === 'final'
@@ -278,6 +302,8 @@ function local_aisn_ass_badge(string $type): string {
 
 /**
  * Local aisn ass type label helper.
+ *
+ * @param string $type Type.
  */
 function local_aisn_ass_type_label(string $type): string {
     return $type === 'final'
@@ -287,19 +313,24 @@ function local_aisn_ass_type_label(string $type): string {
 
 /**
  * Local aisn ass get assessment helper.
+ *
+ * @param int $id Id.
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_ass_get_assessment(int $id, int $courseid): stdClass {
     global $DB;
-    return $DB->get_record('local_aiskillnav_assessment', ['id' => $id, 'courseid' => $courseid], '*', MUST_EXIST);
+    return $DB->get_record('local_aiskillnavigator_assessment', ['id' => $id, 'courseid' => $courseid], '*', MUST_EXIST);
 }
 
 /**
  * Local aisn ass get attempt count helper.
+ *
+ * @param int $assessmentid Assessmentid.
  */
 function local_aisn_ass_get_attempt_count(int $assessmentid): int {
     global $DB;
-    return local_aisn_ass_table_exists('local_aiskillnav_ass_att')
-        ? $DB->count_records('local_aiskillnav_ass_att', ['assessmentid' => $assessmentid])
+    return local_aisn_ass_table_exists('local_aiskillnavigator_ass_att')
+        ? $DB->count_records('local_aiskillnavigator_ass_att', ['assessmentid' => $assessmentid])
         : 0;
 }
 
@@ -382,6 +413,10 @@ function local_aisn_ass_questions_from_form(): array {
 }
 /**
  * Local aisn ass render question editor helper.
+ *
+ * @param string $key Key.
+ * @param int $number Number.
+ * @param array $question Question.
  */
 function local_aisn_ass_render_question_editor(string $key, int $number, array $question): string {
     $question = local_aisn_ass_normalize_question($question) ?? [
@@ -458,6 +493,11 @@ function local_aisn_ass_render_question_editor(string $key, int $number, array $
 
 /**
  * Local aisn ass render edit form helper.
+ *
+ * @param stdClass $assessment Assessment.
+ * @param array $quiz Quiz.
+ * @param int $courseid Moodle course ID.
+ * @param int $attemptcount Attemptcount.
  */
 function local_aisn_ass_render_edit_form(stdClass $assessment, array $quiz, int $courseid, int $attemptcount): void {
     $questions = isset($quiz['questions']) && is_array($quiz['questions']) ? array_values($quiz['questions']) : [];
@@ -574,31 +614,62 @@ function local_aisn_ass_render_edit_form(stdClass $assessment, array $quiz, int 
      * Cardhtml helper.
      */
     function cardHtml(key) {
-        // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
+
         return `
 <div class="card mb-3 aisn-question-card" data-question-card="1">
   <div class="card-body">
     <h4 data-question-title="1">Question</h4>
     <input type="hidden" name="qkey[]" value="${escapeHtml(key)}">
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group"><label>Question text</label><textarea name="question[${escapeHtml(key)}]" class="form-control" rows="3" required></textarea></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Option A</label><input type="text" name="option[${escapeHtml(key)}][]" class="form-control"></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Option B</label><input type="text" name="option[${escapeHtml(key)}][]" class="form-control"></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Option C</label><input type="text" name="option[${escapeHtml(key)}][]" class="form-control"></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Option D</label><input type="text" name="option[${escapeHtml(key)}][]" class="form-control"></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Correct answer</label><select name="correct_index[${escapeHtml(key)}]" class="form-control"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Ability</label><input type="text" name="ability[${escapeHtml(key)}]" class="form-control"></div>
-    // phpcs:ignore moodle.Files.LineLength
-    <div class="form-group mt-2"><label>Explanation</label><textarea name="explanation[${escapeHtml(key)}]" class="form-control" rows="2"></textarea></div>
+
+    <div class="form-group">
+        <label>Question text</label>
+        <textarea name="question[${escapeHtml(key)}]" class="form-control" rows="3" required>
+        </textarea>
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Option A</label>
+        <input type="text" name="option[${escapeHtml(key)}][]" class="form-control">
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Option B</label>
+        <input type="text" name="option[${escapeHtml(key)}][]" class="form-control">
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Option C</label>
+        <input type="text" name="option[${escapeHtml(key)}][]" class="form-control">
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Option D</label>
+        <input type="text" name="option[${escapeHtml(key)}][]" class="form-control">
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Correct answer</label>
+        <select name="correct_index[${escapeHtml(key)}]" class="form-control">
+        <option value="0">A</option>
+        <option value="1">B</option>
+        <option value="2">C</option>
+        <option value="3">D</option>
+        </select>
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Ability</label>
+        <input type="text" name="ability[${escapeHtml(key)}]" class="form-control">
+        </div>
+
+    <div class="form-group mt-2">
+        <label>Explanation</label>
+        <textarea name="explanation[${escapeHtml(key)}]" class="form-control" rows="2">
+        </textarea>
+        </div>
     <button type="button" class="btn btn-outline-danger btn-sm mt-3" data-remove-question="1">Remove question</button>
   </div>
-// phpcs:ignore moodle.Strings.ForbiddenStrings.Found
+
 </div>`;
     }
 
@@ -630,6 +701,9 @@ JS);
 
 /**
  * Local aisn ass redirect self helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param string $message Message.
  */
 function local_aisn_ass_redirect_self(int $courseid, string $message = ''): void {
     // phpcs:ignore moodle.Files.LineLength
@@ -640,10 +714,10 @@ if ($action === 'delete') {
     require_sesskey();
     $id = required_param('id', PARAM_INT);
     $assessment = local_aisn_ass_get_assessment($id, $courseid);
-    if (local_aisn_ass_table_exists('local_aiskillnav_ass_att')) {
-        $DB->delete_records('local_aiskillnav_ass_att', ['assessmentid' => $assessment->id]);
+    if (local_aisn_ass_table_exists('local_aiskillnavigator_ass_att')) {
+        $DB->delete_records('local_aiskillnavigator_ass_att', ['assessmentid' => $assessment->id]);
     }
-    $DB->delete_records('local_aiskillnav_assessment', ['id' => $assessment->id]);
+    $DB->delete_records('local_aiskillnavigator_assessment', ['id' => $assessment->id]);
     local_aisn_ass_redirect_self($courseid, 'Assessment deleted.');
 }
 
@@ -653,7 +727,7 @@ if ($action === 'toggle') {
     $assessment = local_aisn_ass_get_assessment($id, $courseid);
     $assessment->visible = (int)!$assessment->visible;
     $assessment->timemodified = time();
-    $DB->update_record('local_aiskillnav_assessment', $assessment);
+    $DB->update_record('local_aiskillnavigator_assessment', $assessment);
     // phpcs:ignore moodle.Files.LineLength
     local_aisn_ass_redirect_self($courseid, $assessment->visible ? 'Assessment published to students.' : 'Assessment hidden from students.');
 }
@@ -691,10 +765,10 @@ if ($action === 'update') {
         $assessment->visible = $visible ? 1 : 0;
         $assessment->quizjson = $newquizjson;
         $assessment->timemodified = time();
-        $DB->update_record('local_aiskillnav_assessment', $assessment);
+        $DB->update_record('local_aiskillnavigator_assessment', $assessment);
 
-        if ($quizchanged && $attemptcount > 0 && local_aisn_ass_table_exists('local_aiskillnav_ass_att')) {
-            $DB->delete_records('local_aiskillnav_ass_att', ['assessmentid' => $assessment->id]);
+        if ($quizchanged && $attemptcount > 0 && local_aisn_ass_table_exists('local_aiskillnavigator_ass_att')) {
+            $DB->delete_records('local_aiskillnavigator_ass_att', ['assessmentid' => $assessment->id]);
             // phpcs:ignore moodle.Files.LineLength
             local_aisn_ass_redirect_self($courseid, 'Assessment updated. Previous attempts were reset because the questions changed.');
         }
@@ -783,7 +857,9 @@ if ($action === 'generate') {
 
     if ($error === '') {
         if ($quiz === null) {
-            $error = 'The AI response could not be parsed as valid assessment JSON.';
+            $error = local_aiskillnavigator_ai_response_is_error($rawresponse)
+                ? ($rawresponse !== '' ? $rawresponse : get_string('ai_empty_response', 'local_aiskillnavigator'))
+                : 'The AI response could not be parsed as valid assessment JSON.';
         } else {
             $record = new stdClass();
             $record->courseid = $courseid;
@@ -799,7 +875,7 @@ if ($action === 'generate') {
             $record->visible = $visible ? 1 : 0;
             $record->timecreated = time();
             $record->timemodified = time();
-            $DB->insert_record('local_aiskillnav_assessment', $record);
+            $DB->insert_record('local_aiskillnavigator_assessment', $record);
             // phpcs:ignore moodle.Files.LineLength
             local_aisn_ass_redirect_self($courseid, $type === 'final' ? 'Final test generated. Use Edit test before publishing if needed.' : 'Initial diagnostic quiz generated. Use Edit test before publishing if needed.');
         }
@@ -810,8 +886,8 @@ $readablematerials = local_aiskillnavigator_material_source_get_readable_materia
 $embeddingservice = new embedding_service();
 $sourcemode = local_aiskillnavigator_material_source_mode_from_request(0);
 $selectedmaterialids = local_aiskillnavigator_material_source_selected_ids_from_request($readablematerials);
-$assessments = local_aisn_ass_table_exists('local_aiskillnav_assessment')
-    ? $DB->get_records('local_aiskillnav_assessment', ['courseid' => $courseid], 'timecreated DESC')
+$assessments = local_aisn_ass_table_exists('local_aiskillnavigator_assessment')
+    ? $DB->get_records('local_aiskillnavigator_assessment', ['courseid' => $courseid], 'timecreated DESC')
     : [];
 
 echo $OUTPUT->header();
@@ -1221,8 +1297,12 @@ if (empty($assessments)) {
     echo html_writer::div('No assessments created yet.', 'alert alert-info');
 } else {
     foreach ($assessments as $assessment) {
-        $attempts = local_aisn_ass_table_exists('local_aiskillnav_ass_att')
-            ? $DB->get_records('local_aiskillnav_ass_att', ['assessmentid' => $assessment->id], 'percentage DESC, timecreated ASC')
+        $attempts = local_aisn_ass_table_exists('local_aiskillnavigator_ass_att')
+            ? $DB->get_records(
+                'local_aiskillnavigator_ass_att',
+                ['assessmentid' => $assessment->id],
+                'percentage DESC, timecreated ASC'
+            )
             : [];
         $count = count($attempts);
         $sum = 0;

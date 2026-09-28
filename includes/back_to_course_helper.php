@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Local aisn back to course autofix helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_back_to_course_autofix(int $courseid): string {
     if ($courseid <= 0) {
@@ -88,7 +90,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!found) {
         // phpcs:ignore moodle.Files.LineLength
-        var container = document.querySelector('.container-fluid') || document.querySelector('#region-main') || document.querySelector('main') || document.body;
+        var container = document.querySelector('.container-fluid') ||
+            document.querySelector('#region-main') ||
+            document.querySelector('main') ||
+            document.body;
 
         if (container) {
             var wrap = document.createElement('div');

@@ -25,7 +25,7 @@
 // phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
 
-/**
+/*
  * Saved simulation helper.
  *
  * This helper keeps saved simulator exercises clean:
@@ -38,6 +38,8 @@ defined('MOODLE_INTERNAL') || die();
 if (!function_exists('local_aisn_saved_sim_text')) {
     /**
      * Local aisn saved sim text helper.
+     *
+     * @param string $text Text to process.
      */
     function local_aisn_saved_sim_text(string $text): string {
         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -52,6 +54,8 @@ if (!function_exists('local_aisn_saved_sim_text')) {
 if (!function_exists('local_aisn_saved_sim_strip_html_blocks')) {
     /**
      * Local aisn saved sim strip html blocks helper.
+     *
+     * @param string $text Text to process.
      */
     function local_aisn_saved_sim_strip_html_blocks(string $text): string {
         $text = preg_replace('#<script\b[^>]*>.*?</script>#is', "\n", $text);
@@ -93,6 +97,8 @@ if (!function_exists('local_aisn_saved_sim_labels')) {
 if (!function_exists('local_aisn_saved_sim_noise_line')) {
     /**
      * Local aisn saved sim noise line helper.
+     *
+     * @param string $line Line.
      */
     function local_aisn_saved_sim_noise_line(string $line): bool {
         $line = trim($line);
@@ -201,6 +207,8 @@ if (!function_exists('local_aisn_saved_sim_noise_line')) {
 if (!function_exists('local_aisn_saved_sim_is_heading')) {
     /**
      * Local aisn saved sim is heading helper.
+     *
+     * @param string $line Line.
      */
     function local_aisn_saved_sim_is_heading(string $line): bool {
         $line = trim(preg_replace('/^\s*[0-9]+[.)]\s*/u', '', $line));
@@ -218,6 +226,8 @@ if (!function_exists('local_aisn_saved_sim_is_heading')) {
 if (!function_exists('local_aisn_saved_sim_normalize_heading')) {
     /**
      * Local aisn saved sim normalize heading helper.
+     *
+     * @param string $line Line.
      */
     function local_aisn_saved_sim_normalize_heading(string $line): string {
         $line = trim(preg_replace('/^\s*[0-9]+[.)]\s*/u', '', $line));
@@ -235,6 +245,8 @@ if (!function_exists('local_aisn_saved_sim_normalize_heading')) {
 if (!function_exists('local_aisn_sim_canonicalize_generated_result')) {
     /**
      * Local aisn sim canonicalize generated result helper.
+     *
+     * @param string $text Text to process.
      */
     function local_aisn_sim_canonicalize_generated_result(string $text): string {
         $text = local_aisn_saved_sim_text($text);
@@ -283,6 +295,8 @@ if (!function_exists('local_aisn_sim_canonicalize_generated_result')) {
 if (!function_exists('local_aisn_sim_clean_generated_result')) {
     /**
      * Local aisn sim clean generated result helper.
+     *
+     * @param string $raw Raw.
      */
     function local_aisn_sim_clean_generated_result(string $raw): string {
         $raw = local_aisn_saved_sim_strip_html_blocks($raw);
@@ -371,6 +385,9 @@ if (!function_exists('local_aisn_sim_clean_generated_result')) {
 if (!function_exists('local_aisn_saved_sim_preview')) {
     /**
      * Local aisn saved sim preview helper.
+     *
+     * @param string $text Text to process.
+     * @param int $max Max.
      */
     function local_aisn_saved_sim_preview(string $text, int $max = 260): string {
         $clean = local_aisn_sim_clean_generated_result($text);
@@ -392,6 +409,8 @@ if (!function_exists('local_aisn_saved_sim_preview')) {
 if (!function_exists('local_aisn_saved_sim_is_bad_raw')) {
     /**
      * Local aisn saved sim is bad raw helper.
+     *
+     * @param string $text Text to process.
      */
     function local_aisn_saved_sim_is_bad_raw(string $text): bool {
         // phpcs:ignore moodle.Files.LineLength
@@ -402,6 +421,8 @@ if (!function_exists('local_aisn_saved_sim_is_bad_raw')) {
 if (!function_exists('local_aisn_saved_sim_linkify')) {
     /**
      * Local aisn saved sim linkify helper.
+     *
+     * @param string $text Text to process.
      */
     function local_aisn_saved_sim_linkify(string $text): string {
         $parts = preg_split('~(https?://[^\s<]+)~i', (string)$text, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -434,6 +455,8 @@ if (!function_exists('local_aisn_saved_sim_linkify')) {
 if (!function_exists('local_aisn_saved_sim_split_sentences')) {
     /**
      * Local aisn saved sim split sentences helper.
+     *
+     * @param string $text Text to process.
      */
     function local_aisn_saved_sim_split_sentences(string $text): array {
         $text = trim($text);
@@ -454,6 +477,8 @@ if (!function_exists('local_aisn_saved_sim_split_sentences')) {
 if (!function_exists('local_aisn_saved_sim_render_paragraphs')) {
     /**
      * Local aisn saved sim render paragraphs helper.
+     *
+     * @param array $lines Lines.
      */
     function local_aisn_saved_sim_render_paragraphs(array $lines): string {
         $html = '';
@@ -479,6 +504,8 @@ if (!function_exists('local_aisn_saved_sim_render_paragraphs')) {
 if (!function_exists('local_aisn_saved_sim_render_instruction_list')) {
     /**
      * Local aisn saved sim render instruction list helper.
+     *
+     * @param array $lines Lines.
      */
     function local_aisn_saved_sim_render_instruction_list(array $lines): string {
         $joined = trim(implode(' ', array_filter(array_map('trim', $lines))));
@@ -502,6 +529,8 @@ if (!function_exists('local_aisn_saved_sim_render_instruction_list')) {
 if (!function_exists('local_aisn_saved_sim_render_criteria_list')) {
     /**
      * Local aisn saved sim render criteria list helper.
+     *
+     * @param array $lines Lines.
      */
     function local_aisn_saved_sim_render_criteria_list(array $lines): string {
         $text = trim(implode("\n", array_filter(array_map('trim', $lines))));
@@ -554,6 +583,8 @@ if (!function_exists('local_aisn_saved_sim_render_criteria_list')) {
 if (!function_exists('local_aisn_saved_sim_sections')) {
     /**
      * Local aisn saved sim sections helper.
+     *
+     * @param string $text Text to process.
      */
     function local_aisn_saved_sim_sections(string $text): array {
         $lines = preg_split('/\R/u', local_aisn_sim_clean_generated_result($text));
@@ -592,6 +623,8 @@ if (!function_exists('local_aisn_saved_sim_sections')) {
 if (!function_exists('local_aisn_saved_sim_render_content')) {
     /**
      * Local aisn saved sim render content helper.
+     *
+     * @param string $text Text to process.
      */
     function local_aisn_saved_sim_render_content(string $text): string {
         $sections = local_aisn_saved_sim_sections($text);

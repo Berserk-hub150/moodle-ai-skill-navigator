@@ -33,6 +33,8 @@ defined('MOODLE_INTERNAL') || die();
 class mindmap_schema {
     /**
      * Get helper.
+     *
+     * @param string $topic Requested learning topic.
      */
     public function get(string $topic): string {
         return "Schema JSON:\n"

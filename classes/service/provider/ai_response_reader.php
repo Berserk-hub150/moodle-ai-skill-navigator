@@ -33,6 +33,9 @@ defined('MOODLE_INTERNAL') || die();
 class ai_response_reader {
     /**
      * Answer helper.
+     *
+     * @param array $response Response.
+     * @param string $format Format.
      */
     public function answer(array $response, string $format): string {
         if (empty($response['ok'])) {
@@ -72,6 +75,8 @@ class ai_response_reader {
 
     /**
      * Error helper.
+     *
+     * @param array $response Response.
      */
     private function error(array $response): string {
         $status = (int)($response['status'] ?? 0);

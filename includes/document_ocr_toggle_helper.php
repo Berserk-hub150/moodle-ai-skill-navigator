@@ -53,6 +53,8 @@ if (!function_exists('local_aisn_document_ocr_current_courseid')) {
 if (!function_exists('local_aisn_document_ocr_config_key')) {
     /**
      * Local aisn document ocr config key helper.
+     *
+     * @param int $courseid Moodle course ID.
      */
     function local_aisn_document_ocr_config_key(int $courseid): string {
         return 'document_ocr_enabled_course_' . $courseid;
@@ -62,6 +64,8 @@ if (!function_exists('local_aisn_document_ocr_config_key')) {
 if (!function_exists('local_aisn_document_ocr_course_enabled')) {
     /**
      * Local aisn document ocr course enabled helper.
+     *
+     * @param int $courseid Moodle course ID.
      */
     function local_aisn_document_ocr_course_enabled(int $courseid): bool {
         if ($courseid <= SITEID) {
@@ -75,6 +79,8 @@ if (!function_exists('local_aisn_document_ocr_course_enabled')) {
 if (!function_exists('local_aisn_document_ocr_cmid_enabled')) {
     /**
      * Local aisn document ocr cmid enabled helper.
+     *
+     * @param int $cmid Course module ID.
      */
     function local_aisn_document_ocr_cmid_enabled(int $cmid): bool {
         if ($cmid <= 0) {
@@ -94,6 +100,8 @@ if (!function_exists('local_aisn_document_ocr_cmid_enabled')) {
 if (!function_exists('local_aisn_document_ocr_user_can_toggle')) {
     /**
      * Local aisn document ocr user can toggle helper.
+     *
+     * @param int $courseid Moodle course ID.
      */
     function local_aisn_document_ocr_user_can_toggle(int $courseid): bool {
         if ($courseid <= SITEID || !isloggedin() || isguestuser()) {
@@ -113,6 +121,9 @@ if (!function_exists('local_aisn_document_ocr_user_can_toggle')) {
 if (!function_exists('local_aisn_document_ocr_toggle_url')) {
     /**
      * Local aisn document ocr toggle url helper.
+     *
+     * @param int $courseid Moodle course ID.
+     * @param bool $enabled Enabled.
      */
     function local_aisn_document_ocr_toggle_url(int $courseid, bool $enabled): moodle_url {
         $returnurl = qualified_me();
@@ -130,6 +141,8 @@ if (!function_exists('local_aisn_document_ocr_toggle_url')) {
 if (!function_exists('local_aisn_render_sidebar_ocr_toggle_button')) {
     /**
      * Local aisn render sidebar ocr toggle button helper.
+     *
+     * @param int $courseid Moodle course ID.
      */
     function local_aisn_render_sidebar_ocr_toggle_button(int $courseid = 0): string {
         if ($courseid <= 0) {

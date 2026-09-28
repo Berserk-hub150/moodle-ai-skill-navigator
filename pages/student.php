@@ -48,7 +48,7 @@ $PAGE->set_title(get_string('studentdashboard', 'local_aiskillnavigator'));
 $PAGE->set_heading(get_string('studentdashboard', 'local_aiskillnavigator'));
 
 $attempts = $DB->get_records(
-    'local_aiskillnav_attempt',
+    'local_aiskillnavigator_attempt',
     [
         'courseid' => $courseid,
         'userid' => $USER->id,
@@ -149,6 +149,8 @@ if ($totalattempts > 0) {
 
 /**
  * Local aiskillnavigator student badge class helper.
+ *
+ * @param int $percentage Percentage.
  */
 function local_aiskillnavigator_student_badge_class(int $percentage): string {
     if ($percentage >= 80) {
@@ -164,6 +166,8 @@ function local_aiskillnavigator_student_badge_class(int $percentage): string {
 
 /**
  * Local aiskillnavigator student status text helper.
+ *
+ * @param int $percentage Percentage.
  */
 function local_aiskillnavigator_student_status_text(int $percentage): string {
     if ($percentage >= 80) {

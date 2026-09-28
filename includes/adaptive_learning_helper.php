@@ -35,6 +35,11 @@ defined('MOODLE_INTERNAL') || die();
  * - collects wrong examples so the LLM can generate similar-but-not-identical practice.
  */
 
+/**
+ * Check whether the adaptive learning storage table is installed.
+ *
+ * @param string $tablename Tablename.
+ */
 function local_aiskillnavigator_adaptive_table_exists(string $tablename): bool {
     global $DB;
 
@@ -48,6 +53,8 @@ function local_aiskillnavigator_adaptive_table_exists(string $tablename): bool {
 
 /**
  * Local aiskillnavigator adaptive question skill helper.
+ *
+ * @param array $question Question.
  */
 function local_aiskillnavigator_adaptive_question_skill(array $question): string {
     // phpcs:ignore moodle.Files.LineLength
@@ -62,6 +69,8 @@ function local_aiskillnavigator_adaptive_question_skill(array $question): string
 
 /**
  * Local aiskillnavigator adaptive question text helper.
+ *
+ * @param array $question Question.
  */
 function local_aiskillnavigator_adaptive_question_text(array $question): string {
     return trim((string)($question['question'] ?? $question['text'] ?? $question['title'] ?? ''));
@@ -69,6 +78,9 @@ function local_aiskillnavigator_adaptive_question_text(array $question): string 
 
 /**
  * Local aiskillnavigator adaptive option text helper.
+ *
+ * @param array $question Question.
+ * @param int $index Index.
  */
 function local_aiskillnavigator_adaptive_option_text(array $question, int $index): string {
     $options = $question['options'] ?? $question['answers'] ?? [];
@@ -82,6 +94,15 @@ function local_aiskillnavigator_adaptive_option_text(array $question, int $index
 
 /**
  * Local aiskillnavigator adaptive register answer helper.
+ *
+ * @param array $skills Skills.
+ * @param array $wrongquestions Wrongquestions.
+ * @param string $skill Skill.
+ * @param bool $iscorrect Iscorrect.
+ * @param string $questiontext Questiontext.
+ * @param string $studentanswer Studentanswer.
+ * @param string $correctanswer Correctanswer.
+ * @param int $timecreated Timecreated.
  */
 function local_aiskillnavigator_adaptive_register_answer(
     array &$skills,
@@ -144,6 +165,9 @@ function local_aiskillnavigator_adaptive_register_answer(
 
 /**
  * Local aiskillnavigator adaptive collect student helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $userid Moodle user ID.
  */
 function local_aiskillnavigator_adaptive_collect_student(int $courseid, int $userid): array {
     global $DB;
@@ -152,18 +176,18 @@ function local_aiskillnavigator_adaptive_collect_student(int $courseid, int $use
     $wrongquestions = [];
 
     if (
-        local_aiskillnavigator_adaptive_table_exists('local_aiskillnav_assessment') &&
-        local_aiskillnavigator_adaptive_table_exists('local_aiskillnav_ass_att')
+        local_aiskillnavigator_adaptive_table_exists('local_aiskillnavigator_assessment') &&
+        local_aiskillnavigator_adaptive_table_exists('local_aiskillnavigator_ass_att')
     ) {
         $attempts = $DB->get_records(
-            'local_aiskillnav_ass_att',
+            'local_aiskillnavigator_ass_att',
             ['courseid' => $courseid, 'userid' => $userid],
             'timecreated ASC'
         );
 
         foreach ($attempts as $attempt) {
             $assessment = $DB->get_record(
-                'local_aiskillnav_assessment',
+                'local_aiskillnavigator_assessment',
                 ['id' => (int)$attempt->assessmentid, 'courseid' => $courseid]
             );
 
@@ -208,9 +232,9 @@ function local_aiskillnavigator_adaptive_collect_student(int $courseid, int $use
         }
     }
 
-    if (local_aiskillnavigator_adaptive_table_exists('local_aiskillnav_attempt')) {
+    if (local_aiskillnavigator_adaptive_table_exists('local_aiskillnavigator_attempt')) {
         $attempts = $DB->get_records(
-            'local_aiskillnav_attempt',
+            'local_aiskillnavigator_attempt',
             ['courseid' => $courseid, 'userid' => $userid],
             'timecreated ASC'
         );
@@ -287,6 +311,8 @@ function local_aiskillnavigator_adaptive_collect_student(int $courseid, int $use
 
 /**
  * Local aiskillnavigator adaptive prompt context helper.
+ *
+ * @param array $profile Profile.
  */
 function local_aiskillnavigator_adaptive_prompt_context(array $profile): string {
     $lines = [];

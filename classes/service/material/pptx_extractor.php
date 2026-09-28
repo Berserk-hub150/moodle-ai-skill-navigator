@@ -34,6 +34,8 @@ defined('MOODLE_INTERNAL') || die();
 class pptx_extractor {
     /**
      * Extract helper.
+     *
+     * @param string $path Path.
      */
     public function extract(string $path): array {
         if (!class_exists('\ZipArchive')) {
