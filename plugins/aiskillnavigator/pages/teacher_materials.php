@@ -92,8 +92,6 @@ function local_aisn_tm_visible_course_materials(int $courseid): array {
         return [];
     }
 
-    local_aiskillnavigator_sync_course_resources($courseid, 0, true);
-
     $records = $DB->get_records('local_aiskillnavigator_material', [
         'courseid' => $courseid,
         'materialtype' => 'course_resource',
@@ -381,6 +379,12 @@ function local_aisn_tm_delete_material(stdClass $material): void {
     }
 }
 
+if ($action === 'sync') {
+    \local_aiskillnavigator\service\request_access::require_write($context, 'local/aiskillnavigator:managematerials');
+    \local_aiskillnavigator\task\sync_course::queue($courseid, (int)$USER->id);
+    redirect($PAGE->url, get_string('materialsyncqueued', 'local_aiskillnavigator'));
+}
+
 if ($action !== '' && $materialid > 0) {
     \local_aiskillnavigator\service\request_access::require_write($context, 'local/aiskillnavigator:managematerials');
 
@@ -434,11 +438,15 @@ body.path-local-aiskillnavigator .nav-tabs {
 
 
 echo html_writer::start_div('container-fluid aisn-material-policy-page');
+echo $OUTPUT->single_button(new moodle_url('/local/aiskillnavigator/pages/teacher_materials.php', [
+    'courseid' => $courseid, 'action' => 'sync',
+]), get_string('synchronisematerials', 'local_aiskillnavigator'), 'post');
+echo html_writer::tag('p', get_string('materialsynchronisationhelp', 'local_aiskillnavigator'));
 
 if (empty($materials)) {
     echo html_writer::div(
         // phpcs:ignore moodle.Files.LineLength
-        'No visible course resources found. Add a file/page/resource in Moodle Edit mode or create material through AI Course Builder; this page will synchronize automatically.',
+        'No visible course resources found. Add a file/page/resource in Moodle Edit mode or create material through AI Course Builder; then use Synchronise course materials.',
         'alert alert-warning'
     );
 

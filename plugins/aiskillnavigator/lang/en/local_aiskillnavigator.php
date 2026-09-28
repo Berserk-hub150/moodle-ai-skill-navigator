@@ -27,16 +27,23 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['ai_empty_response'] = 'The AI provider returned no response. Check the provider settings and try again.';
 $string['ai_recommendation'] = 'AI recommendation prototype';
-$string['aitutor'] = 'AI Tutor';
-$string['apikey'] = 'AI API key';
-$string['apikey_desc'] = 'API key for the external AI provider.';
-$string['embeddingmodel'] = 'Embedding model';
-$string['embeddingmodel_desc'] = 'Model used for generating RAG embeddings. For Ollama: nomic-embed-text. For OpenAI: text-embedding-3-small.';
 $string['aiskillnavigator:manageassessments'] = 'Manage AI assessments';
 $string['aiskillnavigator:managematerials'] = 'Manage teacher AI materials';
 $string['aiskillnavigator:viewstudent'] = 'Use student AI tools';
 $string['aiskillnavigator:viewteacher'] = 'Use teacher AI tools';
+$string['aitutor'] = 'AI Tutor';
+$string['apikey'] = 'AI API key';
+$string['apikey_desc'] = 'API key for the external AI provider.';
+$string['assessmentquestionslocked'] = 'This assessment already has student attempts. Create a new assessment to change its questions; existing results have been preserved.';
+$string['embeddingmodel'] = 'Embedding model';
+$string['embeddingmodel_desc'] = 'Model used for generating RAG embeddings. For Ollama: nomic-embed-text. For OpenAI: text-embedding-3-small.';
+$string['expiredpracticequiz'] = 'This practice quiz is unavailable or has expired. Generate a new quiz in this course.';
+$string['invalidgeneratedquiz'] = 'The provider returned an invalid quiz. Generate a new quiz.';
+$string['invalidrequestmethod'] = 'Use the form to submit this action.';
 $string['main_gap'] = 'Main skill gap';
+$string['materialsyncbusy'] = 'This course is already being synchronised. Try again after the running task completes.';
+$string['materialsynchronisationhelp'] = 'Synchronisation runs in the background and requires Moodle cron. The existing materials remain available while it runs.';
+$string['materialsyncqueued'] = 'Synchronisation queued. Moodle cron will extract and index the course materials. Refresh this page after the task completes.';
 $string['mindmap_fallbacknotice'] = 'The AI did not return a usable mind map. A generic study template is shown. Check your topic and selected materials, then try again. If this continues, ask your site administrator to check the AI provider.';
 $string['mindmap_fallbacksubtitle'] = 'Generic study template';
 $string['mindmap_topic'] = 'Mind map topic';
@@ -177,15 +184,9 @@ $string['settings_searchprovider_tavily'] = 'Tavily Search API';
 $string['simulator_material_unreadable'] = 'The selected material has no readable text.';
 $string['simulator_select_material'] = 'Select at least one course material before generating a simulator exercise.';
 $string['skills'] = 'Skills';
-
 $string['studentdashboard'] = 'Student dashboard';
+$string['synchronisematerials'] = 'Synchronise course materials';
 $string['teacherdashboard'] = 'Teacher dashboard';
 $string['tutor_analytics_help'] = 'To populate the report, open Student tools > AI Tutor with a student account and ask a question. Then return here or refresh this page. Normal Moodle quiz attempts appear in the Teacher dashboard instead. Skill and difficulty labels are keyword-based indicators, not grades.';
 $string['tutor_analytics_intro'] = 'This report summarises questions answered by the AI Tutor in this course. It updates automatically after successful tutor responses.';
 $string['tutor_question'] = 'Ask a question';
-
-$string['invalidgeneratedquiz'] = 'The provider returned an invalid quiz. Generate a new quiz.';
-$string['expiredpracticequiz'] = 'This practice quiz is unavailable or has expired. Generate a new quiz in this course.';
-$string['invalidrequestmethod'] = 'Use the form to submit this action.';
-
-$string['assessmentquestionslocked'] = 'This assessment already has student attempts. Create a new assessment to change its questions; existing results have been preserved.';

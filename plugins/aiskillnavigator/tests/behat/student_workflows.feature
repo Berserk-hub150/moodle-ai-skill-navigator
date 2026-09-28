@@ -1,4 +1,4 @@
-@local_aiskillnavigator @javascript
+@local @local_aiskillnavigator @javascript
 Feature: Course tools support real student and teacher workflows
   In order to use the plugin in a course
   As an enrolled student and teacher

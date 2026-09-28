@@ -545,7 +545,31 @@ if (!function_exists('local_aisn_crs_cleanup_duplicate_course_resources')) {
     }
 }
 
-if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
+/**
+ * Serialise extraction and indexing for the same course across workers.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param int $userid Requesting user.
+ * @param bool $force Explicit synchronisation request.
+ * @return array Synchronisation counters.
+ */
+function local_aiskillnavigator_sync_course_resources(int $courseid, int $userid = 0, bool $force = false): array {
+    if (!defined('CLI_SCRIPT') && !$force) {
+        return ['created' => 0, 'updated' => 0, 'skipped' => 0, 'duplicatesdeleted' => 0];
+    }
+    $factory = \core\lock\lock_config::get_lock_factory('local_aiskillnavigator');
+    $lock = $factory->get_lock('sync_course_' . $courseid, 2);
+    if (!$lock) {
+        throw new moodle_exception('materialsyncbusy', 'local_aiskillnavigator');
+    }
+    try {
+        return local_aiskillnavigator_sync_course_resources_unlocked($courseid, $userid, $force);
+    } finally {
+        $lock->release();
+    }
+}
+
+if (!function_exists('local_aiskillnavigator_sync_course_resources_unlocked')) {
     /**
      * Local aiskillnavigator sync course resources helper.
      *
@@ -553,7 +577,7 @@ if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
      * @param int $userid Moodle user ID.
      * @param bool $force Force.
      */
-    function local_aiskillnavigator_sync_course_resources(int $courseid, int $userid = 0, bool $force = false): array {
+    function local_aiskillnavigator_sync_course_resources_unlocked(int $courseid, int $userid = 0, bool $force = false): array {
         global $DB, $USER;
 
         // Demo-safe mode: avoid OCR/RAG scan on normal page loads.
@@ -606,11 +630,6 @@ if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
 
                 if ((string)($existing->content ?? '') !== $content || $force) {
                     $existing->content = $content;
-                    $needsupdate = true;
-                }
-
-                if ((int)($existing->userid ?? 0) !== $userid) {
-                    $existing->userid = $userid;
                     $needsupdate = true;
                 }
 
@@ -1214,21 +1233,12 @@ if (!function_exists('local_aiskillnavigator_try_index_synced_materials')) {
         $service = new \local_aiskillnavigator\service\embedding_service();
 
         foreach ($materialids as $materialid) {
-            try {
-                $records = local_aisn_crs_get_records(['id' => (int)$materialid]);
-
-                if (empty($records)) {
-                    continue;
-                }
-
-                $service->index_material((int)$materialid, $courseid);
-            } catch (Throwable $e) {
-                debugging(
-                    'AI Skill Navigator course material auto-index skipped for material '
-                        . (int)$materialid . ': ' . $e->getMessage(),
-                    DEBUG_DEVELOPER
-                );
+            $records = local_aisn_crs_get_records(['id' => (int)$materialid]);
+            if (empty($records)) {
+                continue;
             }
+            // Let the task runner record failures and retry; retain the previous index on failure.
+            $service->index_material((int)$materialid, $courseid);
         }
     }
 }

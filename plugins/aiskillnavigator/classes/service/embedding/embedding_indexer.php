@@ -67,7 +67,6 @@ class embedding_indexer {
         }
 
         $repo = new chunk_repository();
-        $repo->delete_material($materialid);
         $chunks = (new paragraph_chunker())->split($content);
 
         if (empty($chunks)) {
@@ -95,6 +94,8 @@ class embedding_indexer {
         string $title,
         bool $generateembeddings
     ): array {
+        global $DB;
+        $records = [];
         $indexed = 0;
         $failed = 0;
         $client = new embedding_client($this->config);
@@ -107,8 +108,19 @@ class embedding_indexer {
                 $failed++;
             }
 
-            $repo->insert($recordbuilder->make($materialid, $courseid, $title, $index, $chunktext, $embedding ?? []));
+            $records[] = $recordbuilder->make($materialid, $courseid, $title, $index, $chunktext, $embedding ?? []);
             $indexed++;
+        }
+
+        $transaction = $DB->start_delegated_transaction();
+        try {
+            $repo->delete_material($materialid);
+            foreach ($records as $record) {
+                $repo->insert($record);
+            }
+            $transaction->allow_commit();
+        } catch (\Throwable $e) {
+            $transaction->rollback($e);
         }
 
         $message = "Indexed {$indexed} chunks from \"{$title}\".";

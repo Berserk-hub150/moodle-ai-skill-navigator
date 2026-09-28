@@ -33,6 +33,13 @@ class fake_moodle_database {
         $this->material = $material;
     }
 
+    public function start_delegated_transaction() {
+        return new class {
+            public function allow_commit(): void {}
+            public function rollback(Throwable $error): void { throw $error; }
+        };
+    }
+
     public function get_record(string $table, array $conditions) {
         if ($table === 'local_aiskillnavigator_material' && (int)$conditions['id'] === (int)$this->material->id) {
             return clone $this->material;

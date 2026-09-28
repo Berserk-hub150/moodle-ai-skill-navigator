@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 // phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
-global $CFG;
-require_once($CFG->libdir . '/behat/behat_base.php');
+require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 
 /**
  * Browser steps for the plugin's real course pages.
