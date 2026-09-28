@@ -40,6 +40,10 @@ class openai_compatible_ai_provider extends abstract_curl_ai_provider {
 
     /**
      * Generate helper.
+     *
+     * @param string $prompt User prompt sent to the AI provider.
+     * @param int $maxtokens Maximum output token count.
+     * @param string $systemprompt System instructions for the provider.
      */
     public function generate(string $prompt, int $maxtokens = 1200, string $systemprompt = ''): string {
         $baseurl = trim((string)$this->endpoint);
@@ -82,6 +86,9 @@ class openai_compatible_ai_provider extends abstract_curl_ai_provider {
 
     /**
      * Ends with helper.
+     *
+     * @param string $haystack Haystack.
+     * @param string $needle Needle.
      */
     private function ends_with(string $haystack, string $needle): bool {
         if ($needle === '') {

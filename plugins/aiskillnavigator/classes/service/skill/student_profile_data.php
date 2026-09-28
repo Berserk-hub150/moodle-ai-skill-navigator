@@ -34,6 +34,8 @@ defined('MOODLE_INTERNAL') || die();
 class student_profile_data {
     /**
      * Get helper.
+     *
+     * @param int $userid Moodle user ID.
      */
     public function get(int $userid): array {
         return [

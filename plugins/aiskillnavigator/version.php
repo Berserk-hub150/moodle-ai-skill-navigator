@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 $plugin = new stdClass();
 
 $plugin->component = 'local_aiskillnavigator';
-$plugin->version = 2026080600;
+$plugin->version = 2026092500;
 $plugin->requires = 2024042200;
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.0.4';
+$plugin->release = '1.0.5';

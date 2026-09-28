@@ -50,6 +50,8 @@ $PAGE->set_heading(get_string('page_assessment_heading', 'local_aiskillnavigator
 
 /**
  * Local aiskillnavigator assessment table exists helper.
+ *
+ * @param string $tablename Tablename.
  */
 function local_aiskillnavigator_assessment_table_exists(string $tablename): bool {
     global $DB;
@@ -58,6 +60,8 @@ function local_aiskillnavigator_assessment_table_exists(string $tablename): bool
 
 /**
  * Local aiskillnavigator assessment type label helper.
+ *
+ * @param string $type Type.
  */
 function local_aiskillnavigator_assessment_type_label(string $type): string {
     if ($type === 'pretest' || $type === 'initial' || $type === 'diagnostic') {
@@ -73,6 +77,8 @@ function local_aiskillnavigator_assessment_type_label(string $type): string {
 
 /**
  * Local aiskillnavigator assessment decode quiz helper.
+ *
+ * @param string $json Json.
  */
 function local_aiskillnavigator_assessment_decode_quiz(string $json): ?array {
     $quiz = json_decode($json, true);
@@ -86,16 +92,18 @@ function local_aiskillnavigator_assessment_decode_quiz(string $json): ?array {
 
 /**
  * Local aiskillnavigator assessment get published helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aiskillnavigator_assessment_get_published(int $courseid): array {
     global $DB;
 
-    if (!local_aiskillnavigator_assessment_table_exists('local_aiskillnav_assessment')) {
+    if (!local_aiskillnavigator_assessment_table_exists('local_aiskillnavigator_assessment')) {
         return [];
     }
 
     return array_values($DB->get_records_select(
-        'local_aiskillnav_assessment',
+        'local_aiskillnavigator_assessment',
         'courseid = :courseid AND visible = :visible',
         [
             'courseid' => $courseid,
@@ -107,16 +115,19 @@ function local_aiskillnavigator_assessment_get_published(int $courseid): array {
 
 /**
  * Local aiskillnavigator assessment get attempt helper.
+ *
+ * @param int $assessmentid Assessmentid.
+ * @param int $userid Moodle user ID.
  */
 function local_aiskillnavigator_assessment_get_attempt(int $assessmentid, int $userid): ?stdClass {
     global $DB;
 
-    if (!local_aiskillnavigator_assessment_table_exists('local_aiskillnav_ass_att')) {
+    if (!local_aiskillnavigator_assessment_table_exists('local_aiskillnavigator_ass_att')) {
         return null;
     }
 
     $records = $DB->get_records(
-        'local_aiskillnav_ass_att',
+        'local_aiskillnavigator_ass_att',
         [
             'assessmentid' => $assessmentid,
             'userid' => $userid,
@@ -136,6 +147,10 @@ function local_aiskillnavigator_assessment_get_attempt(int $assessmentid, int $u
 
 /**
  * Local aiskillnavigator assessment card helper.
+ *
+ * @param stdClass $assessment Assessment.
+ * @param stdClass|null $attempt Attempt.
+ * @param int $courseid Moodle course ID.
  */
 function local_aiskillnavigator_assessment_card(stdClass $assessment, ?stdClass $attempt, int $courseid): string {
     $type = local_aiskillnavigator_assessment_type_label((string)($assessment->assessmenttype ?? ''));
@@ -190,8 +205,8 @@ $percentage = 0;
 $selectedassessment = null;
 $quiz = null;
 
-if ($assessmentid > 0 && local_aiskillnavigator_assessment_table_exists('local_aiskillnav_assessment')) {
-    $selectedassessment = $DB->get_record('local_aiskillnav_assessment', [
+if ($assessmentid > 0 && local_aiskillnavigator_assessment_table_exists('local_aiskillnavigator_assessment')) {
+    $selectedassessment = $DB->get_record('local_aiskillnavigator_assessment', [
         'id' => $assessmentid,
         'courseid' => $courseid,
         'visible' => 1,
@@ -223,7 +238,7 @@ if ($action === 'submit' && $selectedassessment && $quiz) {
 
     $percentage = $maxscore > 0 ? (int)round(($score / $maxscore) * 100) : 0;
 
-    if (local_aiskillnavigator_assessment_table_exists('local_aiskillnav_ass_att')) {
+    if (local_aiskillnavigator_assessment_table_exists('local_aiskillnavigator_ass_att')) {
         $record = new stdClass();
         $record->assessmentid = (int)$selectedassessment->id;
         $record->courseid = $courseid;
@@ -234,7 +249,7 @@ if ($action === 'submit' && $selectedassessment && $quiz) {
         $record->answersjson = json_encode($answers, JSON_UNESCAPED_UNICODE);
         $record->timecreated = time();
 
-        $DB->insert_record('local_aiskillnav_ass_att', $record);
+        $DB->insert_record('local_aiskillnavigator_ass_att', $record);
     }
 
     $savedmessage = 'Assessment submitted successfully.';

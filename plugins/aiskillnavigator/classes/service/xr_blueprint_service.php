@@ -43,6 +43,8 @@ class xr_blueprint_service {
 
     /**
      * Construct helper.
+     *
+     * @param ai_provider_interface|null $provider Provider.
      */
     public function __construct(?ai_provider_interface $provider = null) {
         $this->provider = $provider ?? ai_provider_factory::create_from_config();
@@ -51,6 +53,9 @@ class xr_blueprint_service {
 
     /**
      * Generate blueprint helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $environment Environment.
      */
     public function generate_blueprint(string $topic, string $environment): string {
         $topic = trim($topic) !== '' ? trim($topic) : 'Digital Twin and IoT';
@@ -61,6 +66,10 @@ class xr_blueprint_service {
 
     /**
      * Generate blueprint from course materials helper.
+     *
+     * @param string $focus Focus.
+     * @param string $environment Environment.
+     * @param array $materials Course materials used for this operation.
      */
     public function generate_blueprint_from_course_materials(string $focus, string $environment, array $materials): string {
         $focus = trim($focus) !== '' ? trim($focus) : 'Materiali del docente';
@@ -72,6 +81,10 @@ class xr_blueprint_service {
 
     /**
      * Generate blueprint with rag context helper.
+     *
+     * @param string $focus Focus.
+     * @param string $environment Environment.
+     * @param string $context Moodle context.
      */
     public function generate_blueprint_with_rag_context(string $focus, string $environment, string $context): string {
         $focus = trim($focus) !== '' ? trim($focus) : 'Materiali del docente';

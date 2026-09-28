@@ -33,6 +33,10 @@ defined('MOODLE_INTERNAL') || die();
 class xr_intro {
     /**
      * Get helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $environment Environment.
+     * @param string $context Moodle context.
      */
     public function get(string $topic, string $environment, string $context): string {
         $prompt = "Prepara uno scenario formativo per un ambiente virtuale.\n\n"

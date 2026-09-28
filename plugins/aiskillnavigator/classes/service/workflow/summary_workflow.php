@@ -34,6 +34,9 @@ defined('MOODLE_INTERNAL') || die();
 class summary_workflow extends base_workflow {
     /**
      * Materials helper.
+     *
+     * @param string $focus Focus.
+     * @param array $materials Course materials used for this operation.
      */
     public function materials(string $focus, array $materials): string {
         return empty($materials) ? 'Non sono stati trovati materiali leggibili del docente da riassumere.'
@@ -42,6 +45,9 @@ class summary_workflow extends base_workflow {
 
     /**
      * Rag helper.
+     *
+     * @param string $focus Focus.
+     * @param string $context Moodle context.
      */
     public function rag(string $focus, string $context): string {
         return trim($context) === '' ? 'Non sono stati trovati materiali rilevanti nel RAG index da riassumere.'

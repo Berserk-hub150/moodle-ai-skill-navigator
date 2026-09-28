@@ -28,6 +28,10 @@ defined('MOODLE_INTERNAL') || die();
 if (!function_exists('local_aiskillnavigator_call_ai_inline')) {
     /**
      * Local aiskillnavigator call ai inline helper.
+     *
+     * @param string $prompt User prompt sent to the AI provider.
+     * @param string $systemprompt System instructions for the provider.
+     * @param int $maxtokens Maximum output token count.
      */
     function local_aiskillnavigator_call_ai_inline(string $prompt, string $systemprompt = '', int $maxtokens = 2600): string {
         try {
@@ -46,6 +50,8 @@ if (!function_exists('local_aiskillnavigator_call_ai_inline')) {
 if (!function_exists('local_aiskillnavigator_collect_gap_data')) {
     /**
      * Local aiskillnavigator collect gap data helper.
+     *
+     * @param int $courseid Moodle course ID.
      */
     function local_aiskillnavigator_collect_gap_data(int $courseid): array {
         global $DB;
@@ -53,14 +59,14 @@ if (!function_exists('local_aiskillnavigator_collect_gap_data')) {
         $dbman = $DB->get_manager();
 
         if (
-            !$dbman->table_exists(new xmldb_table('local_aiskillnav_assessment')) ||
-            !$dbman->table_exists(new xmldb_table('local_aiskillnav_ass_att'))
+            !$dbman->table_exists(new xmldb_table('local_aiskillnavigator_assessment')) ||
+            !$dbman->table_exists(new xmldb_table('local_aiskillnavigator_ass_att'))
         ) {
             return ['summary' => [], 'skills' => []];
         }
 
         $assessments = $DB->get_records(
-            'local_aiskillnav_assessment',
+            'local_aiskillnavigator_assessment',
             ['courseid' => $courseid],
             'timecreated ASC'
         );
@@ -70,7 +76,7 @@ if (!function_exists('local_aiskillnavigator_collect_gap_data')) {
 
         foreach ($assessments as $assessment) {
             $attempts = $DB->get_records(
-                'local_aiskillnav_ass_att',
+                'local_aiskillnavigator_ass_att',
                 ['assessmentid' => $assessment->id]
             );
 
@@ -137,6 +143,8 @@ if (!function_exists('local_aiskillnavigator_collect_gap_data')) {
 if (!function_exists('local_aiskillnavigator_render_gap_panel')) {
     /**
      * Local aiskillnavigator render gap panel helper.
+     *
+     * @param int $courseid Moodle course ID.
      */
     function local_aiskillnavigator_render_gap_panel(int $courseid): void {
         $action = optional_param('callisto_action', '', PARAM_ALPHANUMEXT);
@@ -271,6 +279,8 @@ if (!function_exists('local_aiskillnavigator_render_gap_panel')) {
 if (!function_exists('local_aiskillnavigator_render_course_builder_panel')) {
     /**
      * Local aiskillnavigator render course builder panel helper.
+     *
+     * @param int $courseid Moodle course ID.
      */
     function local_aiskillnavigator_render_course_builder_panel(int $courseid): void {
         $action = optional_param('callisto_action', '', PARAM_ALPHANUMEXT);

@@ -26,19 +26,24 @@ namespace local_aiskillnavigator\service\prompt;
 
 // phpcs:ignore moodle.Files.MoodleInternal.MoodleInternalNotNeeded
 defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__ . '/shared/response_language.php');
+
 // Builds tutor prompts for questions, materials and RAG text.
 /**
  * Tutor prompt builder implementation.
  */
 class tutor_prompt_builder extends base_prompt_helper {
+    /** @var int Maximum characters included from each material. */
     private const MATERIAL_LIMIT = 2200;
 
     /**
      * Plain helper.
+     *
+     * @param string $question Question.
      */
     public function plain(string $question): string {
-        return "Rispondi come tutor di un corso universitario.\n"
-            . "Lingua: italiano.\n"
+        return "Act as a university course tutor.\n"
+            . response_language::instruction()
             . "Non fare una premessa lunga. Rispondi alla domanda.\n"
             . "Se la domanda è poco chiara, dichiara l'interpretazione scelta.\n"
             . "Se un dettaglio non lo sai, non inventarlo.\n\n"
@@ -47,24 +52,32 @@ class tutor_prompt_builder extends base_prompt_helper {
 
     /**
      * With materials helper.
+     *
+     * @param string $question Question.
+     * @param array $materials Course materials used for this operation.
      */
     public function with_materials(string $question, array $materials): string {
-        return "Rispondi come tutor di un corso universitario.\n"
+        return "Act as a university course tutor.\n"
+            . response_language::instruction()
             . "Usa solo i materiali del docente riportati qui sotto.\n"
             . "Se nei materiali manca qualcosa, dillo chiaramente.\n"
-            . "Alla fine aggiungi 'Fonti usate' con i titoli citati.\n\n"
+            . "Cite the titles of the sources used under a heading in the response language.\n\n"
             . "Materiali:\n" . $this->material_context($materials, self::MATERIAL_LIMIT)
             . "Domanda:\n" . trim($question);
     }
 
     /**
      * With rag helper.
+     *
+     * @param string $question Question.
+     * @param string $ragcontext Ragcontext.
      */
     public function with_rag(string $question, string $ragcontext): string {
-        return "Rispondi come tutor di un corso universitario.\n"
+        return "Act as a university course tutor.\n"
+            . response_language::instruction()
             . "Usa solo i materiali recuperati qui sotto.\n"
             . "Se non bastano, scrivilo senza inventare il resto.\n"
-            . "Alla fine aggiungi 'Fonti usate' con i titoli presenti nel contesto.\n\n"
+            . "Cite the source titles present in the context under a heading in the response language.\n\n"
             . "Materiali recuperati:\n" . trim($ragcontext)
             . "\n\nDomanda:\n" . trim($question);
     }

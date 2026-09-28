@@ -31,7 +31,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U postgres"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -66,25 +66,36 @@ jobs:
           echo "NVM_DIR=$HOME/.nvm" >> "$GITHUB_ENV"
 
       - name: Install Moodle test environment
+        id: install
         env:
           DB: pgsql
           MOODLE_BRANCH: MOODLE_405_STABLE
         run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
 
       - name: PHP syntax
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: moodle-plugin-ci phplint
 
       - name: Moodle coding style
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: moodle-plugin-ci phpcs --max-warnings 0
 
       - name: PHPDoc checks
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: moodle-plugin-ci phpdoc
 
       - name: Upgrade savepoints
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: moodle-plugin-ci savepoints
 
       - name: Plugin validation
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: moodle-plugin-ci validate
 
       - name: JavaScript and CSS checks
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: moodle-plugin-ci grunt
+
+      - name: Moodle integration tests
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: moodle-plugin-ci phpunit

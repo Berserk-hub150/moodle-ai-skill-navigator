@@ -31,10 +31,14 @@ defined('MOODLE_INTERNAL') || die();
  * Summary prompt builder implementation.
  */
 class summary_prompt_builder extends base_prompt_helper {
+    /** @var int Maximum characters included from each material. */
     private const MATERIAL_LIMIT = 3000;
 
     /**
      * From materials helper.
+     *
+     * @param string $focus Focus.
+     * @param array $materials Course materials used for this operation.
      */
     public function from_materials(string $focus, array $materials): string {
         return $this->base($focus)
@@ -44,6 +48,9 @@ class summary_prompt_builder extends base_prompt_helper {
 
     /**
      * With rag helper.
+     *
+     * @param string $focus Focus.
+     * @param string $ragcontext Ragcontext.
      */
     public function with_rag(string $focus, string $ragcontext): string {
         return $this->base($focus) . "\nMateriali:\n" . trim($ragcontext);
@@ -51,6 +58,8 @@ class summary_prompt_builder extends base_prompt_helper {
 
     /**
      * Base helper.
+     *
+     * @param string $focus Focus.
      */
     private function base(string $focus): string {
         $prompt = "Riassumi questi materiali in italiano.\n"

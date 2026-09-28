@@ -28,6 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 if (!function_exists('local_aiskillnavigator_pdf_tool_path')) {
     /**
      * Local aiskillnavigator pdf tool path helper.
+     *
+     * @param string $tool Tool.
      */
     function local_aiskillnavigator_pdf_tool_path(string $tool): string {
         $tool = preg_replace('/[^a-zA-Z0-9_\-]/', '', $tool);
@@ -38,6 +40,8 @@ if (!function_exists('local_aiskillnavigator_pdf_tool_path')) {
 if (!function_exists('local_aiskillnavigator_pdf_clean_text')) {
     /**
      * Local aiskillnavigator pdf clean text helper.
+     *
+     * @param string $text Text to process.
      */
     function local_aiskillnavigator_pdf_clean_text(string $text): string {
         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -53,6 +57,8 @@ if (!function_exists('local_aiskillnavigator_pdf_clean_text')) {
 if (!function_exists('local_aiskillnavigator_pdf_timeout_prefix')) {
     /**
      * Local aiskillnavigator pdf timeout prefix helper.
+     *
+     * @param int $seconds Seconds.
      */
     function local_aiskillnavigator_pdf_timeout_prefix(int $seconds): string {
         $timeout = local_aiskillnavigator_pdf_tool_path('timeout');
@@ -63,6 +69,8 @@ if (!function_exists('local_aiskillnavigator_pdf_timeout_prefix')) {
 if (!function_exists('local_aiskillnavigator_pdf_filesize')) {
     /**
      * Local aiskillnavigator pdf filesize helper.
+     *
+     * @param string $pdfpath Pdfpath.
      */
     function local_aiskillnavigator_pdf_filesize(string $pdfpath): int {
         return is_readable($pdfpath) ? (int)@filesize($pdfpath) : 0;
@@ -85,6 +93,8 @@ if (!function_exists('local_aiskillnavigator_pdf_large_threshold')) {
 if (!function_exists('local_aiskillnavigator_pdf_is_large')) {
     /**
      * Local aiskillnavigator pdf is large helper.
+     *
+     * @param string $pdfpath Pdfpath.
      */
     function local_aiskillnavigator_pdf_is_large(string $pdfpath): bool {
         $size = local_aiskillnavigator_pdf_filesize($pdfpath);
@@ -95,6 +105,8 @@ if (!function_exists('local_aiskillnavigator_pdf_is_large')) {
 if (!function_exists('local_aiskillnavigator_pdf_text_layer')) {
     /**
      * Local aiskillnavigator pdf text layer helper.
+     *
+     * @param string $pdfpath Pdfpath.
      */
     function local_aiskillnavigator_pdf_text_layer(string $pdfpath): string {
         $pdftotext = local_aiskillnavigator_pdf_tool_path('pdftotext');
@@ -117,6 +129,8 @@ if (!function_exists('local_aiskillnavigator_pdf_text_layer')) {
 if (!function_exists('local_aiskillnavigator_pdf_page_count')) {
     /**
      * Local aiskillnavigator pdf page count helper.
+     *
+     * @param string $pdfpath Pdfpath.
      */
     function local_aiskillnavigator_pdf_page_count(string $pdfpath): int {
         $pdfinfo = local_aiskillnavigator_pdf_tool_path('pdfinfo');
@@ -140,6 +154,8 @@ if (!function_exists('local_aiskillnavigator_pdf_page_count')) {
 if (!function_exists('local_aiskillnavigator_pdf_ocr_allowed')) {
     /**
      * Local aiskillnavigator pdf ocr allowed helper.
+     *
+     * @param string $pdfpath Pdfpath.
      */
     function local_aiskillnavigator_pdf_ocr_allowed(string $pdfpath): bool {
         if (function_exists('local_aisn_ocr_enabled') && !local_aisn_ocr_enabled()) {
@@ -163,6 +179,8 @@ if (!function_exists('local_aiskillnavigator_pdf_ocr_allowed')) {
 if (!function_exists('local_aiskillnavigator_pdf_ocr')) {
     /**
      * Local aiskillnavigator pdf ocr helper.
+     *
+     * @param string $pdfpath Pdfpath.
      */
     function local_aiskillnavigator_pdf_ocr(string $pdfpath): string {
         if (!local_aiskillnavigator_pdf_ocr_allowed($pdfpath)) {
@@ -232,6 +250,9 @@ if (!function_exists('local_aiskillnavigator_pdf_ocr')) {
 if (!function_exists('local_aiskillnavigator_extract_pdf_text_from_path')) {
     /**
      * Local aiskillnavigator extract pdf text from path helper.
+     *
+     * @param string $pdfpath Pdfpath.
+     * @param string $filename Filename.
      */
     function local_aiskillnavigator_extract_pdf_text_from_path(string $pdfpath, string $filename = ''): string {
         if ($pdfpath === '' || !is_readable($pdfpath)) {

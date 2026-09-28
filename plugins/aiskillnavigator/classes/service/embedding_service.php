@@ -48,6 +48,11 @@ class embedding_service {
 
     /**
      * Index material helper.
+     *
+     * @param int $materialid Stored material ID.
+     * @param int|null $courseid Moodle course ID.
+     * @param string|null $title Title.
+     * @param string|null $content Content to process.
      */
     public function index_material(
         int $materialid,
@@ -57,7 +62,7 @@ class embedding_service {
     ): array {
         global $DB;
 
-        $material = $DB->get_record('local_aiskillnav_material', ['id' => $materialid]);
+        $material = $DB->get_record('local_aiskillnavigator_material', ['id' => $materialid]);
 
         if (!$material) {
             return ['success' => false, 'chunks' => 0, 'message' => 'Material not found.'];
@@ -84,6 +89,8 @@ class embedding_service {
 
     /**
      * Index material by id helper.
+     *
+     * @param int $materialid Stored material ID.
      */
     public function index_material_by_id(int $materialid): array {
         return $this->index_material($materialid);
@@ -91,6 +98,8 @@ class embedding_service {
 
     /**
      * Delete material chunks helper.
+     *
+     * @param int $materialid Stored material ID.
      */
     public function delete_material_chunks(int $materialid): void {
         (new embedding\chunk_repository())->delete_material($materialid);
@@ -98,6 +107,9 @@ class embedding_service {
 
     /**
      * Count indexed chunks helper.
+     *
+     * @param int $courseid Moodle course ID.
+     * @param int $materialid Stored material ID.
      */
     public function count_indexed_chunks(int $courseid, int $materialid = 0): int {
         return (new embedding\chunk_repository())->count($courseid, $materialid);
@@ -105,6 +117,11 @@ class embedding_service {
 
     /**
      * Search helper.
+     *
+     * @param string $query Query.
+     * @param int $courseid Moodle course ID.
+     * @param int $topk Topk.
+     * @param int $materialid Stored material ID.
      */
     public function search(string $query, int $courseid, int $topk = 0, int $materialid = 0): array {
         $generateembedding = !$this->config->uses_external_service() || $this->external_ai_approved();
@@ -120,6 +137,9 @@ class embedding_service {
 
     /**
      * Build context helper.
+     *
+     * @param array $results Results.
+     * @param int $maxchars Maximum character count.
      */
     public function build_context(array $results, int $maxchars = 6000): string {
         return (new embedding\rag_context_builder())->build($results, $maxchars);
@@ -127,6 +147,8 @@ class embedding_service {
 
     /**
      * Can generate embeddings for material helper.
+     *
+     * @param \stdClass $material Material.
      */
     private function can_generate_embeddings_for_material(\stdClass $material): bool {
         if ($this->config->is_keyword_only()) {

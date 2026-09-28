@@ -38,6 +38,8 @@ foreach (glob(__DIR__ . '/prototype_service/*.php') as $file) {
 class prototype_ai_service {
     /**
      * Answer question helper.
+     *
+     * @param string $question Question.
      */
     public function answer_question(string $question): array {
         return (new prototype_service\prototype_answer_demo())->get($question);
@@ -45,6 +47,9 @@ class prototype_ai_service {
 
     /**
      * Generate quiz helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $difficulty Requested difficulty level.
      */
     public function generate_quiz(string $topic, string $difficulty): array {
         return (new prototype_service\prototype_quiz_demo())->get($topic, $difficulty);
@@ -52,6 +57,9 @@ class prototype_ai_service {
 
     /**
      * Generate xr scenario helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $environment Environment.
      */
     public function generate_xr_scenario(string $topic, string $environment): array {
         return (new prototype_service\prototype_xr_demo())->get($topic, $environment);

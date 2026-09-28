@@ -48,6 +48,13 @@ class custom_http_ai_provider implements ai_provider_interface {
 
     /**
      * Construct helper.
+     *
+     * @param string $endpoint Endpoint.
+     * @param string $model Model.
+     * @param string $apikey Apikey.
+     * @param string $requesttemplate Requesttemplate.
+     * @param string $headersjson Headersjson.
+     * @param string $responsepath Responsepath.
      */
     public function __construct(
         string $endpoint,
@@ -74,6 +81,10 @@ class custom_http_ai_provider implements ai_provider_interface {
 
     /**
      * Generate helper.
+     *
+     * @param string $prompt User prompt sent to the AI provider.
+     * @param int $maxtokens Maximum output token count.
+     * @param string $systemprompt System instructions for the provider.
      */
     public function generate(string $prompt, int $maxtokens = 1200, string $systemprompt = ''): string {
         if ($this->endpoint === '') {
@@ -98,7 +109,7 @@ class custom_http_ai_provider implements ai_provider_interface {
         }
 
         $client = new provider\http_json_client();
-        $response = $client->post($this->endpoint, $payload, $this->build_headers(), 75);
+        $response = $client->post($this->endpoint, $payload, $this->build_headers());
 
         if ($this->responsepath === '_raw') {
             $raw = trim((string)($response['raw'] ?? ''));
@@ -143,6 +154,9 @@ class custom_http_ai_provider implements ai_provider_interface {
 
     /**
      * Render template helper.
+     *
+     * @param string $template Template.
+     * @param array $values Values.
      */
     private function render_template(string $template, array $values): string {
         foreach ($values as $key => $value) {
@@ -158,6 +172,8 @@ class custom_http_ai_provider implements ai_provider_interface {
 
     /**
      * Escape json string helper.
+     *
+     * @param string $value Value to process.
      */
     private function escape_json_string(string $value): string {
         $encoded = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -200,6 +216,9 @@ class custom_http_ai_provider implements ai_provider_interface {
 
     /**
      * Value by path helper.
+     *
+     * @param array $data Data.
+     * @param string $path Path.
      */
     private function value_by_path(array $data, string $path) {
         $current = $data;
@@ -229,6 +248,8 @@ class custom_http_ai_provider implements ai_provider_interface {
 
     /**
      * Error helper.
+     *
+     * @param array $response Response.
      */
     private function error(array $response): string {
         $status = (int)($response['status'] ?? 0);

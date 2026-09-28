@@ -60,7 +60,7 @@ $listurl = new moodle_url('/local/aiskillnavigator/pages/teacher_simulations.php
 if ($action === 'delete' && $simulationid > 0) {
     require_sesskey();
 
-    $DB->delete_records('local_aiskillnav_sim', [
+    $DB->delete_records('local_aiskillnavigator_sim', [
         'id' => $simulationid,
         'courseid' => $courseid,
     ]);
@@ -70,6 +70,8 @@ if ($action === 'delete' && $simulationid > 0) {
 
 /**
  * Local aisn saved material titles helper.
+ *
+ * @param stdClass $record Record.
  */
 function local_aisn_saved_material_titles(stdClass $record): array {
     $titles = json_decode((string)($record->materialtitles ?? ''), true);
@@ -78,6 +80,8 @@ function local_aisn_saved_material_titles(stdClass $record): array {
 
 /**
  * Local aisn saved render materials helper.
+ *
+ * @param array $titles Titles.
  */
 function local_aisn_saved_render_materials(array $titles): string {
     if (empty($titles)) {
@@ -97,6 +101,8 @@ function local_aisn_saved_render_materials(array $titles): string {
 
 /**
  * Local aisn saved record text helper.
+ *
+ * @param stdClass $record Record.
  */
 function local_aisn_saved_record_text(stdClass $record): string {
     $text = trim((string)($record->resulttext ?? ''));
@@ -110,6 +116,8 @@ function local_aisn_saved_record_text(stdClass $record): string {
 
 /**
  * Local aisn saved record title helper.
+ *
+ * @param stdClass $record Record.
  */
 function local_aisn_saved_record_title(stdClass $record): string {
     $topic = trim((string)($record->topic ?? ''));
@@ -125,6 +133,8 @@ function local_aisn_saved_record_title(stdClass $record): string {
 
 /**
  * Local aisn saved record level helper.
+ *
+ * @param stdClass $record Record.
  */
 function local_aisn_saved_record_level(stdClass $record): string {
     $level = trim((string)($record->level ?? ''));
@@ -421,7 +431,7 @@ if (function_exists('local_aiskillnavigator_print_inline_styles')) {
 echo html_writer::tag('style', local_aisn_saved_css());
 
 if ($action === 'view' && $simulationid > 0) {
-    $record = $DB->get_record('local_aiskillnav_sim', [
+    $record = $DB->get_record('local_aiskillnavigator_sim', [
         'id' => $simulationid,
         'courseid' => $courseid,
     ], '*', MUST_EXIST);
@@ -501,7 +511,7 @@ if ($action === 'view' && $simulationid > 0) {
     exit;
 }
 
-$records = $DB->get_records('local_aiskillnav_sim', ['courseid' => $courseid], 'timecreated DESC, id DESC');
+$records = $DB->get_records('local_aiskillnavigator_sim', ['courseid' => $courseid], 'timecreated DESC, id DESC');
 
 // AISN_SIM_DEDUPE_LIST_V1.
 // Difesa UI: anche se il DB contiene duplicati vecchi, la lista mostra una sola simulazione.

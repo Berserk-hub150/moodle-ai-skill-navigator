@@ -34,6 +34,9 @@ defined('MOODLE_INTERNAL') || die();
 class rag_context_builder {
     /**
      * Build helper.
+     *
+     * @param array $results Results.
+     * @param int $maxchars Maximum character count.
      */
     public function build(array $results, int $maxchars = 6000): string {
         $context = '';
@@ -79,6 +82,10 @@ class rag_context_builder {
 
     /**
      * Identity key helper.
+     *
+     * @param \stdClass $result Result.
+     * @param string $title Title.
+     * @param string $text Text to process.
      */
     private function identity_key(\stdClass $result, string $title, string $text): string {
         if (!empty($result->materialid) && isset($result->chunkindex)) {

@@ -33,6 +33,8 @@ defined('MOODLE_INTERNAL') || die();
 class xr_sections {
     /**
      * Get helper.
+     *
+     * @param bool $usesources Usesources.
      */
     public function get(bool $usesources): string {
         $sections = "# Titolo\n"

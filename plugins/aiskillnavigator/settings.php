@@ -85,6 +85,14 @@ $settings->add(new admin_setting_configpasswordunmask(
     ''
 ));
 
+$settings->add(new admin_setting_configtext(
+    'local_aiskillnavigator/requesttimeout',
+    get_string('settings_requesttimeout', 'local_aiskillnavigator'),
+    get_string('settings_requesttimeout_desc', 'local_aiskillnavigator'),
+    60,
+    PARAM_INT
+));
+
 $settings->add(new admin_setting_heading(
     'local_aiskillnavigator/customheading',
     get_string('settings_customheading', 'local_aiskillnavigator'),

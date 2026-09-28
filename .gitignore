@@ -13,3 +13,5 @@ coverage/
 _aisn_*backup*/
 *.zip
 *.tar.gz
+dist/
+__pycache__/

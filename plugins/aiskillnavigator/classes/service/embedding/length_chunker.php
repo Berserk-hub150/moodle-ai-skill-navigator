@@ -32,11 +32,15 @@ defined('MOODLE_INTERNAL') || die();
  * Length chunker implementation.
  */
 class length_chunker {
+    /** @var int Target chunk length in characters. */
     public const SIZE = 2000;
+    /** @var int Characters retained between adjacent chunks. */
     public const OVERLAP = 300;
 
     /**
      * Split helper.
+     *
+     * @param string $text Text to process.
      */
     public function split(string $text): array {
         $chunks = [];

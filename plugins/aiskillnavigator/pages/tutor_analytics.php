@@ -48,11 +48,11 @@ local_aiskillnavigator_print_inline_styles();
 
 echo html_writer::start_div('container-fluid aisn-tutor-analytics-page');
 
-echo html_writer::tag('h2', 'Tutor analyst');
+echo html_writer::tag('h2', get_string('page_tutor_analytics_title', 'local_aiskillnavigator'));
 echo html_writer::tag(
     'p',
     // phpcs:ignore moodle.Files.LineLength
-    'Le domande fatte dagli studenti al tutor vengono raccolte come segnali didattici: ability richieste, dubbi ricorrenti e argomenti da rinforzare.',
+    get_string('tutor_analytics_intro', 'local_aiskillnavigator'),
     ['class' => 'lead']
 );
 
@@ -69,6 +69,8 @@ echo html_writer::div(
     ),
     'mb-4'
 );
+
+echo html_writer::div(get_string('tutor_analytics_help', 'local_aiskillnavigator'), 'alert alert-info');
 
 echo local_aiskillnavigator_tutor_signal_teacher_panel((int)$courseid);
 

@@ -13,6 +13,9 @@ $tablenames = [];
 
 foreach ($xml->TABLES->TABLE as $table) {
     $tablename = (string)$table['NAME'];
+    if (!str_starts_with($tablename, 'local_aiskillnavigator_')) {
+        $errors[] = "Table {$tablename} must use the full component prefix.";
+    }
 
     if (isset($tablenames[$tablename])) {
         $errors[] = "Duplicate table {$tablename}.";
@@ -23,6 +26,10 @@ foreach ($xml->TABLES->TABLE as $table) {
 
     foreach ($table->FIELDS->FIELD as $field) {
         $fields[(string)$field['NAME']] = true;
+        if ((string)$field['TYPE'] === 'char' && (string)$field['NOTNULL'] === 'true'
+                && isset($field['DEFAULT']) && (string)$field['DEFAULT'] === '') {
+            $errors[] = "{$tablename}.{$field['NAME']} has an invalid empty CHAR NOT NULL default.";
+        }
     }
 
     foreach ($table->KEYS->KEY as $key) {

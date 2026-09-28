@@ -37,6 +37,8 @@ class embedding_indexer {
 
     /**
      * Construct helper.
+     *
+     * @param embedding_config $config Config.
      */
     public function __construct(embedding_config $config) {
         $this->config = $config;
@@ -44,6 +46,12 @@ class embedding_indexer {
 
     /**
      * Index helper.
+     *
+     * @param int $materialid Stored material ID.
+     * @param int $courseid Moodle course ID.
+     * @param string $title Title.
+     * @param string $content Content to process.
+     * @param bool $generateembeddings Generateembeddings.
      */
     public function index(
         int $materialid,
@@ -71,6 +79,13 @@ class embedding_indexer {
 
     /**
      * Store helper.
+     *
+     * @param chunk_repository $repo Repo.
+     * @param array $chunks Material chunks.
+     * @param int $materialid Stored material ID.
+     * @param int $courseid Moodle course ID.
+     * @param string $title Title.
+     * @param bool $generateembeddings Generateembeddings.
      */
     private function store(
         chunk_repository $repo,

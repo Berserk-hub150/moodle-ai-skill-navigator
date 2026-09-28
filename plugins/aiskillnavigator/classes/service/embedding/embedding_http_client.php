@@ -34,6 +34,11 @@ defined('MOODLE_INTERNAL') || die();
 class embedding_http_client {
     /**
      * Post helper.
+     *
+     * @param string $url Url.
+     * @param array $payload Payload.
+     * @param array $headers Headers.
+     * @param int $timeout Timeout.
      */
     public function post(string $url, array $payload, array $headers = [], int $timeout = 60): ?array {
         $validation = $this->validate_url($url);
@@ -93,6 +98,8 @@ class embedding_http_client {
 
     /**
      * Normalise headers helper.
+     *
+     * @param array $headers Headers.
      */
     private function normalise_headers(array $headers): array {
         $out = [];
@@ -121,6 +128,8 @@ class embedding_http_client {
 
     /**
      * Validate url helper.
+     *
+     * @param string $url Url.
      */
     private function validate_url(string $url): string {
         $url = trim($url);
@@ -163,6 +172,8 @@ class embedding_http_client {
 
     /**
      * Is public ip helper.
+     *
+     * @param string $ip Ip.
      */
     private function is_public_ip(string $ip): bool {
         return filter_var(

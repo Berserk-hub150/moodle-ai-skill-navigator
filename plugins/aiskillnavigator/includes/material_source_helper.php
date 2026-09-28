@@ -55,6 +55,8 @@ if (!function_exists('local_aiskillnavigator_current_ai_is_local')) {
 if (!function_exists('local_aiskillnavigator_material_external_allowed')) {
     /**
      * Local aiskillnavigator material external allowed helper.
+     *
+     * @param stdClass $material Material.
      */
     function local_aiskillnavigator_material_external_allowed(stdClass $material): bool {
         if (isset($material->externalaiallowed)) {
@@ -72,6 +74,8 @@ if (!function_exists('local_aiskillnavigator_material_external_allowed')) {
 if (!function_exists('local_aiskillnavigator_material_can_be_sent_to_current_ai')) {
     /**
      * Local aiskillnavigator material can be sent to current ai helper.
+     *
+     * @param stdClass $material Material.
      */
     function local_aiskillnavigator_material_can_be_sent_to_current_ai(stdClass $material): bool {
         return local_aiskillnavigator_current_ai_is_local()
@@ -82,6 +86,8 @@ if (!function_exists('local_aiskillnavigator_material_can_be_sent_to_current_ai'
 if (!function_exists('local_aiskillnavigator_ai_policy_label')) {
     /**
      * Local aiskillnavigator ai policy label helper.
+     *
+     * @param stdClass $material Material.
      */
     function local_aiskillnavigator_ai_policy_label(stdClass $material): string {
         return local_aiskillnavigator_material_external_allowed($material)
@@ -93,6 +99,8 @@ if (!function_exists('local_aiskillnavigator_ai_policy_label')) {
 if (!function_exists('local_aiskillnavigator_ai_policy_badge_class')) {
     /**
      * Local aiskillnavigator ai policy badge class helper.
+     *
+     * @param stdClass $material Material.
      */
     function local_aiskillnavigator_ai_policy_badge_class(stdClass $material): string {
         return local_aiskillnavigator_material_external_allowed($material)
@@ -103,6 +111,8 @@ if (!function_exists('local_aiskillnavigator_ai_policy_badge_class')) {
 
 /**
  * Local aiskillnavigator material source mode from request helper.
+ *
+ * @param int $defaultmaterialid Defaultmaterialid.
  */
 function local_aiskillnavigator_material_source_mode_from_request(int $defaultmaterialid = -1): string {
     // The plugin is now material-grounded by default.
@@ -114,6 +124,8 @@ function local_aiskillnavigator_material_source_mode_from_request(int $defaultma
 
 /**
  * Local aiskillnavigator material source is prompt generated helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aiskillnavigator_material_source_is_prompt_generated(stdClass $material): bool {
     $title = strtolower((string)($material->title ?? ''));
@@ -124,6 +136,8 @@ function local_aiskillnavigator_material_source_is_prompt_generated(stdClass $ma
 
 /**
  * Local aiskillnavigator material source clean course title helper.
+ *
+ * @param string $title Title.
  */
 function local_aiskillnavigator_material_source_clean_course_title(string $title): string {
     $title = trim($title);
@@ -139,6 +153,8 @@ function local_aiskillnavigator_material_source_clean_course_title(string $title
 
 /**
  * Local aiskillnavigator material source filename key helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aiskillnavigator_material_source_filename_key(stdClass $material): string {
     $title = local_aiskillnavigator_material_source_clean_course_title((string)($material->title ?? ''));
@@ -157,6 +173,8 @@ function local_aiskillnavigator_material_source_filename_key(stdClass $material)
 
 /**
  * Local aiskillnavigator material source body key helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aiskillnavigator_material_source_body_key(stdClass $material): string {
     $content = (string)($material->content ?? '');
@@ -174,6 +192,8 @@ function local_aiskillnavigator_material_source_body_key(stdClass $material): st
 
 /**
  * Local aiskillnavigator material source duplicate key helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aiskillnavigator_material_source_duplicate_key(stdClass $material): string {
     $filename = local_aiskillnavigator_material_source_filename_key($material);
@@ -193,6 +213,8 @@ function local_aiskillnavigator_material_source_duplicate_key(stdClass $material
 if (!function_exists('local_aiskillnavigator_material_source_clean_title')) {
     /**
      * Local aiskillnavigator material source clean title helper.
+     *
+     * @param stdClass $material Material.
      */
     function local_aiskillnavigator_material_source_clean_title(stdClass $material): string {
         if (function_exists('local_aiskillnavigator_material_source_clean_course_title')) {
@@ -214,6 +236,8 @@ if (!function_exists('local_aiskillnavigator_material_source_clean_title')) {
 if (!function_exists('local_aiskillnavigator_material_source_normalize_title_for_dedupe')) {
     /**
      * Local aiskillnavigator material source normalize title for dedupe helper.
+     *
+     * @param string $title Title.
      */
     function local_aiskillnavigator_material_source_normalize_title_for_dedupe(string $title): string {
         if (function_exists('local_aiskillnavigator_material_source_clean_course_title')) {
@@ -233,6 +257,8 @@ if (!function_exists('local_aiskillnavigator_material_source_normalize_title_for
 
 /**
  * Local aisn matlist is prompt helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aisn_matlist_is_prompt(stdClass $material): bool {
     $title = strtolower((string)($material->title ?? ''));
@@ -243,6 +269,8 @@ function local_aisn_matlist_is_prompt(stdClass $material): bool {
 
 /**
  * Local aisn matlist clean title helper.
+ *
+ * @param string $title Title.
  */
 function local_aisn_matlist_clean_title(string $title): string {
     $title = trim($title);
@@ -258,6 +286,8 @@ function local_aisn_matlist_clean_title(string $title): string {
 
 /**
  * Local aisn matlist filename helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aisn_matlist_filename(stdClass $material): string {
     $title = local_aisn_matlist_clean_title((string)($material->title ?? ''));
@@ -276,6 +306,8 @@ function local_aisn_matlist_filename(stdClass $material): string {
 
 /**
  * Local aisn matlist body hash helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aisn_matlist_body_hash(stdClass $material): string {
     $content = (string)($material->content ?? '');
@@ -296,6 +328,8 @@ function local_aisn_matlist_body_hash(stdClass $material): string {
 
 /**
  * Local aisn matlist cmid helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aisn_matlist_cmid(stdClass $material): int {
     if (isset($material->sourcecmid) && (int)$material->sourcecmid > 0) {
@@ -315,6 +349,8 @@ function local_aisn_matlist_cmid(stdClass $material): int {
 
 /**
  * Local aisn matlist key helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aisn_matlist_key(stdClass $material): string {
     $cmid = local_aisn_matlist_cmid($material);
@@ -342,6 +378,9 @@ function local_aisn_matlist_key(stdClass $material): string {
 
 /**
  * Local aisn matlist better helper.
+ *
+ * @param stdClass $current Current.
+ * @param stdClass $candidate Candidate.
  */
 function local_aisn_matlist_better(stdClass $current, stdClass $candidate): stdClass {
     $currentprompt = local_aisn_matlist_is_prompt($current);
@@ -363,6 +402,8 @@ function local_aisn_matlist_better(stdClass $current, stdClass $candidate): stdC
 
 /**
  * Local aisn matlist dedupe helper.
+ *
+ * @param mixed $materials Course materials used for this operation.
  */
 function local_aisn_matlist_dedupe($materials): array {
     if (!is_array($materials)) {
@@ -402,11 +443,14 @@ function local_aisn_matlist_dedupe($materials): array {
 
 /**
  * Local aiskillnavigator material source get readable materials helper.
+ *
+ * @param int $courseid Moodle course ID.
+ * @param bool $includeall Includeall.
  */
 function local_aiskillnavigator_material_source_get_readable_materials(int $courseid, bool $includeall = true): array {
     global $DB, $CFG;
 
-    if (!$DB->get_manager()->table_exists(new xmldb_table('local_aiskillnav_material'))) {
+    if (!$DB->get_manager()->table_exists(new xmldb_table('local_aiskillnavigator_material'))) {
         return [];
     }
 
@@ -421,7 +465,7 @@ function local_aiskillnavigator_material_source_get_readable_materials(int $cour
     }
 
     $records = $DB->get_records(
-        'local_aiskillnav_material',
+        'local_aiskillnavigator_material',
         [
             'courseid' => $courseid,
             'materialtype' => 'course_resource',
@@ -478,6 +522,8 @@ function local_aiskillnavigator_material_source_get_readable_materials(int $cour
 
 /**
  * Local aiskillnavigator material source selected ids from request helper.
+ *
+ * @param array $readablematerials Readablematerials.
  */
 function local_aiskillnavigator_material_source_selected_ids_from_request(array $readablematerials): array {
     $ids = optional_param_array('materialids', [], PARAM_INT);
@@ -502,7 +548,18 @@ function local_aiskillnavigator_material_source_selected_ids_from_request(array 
  * Local aiskillnavigator material source selected materials helper.
  */
 // phpcs:ignore moodle.Files.LineLength
-function local_aiskillnavigator_material_source_selected_materials(array $readablematerials, string $sourcemode, array $selectedmaterialids): array {
+/**
+ * Select readable materials according to the requested source mode.
+ *
+ * @param array $readablematerials Readablematerials.
+ * @param string $sourcemode Sourcemode.
+ * @param array $selectedmaterialids Selectedmaterialids.
+ */
+function local_aiskillnavigator_material_source_selected_materials(
+    array $readablematerials,
+    string $sourcemode,
+    array $selectedmaterialids
+): array {
     if ($sourcemode === 'manual') {
         return [];
     }
@@ -532,6 +589,9 @@ function local_aiskillnavigator_material_source_selected_materials(array $readab
 
 /**
  * Local aiskillnavigator material source legacy materialid helper.
+ *
+ * @param string $sourcemode Sourcemode.
+ * @param array $selectedmaterialids Selectedmaterialids.
  */
 function local_aiskillnavigator_material_source_legacy_materialid(string $sourcemode, array $selectedmaterialids): int {
     if ($sourcemode === 'all') {
@@ -549,6 +609,8 @@ function local_aiskillnavigator_material_source_legacy_materialid(string $source
 
 /**
  * Local aiskillnavigator material source short title helper.
+ *
+ * @param stdClass $material Material.
  */
 function local_aiskillnavigator_material_source_short_title(stdClass $material): string {
     // phpcs:ignore moodle.Files.LineLength
@@ -557,6 +619,9 @@ function local_aiskillnavigator_material_source_short_title(stdClass $material):
 
 /**
  * Local aiskillnavigator material source excerpt helper.
+ *
+ * @param string $text Text to process.
+ * @param int $limit Limit.
  */
 function local_aiskillnavigator_material_source_excerpt(string $text, int $limit = 170): string {
     if (function_exists('local_aiskillnavigator_fix_mojibake')) {
@@ -575,6 +640,9 @@ function local_aiskillnavigator_material_source_excerpt(string $text, int $limit
 
 /**
  * Local aisn prod filter rag results by ai policy helper.
+ *
+ * @param array $results Results.
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_prod_filter_rag_results_by_ai_policy(array $results, int $courseid): array {
     if (empty($results)) {
@@ -608,7 +676,24 @@ function local_aisn_prod_filter_rag_results_by_ai_policy(array $results, int $co
  * Local aiskillnavigator material source search helper.
  */
 // phpcs:ignore moodle.Files.LineLength
-function local_aiskillnavigator_material_source_search($embeddingservice, string $query, int $courseid, int $limit, string $sourcemode, array $selectedmaterialids): array {
+/**
+ * Search eligible course materials for the requested topic.
+ *
+ * @param mixed $embeddingservice Embeddingservice.
+ * @param string $query Query.
+ * @param int $courseid Moodle course ID.
+ * @param int $limit Limit.
+ * @param string $sourcemode Sourcemode.
+ * @param array $selectedmaterialids Selectedmaterialids.
+ */
+function local_aiskillnavigator_material_source_search(
+    $embeddingservice,
+    string $query,
+    int $courseid,
+    int $limit,
+    string $sourcemode,
+    array $selectedmaterialids
+): array {
     if ($sourcemode === 'manual') {
         return [];
     }
@@ -676,6 +761,13 @@ function local_aiskillnavigator_material_source_search($embeddingservice, string
 
 /**
  * Local aiskillnavigator material source search rag helper.
+ *
+ * @param mixed $embeddingservice Embeddingservice.
+ * @param string $query Query.
+ * @param int $courseid Moodle course ID.
+ * @param string $sourcemode Sourcemode.
+ * @param array $materialids Stored material IDs.
+ * @param int $topk Topk.
  */
 function local_aiskillnavigator_material_source_search_rag(
     $embeddingservice,
@@ -697,6 +789,9 @@ function local_aiskillnavigator_material_source_search_rag(
 
 /**
  * Local aiskillnavigator material source hidden fields helper.
+ *
+ * @param string $sourcemode Sourcemode.
+ * @param array $materialids Stored material IDs.
  */
 function local_aiskillnavigator_material_source_hidden_fields(string $sourcemode, array $materialids): string {
     $html = '';
@@ -720,6 +815,9 @@ function local_aiskillnavigator_material_source_hidden_fields(string $sourcemode
 
 /**
  * Local aiskillnavigator material source hidden inputs helper.
+ *
+ * @param string $sourcemode Sourcemode.
+ * @param array $materialids Stored material IDs.
  */
 function local_aiskillnavigator_material_source_hidden_inputs(string $sourcemode, array $materialids): string {
     return local_aiskillnavigator_material_source_hidden_fields($sourcemode, $materialids);
@@ -727,6 +825,14 @@ function local_aiskillnavigator_material_source_hidden_inputs(string $sourcemode
 
 /**
  * Local aiskillnavigator material source selector html helper.
+ *
+ * @param array $readablematerials Readablematerials.
+ * @param mixed $embeddingservice Embeddingservice.
+ * @param int $courseid Moodle course ID.
+ * @param string $sourcemode Sourcemode.
+ * @param array $selectedmaterialids Selectedmaterialids.
+ * @param string $label Label.
+ * @param string $help Help.
  */
 function local_aiskillnavigator_material_source_selector_html(
     array $readablematerials,
@@ -1035,6 +1141,17 @@ function local_aiskillnavigator_material_source_selector_html(
 
 /**
  * Local aiskillnavigator material source render controls helper.
+ *
+ * @param array $readablematerials Readablematerials.
+ * @param mixed $embeddingservice Embeddingservice.
+ * @param int $courseid Moodle course ID.
+ * @param string $sourcemode Sourcemode.
+ * @param array $materialids Stored material IDs.
+ * @param string $label Label.
+ * @param string $manualtext Manualtext.
+ * @param string $alltext Alltext.
+ * @param string $selectedtext Selectedtext.
+ * @param string $helptext Helptext.
  */
 function local_aiskillnavigator_material_source_render_controls(
     array $readablematerials,
@@ -1068,6 +1185,11 @@ function local_aiskillnavigator_material_source_footer_script(): string {
 
 /**
  * Local aiskillnavigator material source count chunks helper.
+ *
+ * @param mixed $embeddingservice Embeddingservice.
+ * @param int $courseid Moodle course ID.
+ * @param string $sourcemode Sourcemode.
+ * @param array $materialids Stored material IDs.
  */
 function local_aiskillnavigator_material_source_count_chunks(
     $embeddingservice,

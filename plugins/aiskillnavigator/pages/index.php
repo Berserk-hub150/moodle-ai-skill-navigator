@@ -36,6 +36,14 @@ require_login();
 
 /**
  * Local aisn index card helper.
+ *
+ * @param string $title Title.
+ * @param string $description Description.
+ * @param string $path Path.
+ * @param int $courseid Moodle course ID.
+ * @param string $buttontext Buttontext.
+ * @param string $buttonclass Buttonclass.
+ * @param string $badge Badge.
  */
 function local_aisn_index_card(
     string $title,
@@ -70,6 +78,8 @@ function local_aisn_index_card(
 
 /**
  * Local aisn index ocr card helper.
+ *
+ * @param int $courseid Moodle course ID.
  */
 function local_aisn_index_ocr_card(int $courseid): string {
     if (

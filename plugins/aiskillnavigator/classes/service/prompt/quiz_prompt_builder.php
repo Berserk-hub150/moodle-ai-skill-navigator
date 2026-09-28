@@ -31,6 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * Quiz prompt builder implementation.
  */
 class quiz_prompt_builder extends base_prompt_helper {
+    /** @var int Maximum characters included from each material. */
     private const MATERIAL_LIMIT = 2600;
     /** @var quiz_rules Rules. */
     private quiz_rules $rules;
@@ -48,6 +49,9 @@ class quiz_prompt_builder extends base_prompt_helper {
 
     /**
      * Plain helper.
+     *
+     * @param string $topic Requested learning topic.
+     * @param string $difficulty Requested difficulty level.
      */
     public function plain(string $topic, string $difficulty): string {
         $topic = $this->default_if_empty($topic, 'Digital Twin');
@@ -61,6 +65,10 @@ class quiz_prompt_builder extends base_prompt_helper {
 
     /**
      * From materials helper.
+     *
+     * @param string $focus Focus.
+     * @param string $difficulty Requested difficulty level.
+     * @param array $materials Course materials used for this operation.
      */
     public function from_materials(string $focus, string $difficulty, array $materials): string {
         $topic = $this->default_if_empty($focus, 'Materiali del docente');
@@ -76,6 +84,10 @@ class quiz_prompt_builder extends base_prompt_helper {
 
     /**
      * With rag helper.
+     *
+     * @param string $focus Focus.
+     * @param string $difficulty Requested difficulty level.
+     * @param string $ragcontext Ragcontext.
      */
     public function with_rag(string $focus, string $difficulty, string $ragcontext): string {
         return $this->from_materials($focus, $difficulty, [(object) ['content' => $ragcontext]]);

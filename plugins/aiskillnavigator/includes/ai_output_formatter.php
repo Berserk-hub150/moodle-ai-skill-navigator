@@ -28,6 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 if (!function_exists('local_aisn_fix_mojibake')) {
     /**
      * Local aisn fix mojibake helper.
+     *
+     * @param string $text Text to process.
      */
     function local_aisn_fix_mojibake(string $text): string {
         $map = [
@@ -379,7 +381,9 @@ CSS;
         }
 
         // phpcs:ignore moodle.Files.LineLength
-        const hasMarkdownTable = text.split(/\n/).some((line, idx, arr) => isTableLine(line) && idx + 1 < arr.length && isTableSeparator(arr[idx + 1]));
+        const hasMarkdownTable = text.split(/\n/).some((line, idx, arr) =>
+            isTableLine(line) && idx + 1 < arr.length && isTableSeparator(arr[idx + 1])
+        );
         const hasMath = text.split(/\n/).some(looksMath);
         const hasList = text.split(/\n/).some(line => /^[-*]\s+/.test(line.trim()) || /^\d+\.\s+/.test(line.trim()));
 

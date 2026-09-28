@@ -37,6 +37,8 @@ class embedding_searcher {
 
     /**
      * Construct helper.
+     *
+     * @param embedding_config $config Config.
      */
     public function __construct(embedding_config $config) {
         $this->config = $config;
@@ -44,6 +46,12 @@ class embedding_searcher {
 
     /**
      * Search helper.
+     *
+     * @param string $query Query.
+     * @param int $courseid Moodle course ID.
+     * @param int $topk Topk.
+     * @param int $materialid Stored material ID.
+     * @param bool $generateembedding Generateembedding.
      */
     public function search(
         string $query,
@@ -79,6 +87,10 @@ class embedding_searcher {
 
     /**
      * Score helper.
+     *
+     * @param string $query Query.
+     * @param array|null $queryembedding Queryembedding.
+     * @param \stdClass $chunk Chunk.
      */
     private function score(string $query, ?array $queryembedding, \stdClass $chunk): float {
         $chunkembedding = json_decode((string) $chunk->embedding, true);

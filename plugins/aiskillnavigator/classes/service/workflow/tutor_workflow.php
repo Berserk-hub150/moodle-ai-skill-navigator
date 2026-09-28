@@ -34,6 +34,8 @@ defined('MOODLE_INTERNAL') || die();
 class tutor_workflow extends base_workflow {
     /**
      * Ask helper.
+     *
+     * @param string $question Question.
      */
     public function ask(string $question): string {
         $question = trim($question);
@@ -43,6 +45,9 @@ class tutor_workflow extends base_workflow {
 
     /**
      * Materials helper.
+     *
+     * @param string $question Question.
+     * @param array $materials Course materials used for this operation.
      */
     public function materials(string $question, array $materials): string {
         $question = trim($question);
@@ -56,6 +61,9 @@ class tutor_workflow extends base_workflow {
 
     /**
      * Rag helper.
+     *
+     * @param string $question Question.
+     * @param string $context Moodle context.
      */
     public function rag(string $question, string $context): string {
         $question = trim($question);

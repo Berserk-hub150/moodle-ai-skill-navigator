@@ -33,52 +33,10 @@ require_once(__DIR__ . '/../includes/course_resource_sync.php');
 require_once(__DIR__ . '/../includes/material_source_helper.php');
 require_once(__DIR__ . '/../includes/tutor_signal_helper.php');
 require_once(__DIR__ . '/../includes/ai_output_helper.php');
+require_once(__DIR__ . '/../includes/ai_response_guard.php');
+require_once(__DIR__ . '/../includes/tutor_prompt_helper.php');
 
 global $DB, $PAGE, $OUTPUT, $USER;
-
-if (!function_exists('local_aisn_tutor_ai_format_rules_clean_v2')) {
-    /**
-     * Local aisn tutor ai format rules clean v2 helper.
-     */
-    function local_aisn_tutor_ai_format_rules_clean_v2(): string {
-        return "\n\nAISN_TUTOR_AI_FORMAT_RULES_CLEAN_V2\n"
-            . "Regole di risposta obbligatorie:\n"
-            . "- Rispondi in italiano.\n"
-            . "- Usa Markdown pulito e ben strutturato.\n"
-            . "- Usa titoli brevi con ## quando la risposta contiene più parti.\n"
-            . "- Usa elenchi puntati per caratteristiche, vantaggi, esempi, differenze e casi d'uso.\n"
-            . "- Se mostri codice o comandi, scegli tu il linguaggio corretto del blocco markdown in base al contenuto.\n"
-            . "- Non etichettare un blocco come javascript se non è realmente JavaScript applicativo.\n"
-            // phpcs:ignore moodle.Files.LineLength
-            . "- Per comandi database usa il linguaggio più adatto se lo riconosci, ad esempio sql, mongodb, cql, cypher, redis, oppure text se non sei sicuro.\n"
-            . "- Non iniziare ripetendo il nome del file materiale.\n"
-            . "- Non scrivere tutto in un unico paragrafo lungo.\n"
-            . "- Chiudi con una breve sezione ## In sintesi quando utile.\n";
-    }
-}
-
-
-if (!function_exists('local_aisn_tutor_ai_format_rules_clean')) {
-    /**
-     * Local aisn tutor ai format rules clean helper.
-     */
-    function local_aisn_tutor_ai_format_rules_clean(): string {
-        return "\n\nAISN_TUTOR_AI_FORMAT_RULES_CLEAN_V1\n"
-            . "Regole di risposta obbligatorie:\n"
-            . "- Rispondi in italiano.\n"
-            . "- Usa Markdown pulito e ben strutturato.\n"
-            . "- Usa titoli brevi con ## quando la risposta contiene più parti.\n"
-            . "- Usa elenchi puntati per caratteristiche, vantaggi, esempi, differenze e casi d'uso.\n"
-            . "- Se mostri codice o comandi, scegli tu il linguaggio corretto del blocco markdown in base al contenuto.\n"
-            . "- Non etichettare un blocco come javascript se non è realmente JavaScript applicativo.\n"
-            // phpcs:ignore moodle.Files.LineLength
-            . "- Per comandi database usa il linguaggio più adatto se lo riconosci, ad esempio sql, mongodb, cql, cypher, redis, oppure text se non sei sicuro.\n"
-            . "- Non iniziare ripetendo il nome del file materiale.\n"
-            . "- Non scrivere tutto in un unico paragrafo lungo.\n"
-            . "- Chiudi con una breve sezione ## In sintesi quando utile.\n";
-    }
-}
-
 
 $courseid = optional_param('courseid', optional_param('id', SITEID, PARAM_INT), PARAM_INT);
 $course = get_course($courseid);
@@ -98,44 +56,11 @@ $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/tutor.php', ['courseid' => $courseid]));
 $PAGE->set_title(get_string('page_tutor_title', 'local_aiskillnavigator'));
 $PAGE->set_heading(get_string('page_tutor_heading', 'local_aiskillnavigator'));
-if (!function_exists('local_aisn_tutor_formatting_suffix')) {
-    /**
-     * Local aisn tutor formatting suffix helper.
-     */
-    function local_aisn_tutor_formatting_suffix(): string {
-        return "\n\nAISN_TUTOR_FORMATTING_SUFFIX_V5\n"
-            . "Regole obbligatorie per la risposta del tutor:\n"
-            . "- Rispondi sempre in italiano, salvo richiesta esplicita dello studente in un'altra lingua.\n"
-            . "- Usa PRIMA i materiali selezionati del corso. Non comportarti come un chatbot generico.\n"
-            // phpcs:ignore moodle.Files.LineLength
-            . "- Se una parte della risposta deriva da conoscenza generale non presente nei materiali, scrivilo chiaramente con una breve sezione: ## Nota esterna.\n"
-            // phpcs:ignore moodle.Files.LineLength
-            . "- Se i materiali non contengono abbastanza informazioni, dillo chiaramente e poi aggiungi solo una spiegazione generale breve e separata.\n"
-            . "- Non inventare nomi di slide, pagine, file, definizioni o fonti non presenti nel contesto.\n"
-            . "- Non chiudere con frasi tipo: Se vuoi posso..., Fammi sapere..., Posso fornirti..., Dimmi se vuoi....\n"
-            . "- Usa Markdown pulito e ben strutturato.\n"
-            . "- Usa titoli brevi con ##, ad esempio: Concetto, Esempio, Quando si usa, In sintesi.\n"
-            . "- Se mostri codice o comandi, usa il linguaggio corretto del blocco Markdown.\n"
-            // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
-            . "- Per comandi MongoDB shell/mongosh usa ```mongodb oppure ```mongosh, MAI ```javascript.\n"
-            // phpcs:ignore moodle.Files.LineLength
-            . "- Esempi MongoDB come use nomeDatabase, db.createCollection(...), db.collezione.insertOne(...) NON sono JavaScript applicativo: etichettali come mongodb o mongosh.\n"
-            // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
-            . "- Per Cassandra usa ```cql, non ```sql.\n"
-            // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
-            . "- Per Neo4j usa ```cypher.\n"
-            // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
-            . "- Per Redis usa ```redis oppure ```text.\n"
-            // phpcs:ignore moodle.Strings.ForbiddenStrings.Found
-            . "- Se non sei sicuro del linguaggio, usa ```text.\n"
-            . "- Evita blocchi di codice se non sono necessari.\n"
-            . "- Mantieni la risposta adatta a uno studente universitario: chiara, sintetica e collegata al corso.\n"
-            . "- Chiudi, quando utile, con una breve sezione ## In sintesi.\n";
-    }
-}
-
 /**
  * Local aiskillnavigator tutor limit context helper.
+ *
+ * @param string $text Text to process.
+ * @param int $limit Limit.
  */
 function local_aiskillnavigator_tutor_limit_context(string $text, int $limit = 9000): string {
     $text = local_aiskillnavigator_fix_mojibake(trim($text));
@@ -150,6 +75,8 @@ function local_aiskillnavigator_tutor_limit_context(string $text, int $limit = 9
 
 /**
  * Local aisn tutor cleanup answer helper.
+ *
+ * @param string $answer Answer.
  */
 function local_aisn_tutor_cleanup_answer(string $answer): string {
     $answer = trim($answer);
@@ -175,6 +102,9 @@ function local_aisn_tutor_cleanup_answer(string $answer): string {
 }
 /**
  * Local aiskillnavigator tutor call ai helper.
+ *
+ * @param string $prompt User prompt sent to the AI provider.
+ * @param string $systemprompt System instructions for the provider.
  */
 function local_aiskillnavigator_tutor_call_ai(string $prompt, string $systemprompt): string {
     try {
@@ -232,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($error === '') {
             if ($sourcemode === 'manual') {
                 // phpcs:ignore moodle.Files.LineLength
-                $systemprompt = 'You are a Moodle AI tutor. Answer using only the student question and general knowledge. Do not claim that course materials were used.';
+                $systemprompt = local_aiskillnavigator_tutor_system_prompt(false);
                 $prompt = "Student question:\n" . $question;
             } else {
                 $contextparts = [];
@@ -247,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 // phpcs:ignore moodle.Files.LineLength
-                $systemprompt = 'You are AI Skill Navigator, a Moodle course-aware tutor. Your primary source is the selected Moodle course material provided in the prompt. Answer as a university teaching assistant, not as a generic chatbot. If the material is sufficient, answer using it directly. If the material is incomplete, say clearly that the selected material does not contain enough information and then provide a short clearly separated general explanation only when useful. Do not invent sources, slide numbers, file contents or citations. Avoid final follow-up offers. Answer in the same language as the student, preferably Italian.';
+                $systemprompt = local_aiskillnavigator_tutor_system_prompt(true);
 
                 $prompt =
                     "Selected course materials:\n\n" .
@@ -257,7 +187,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // phpcs:ignore moodle.Files.LineLength
-            $answer = local_aisn_tutor_cleanup_answer(local_aiskillnavigator_fix_mojibake(local_aiskillnavigator_tutor_call_ai($prompt, $systemprompt . local_aisn_tutor_formatting_suffix())));
+            $answer = local_aisn_tutor_cleanup_answer(local_aiskillnavigator_fix_mojibake(local_aiskillnavigator_tutor_call_ai($prompt, $systemprompt)));
+            if (local_aiskillnavigator_ai_response_is_error($answer)) {
+                $error = $answer !== '' ? $answer : get_string('ai_empty_response', 'local_aiskillnavigator');
+                $answer = '';
+            } else {
+                local_aiskillnavigator_tutor_signal_store(
+                    (int)$courseid,
+                    (int)$USER->id,
+                    $question,
+                    $sourcemode,
+                    $usedmaterialnames,
+                    $answer
+                );
+            }
         }
     }
 }
@@ -374,7 +317,6 @@ if ($answer !== '') {
 
 echo html_writer::end_div();
 
-echo local_aiskillnavigator_tutor_signal_capture_assets((int)$courseid);
 // phpcs:ignore moodle.Files.LineLength
 echo local_aisn_back_to_course_autofix((int)($courseid ?? optional_param('courseid', optional_param('id', 0, PARAM_INT), PARAM_INT)));
 if (function_exists('local_aisn_mdtable_assets')) {
@@ -404,161 +346,3 @@ echo html_writer::script(file_get_contents(__DIR__ . '/../assets/aisn_tutor_dom_
 echo html_writer::script(file_get_contents(__DIR__ . '/../assets/aisn_tutor_dom_direct_style.js'));
 // AISN_TUTOR_DIRECT_STYLE_LOAD_V1.
 echo $OUTPUT->footer();
-
-/**
- * Local aiskillnavigator tutor signal capture assets helper.
- */
-function local_aiskillnavigator_tutor_signal_capture_assets(int $courseid): string {
-    $endpoint = new moodle_url('/local/aiskillnavigator/pages/tutor_signal_capture.php', [
-        'courseid' => $courseid,
-        'sesskey' => sesskey(),
-    ]);
-
-    $endpointjson = json_encode($endpoint->out(false), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
-
-    return <<<HTML
-<script id="aisn-tutor-signal-capture-v1">
-(function () {
-    const endpoint = {$endpointjson};
-
-    /**
-     * Clean helper.
-     */
-    function clean(value) {
-        return String(value || "").replace(/\\s+/g, " ").trim();
-    }
-
-    /**
-     * Findanswertext helper.
-     */
-    function findAnswerText() {
-        const answerBox = document.querySelector(".aisn-answer");
-        if (answerBox) {
-            return clean(answerBox.innerText || answerBox.textContent || "");
-        }
-
-        const headings = Array.from(document.querySelectorAll("h1,h2,h3,h4"));
-        const answerHeading = headings.find(function (h) {
-            return clean(h.textContent).toLowerCase() === "answer";
-        });
-
-        if (!answerHeading) {
-            return "";
-        }
-
-        const card = answerHeading.closest(".card") || answerHeading.parentElement;
-        if (!card) {
-            return "";
-        }
-
-        let text = clean(card.innerText || card.textContent || "");
-        text = text.replace(/^Answer\\s*/i, "");
-        text = text.replace(/^Used materials:\\s*[^\\n]+/i, "");
-
-        return clean(text);
-    }
-
-    /**
-     * Findquestiontext helper.
-     */
-    function findQuestionText() {
-        const textarea = document.querySelector('textarea[name="question"], #question');
-        if (textarea && textarea.value) {
-            return clean(textarea.value);
-        }
-
-        return "";
-    }
-
-    /**
-     * Findsourcemode helper.
-     */
-    function findSourceMode() {
-        // phpcs:ignore moodle.Files.LineLength
-        const checked = document.querySelector('input[name="sourcemode"]:checked, input[name="source"]:checked, input[name="materialsource"]:checked');
-        if (checked) {
-            return checked.value || "selected";
-        }
-
-        return "unknown";
-    }
-
-    /**
-     * Findusedmaterials helper.
-     */
-    function findUsedMaterials() {
-        const used = Array.from(document.querySelectorAll(".text-muted")).find(function (el) {
-            return clean(el.textContent).toLowerCase().startsWith("used materials:");
-        });
-
-        if (!used) {
-            return [];
-        }
-
-        const txt = clean(used.textContent).replace(/^Used materials:\\s*/i, "");
-        if (!txt || txt.toLowerCase() === "none") {
-            return [];
-        }
-
-        return txt.split(",").map(function (x) { return clean(x); }).filter(Boolean);
-    }
-
-    async function saveSignal() {
-        const question = findQuestionText();
-        const answer = findAnswerText();
-
-        if (!question || !answer) {
-            return;
-        }
-
-        const fingerprint = "aisn_tutor_signal_" + btoa(unescape(encodeURIComponent(question + "::" + answer))).slice(0, 80);
-
-        if (sessionStorage.getItem(fingerprint) === "1") {
-            return;
-        }
-
-        sessionStorage.setItem(fingerprint, "1");
-
-        const body = new URLSearchParams();
-        body.set("question", question);
-        body.set("answer", answer);
-        body.set("sourcemode", findSourceMode());
-        body.set("materials", JSON.stringify(findUsedMaterials()));
-
-        try {
-            const response = await fetch(endpoint, {
-                method: "POST",
-                credentials: "same-origin",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-                },
-                body: body.toString()
-            });
-
-            const data = await response.json();
-
-            const note = document.createElement("div");
-            note.className = data.ok ? "alert alert-success mt-3" : "alert alert-warning mt-3";
-            note.textContent = data.ok
-                ? "Tutor-as-Sensor: domanda salvata nella dashboard docente."
-                : "Tutor-as-Sensor: salvataggio non riuscito: " + (data.message || "errore sconosciuto");
-
-            const answerBox = document.querySelector(".aisn-answer");
-            if (answerBox && !document.getElementById("aisn-tutor-signal-note")) {
-                note.id = "aisn-tutor-signal-note";
-                answerBox.parentElement.appendChild(note);
-            }
-        } catch (e) {
-            console.error("Tutor signal capture failed", e);
-            sessionStorage.removeItem(fingerprint);
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(saveSignal, 300);
-        setTimeout(saveSignal, 1200);
-    });
-})();
-</script>
-HTML;
-}
