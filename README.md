@@ -1,6 +1,7 @@
 # AI Skill Navigator
 
 [![Plugin CI](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml/badge.svg)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml)
+[![Moodle integration](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/moodle-marketplace-ci.yml/badge.svg)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/moodle-marketplace-ci.yml)
 [![License: GPL v3 or later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 
 Course-aware tutoring, assessment and teaching tools for Moodle. Teachers choose the course materials available to the AI; students can use them for questions, practice quizzes and revision.
@@ -27,7 +28,7 @@ The Teacher dashboard reads both plugin quiz attempts and scored, finished Moodl
 
 ## Requirements
 
-- Minimum declared Moodle version: **4.4**. The Moodle integration workflow targets **4.5**.
+- Minimum declared Moodle version: **4.4**. Database integration checks cover **4.4 / PHP 8.1 / PostgreSQL** and **4.5 / PHP 8.3 / PostgreSQL and MySQL**.
 - PHP supported by the installed Moodle version. Repository regression checks cover **PHP 8.1–8.3**.
 - PHP cURL for HTTP AI providers; optional document extraction tools depend on the file formats used.
 - An AI provider configured by the site administrator for generated answers. The default `prototype` provider returns fixed demonstration responses and makes no AI network calls.
@@ -60,7 +61,7 @@ The repository ZIP is not an installable Moodle plugin. See [packaging instructi
 
 1. Open **Site administration → Plugins → Local plugins → AI Skill Navigator** and keep `prototype` selected for the initial interface check.
 2. Add the **AI Skill Navigator** block to a test course, or open `/local/aiskillnavigator/pages/index.php?courseid=COURSE_ID`.
-3. As a teacher, open **Manage teacher materials** and synchronise the course resources. Confirm that each intended resource has readable text.
+3. As a teacher, open **Manage teacher materials** and press **Synchronise course materials**. Moodle cron extracts and indexes resources in the background. Refresh after the task completes and confirm that each intended resource has readable text.
 4. Configure the provider, endpoint, model and credentials in the plugin settings. Local Ollama and supported external HTTP providers are available.
 5. Test a tutor question and a practice quiz with a student account. Return to the Teacher dashboard and Tutor Analytics to inspect the results.
 
@@ -78,14 +79,14 @@ Destructive Course Builder actions, automatic course-resource synchronisation on
 
 ## Troubleshooting and limits
 
-- **No materials:** synchronise from Manage teacher materials, check resource visibility and verify text extraction. Scanned documents may need OCR.
+- **No materials:** press **Synchronise course materials**, verify that Moodle cron is running and inspect failed ad hoc tasks. Check resource visibility and text extraction. Scanned documents may need OCR.
 - **Material cannot be selected:** check the site-level external AI approval and the individual material permission. The Simulator Finder displays the active provider's policy.
 - **API timeout:** increase the request timeout, check the endpoint/model and inspect server or proxy limits. Provider failures are reported separately from invalid assessment JSON.
 - **Empty Tutor Analytics:** ask a question as a student and refresh the report after a successful response. Existing conversations are not retroactively imported.
 - **Missing Moodle quiz result:** previews, unfinished or unscored attempts are excluded. The viewer needs quiz report permission and appropriate group access.
 - **AI output:** model responses, extracted text and suggested simulations need human review. Changing the provider can change output quality and format.
 
-Installation and regression checks do not establish compatibility with every Moodle release, theme, provider or production environment. Run the [manual test checklist](docs/manual-test-checklist.md) on your deployment target.
+Installation and regression checks do not establish compatibility with every Moodle release, theme, provider or production environment. Follow the [deployment guide](docs/production-deployment.md) and run the [manual test checklist](docs/manual-test-checklist.md) on your deployment target.
 
 ## Development
 

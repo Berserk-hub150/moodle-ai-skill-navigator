@@ -5208,6 +5208,7 @@ $result = [];
 $error = '';
 
 if ($action === 'build') {
+    \local_aiskillnavigator\service\request_access::require_write($context, 'moodle/course:manageactivities');
     if (!confirm_sesskey()) {
         $error = 'Sessione non valida. Ricarica la pagina.';
     } else if (trim($prompt) === '') {

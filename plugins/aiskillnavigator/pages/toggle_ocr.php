@@ -29,13 +29,11 @@ $courseid = required_param('courseid', PARAM_INT);
 $mode = optional_param('mode', 'toggle', PARAM_ALPHA);
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 
-require_sesskey();
-
 $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 require_login($course);
 
 $context = context_course::instance($courseid);
-require_capability('moodle/course:update', $context);
+\local_aiskillnavigator\service\request_access::require_write($context, 'moodle/course:update');
 
 $current = local_aisn_document_ocr_course_enabled($courseid);
 
@@ -47,17 +45,14 @@ if ($mode === 'on') {
     $newvalue = $current ? '0' : '1';
 }
 
-set_config(local_aisn_document_ocr_config_key($courseid), $newvalue, 'local_aiskillnavigator');
+local_aisn_document_ocr_set_course_enabled($courseid, $newvalue === '1');
 
 // Provider availability: today Mistral is the advanced OCR provider.
 // This remains generic at course level, so future OCR providers can reuse the same course toggle.
 if ($newvalue === '1') {
-    set_config('mistral_ocr_enabled', '1', 'local_aiskillnavigator');
-    set_config('mistral_ocr_timeout', '120', 'local_aiskillnavigator');
     // phpcs:ignore moodle.Files.LineLength
     \core\notification::success('OCR attivato per questo corso. Usalo per sincronizzare PDF/PPTX, poi puoi disattivarlo per navigare più velocemente.');
 } else {
-    set_config('mistral_ocr_timeout', '30', 'local_aiskillnavigator');
     \core\notification::success('OCR disattivato per questo corso. Gli altri corsi non vengono modificati.');
 }
 

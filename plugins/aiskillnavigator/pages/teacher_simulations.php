@@ -58,7 +58,7 @@ local_aisn_sim_ensure_table();
 $listurl = new moodle_url('/local/aiskillnavigator/pages/teacher_simulations.php', ['courseid' => $courseid]);
 
 if ($action === 'delete' && $simulationid > 0) {
-    require_sesskey();
+    \local_aiskillnavigator\service\request_access::require_write($context, 'local/aiskillnavigator:managematerials');
 
     $DB->delete_records('local_aiskillnavigator_sim', [
         'id' => $simulationid,
@@ -490,19 +490,19 @@ if ($action === 'view' && $simulationid > 0) {
         ['class' => 'btn btn-outline-secondary']
     );
 
-    echo html_writer::link(
-        new moodle_url('/local/aiskillnavigator/pages/teacher_simulations.php', [
+    if (has_capability('local/aiskillnavigator:managematerials', $context)) {
+        echo $OUTPUT->single_button(
+            new moodle_url('/local/aiskillnavigator/pages/teacher_simulations.php', [
             'courseid' => $courseid,
             'id' => (int)$record->id,
             'action' => 'delete',
             'sesskey' => sesskey(),
-        ]),
-        'Delete',
-        [
-            'class' => 'btn btn-danger',
-            'onclick' => "return confirm('Eliminare questa simulazione salvata?');",
-        ]
-    );
+            ]),
+            'Delete',
+            'post',
+            ['confirm' => 'Delete this saved simulation?']
+        );
+    }
 
     echo html_writer::end_div();
     echo html_writer::end_div();
@@ -584,19 +584,19 @@ if (empty($records)) {
             ['class' => 'btn btn-primary aisn-saved-open']
         );
 
-        echo html_writer::link(
-            new moodle_url('/local/aiskillnavigator/pages/teacher_simulations.php', [
+        if (has_capability('local/aiskillnavigator:managematerials', $context)) {
+            echo $OUTPUT->single_button(
+                new moodle_url('/local/aiskillnavigator/pages/teacher_simulations.php', [
                 'courseid' => $courseid,
                 'id' => (int)$record->id,
                 'action' => 'delete',
                 'sesskey' => sesskey(),
-            ]),
-            'Delete',
-            [
-                'class' => 'btn btn-danger aisn-saved-delete',
-                'onclick' => "return confirm('Eliminare questa simulazione salvata?');",
-            ]
-        );
+                ]),
+                'Delete',
+                'post',
+                ['confirm' => 'Delete this saved simulation?']
+            );
+        }
 
         echo html_writer::end_div();
         echo html_writer::end_div();

@@ -35,6 +35,7 @@ require_once(__DIR__ . '/../includes/knowledge_graph_helper.php');
 
 use local_aiskillnavigator\service\embedding_service;
 use local_aiskillnavigator\service\real_ai_service;
+use local_aiskillnavigator\service\practice_quiz;
 
 global $PAGE, $OUTPUT, $DB, $USER;
 
@@ -226,78 +227,7 @@ function local_aiskillnavigator_extract_quiz_json(string $raw): ?array {
         return null;
     }
 
-    if (empty($decoded['questions']) || !is_array($decoded['questions'])) {
-        return null;
-    }
-
-    $decoded['questions'] = array_slice(array_values($decoded['questions']), 0, 3);
-
-    foreach ($decoded['questions'] as $index => $question) {
-        if (!is_array($question)) {
-            return null;
-        }
-
-        if (empty($question['question'])) {
-            return null;
-        }
-
-        if (empty($question['options']) || !is_array($question['options'])) {
-            return null;
-        }
-
-        $decoded['questions'][$index]['options'] = array_slice(array_values($question['options']), 0, 4);
-
-        if (count($decoded['questions'][$index]['options']) !== 4) {
-            return null;
-        }
-
-        if (!isset($question['correct_index'])) {
-            $correcttext = '';
-
-            if (!empty($question['correct']) && is_string($question['correct'])) {
-                $correcttext = $question['correct'];
-            } else if (!empty($question['answer']) && is_string($question['answer'])) {
-                $correcttext = $question['answer'];
-            } else if (!empty($question['correct_answer']) && is_string($question['correct_answer'])) {
-                $correcttext = $question['correct_answer'];
-            }
-
-            if ($correcttext !== '') {
-                $foundindex = array_search($correcttext, $decoded['questions'][$index]['options'], true);
-                $decoded['questions'][$index]['correct_index'] = $foundindex !== false ? (int) $foundindex : 0;
-            } else {
-                $decoded['questions'][$index]['correct_index'] = 0;
-            }
-        }
-
-        $correctindex = (int) $decoded['questions'][$index]['correct_index'];
-
-        if ($correctindex < 0 || $correctindex > 3) {
-            $decoded['questions'][$index]['correct_index'] = 0;
-        }
-
-        if (empty($decoded['questions'][$index]['explanation'])) {
-            $decoded['questions'][$index]['explanation'] = 'Risposta corretta secondo il materiale o argomento selezionato.';
-        }
-
-        if (empty($decoded['questions'][$index]['skill'])) {
-            $decoded['questions'][$index]['skill'] = 'Concetto valutato';
-        }
-    }
-
-    if (empty($decoded['title'])) {
-        $decoded['title'] = 'Generated AI test';
-    }
-
-    if (empty($decoded['topic'])) {
-        $decoded['topic'] = 'Argomento generico';
-    }
-
-    if (empty($decoded['difficulty'])) {
-        $decoded['difficulty'] = 'medium';
-    }
-
-    return $decoded;
+    return practice_quiz::normalise($decoded);
 }
 
 /**
@@ -320,46 +250,20 @@ function local_aiskillnavigator_material_short_title(stdClass $material): string
 if ($action === 'grade') {
     require_sesskey();
 
-    $encodedquiz = required_param('quizdata', PARAM_RAW);
-    $decodedjson = base64_decode($encodedquiz, true);
-
-    if ($decodedjson !== false) {
-        $quiz = json_decode($decodedjson, true);
+    if (!data_submitted()) {
+        throw new moodle_exception('invalidrequestmethod', 'local_aiskillnavigator');
     }
-
-    if (is_array($quiz) && !empty($quiz['questions']) && is_array($quiz['questions'])) {
-        $score = 0;
-        $total = count($quiz['questions']);
-
-        foreach ($quiz['questions'] as $index => $question) {
-            $answer = optional_param('answer_' . $index, -1, PARAM_INT);
-            $studentanswers[$index] = $answer;
-
-            $correctindex = isset($question['correct_index']) ? (int) $question['correct_index'] : -1;
-
-            if ($answer === $correctindex) {
-                $score++;
-            }
-        }
-
-        $percentage = $total > 0 ? (int) round(($score / $total) * 100) : 0;
-
-        $record = new stdClass();
-        $record->courseid = $courseid;
-        $record->userid = $USER->id;
-        $record->topic = (string) ($quiz['topic'] ?? ($topic !== '' ? $topic : 'Argomento generico'));
-        $record->difficulty = (string) ($quiz['difficulty'] ?? $difficulty);
-        $record->score = $score;
-        $record->maxscore = $total;
-        $record->percentage = $percentage;
-        $record->quizjson = json_encode($quiz, JSON_UNESCAPED_UNICODE);
-        $record->answersjson = json_encode($studentanswers, JSON_UNESCAPED_UNICODE);
-        $record->timecreated = time();
-
-        $DB->insert_record('local_aiskillnavigator_attempt', $record);
-
-        $savedmessage = 'Quiz attempt saved in the student profile.';
+    $quiztoken = required_param('quiztoken', PARAM_ALPHANUM);
+    $entry = practice_quiz::get($courseid, $quiztoken);
+    foreach ($entry['quiz']['questions'] as $index => $question) {
+        $studentanswers[$index] = optional_param('answer_' . $index, -1, PARAM_INT);
     }
+    $entry = practice_quiz::submit($courseid, $quiztoken, $studentanswers);
+    $quiz = $entry['quiz'];
+    $score = $entry['score'];
+    $total = count($quiz['questions']);
+    $studentanswers = $entry['answers'];
+    $savedmessage = 'Quiz attempt saved in the student profile.';
 } else if ($generate) {
     // AISN_PS1_QUIZ_GENERATE_SESSKEY.
     require_sesskey();
@@ -435,6 +339,8 @@ if ($action === 'grade') {
 
     if ($quiz === null) {
         $parseerror = 'The AI response could not be parsed as a structured test.';
+    } else {
+        $quiztoken = practice_quiz::create($courseid, $quiz);
     }
 }
 
@@ -582,9 +488,6 @@ echo html_writer::end_div();
 echo html_writer::end_div();
 
 if ($quiz !== null) {
-    $quizjson = json_encode($quiz, JSON_UNESCAPED_UNICODE);
-    $encodedquiz = base64_encode($quizjson);
-
     echo html_writer::start_div('card mt-4 mb-4');
     echo html_writer::start_div('card-body');
 
@@ -692,8 +595,8 @@ if ($quiz !== null) {
     echo local_aiskillnavigator_material_source_hidden_fields($sourcemode, $selectedmaterialids);
     echo html_writer::empty_tag('input', [
         'type' => 'hidden',
-        'name' => 'quizdata',
-        'value' => $encodedquiz,
+        'name' => 'quiztoken',
+        'value' => $quiztoken,
     ]);
 
     foreach ($quiz['questions'] as $index => $question) {

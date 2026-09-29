@@ -28,6 +28,33 @@ use local_aiskillnavigator\upgrade\table_names;
  */
 final class table_names_test extends \advanced_testcase {
     /**
+     * Moodle's real upgrade entry point preserves a populated legacy installation.
+     */
+    public function test_real_upgrade_from_legacy_release(): void {
+        global $CFG, $DB;
+        require_once($CFG->libdir . '/upgradelib.php');
+        require_once(__DIR__ . '/../db/upgrade.php');
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $materialid = $DB->insert_record('local_aiskillnavigator_material', (object)[
+            'courseid' => 42, 'title' => 'Legacy', 'content' => 'Existing content', 'contenthash' => sha1('Existing content'),
+        ]);
+        $dbman = $DB->get_manager();
+        foreach (table_names::MAP as $oldname => $newname) {
+            $dbman->rename_table(new \xmldb_table($newname), $oldname);
+        }
+        set_config('version', 2026080600, 'local_aiskillnavigator');
+        try {
+            $this->assertTrue(xmldb_local_aiskillnavigator_upgrade(2026080600));
+            $content = $DB->get_field('local_aiskillnavigator_material', 'content', ['id' => $materialid]);
+            $this->assertSame('Existing content', $content);
+            $this->assertEquals(2026092500, get_config('local_aiskillnavigator', 'version'));
+        } finally {
+            table_names::migrate();
+        }
+    }
+
+    /**
      * Resume a partial migration without changing records, IDs or references.
      */
     public function test_migration_preserves_data_and_can_resume(): void {

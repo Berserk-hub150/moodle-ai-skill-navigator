@@ -68,8 +68,9 @@ foreach ($attempts as $attempt) {
 
     if (!isset($students[$userid])) {
         $studentuser = new stdClass();
-        $studentuser->firstname = $attempt->firstname;
-        $studentuser->lastname = $attempt->lastname;
+        foreach (\core_user\fields::get_name_fields() as $field) {
+            $studentuser->$field = $attempt->$field;
+        }
         $studentuser->email = $attempt->email;
 
         $students[$userid] = [
@@ -402,8 +403,9 @@ if (empty($attempts)) {
         }
 
         $studentuser = new stdClass();
-        $studentuser->firstname = $attempt->firstname;
-        $studentuser->lastname = $attempt->lastname;
+        foreach (\core_user\fields::get_name_fields() as $field) {
+            $studentuser->$field = $attempt->$field;
+        }
 
         echo html_writer::start_tag('tr');
         echo html_writer::tag('td', userdate($attempt->timecreated));

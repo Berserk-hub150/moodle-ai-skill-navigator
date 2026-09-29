@@ -1,5 +1,18 @@
 # Release notes
 
+## 1.0.6
+
+- Keep practice-quiz answer keys on the server, bind submissions to their user/course/session and prevent duplicate results on refresh. Reject invalid AI answer keys instead of silently choosing the first option.
+- Apply live Moodle activity visibility and availability restrictions to material selection, retrieval and knowledge-graph evidence. Filter inaccessible chunks before selecting search results.
+- Apply separate-group restrictions consistently to plugin attempts, assessment reports, learning gaps and Tutor Analytics.
+- Require write capabilities, POST and session keys for state changes. Keep read-only teacher access separate from assessment, material and activity administration.
+- Preserve assessment attempts when editing metadata; lock questions after an attempt. Serialise editing and grading, and reject submissions from an outdated question revision.
+- Escape GIFT question syntax and neutralise formula-like cells in CSV exports.
+- Queue course-resource extraction/indexing through Moodle cron, deduplicate queued work and prevent concurrent synchronisation of the same course. Replace each search index atomically so a failed insert retains its previous contents.
+- Keep OCR preferences scoped to the course; remove course data and derived graph evidence through Moodle lifecycle/privacy operations.
+- Correct capability language keys and full-name queries, and remove an empty deprecated footer callback that triggered Moodle debugging warnings.
+- Add database regression tests, upgrade tests and browser workflows; expand CI to Moodle 4.4/4.5 with PostgreSQL and MySQL.
+
 ## 1.0.5
 
 - Rename legacy database tables to the `local_aiskillnavigator_` prefix during Moodle upgrade. The migration preserves IDs, records and relationships, resumes after interruption and refuses conflicting destination tables. Update any custom SQL reports using the old prefixes.

@@ -131,7 +131,7 @@ function local_aiskillnavigator_coursemodule_standard_elements($formwrapper, $mf
  * @param mixed $course Moodle course record.
  */
 function local_aiskillnavigator_coursemodule_edit_post_actions($data, $course) {
-    global $CFG, $USER;
+    global $USER;
 
     if (empty($data->coursemodule) || empty($course->id)) {
         return $data;
@@ -157,20 +157,8 @@ function local_aiskillnavigator_coursemodule_edit_post_actions($data, $course) {
         'local_aiskillnavigator'
     );
 
-    $syncfile = $CFG->dirroot . '/local/aiskillnavigator/includes/course_resource_sync.php';
-
-    $autosyncenabled = (string)get_config('local_aiskillnavigator', 'autosynccourseresources') === '1';
-
-    if ($autosyncenabled && file_exists($syncfile)) {
-        require_once($syncfile);
-
-        if (function_exists('local_aiskillnavigator_sync_course_resources')) {
-            local_aiskillnavigator_sync_course_resources(
-                (int)$course->id,
-                !empty($USER->id) ? (int)$USER->id : 0,
-                true
-            );
-        }
+    if ((string)get_config('local_aiskillnavigator', 'autosynccourseresources') === '1') {
+        \local_aiskillnavigator\task\sync_course::queue((int)$course->id, (int)$USER->id);
     }
 
     local_aiskillnavigator_apply_cm_ai_policy_to_material(
@@ -226,14 +214,4 @@ function local_aiskillnavigator_apply_cm_ai_policy_to_material(
 
         $DB->update_record('local_aiskillnavigator_material', $material);
     }
-}
-
-/**
- * AISN_RESTORE_OLD_BLOCK_UI_V9
- *
- * No floating OCR card and no custom AI Tools drawer.
- * OCR is rendered inside block_aiskillnavigator, like the original UI.
- */
-function local_aiskillnavigator_before_footer(): string {
-    return '';
 }

@@ -145,6 +145,7 @@ if (!function_exists('local_aisn_render_sidebar_ocr_toggle_button')) {
      * @param int $courseid Moodle course ID.
      */
     function local_aisn_render_sidebar_ocr_toggle_button(int $courseid = 0): string {
+        global $OUTPUT;
         if ($courseid <= 0) {
             $courseid = local_aisn_document_ocr_current_courseid();
         }
@@ -159,20 +160,27 @@ if (!function_exists('local_aisn_render_sidebar_ocr_toggle_button')) {
         $label = $enabled ? 'Disattiva OCR' : 'Attiva OCR';
         $status = $enabled ? 'OCR attivo per questo corso' : 'OCR disattivato per questo corso';
 
-        $buttonstyle = $enabled
-            ? 'border-color:#dc2626;color:#991b1b;background:#fff5f5;'
-            : 'border-color:#15803d;color:#166534;background:#f0fdf4;';
-
         $html = '';
         $html .= '<div id="aisn-ocr-sidebar-toggle" style="margin-top:14px;">';
         // phpcs:ignore moodle.Files.LineLength
         $html .= '<div class="aisn-ocr-title" style="font-weight:800;font-size:12px;color:#111827;margin-bottom:7px;text-transform:uppercase;">DOCUMENT OCR</div>';
         // phpcs:ignore moodle.Files.LineLength
-        $html .= '<a class="aisn-ocr-btn" href="' . $url->out(false) . '" style="display:block;text-align:center;padding:9px 12px;border:1px solid;border-radius:8px;text-decoration:none;font-size:14px;' . $buttonstyle . '">' . s($label) . '</a>';
+        $html .= $OUTPUT->single_button($url, $label, 'post');
         // phpcs:ignore moodle.Files.LineLength
         $html .= '<div class="aisn-ocr-status" style="font-size:11px;color:#64748b;margin-top:6px;line-height:1.35;">' . s($status) . '</div>';
         $html .= '</div>';
 
         return $html;
     }
+}
+
+/**
+ * Change OCR opt-in for a single course without modifying provider configuration.
+ *
+ * @param int $courseid Course to update.
+ * @param bool $enabled Whether OCR is enabled in this course.
+ */
+function local_aisn_document_ocr_set_course_enabled(int $courseid, bool $enabled): void {
+    require_capability('moodle/course:update', context_course::instance($courseid));
+    set_config(local_aisn_document_ocr_config_key($courseid), $enabled ? '1' : '0', 'local_aiskillnavigator');
 }

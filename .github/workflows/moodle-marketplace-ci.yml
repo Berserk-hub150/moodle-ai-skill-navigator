@@ -19,10 +19,37 @@ permissions:
 
 jobs:
   moodle-prechecks:
-    name: Moodle 4.5 / PHP 8.3 / PostgreSQL
+    name: Moodle ${{ matrix.moodle }} / PHP ${{ matrix.php }} / ${{ matrix.db }}
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - moodle: '4.4'
+            branch: MOODLE_404_STABLE
+            php: '8.1'
+            db: pgsql
+          - moodle: '4.5'
+            branch: MOODLE_405_STABLE
+            php: '8.3'
+            db: pgsql
+          - moodle: '4.5'
+            branch: MOODLE_405_STABLE
+            php: '8.3'
+            db: mysqli
 
     services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       postgres:
         image: postgres:17
         env:
@@ -49,10 +76,10 @@ jobs:
           cp -R repository/plugins/aiskillnavigator/. plugin/
           rm -f plugin/.gitignore
 
-      - name: Setup PHP 8.3
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: ${{ matrix.php }}
           extensions: pgsql, mysqli, curl, dom, gd, intl, json, libxml, mbstring, simplexml, soap, xml, zip
           ini-values: max_input_vars=5000, opcache.enable_cli=1
           coverage: none
@@ -68,8 +95,8 @@ jobs:
       - name: Install Moodle test environment
         id: install
         env:
-          DB: pgsql
-          MOODLE_BRANCH: MOODLE_405_STABLE
+          DB: ${{ matrix.db }}
+          MOODLE_BRANCH: ${{ matrix.branch }}
         run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
 
       - name: PHP syntax
@@ -99,3 +126,7 @@ jobs:
       - name: Moodle integration tests
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: moodle-plugin-ci phpunit
+
+      - name: Browser integration tests
+        if: ${{ !cancelled() && steps.install.outcome == 'success' && matrix.moodle == '4.5' && matrix.db == 'pgsql' }}
+        run: moodle-plugin-ci behat --profile chrome --start-servers --auto-rerun 0 --dump

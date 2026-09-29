@@ -57,3 +57,15 @@ Use a disposable Moodle site and test accounts before a release. Record the Mood
 - Type part of a material title in Simulator Finder, press Enter, and verify that the list filters without submitting generation. Clear the filter and verify that all rows return.
 - Complete a quiz with an incorrect answer and inspect video suggestions. Confirm that the browser console has no syntax errors and the suggestion links render correctly.
 - Install each generated ZIP in its own Moodle plugin directory and run the upgrade from 1.0.4.
+
+## Access and integrity regressions (1.0.6)
+
+- Generate a practice quiz as a student; confirm the submitted form contains an opaque token rather than the answer key. Submit, refresh and verify one attempt is stored. A token from another user or course must fail.
+- Restrict a source activity by visibility, future availability and group. Verify that another student's material list, retrieved tutor context and knowledge graph contain no content from that activity.
+- In separate groups, compare quiz, assessment, gap and tutor reports for teachers in different groups and a teacher allowed to access all groups.
+- Give a teacher report access without write capabilities. Verify they can read permitted reports but cannot create, edit, delete or publish assessments, delete resources, or build course activities. A GET request to a write action must fail.
+- Open an assessment as a student, change its questions as a teacher before submission, then submit the stale student form. It must request a reload without saving a grade. After a valid attempt, changing questions must be refused while metadata changes preserve results.
+- Export a question containing braces, equals signs, backslashes, newlines and accented characters to GIFT and import it into Moodle's question bank. Check text and answer weights. Open a CSV containing formula-like text and verify it remains text.
+- Queue material sync twice, run cron and verify there is no duplicated material. Opening the materials page must not start extraction or AI calls. Revoke the requesting teacher's permission before a queued task runs and verify that it stops.
+- Change OCR preference in one course and verify that other courses and site-wide provider settings stay unchanged.
+- Delete a test course and use the Privacy API to delete a material owner's data in another course. Verify that related attempts, chunks and graph evidence are removed, while unrelated users' data remains.

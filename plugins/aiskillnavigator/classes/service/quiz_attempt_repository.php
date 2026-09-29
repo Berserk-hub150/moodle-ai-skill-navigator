@@ -40,12 +40,14 @@ class quiz_attempt_repository {
     public function for_course(int $courseid): array {
         global $DB, $USER;
 
+        $namefields = 'u.' . implode(', u.', \core_user\fields::get_name_fields());
+        [$scope, $scopeparams] = report_access::condition($courseid, 'a.userid');
         $attempts = array_values($DB->get_records_sql(
-            "SELECT a.*, u.firstname, u.lastname, u.email
+            "SELECT a.*, $namefields, u.email
                FROM {local_aiskillnavigator_attempt} a
                JOIN {user} u ON u.id = a.userid
-              WHERE a.courseid = :courseid AND u.deleted = 0",
-            ['courseid' => $courseid]
+              WHERE a.courseid = :courseid AND u.deleted = 0 AND ($scope)",
+            $scopeparams + ['courseid' => $courseid]
         ));
         foreach ($attempts as $attempt) {
             $attempt->source = 'AI Skill Navigator';
@@ -82,7 +84,7 @@ class quiz_attempt_repository {
             $native = $DB->get_records_sql(
                 "SELECT qa.id, qa.userid, qa.quiz, qa.sumgrades AS score,
                         q.sumgrades AS maxscore, q.name AS topic, qa.timefinish AS timecreated,
-                        u.firstname, u.lastname, u.email
+                        $namefields, u.email
                    FROM {quiz_attempts} qa
                    JOIN {quiz} q ON q.id = qa.quiz
                    JOIN {user} u ON u.id = qa.userid

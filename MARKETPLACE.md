@@ -39,7 +39,7 @@ That branch has `version.php`, `classes/`, `db/`, `lang/`, and the rest of the l
 
 ## Automated prechecks
 
-The **Moodle Marketplace CI** workflow stages only `local_aiskillnavigator` and runs Moodle Plugin CI against Moodle 4.5 / PHP 8.3 / PostgreSQL, including:
+The **Moodle Marketplace CI** workflow stages only `local_aiskillnavigator` and runs Moodle Plugin CI against Moodle 4.4 / PHP 8.1 / PostgreSQL and Moodle 4.5 / PHP 8.3 / PostgreSQL and MySQL, including:
 
 - PHP syntax checks
 - Moodle coding style (`phpcs`)
@@ -47,6 +47,8 @@ The **Moodle Marketplace CI** workflow stages only `local_aiskillnavigator` and 
 - upgrade savepoint checks
 - plugin validation
 - JavaScript/CSS checks through Moodle's Grunt tooling
+- Database regressions for grading, access boundaries, background indexing, privacy and legacy upgrades
+- Chrome student/teacher workflows on Moodle 4.5 / PostgreSQL
 
 The existing project CI remains in place for the repository's custom regression tests.
 

@@ -212,17 +212,20 @@ function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): strin
         return html_writer::div('Tutor analytics unavailable: ' . s($e->getMessage()), 'alert alert-warning');
     }
 
-    $total = $DB->count_records('local_aiskillnavigator_tutor_sig', ['courseid' => $courseid]);
+    [$scope, $params] = \local_aiskillnavigator\service\report_access::condition($courseid);
+    $params['courseid'] = $courseid;
+    $condition = "courseid = :courseid AND ($scope)";
+    $total = $DB->count_records_select('local_aiskillnavigator_tutor_sig', $condition, $params);
 
     $skills = $DB->get_records_sql(
         "SELECT " . $DB->sql_compare_text('skill', 120) . " AS skillkey,
                 MIN(skill) AS skill,
                 COUNT(1) AS total
            FROM {local_aiskillnavigator_tutor_sig}
-          WHERE courseid = :courseid
+          WHERE $condition
        GROUP BY " . $DB->sql_compare_text('skill', 120) . "
        ORDER BY total DESC",
-        ['courseid' => $courseid],
+        $params,
         0,
         8
     );
@@ -232,15 +235,15 @@ function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): strin
                 MIN(requesttype) AS requesttype,
                 COUNT(1) AS total
            FROM {local_aiskillnavigator_tutor_sig}
-          WHERE courseid = :courseid
+          WHERE $condition
        GROUP BY " . $DB->sql_compare_text('requesttype', 80) . "
        ORDER BY total DESC",
-        ['courseid' => $courseid],
+        $params,
         0,
         6
     );
 
-    $recent = $DB->get_records('local_aiskillnavigator_tutor_sig', ['courseid' => $courseid], 'timecreated DESC', '*', 0, 5);
+    $recent = $DB->get_records_select('local_aiskillnavigator_tutor_sig', $condition, $params, 'timecreated DESC', '*', 0, 5);
 
     $html = '';
     $html .= html_writer::start_div('card mb-4 border-info');
@@ -351,7 +354,12 @@ function local_aiskillnavigator_tutor_signal_teacher_panel(int $courseid): strin
         $html .= html_writer::start_tag('tbody');
 
         foreach ($recent as $r) {
-            $user = $DB->get_record('user', ['id' => $r->userid], 'id,firstname,lastname', IGNORE_MISSING);
+            $user = $DB->get_record(
+                'user',
+                ['id' => $r->userid],
+                'id,' . implode(',', \core_user\fields::get_name_fields()),
+                IGNORE_MISSING
+            );
             $student = $user ? fullname($user) : ('User #' . (int)$r->userid);
 
             $html .= html_writer::tag(

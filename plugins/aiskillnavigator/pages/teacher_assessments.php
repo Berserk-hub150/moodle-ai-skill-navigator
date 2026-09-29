@@ -99,57 +99,14 @@ function local_aisn_ass_clean_json(string $raw): string {
  * @param array $question Question.
  */
 function local_aisn_ass_normalize_question(array $question): ?array {
-    $text = trim((string)($question['question'] ?? ''));
-    if ($text === '') {
+    $question['skill'] = $question['ability'] ?? $question['skill'] ?? '';
+    $quiz = \local_aiskillnavigator\service\practice_quiz::normalise(['questions' => [$question]]);
+    if ($quiz === null) {
         return null;
     }
-
-    $options = isset($question['options']) && is_array($question['options'])
-        ? array_values($question['options'])
-        : [];
-
-    $options = array_map(static function ($option): string {
-        return trim((string)$option);
-    }, $options);
-
-    $options = array_slice($options, 0, 4);
-    while (count($options) < 4) {
-        $options[] = '';
-    }
-
-    $nonempty = array_values(array_filter($options, static function ($option): bool {
-        return trim((string)$option) !== '';
-    }));
-
-    if (count($nonempty) < 2) {
-        return null;
-    }
-
-    $correct = (int)($question['correct_index'] ?? 0);
-    $correct = max(0, min(3, $correct));
-
-    if (trim((string)$options[$correct]) === '') {
-        $correct = 0;
-    }
-
-    $ability = trim((string)($question['ability'] ?? $question['skill'] ?? ''));
-    if ($ability === '') {
-        $ability = 'Ability evaluated';
-    }
-
-    $explanation = trim((string)($question['explanation'] ?? ''));
-    if ($explanation === '') {
-        $explanation = 'Correct answer based on the assessment context.';
-    }
-
-    return [
-        'question' => $text,
-        'options' => $options,
-        'correct_index' => $correct,
-        'ability' => $ability,
-        'skill' => $ability,
-        'explanation' => $explanation,
-    ];
+    $normalized = $quiz['questions'][0];
+    $normalized['ability'] = $normalized['skill'];
+    return $normalized;
 }
 
 /**
@@ -168,6 +125,11 @@ function local_aisn_ass_parse_quiz(string $raw): ?array {
         return null;
     }
 
+    foreach (['title', 'topic', 'type'] as $field) {
+        if (isset($decoded[$field]) && !is_string($decoded[$field])) {
+            return null;
+        }
+    }
     $questions = [];
     foreach (array_slice(array_values($decoded['questions']), 0, 20) as $question) {
         if (!is_array($question)) {
@@ -395,7 +357,7 @@ function local_aisn_ass_questions_from_form(): array {
         $normalized = local_aisn_ass_normalize_question([
             'question' => $cleanstring($questionraw[$key] ?? '', PARAM_RAW_TRIMMED),
             'options' => $options,
-            'correct_index' => $cleanint($correctraw[$key] ?? 0),
+            'correct_index' => $cleanint($correctraw[$key] ?? -1),
             'ability' => $cleanstring($abilityraw[$key] ?? '', PARAM_TEXT),
             'explanation' => $cleanstring($explanationraw[$key] ?? '', PARAM_RAW_TRIMMED),
         ]);
@@ -406,7 +368,7 @@ function local_aisn_ass_questions_from_form(): array {
     }
 
     if (empty($questions)) {
-        throw new moodle_exception('At least one valid question with at least two non-empty options is required.');
+        throw new moodle_exception('At least one valid question with four non-empty options and a correct answer is required.');
     }
 
     return $questions;
@@ -520,7 +482,7 @@ function local_aisn_ass_render_edit_form(stdClass $assessment, array $quiz, int 
 
     if ($attemptcount > 0) {
         // phpcs:ignore moodle.Files.LineLength
-        echo html_writer::div('This test already has ' . $attemptcount . ' student attempt(s). Saving changes resets previous attempts and statistics.', 'alert alert-warning');
+        echo html_writer::div('This test already has ' . $attemptcount . ' student attempt(s). Questions are locked to preserve their results. Create a new assessment to change questions.', 'alert alert-warning');
     }
 
     // phpcs:ignore moodle.Files.LineLength
@@ -577,7 +539,7 @@ function local_aisn_ass_render_edit_form(stdClass $assessment, array $quiz, int 
 
     echo html_writer::start_div('mt-3');
     // phpcs:ignore moodle.Files.LineLength
-    echo html_writer::empty_tag('input', ['type' => 'submit', 'class' => 'btn btn-primary', 'value' => $attemptcount > 0 ? 'Save changes and reset attempts' : 'Save test changes']);
+    echo html_writer::empty_tag('input', ['type' => 'submit', 'class' => 'btn btn-primary', 'value' => 'Save test changes']);
     echo ' ';
     // phpcs:ignore moodle.Files.LineLength
     echo html_writer::link(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid]), 'Cancel', ['class' => 'btn btn-outline-secondary']);
@@ -710,24 +672,45 @@ function local_aisn_ass_redirect_self(int $courseid, string $message = ''): void
     redirect(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid]), $message, $message !== '' ? 1 : 0);
 }
 
+$canmanage = has_capability('local/aiskillnavigator:manageassessments', $context);
+if (in_array($action, ['delete', 'toggle', 'update', 'generate'], true)) {
+    \local_aiskillnavigator\service\request_access::require_write(
+        $context,
+        'local/aiskillnavigator:manageassessments'
+    );
+}
+if ($action === 'edit') {
+    require_capability('local/aiskillnavigator:manageassessments', $context);
+}
+
 if ($action === 'delete') {
     require_sesskey();
     $id = required_param('id', PARAM_INT);
-    $assessment = local_aisn_ass_get_assessment($id, $courseid);
-    if (local_aisn_ass_table_exists('local_aiskillnavigator_ass_att')) {
-        $DB->delete_records('local_aiskillnavigator_ass_att', ['assessmentid' => $assessment->id]);
+    $lock = \local_aiskillnavigator\service\assessment_submission::lock($id);
+    try {
+        $assessment = local_aisn_ass_get_assessment($id, $courseid);
+        if (local_aisn_ass_table_exists('local_aiskillnavigator_ass_att')) {
+            $DB->delete_records('local_aiskillnavigator_ass_att', ['assessmentid' => $assessment->id]);
+        }
+        $DB->delete_records('local_aiskillnavigator_assessment', ['id' => $assessment->id]);
+    } finally {
+        $lock->release();
     }
-    $DB->delete_records('local_aiskillnavigator_assessment', ['id' => $assessment->id]);
     local_aisn_ass_redirect_self($courseid, 'Assessment deleted.');
 }
 
 if ($action === 'toggle') {
     require_sesskey();
     $id = required_param('id', PARAM_INT);
-    $assessment = local_aisn_ass_get_assessment($id, $courseid);
-    $assessment->visible = (int)!$assessment->visible;
-    $assessment->timemodified = time();
-    $DB->update_record('local_aiskillnavigator_assessment', $assessment);
+    $lock = \local_aiskillnavigator\service\assessment_submission::lock($id);
+    try {
+        $assessment = local_aisn_ass_get_assessment($id, $courseid);
+        $assessment->visible = (int)!$assessment->visible;
+        $assessment->timemodified = time();
+        $DB->update_record('local_aiskillnavigator_assessment', $assessment);
+    } finally {
+        $lock->release();
+    }
     // phpcs:ignore moodle.Files.LineLength
     local_aisn_ass_redirect_self($courseid, $assessment->visible ? 'Assessment published to students.' : 'Assessment hidden from students.');
 }
@@ -736,42 +719,45 @@ if ($action === 'update') {
     require_sesskey();
     try {
         $id = required_param('id', PARAM_INT);
-        $assessment = local_aisn_ass_get_assessment($id, $courseid);
-        $attemptcount = local_aisn_ass_get_attempt_count((int)$assessment->id);
-        $oldquizjson = (string)$assessment->quizjson;
+        $lock = \local_aiskillnavigator\service\assessment_submission::lock($id);
+        try {
+            $assessment = local_aisn_ass_get_assessment($id, $courseid);
+            $attemptcount = local_aisn_ass_get_attempt_count((int)$assessment->id);
+            $oldquizjson = (string)$assessment->quizjson;
 
-        $title = required_param('title', PARAM_TEXT);
-        $focus = optional_param('focus', '', PARAM_TEXT);
-        $difficulty = optional_param('difficulty', 'medium', PARAM_ALPHA);
-        $difficulty = in_array($difficulty, ['easy', 'medium', 'hard'], true) ? $difficulty : 'medium';
-        $visible = optional_param('visible', 0, PARAM_BOOL);
-        $questions = local_aisn_ass_questions_from_form();
+            $title = required_param('title', PARAM_TEXT);
+            $focus = optional_param('focus', '', PARAM_TEXT);
+            $difficulty = optional_param('difficulty', 'medium', PARAM_ALPHA);
+            $difficulty = in_array($difficulty, ['easy', 'medium', 'hard'], true) ? $difficulty : 'medium';
+            $visible = optional_param('visible', 0, PARAM_BOOL);
+            $questions = local_aisn_ass_questions_from_form();
 
-        $oldquiz = json_decode($oldquizjson, true);
-        if (!is_array($oldquiz)) {
-            $oldquiz = [];
+            $oldquiz = json_decode($oldquizjson, true);
+            if (!is_array($oldquiz)) {
+                $oldquiz = [];
+            }
+            $oldquestions = array_map('local_aisn_ass_normalize_question', $oldquiz['questions'] ?? []);
+            if ($attemptcount > 0 && $oldquestions != $questions) {
+                throw new moodle_exception('assessmentquestionslocked', 'local_aiskillnavigator');
+            }
+            $oldquiz['title'] = $title;
+            $oldquiz['topic'] = $focus !== '' ? $focus : ($oldquiz['topic'] ?? 'Assessment');
+            $oldquiz['type'] = (string)$assessment->assessmenttype;
+            $oldquiz['questions'] = $questions;
+
+            $newquizjson = json_encode($oldquiz, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+            $assessment->title = $title;
+            $assessment->focus = $focus;
+            $assessment->difficulty = $difficulty;
+            $assessment->visible = $visible ? 1 : 0;
+            $assessment->quizjson = $newquizjson;
+            $assessment->timemodified = time();
+            $DB->update_record('local_aiskillnavigator_assessment', $assessment);
+        } finally {
+            $lock->release();
         }
-        $oldquiz['title'] = $title;
-        $oldquiz['topic'] = $focus !== '' ? $focus : ($oldquiz['topic'] ?? 'Assessment');
-        $oldquiz['type'] = (string)$assessment->assessmenttype;
-        $oldquiz['questions'] = $questions;
 
-        $newquizjson = json_encode($oldquiz, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        $quizchanged = $newquizjson !== $oldquizjson;
-
-        $assessment->title = $title;
-        $assessment->focus = $focus;
-        $assessment->difficulty = $difficulty;
-        $assessment->visible = $visible ? 1 : 0;
-        $assessment->quizjson = $newquizjson;
-        $assessment->timemodified = time();
-        $DB->update_record('local_aiskillnavigator_assessment', $assessment);
-
-        if ($quizchanged && $attemptcount > 0 && local_aisn_ass_table_exists('local_aiskillnavigator_ass_att')) {
-            $DB->delete_records('local_aiskillnavigator_ass_att', ['assessmentid' => $assessment->id]);
-            // phpcs:ignore moodle.Files.LineLength
-            local_aisn_ass_redirect_self($courseid, 'Assessment updated. Previous attempts were reset because the questions changed.');
-        }
         local_aisn_ass_redirect_self($courseid, 'Assessment updated.');
     } catch (Throwable $e) {
         $error = 'Could not save assessment: ' . $e->getMessage();
@@ -1237,60 +1223,62 @@ if ($error !== '') {
     }
 }
 
-echo html_writer::start_div('card mb-4');
-echo html_writer::start_div('card-body');
-echo html_writer::tag('h3', 'Generate initial/final assessment');
+if ($canmanage) {
+    echo html_writer::start_div('card mb-4');
+    echo html_writer::start_div('card-body');
+    echo html_writer::tag('h3', 'Generate initial/final assessment');
 // phpcs:ignore moodle.Files.LineLength
-echo html_writer::start_tag('form', ['method' => 'post', 'action' => new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php')]);
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'generate']);
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'courseid', 'value' => $courseid]);
+    echo html_writer::start_tag('form', ['method' => 'post', 'action' => new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php')]);
+    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
+    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'generate']);
+    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'courseid', 'value' => $courseid]);
 
-echo html_writer::start_div('form-group');
-echo html_writer::tag('label', 'Assessment title');
+    echo html_writer::start_div('form-group');
+    echo html_writer::tag('label', 'Assessment title');
 // phpcs:ignore moodle.Files.LineLength
-echo html_writer::empty_tag('input', ['type' => 'text', 'name' => 'title', 'class' => 'form-control', 'required' => 'required', 'placeholder' => 'Example: Initial diagnostic quiz - HTML basics']);
-echo html_writer::end_div();
+    echo html_writer::empty_tag('input', ['type' => 'text', 'name' => 'title', 'class' => 'form-control', 'required' => 'required', 'placeholder' => 'Example: Initial diagnostic quiz - HTML basics']);
+    echo html_writer::end_div();
 
-echo html_writer::start_div('form-group mt-3');
-echo html_writer::tag('label', 'Assessment type');
+    echo html_writer::start_div('form-group mt-3');
+    echo html_writer::tag('label', 'Assessment type');
 // phpcs:ignore moodle.Files.LineLength
-echo html_writer::select(['pre' => 'Initial diagnostic quiz / pre-test', 'final' => 'Final comprehension test / post-test'], 'assessmenttype', 'pre', false, ['class' => 'form-control custom-select aisn-wide-select', 'id' => 'assessmenttype']);
-echo html_writer::end_div();
+    echo html_writer::select(['pre' => 'Initial diagnostic quiz / pre-test', 'final' => 'Final comprehension test / post-test'], 'assessmenttype', 'pre', false, ['class' => 'form-control custom-select aisn-wide-select', 'id' => 'assessmenttype']);
+    echo html_writer::end_div();
 
-echo html_writer::start_div('form-group mt-3', ['id' => 'aisn-final-material-source']);
+    echo html_writer::start_div('form-group mt-3', ['id' => 'aisn-final-material-source']);
 // phpcs:ignore moodle.Files.LineLength
-echo html_writer::tag('div', 'Initial quiz ignores teacher materials. Final test is grounded on selected course materials.', ['class' => 'alert alert-info py-2']);
+    echo html_writer::tag('div', 'Initial quiz ignores teacher materials. Final test is grounded on selected course materials.', ['class' => 'alert alert-info py-2']);
 // phpcs:ignore moodle.Files.LineLength
-echo local_aiskillnavigator_material_source_selector_html($readablematerials, $embeddingservice, $courseid, $sourcemode, $selectedmaterialids, 'Course material', 'Used only for the final test.');
-echo html_writer::end_div();
+    echo local_aiskillnavigator_material_source_selector_html($readablematerials, $embeddingservice, $courseid, $sourcemode, $selectedmaterialids, 'Course material', 'Used only for the final test.');
+    echo html_writer::end_div();
 
-echo html_writer::start_div('form-group mt-3');
-echo html_writer::tag('label', 'Focus / topic');
+    echo html_writer::start_div('form-group mt-3');
+    echo html_writer::tag('label', 'Focus / topic');
 // phpcs:ignore moodle.Files.LineLength
-echo html_writer::empty_tag('input', ['type' => 'text', 'name' => 'focus', 'class' => 'form-control', 'placeholder' => 'Example: HTML structure, functions, IoT sensors...']);
-echo html_writer::end_div();
+    echo html_writer::empty_tag('input', ['type' => 'text', 'name' => 'focus', 'class' => 'form-control', 'placeholder' => 'Example: HTML structure, functions, IoT sensors...']);
+    echo html_writer::end_div();
 
-echo html_writer::start_div('form-group mt-3');
-echo html_writer::tag('label', 'Difficulty');
+    echo html_writer::start_div('form-group mt-3');
+    echo html_writer::tag('label', 'Difficulty');
 // phpcs:ignore moodle.Files.LineLength
-echo html_writer::select(['easy' => 'Easy', 'medium' => 'Medium', 'hard' => 'Hard'], 'difficulty', 'medium', false, ['class' => 'form-control custom-select aisn-wide-select']);
-echo html_writer::end_div();
+    echo html_writer::select(['easy' => 'Easy', 'medium' => 'Medium', 'hard' => 'Hard'], 'difficulty', 'medium', false, ['class' => 'form-control custom-select aisn-wide-select']);
+    echo html_writer::end_div();
 
-echo html_writer::start_div('form-check mt-3');
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'visible', 'value' => 0]);
+    echo html_writer::start_div('form-check mt-3');
+    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'visible', 'value' => 0]);
 // phpcs:ignore moodle.Files.LineLength
-echo html_writer::empty_tag('input', ['type' => 'checkbox', 'name' => 'visible', 'id' => 'visible', 'class' => 'form-check-input', 'value' => 1]);
-echo html_writer::tag('label', 'Publish immediately to students', ['for' => 'visible', 'class' => 'form-check-label']);
-echo html_writer::end_div();
+    echo html_writer::empty_tag('input', ['type' => 'checkbox', 'name' => 'visible', 'id' => 'visible', 'class' => 'form-check-input', 'value' => 1]);
+    echo html_writer::tag('label', 'Publish immediately to students', ['for' => 'visible', 'class' => 'form-check-label']);
+    echo html_writer::end_div();
 
 // phpcs:ignore moodle.Files.LineLength
-echo html_writer::empty_tag('input', ['type' => 'submit', 'class' => 'btn btn-primary mt-3', 'value' => 'Generate and save assessment']);
-echo html_writer::end_tag('form');
+    echo html_writer::empty_tag('input', ['type' => 'submit', 'class' => 'btn btn-primary mt-3', 'value' => 'Generate and save assessment']);
+    echo html_writer::end_tag('form');
 // phpcs:ignore moodle.Files.LineLength
-echo html_writer::script("(function(){var type=document.getElementById('assessmenttype');var box=document.getElementById('aisn-final-material-source');if(!type||!box){return;}function sync(){box.style.display=type.value==='final'?'':'none';}type.addEventListener('change',sync);sync();})();");
-echo html_writer::end_div();
-echo html_writer::end_div();
+    echo html_writer::script("(function(){var type=document.getElementById('assessmenttype');var box=document.getElementById('aisn-final-material-source');if(!type||!box){return;}function sync(){box.style.display=type.value==='final'?'':'none';}type.addEventListener('change',sync);sync();})();");
+    echo html_writer::end_div();
+    echo html_writer::end_div();
+}
 
 echo html_writer::tag('h3', 'Saved assessments');
 if (empty($assessments)) {
@@ -1298,9 +1286,9 @@ if (empty($assessments)) {
 } else {
     foreach ($assessments as $assessment) {
         $attempts = local_aisn_ass_table_exists('local_aiskillnavigator_ass_att')
-            ? $DB->get_records(
-                'local_aiskillnavigator_ass_att',
-                ['assessmentid' => $assessment->id],
+            ? \local_aiskillnavigator\service\report_access::assessment_attempts(
+                $courseid,
+                (int)$assessment->id,
                 'percentage DESC, timecreated ASC'
             )
             : [];
@@ -1339,11 +1327,14 @@ if (empty($assessments)) {
         echo html_writer::end_div();
 
         // phpcs:ignore moodle.Files.LineLength
-        echo html_writer::link(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid, 'action' => 'edit', 'id' => $assessment->id]), 'Edit test', ['class' => 'btn btn-outline-primary btn-sm mr-2']);
+        if ($canmanage) {
+            // phpcs:ignore moodle.Files.LineLength
+            echo html_writer::link(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid, 'action' => 'edit', 'id' => $assessment->id]), 'Edit test', ['class' => 'btn btn-outline-primary btn-sm mr-2']);
         // phpcs:ignore moodle.Files.LineLength
-        echo html_writer::link(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid, 'action' => 'toggle', 'id' => $assessment->id, 'sesskey' => sesskey()]), $assessment->visible ? 'Hide from students' : 'Publish to students', ['class' => 'btn btn-outline-secondary btn-sm mr-2']);
+            echo $OUTPUT->single_button(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid, 'action' => 'toggle', 'id' => $assessment->id, 'sesskey' => sesskey()]), $assessment->visible ? 'Hide from students' : 'Publish to students', 'post');
         // phpcs:ignore moodle.Files.LineLength
-        echo html_writer::link(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid, 'action' => 'delete', 'id' => $assessment->id, 'sesskey' => sesskey()]), 'Delete', ['class' => 'btn btn-outline-danger btn-sm']);
+            echo $OUTPUT->single_button(new moodle_url('/local/aiskillnavigator/pages/teacher_assessments.php', ['courseid' => $courseid, 'action' => 'delete', 'id' => $assessment->id, 'sesskey' => sesskey()]), 'Delete', 'post', ['confirm' => 'Delete this assessment and its student attempts?']);
+        }
         // AISN_EXPORT_LINKS_FINAL_OK.
         echo html_writer::start_div('mt-2 mb-2');
         echo html_writer::span('Export: ', 'text-muted mr-1');
@@ -1377,7 +1368,11 @@ if (empty($assessments)) {
             echo html_writer::end_tag('thead');
             echo html_writer::start_tag('tbody');
             foreach ($attempts as $attempt) {
-                $student = $DB->get_record('user', ['id' => $attempt->userid], 'id, firstname, lastname, email');
+                $student = $DB->get_record(
+                    'user',
+                    ['id' => $attempt->userid],
+                    'id,email,' . implode(',', \core_user\fields::get_name_fields())
+                );
                 $studentname = $student ? fullname($student) : 'User ' . $attempt->userid;
                 // phpcs:ignore moodle.Files.LineLength
                 echo html_writer::tag('tr', html_writer::tag('td', s($studentname)) . html_writer::tag('td', (int)$attempt->score . '/' . (int)$attempt->maxscore) . html_writer::tag('td', (int)$attempt->percentage . '%') . html_writer::tag('td', userdate($attempt->timecreated)));

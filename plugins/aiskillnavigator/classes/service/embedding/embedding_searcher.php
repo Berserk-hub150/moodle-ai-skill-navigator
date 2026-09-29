@@ -68,6 +68,23 @@ class embedding_searcher {
             return [];
         }
 
+        require_once(__DIR__ . '/../../../includes/material_ai_policy.php');
+        global $DB;
+        $materials = $DB->get_records('local_aiskillnavigator_material', ['courseid' => $courseid]);
+        $allowed = [];
+        foreach ($materials as $material) {
+            if (
+                \local_aiskillnavigator\service\material_access::can_read($material)
+                    && local_aiskillnavigator_material_can_be_sent_to_current_ai($material)
+            ) {
+                $allowed[(int)$material->id] = true;
+            }
+        }
+        $chunks = array_filter($chunks, static fn($chunk) => isset($allowed[(int)$chunk->materialid]));
+        if (!$chunks) {
+            return [];
+        }
+
         $queryembedding = $generateembedding
             ? (new embedding_client($this->config))->generate($query)
             : null;
