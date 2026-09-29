@@ -38,8 +38,20 @@ Feature: Course tools support real student and teacher workflows
     And I should see "100%"
 
   Scenario: Ask the tutor and view the recorded interaction
-    When I log in as "student1"
+    Given the following "activities" exist:
+      | activity | name                  | intro              | content                                      | course | idnumber |
+      | page     | Database fundamentals | Database reference | Primary keys identify rows in a table.       | C1     | page1    |
+    When I log in as "teacher1"
+    And I open AI Skill Navigator "teacher_materials" for course "C1"
+    And I press "Synchronise course materials"
+    Then I should see "Synchronisation queued"
+    When I run all adhoc tasks
+    And I open AI Skill Navigator "teacher_materials" for course "C1"
+    Then I should see "Database fundamentals"
+    When I log out
+    And I log in as "student1"
     And I open AI Skill Navigator "tutor" for course "C1"
+    And I click on "input[data-aisn-material-checkbox]" "css_element"
     And I set the field "question" to "Explain relational database keys"
     And I press "Ask AI"
     Then I should see "Risposta dimostrativa"
