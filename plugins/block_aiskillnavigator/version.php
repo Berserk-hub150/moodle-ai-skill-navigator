@@ -6,11 +6,11 @@ defined('MOODLE_INTERNAL') || die();
 $plugin = new stdClass();
 
 $plugin->component = 'block_aiskillnavigator';
-$plugin->version = 2026080600;
+$plugin->version = 2026092900;
 $plugin->requires = 2024042200;
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.0.4';
+$plugin->release = '1.0.5';
 $plugin->cron = 0;
 $plugin->dependencies = [
-    'local_aiskillnavigator' => 2026080600,
+    'local_aiskillnavigator' => 2026092800,
 ];

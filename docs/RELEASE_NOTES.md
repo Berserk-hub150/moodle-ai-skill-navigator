@@ -2,6 +2,8 @@
 
 ## 1.0.6
 
+- Companion block 1.0.5 now shows student, reporting, material-management and Course Builder links according to their actual capabilities. It requires local plugin 1.0.6.
+
 - Keep practice-quiz answer keys on the server, bind submissions to their user/course/session and prevent duplicate results on refresh. Reject invalid AI answer keys instead of silently choosing the first option.
 - Apply live Moodle activity visibility and availability restrictions to material selection, retrieval and knowledge-graph evidence. Filter inaccessible chunks before selecting search results.
 - Apply separate-group restrictions consistently to plugin attempts, assessment reports, learning gaps and Tutor Analytics.

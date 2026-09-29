@@ -35,14 +35,12 @@ class block_aiskillnavigator extends block_base {
         $courseid = (int)$COURSE->id;
         $context = context_course::instance($courseid);
 
-        $isteacher = is_siteadmin()
-            || has_capability('local/aiskillnavigator:viewteacher', $context)
-            || has_capability('moodle/course:update', $context)
-            || has_capability('moodle/course:manageactivities', $context);
-
-        $isstudent = is_siteadmin()
-            || has_capability('local/aiskillnavigator:viewstudent', $context)
-            || has_capability('moodle/course:view', $context);
+        $canviewteacher = has_capability('local/aiskillnavigator:viewteacher', $context);
+        $canmanagematerials = has_capability('local/aiskillnavigator:managematerials', $context);
+        $canbuildcourse = has_capability('moodle/course:update', $context)
+            && has_capability('moodle/course:manageactivities', $context);
+        $isteacher = $canviewteacher || $canmanagematerials || $canbuildcourse;
+        $isstudent = has_capability('local/aiskillnavigator:viewstudent', $context);
 
         $html = '';
         $html .= html_writer::start_div('aisn-block-wrapper', [
@@ -67,15 +65,23 @@ class block_aiskillnavigator extends block_base {
         if ($isteacher) {
             $html .= $this->section_title('Teacher tools');
 
-            $html .= $this->link_button('Teacher dashboard', '/local/aiskillnavigator/pages/teacher.php', $courseid, 'btn btn-outline-secondary btn-block');
-            $html .= $this->link_button('Tutor analyst', '/local/aiskillnavigator/pages/tutor_analytics.php', $courseid, 'btn btn-outline-info btn-block');
-            $html .= $this->link_button('Initial/final tests', '/local/aiskillnavigator/pages/teacher_assessments.php', $courseid, 'btn btn-outline-success btn-block');
-            $html .= $this->link_button('Learning-gap analysis', '/local/aiskillnavigator/pages/gap_analysis.php', $courseid, 'btn btn-outline-warning btn-block');
-            $html .= $this->link_button('AI Course Builder', '/local/aiskillnavigator/pages/course_builder.php', $courseid, 'btn btn-outline-info btn-block');
-            $html .= $this->link_button('AI Simulator Finder', '/local/aiskillnavigator/pages/simulator_finder.php', $courseid, 'btn btn-outline-info btn-block');
+            if ($canviewteacher) {
+                $html .= $this->link_button('Teacher dashboard', '/local/aiskillnavigator/pages/teacher.php', $courseid, 'btn btn-outline-secondary btn-block');
+                $html .= $this->link_button('Tutor analyst', '/local/aiskillnavigator/pages/tutor_analytics.php', $courseid, 'btn btn-outline-info btn-block');
+                $html .= $this->link_button('Initial/final tests', '/local/aiskillnavigator/pages/teacher_assessments.php', $courseid, 'btn btn-outline-success btn-block');
+                $html .= $this->link_button('Learning-gap analysis', '/local/aiskillnavigator/pages/gap_analysis.php', $courseid, 'btn btn-outline-warning btn-block');
+            }
+            if ($canbuildcourse) {
+                $html .= $this->link_button('AI Course Builder', '/local/aiskillnavigator/pages/course_builder.php', $courseid, 'btn btn-outline-info btn-block');
+            }
+            if ($canviewteacher && $canmanagematerials) {
+                $html .= $this->link_button('AI Simulator Finder', '/local/aiskillnavigator/pages/simulator_finder.php', $courseid, 'btn btn-outline-info btn-block');
+            }
 
-            $html .= $this->section_title('Knowledge base');
-            $html .= $this->link_button('Course materials / RAG', '/local/aiskillnavigator/pages/teacher_materials.php', $courseid, 'btn btn-outline-success btn-block');
+            if ($canmanagematerials) {
+                $html .= $this->section_title('Knowledge base');
+                $html .= $this->link_button('Course materials / RAG', '/local/aiskillnavigator/pages/teacher_materials.php', $courseid, 'btn btn-outline-success btn-block');
+            }
 
             $html .= $this->safe_ocr_toggle($courseid);
 
