@@ -68,19 +68,7 @@ if ($format === 'gift') {
     header('Content-Type: text/plain; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $filenamebase . '.gift"');
 
-    foreach (array_values($quiz['questions']) as $index => $question) {
-        $qtext = trim((string)($question['question'] ?? ('Question ' . ($index + 1))));
-        $options = isset($question['options']) && is_array($question['options']) ? array_values($question['options']) : [];
-        $correct = isset($question['correct_index']) ? (int)$question['correct_index'] : 0;
-
-        echo "::Q" . ($index + 1) . "::" . $qtext . " {\n";
-
-        foreach ($options as $i => $option) {
-            echo ($i === $correct ? "=" : "~") . trim((string)$option) . "\n";
-        }
-
-        echo "}\n\n";
-    }
+    echo \local_aiskillnavigator\service\assessment_export::gift($quiz['questions']);
 
     exit;
 }
@@ -116,9 +104,11 @@ foreach (array_values($quiz['questions']) as $question) {
 
     if ($format === 'google') {
         // phpcs:ignore moodle.Files.LineLength
-        fputcsv($out, [$qtext, $options[0], $options[1], $options[2], $options[3], $correctanswer, $explanation, $skill], $delimiter);
+        fputcsv($out, \local_aiskillnavigator\service\assessment_export::csv_row(
+            [$qtext, $options[0], $options[1], $options[2], $options[3], $correctanswer, $explanation, $skill]
+        ), $delimiter, '"', '');
     } else {
-        fputcsv($out, [
+        fputcsv($out, \local_aiskillnavigator\service\assessment_export::csv_row([
             (string)$assessment->title,
             (string)$assessment->assessmenttype,
             $qtext,
@@ -130,7 +120,7 @@ foreach (array_values($quiz['questions']) as $question) {
             $correctanswer,
             $explanation,
             $skill,
-        ], $delimiter);
+        ]), $delimiter, '"', '');
     }
 }
 

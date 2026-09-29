@@ -32,6 +32,17 @@ defined('MOODLE_INTERNAL') || die();
  */
 class observer {
     /**
+     * Delete plugin-owned data when Moodle permanently deletes its course.
+     *
+     * @param \core\event\course_deleted $event Deleted course.
+     */
+    public static function course_deleted(\core\event\course_deleted $event): void {
+        $courseid = (int)$event->objectid;
+        \local_aiskillnavigator\privacy\provider::delete_course_data($courseid);
+        unset_config('document_ocr_enabled_course_' . $courseid, 'local_aiskillnavigator');
+    }
+
+    /**
      * Course created helper.
      *
      * @param \core\event\course_created $event Event.
@@ -199,32 +210,10 @@ class observer {
      * @param int $userid Moodle user ID.
      */
     private static function sync_course_resources(int $courseid, int $userid): void {
-        global $CFG;
-
-        if ($courseid <= SITEID) {
+        if ($courseid <= SITEID || $userid <= 0) {
             return;
         }
-
-        $syncfile = $CFG->dirroot . '/local/aiskillnavigator/includes/course_resource_sync.php';
-
-        if (!file_exists($syncfile)) {
-            debugging('AI Skill Navigator sync file missing: ' . $syncfile, DEBUG_DEVELOPER);
-            return;
-        }
-
-        require_once($syncfile);
-
-        if (!function_exists('local_aiskillnavigator_sync_course_resources')) {
-            debugging('AI Skill Navigator sync function missing.', DEBUG_DEVELOPER);
-            return;
-        }
-
-        try {
-            local_aiskillnavigator_sync_course_resources($courseid, $userid, true);
-            self::dedupe_course_resource_materials($courseid);
-        } catch (\Throwable $e) {
-            debugging('AI Skill Navigator automatic course resource sync failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
-        }
+        \local_aiskillnavigator\task\sync_course::queue($courseid, $userid);
     }
 
     /**

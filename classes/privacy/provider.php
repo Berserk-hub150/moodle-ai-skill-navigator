@@ -255,8 +255,27 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
             return;
         }
 
-        $courseid = (int)$context->instanceid;
+        self::delete_course_data((int)$context->instanceid);
+    }
 
+    /**
+     * Remove course-owned data, including orphaned derived content.
+     *
+     * @param int $courseid Deleted or privacy-approved course.
+     */
+    public static function delete_course_data(int $courseid): void {
+        global $DB;
+
+        if (self::table_exists('local_aiskillnavigator_chunk')) {
+            $DB->delete_records('local_aiskillnavigator_chunk', ['courseid' => $courseid]);
+        }
+        if (self::table_exists('local_aiskillnavigator_kg_source')) {
+            $DB->delete_records_select(
+                'local_aiskillnavigator_kg_source',
+                'conceptid IN (SELECT id FROM {local_aiskillnavigator_kg_concept} WHERE courseid = ?)',
+                [$courseid]
+            );
+        }
         if (self::table_exists('local_aiskillnavigator_material')) {
             $materialids = $DB->get_fieldset_select('local_aiskillnavigator_material', 'id', 'courseid = ?', [$courseid]);
             self::delete_material_related($materialids);
@@ -433,6 +452,11 @@ class provider implements core_userlist_provider, metadata_provider, request_pro
             }
         }
 
+        if ($conceptids) {
+            [$conceptsql, $conceptparams] = $DB->get_in_or_equal($conceptids, SQL_PARAMS_NAMED, 'purgedconcept');
+            // Cached descriptions may contain evidence from a deleted source, even on shared concepts.
+            $DB->set_field_select('local_aiskillnavigator_kg_concept', 'description', '', 'id ' . $conceptsql, $conceptparams);
+        }
         self::delete_orphan_concepts($conceptids);
     }
 

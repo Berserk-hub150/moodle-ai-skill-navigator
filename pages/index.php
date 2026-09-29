@@ -82,6 +82,7 @@ function local_aisn_index_card(
  * @param int $courseid Moodle course ID.
  */
 function local_aisn_index_ocr_card(int $courseid): string {
+    global $OUTPUT;
     if (
         !function_exists('local_aisn_document_ocr_user_can_toggle') ||
         !function_exists('local_aisn_document_ocr_course_enabled') ||
@@ -108,10 +109,10 @@ function local_aisn_index_ocr_card(int $courseid): string {
     $html .= html_writer::span('OCR', 'badge badge-success mb-2');
     $html .= html_writer::tag('h4', 'OCR documenti', ['class' => 'card-title']);
     $html .= html_writer::tag('p', $description, ['class' => 'card-text text-muted']);
-    $html .= html_writer::link(
+    $html .= $OUTPUT->single_button(
         $url,
         $enabled ? 'Disattiva OCR' : 'Attiva OCR',
-        ['class' => $enabled ? 'btn btn-outline-danger' : 'btn btn-outline-success']
+        'post'
     );
     $html .= html_writer::end_div();
     $html .= html_writer::end_div();
@@ -212,8 +213,7 @@ $isteacher = is_siteadmin()
     || has_capability('moodle/course:manageactivities', $context);
 
 $isstudent = is_siteadmin()
-    || has_capability('local/aiskillnavigator:viewstudent', $context)
-    || has_capability('moodle/course:view', $context);
+    || has_capability('local/aiskillnavigator:viewstudent', $context);
 
 echo $OUTPUT->header();
 
