@@ -155,6 +155,26 @@ function local_aiskillnavigator_sim_search_context(array $results): string {
 }
 
 /**
+ * Build a descriptive external link and communicate its new-tab behaviour.
+ *
+ * @param string $url Destination URL.
+ * @param string $label Link label.
+ */
+function local_aiskillnavigator_sim_external_link(string $url, string $label): string {
+    $label = trim($label);
+
+    if ($label === '' || $label === $url) {
+        $label = 'Open simulator or tool website';
+    }
+
+    return html_writer::link(
+        $url,
+        s($label . ' (opens in a new tab)'),
+        ['target' => '_blank', 'rel' => 'noopener noreferrer']
+    );
+}
+
+/**
  * Local aiskillnavigator sim inline format helper.
  *
  * @param string $line Line.
@@ -171,20 +191,12 @@ function local_aiskillnavigator_sim_inline_format(string $line): string {
     $safe = preg_replace('/\*\*(.*?)\*\*/u', '<strong>$1</strong>', $safe);
 
     $safe = preg_replace_callback('/\[(.*?)\]\((https?:\/\/[^\s)]+)\)/u', function ($matches) {
-        return html_writer::link(
-            $matches[2],
-            s($matches[1]),
-            ['target' => '_blank', 'rel' => 'noopener noreferrer']
-        );
+        return local_aiskillnavigator_sim_external_link($matches[2], $matches[1]);
     }, $safe);
 
     $safe = preg_replace_callback('/(?<!href=")(https?:\/\/[^\s<]+)/u', function ($matches) {
         $url = rtrim($matches[1], '.,;)');
-        return html_writer::link(
-            $url,
-            s($url),
-            ['target' => '_blank', 'rel' => 'noopener noreferrer']
-        );
+        return local_aiskillnavigator_sim_external_link($url, '');
     }, $safe);
 
     return $safe;
@@ -686,8 +698,7 @@ if (false && !empty($searchresults)) {
         $snippet = trim((string)($row['snippet'] ?? ''));
 
         if ($url !== '') {
-            // phpcs:ignore moodle.Files.LineLength
-            $link = html_writer::link($url, s($title !== '' ? $title : $url), ['target' => '_blank', 'rel' => 'noopener noreferrer']);
+            $link = local_aiskillnavigator_sim_external_link($url, $title);
         } else {
             $link = s($title);
         }
@@ -718,3 +729,4 @@ if (function_exists('local_aisn_ai_output_formatter_assets')) {
     echo local_aisn_ai_output_formatter_assets();
 }
 echo $OUTPUT->footer();
+
