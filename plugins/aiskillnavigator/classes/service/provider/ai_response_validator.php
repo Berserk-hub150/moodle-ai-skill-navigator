@@ -63,17 +63,38 @@ class ai_response_validator {
                 }
                 $questiontext = trim((string)($q['question'] ?? ''));
                 $options = $q['options'] ?? null;
-                $hascorrect = isset($q['correct_index']) || isset($q['correct_answer']) || isset($q['correct']);
 
-                if ($questiontext === '' || !is_array($options) || count($options) < 2 || !$hascorrect) {
+                if ($questiontext === '' || !is_array($options) || count($options) !== 4) {
                     return false;
+                }
+
+                $options = array_values($options);
+                foreach ($options as $option) {
+                    if (!is_string($option) || trim($option) === '') {
+                        return false;
+                    }
+                }
+
+                $correct = $q['correct_index'] ?? null;
+                if ($correct !== null) {
+                    if (
+                        (!is_int($correct) && !(is_string($correct) && preg_match('/^[0-3]$/D', $correct)))
+                            || (int)$correct < 0 || (int)$correct > 3
+                    ) {
+                        return false;
+                    }
+                } else {
+                    $answer = $q['correct'] ?? $q['answer'] ?? $q['correct_answer'] ?? null;
+                    if (!is_string($answer) || array_search($answer, $options, true) === false) {
+                        return false;
+                    }
                 }
             }
             return true;
         }
 
         if ($type === 'mindmap') {
-            return isset($data['title'], $data['nodes']) && is_array($data['nodes']);
+            return isset($data['title'], $data['branches']) && is_array($data['branches']);
         }
 
         if ($type === 'summary') {
@@ -84,6 +105,6 @@ class ai_response_validator {
             return isset($data['title']) && (isset($data['scenes']) || isset($data['steps'])) && (is_array($data['scenes'] ?? null) || is_array($data['steps'] ?? null));
         }
 
-        return true;
+        return false;
     }
 }

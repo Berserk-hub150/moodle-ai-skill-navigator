@@ -33,6 +33,9 @@ require_once(__DIR__ . '/../includes/mindmap_polish_assets.php');
 require_once(__DIR__ . '/../includes/course_resource_sync.php');
 require_once(__DIR__ . '/../includes/material_source_helper.php');
 require_once(__DIR__ . '/../classes/service/web_search_service.php');
+require_once(__DIR__ . '/../classes/service/provider/ai_response_validator.php');
+
+use local_aiskillnavigator\service\provider\ai_response_validator;
 
 global $DB, $PAGE, $OUTPUT, $USER;
 
@@ -267,6 +270,11 @@ function local_aiskillnavigator_mm_extract_json(string $raw): ?array {
     $data = json_decode($raw, true);
 
     if (!is_array($data)) {
+        return null;
+    }
+
+    $validator = new ai_response_validator();
+    if (!$validator->validate($data, 'mindmap')) {
         return null;
     }
 
