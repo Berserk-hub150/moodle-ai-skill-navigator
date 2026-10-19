@@ -24,6 +24,7 @@
 
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/simulator_materials_helper.php');
+require_once(__DIR__ . '/../includes/simulator_links_helper.php');
 require_once(__DIR__ . '/../includes/ai_output_formatter.php');
 require_once(__DIR__ . '/../includes/back_to_course_helper.php');
 require_once(__DIR__ . '/../includes/ui_style_helper.php');
@@ -152,42 +153,6 @@ function local_aiskillnavigator_sim_search_context(array $results): string {
     }
 
     return $context;
-}
-
-/**
- * Local aiskillnavigator sim inline format helper.
- *
- * @param string $line Line.
- */
-function local_aiskillnavigator_sim_inline_format(string $line): string {
-    $line = trim($line);
-
-    if ($line === '') {
-        return '';
-    }
-
-    $safe = s($line);
-
-    $safe = preg_replace('/\*\*(.*?)\*\*/u', '<strong>$1</strong>', $safe);
-
-    $safe = preg_replace_callback('/\[(.*?)\]\((https?:\/\/[^\s)]+)\)/u', function ($matches) {
-        return html_writer::link(
-            $matches[2],
-            s($matches[1]),
-            ['target' => '_blank', 'rel' => 'noopener noreferrer']
-        );
-    }, $safe);
-
-    $safe = preg_replace_callback('/(?<!href=")(https?:\/\/[^\s<]+)/u', function ($matches) {
-        $url = rtrim($matches[1], '.,;)');
-        return html_writer::link(
-            $url,
-            s($url),
-            ['target' => '_blank', 'rel' => 'noopener noreferrer']
-        );
-    }, $safe);
-
-    return $safe;
 }
 
 /**
@@ -686,8 +651,7 @@ if (false && !empty($searchresults)) {
         $snippet = trim((string)($row['snippet'] ?? ''));
 
         if ($url !== '') {
-            // phpcs:ignore moodle.Files.LineLength
-            $link = html_writer::link($url, s($title !== '' ? $title : $url), ['target' => '_blank', 'rel' => 'noopener noreferrer']);
+            $link = local_aiskillnavigator_sim_external_link($url, $title);
         } else {
             $link = s($title);
         }
