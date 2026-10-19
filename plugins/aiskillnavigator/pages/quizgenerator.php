@@ -56,6 +56,7 @@ require_capability('local/aiskillnavigator:viewstudent', $context);
 
 $PAGE->set_context($context);
 $PAGE->requires->css(new moodle_url('/local/aiskillnavigator/assets/css/styles.css'));
+$PAGE->requires->js(new moodle_url('/local/aiskillnavigator/assets/js/quiz_generator.js'));
 $PAGE->set_url(new moodle_url('/local/aiskillnavigator/pages/quizgenerator.php', ['courseid' => $courseid]));
 $PAGE->set_title(get_string('quizgenerator', 'local_aiskillnavigator'));
 $PAGE->set_heading(get_string('quizgenerator', 'local_aiskillnavigator'));
@@ -399,6 +400,7 @@ echo html_writer::tag('h3', 'Generate a new test');
 echo html_writer::start_tag('form', [
     'method' => 'post',
     'action' => new moodle_url('/local/aiskillnavigator/pages/quizgenerator.php'),
+    'id' => 'aisn-quiz-generator-form',
 ]);
 
 echo html_writer::empty_tag('input', [
@@ -479,10 +481,24 @@ echo html_writer::end_div();
 echo html_writer::empty_tag('input', [
     'type' => 'submit',
     'class' => 'btn btn-primary mt-3',
+    'id' => 'aisn-quiz-generator-submit',
+    'data-loading-label' => get_string('quizgeneratinglabel', 'local_aiskillnavigator'),
     'value' => 'Generate test',
 ]);
 
 echo html_writer::end_tag('form');
+
+echo html_writer::div(
+    '',
+    '',
+    [
+        'id' => 'aisn-quiz-generator-status',
+        'role' => 'status',
+        'aria-live' => 'polite',
+        'aria-atomic' => 'true',
+        'data-message' => get_string('quizgeneratingstatus', 'local_aiskillnavigator'),
+    ]
+);
 
 echo html_writer::end_div();
 echo html_writer::end_div();
