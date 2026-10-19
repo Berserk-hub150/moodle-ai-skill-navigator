@@ -33,9 +33,12 @@ require_once(__DIR__ . '/../includes/course_resource_sync.php');
 require_once(__DIR__ . '/../includes/material_source_helper.php');
 require_once(__DIR__ . '/../includes/knowledge_graph_helper.php');
 
+require_once(__DIR__ . '/../classes/service/provider/ai_response_validator.php');
+
 use local_aiskillnavigator\service\embedding_service;
 use local_aiskillnavigator\service\real_ai_service;
 use local_aiskillnavigator\service\practice_quiz;
+use local_aiskillnavigator\service\provider\ai_response_validator;
 
 global $PAGE, $OUTPUT, $DB, $USER;
 
@@ -224,6 +227,11 @@ function local_aiskillnavigator_extract_quiz_json(string $raw): ?array {
     $decoded = json_decode($cleanresult, true);
 
     if (!is_array($decoded)) {
+        return null;
+    }
+
+    $validator = new ai_response_validator();
+    if (!$validator->validate($decoded, 'quiz')) {
         return null;
     }
 
