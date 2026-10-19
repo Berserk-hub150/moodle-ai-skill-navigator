@@ -53,6 +53,72 @@ jobs:
         run: find plugins -type f -name '*.js' -print0 | xargs -0 -n1 node --check
 
       - name: Test Simulator Finder material filtering
+        run: |
+          node tests/simulator_material_filter_test.js
+          node tests/quiz_generator_test.js
+
+      - name: Set up PHP for rendered scripts
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Check rendered embedded JavaScript
+        run: python3 tests/embedded_javascript_test.pyname: Plugin CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  php-quality:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2', '8.3']
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, dom, json, libxml, mbstring, pdo_sqlite, simplexml, sqlite3, zip
+          coverage: none
+
+      - name: Lint PHP files
+        run: find plugins tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Run standalone regression tests
+        run: |
+          for test in tests/*_test.php; do
+            php "$test" || exit 1
+          done
+
+  javascript-quality:
+    name: JavaScript syntax
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check JavaScript syntax
+        run: find plugins -type f -name '*.js' -print0 | xargs -0 -n1 node --check
+
+      - name: Test Simulator Finder material filtering
         run: node tests/simulator_material_filter_test.js
 
       - name: Set up PHP for rendered scripts
