@@ -24,6 +24,7 @@
 
 require_once(__DIR__ . '/../../../config.php');
 require_once(__DIR__ . '/../includes/simulator_materials_helper.php');
+require_once(__DIR__ . '/../includes/simulator_links_helper.php');
 require_once(__DIR__ . '/../includes/ai_output_formatter.php');
 require_once(__DIR__ . '/../includes/back_to_course_helper.php');
 require_once(__DIR__ . '/../includes/ui_style_helper.php');
@@ -152,54 +153,6 @@ function local_aiskillnavigator_sim_search_context(array $results): string {
     }
 
     return $context;
-}
-
-/**
- * Build a descriptive external link and communicate its new-tab behaviour.
- *
- * @param string $url Destination URL.
- * @param string $label Link label.
- */
-function local_aiskillnavigator_sim_external_link(string $url, string $label): string {
-    $label = trim($label);
-
-    if ($label === '' || $label === $url) {
-        $label = 'Open simulator or tool website';
-    }
-
-    return html_writer::link(
-        $url,
-        s($label . ' (opens in a new tab)'),
-        ['target' => '_blank', 'rel' => 'noopener noreferrer']
-    );
-}
-
-/**
- * Local aiskillnavigator sim inline format helper.
- *
- * @param string $line Line.
- */
-function local_aiskillnavigator_sim_inline_format(string $line): string {
-    $line = trim($line);
-
-    if ($line === '') {
-        return '';
-    }
-
-    $safe = s($line);
-
-    $safe = preg_replace('/\*\*(.*?)\*\*/u', '<strong>$1</strong>', $safe);
-
-    $safe = preg_replace_callback('/\[(.*?)\]\((https?:\/\/[^\s)]+)\)/u', function ($matches) {
-        return local_aiskillnavigator_sim_external_link($matches[2], $matches[1]);
-    }, $safe);
-
-    $safe = preg_replace_callback('/(?<!href=")(https?:\/\/[^\s<]+)/u', function ($matches) {
-        $url = rtrim($matches[1], '.,;)');
-        return local_aiskillnavigator_sim_external_link($url, '');
-    }, $safe);
-
-    return $safe;
 }
 
 /**
@@ -729,4 +682,3 @@ if (function_exists('local_aisn_ai_output_formatter_assets')) {
     echo local_aisn_ai_output_formatter_assets();
 }
 echo $OUTPUT->footer();
-
