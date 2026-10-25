@@ -1,5 +1,9 @@
 # AI Skill Navigator
 
+![AI Skill Navigator: illustrated Moodle course materials, AI workflows, and learning tools](docs/feature-overview.svg)
+
+*Illustrated feature overview (not a screenshot of the plugin UI).*
+
 [![Plugin CI](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml/badge.svg)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml)
 [![Moodle integration](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/moodle-marketplace-ci.yml/badge.svg)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/moodle-marketplace-ci.yml)
 [![License: GPL v3 or later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
