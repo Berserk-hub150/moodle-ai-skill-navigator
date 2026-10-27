@@ -344,6 +344,15 @@ if ($isstudent) {
         'btn btn-outline-primary',
         'Map'
     );
+    echo local_aisn_index_card(
+        'Flashcards',
+        'Review course topics with quick flip-style flashcards.',
+        '/local/aiskillnavigator/pages/flashcards.php',
+        $courseid,
+        'Open Flashcards',
+        'btn btn-outline-info',
+        'Flashcards'
+    );
     echo html_writer::end_div();
 }
 
