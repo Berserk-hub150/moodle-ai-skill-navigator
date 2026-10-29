@@ -192,3 +192,6 @@ $string['teacherdashboard'] = 'Teacher dashboard';
 $string['tutor_analytics_help'] = 'To populate the report, open Student tools > AI Tutor with a student account and ask a question. Then return here or refresh this page. Normal Moodle quiz attempts appear in the Teacher dashboard instead. Skill and difficulty labels are keyword-based indicators, not grades.';
 $string['tutor_analytics_intro'] = 'This report summarises questions answered by the AI Tutor in this course. It updates automatically after successful tutor responses.';
 $string['tutor_question'] = 'Ask a question';
+
+$string['quizgeneratingstatus'] = 'Generating your quiz. Please keep this page open and do not submit again.';
+$string['quizgeneratinglabel'] = 'Generating quiz...';
