@@ -139,3 +139,140 @@
     }
 }
 
+
+.aisn-flashcards {
+    max-width: 720px;
+}
+
+.aisn-flashcards-list {
+    margin: 0;
+    padding: 0;
+}
+
+.aisn-flashcard {
+    list-style: none;
+}
+
+.aisn-flashcard-face {
+    align-items: center;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 22px;
+    box-shadow: 0 18px 44px rgba(15, 23, 42, 0.14);
+    display: flex;
+    justify-content: center;
+    min-height: 280px;
+    padding: 36px;
+}
+
+.aisn-flashcard-back {
+    background: linear-gradient(145deg, #0f172a, #1e293b);
+    color: #f8fafc;
+}
+
+.aisn-flashcard-body {
+    text-align: center;
+    width: 100%;
+}
+
+.aisn-flashcard-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    margin-bottom: 18px;
+    opacity: 0.55;
+    text-transform: uppercase;
+}
+
+.aisn-flashcard-question,
+.aisn-flashcard-answer-text {
+    font-size: 24px;
+    line-height: 1.45;
+    margin-bottom: 0;
+}
+
+.aisn-flashcards-progress {
+    margin-bottom: 14px;
+}
+
+.aisn-flashcards-controls {
+    margin: 20px 0 10px;
+}
+
+.aisn-flashcards-row {
+    align-items: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.aisn-flashcards-row-secondary {
+    margin-top: 8px;
+}
+
+.aisn-flashcards-row .btn {
+    align-items: center;
+    border-radius: 12px;
+    display: inline-flex;
+    gap: 8px;
+    justify-content: center;
+    padding: 12px 20px;
+}
+
+.aisn-flashcards-flip {
+    flex: 1 1 220px;
+    font-weight: 600;
+    max-width: 320px;
+}
+
+.aisn-flashcards-step {
+    flex: 0 1 170px;
+}
+
+.aisn-flashcards-row .btn .icon {
+    font-size: 15px;
+    height: auto;
+    margin: 0;
+    width: auto;
+}
+
+@media (max-width: 480px) {
+    .aisn-flashcards-step,
+    .aisn-flashcards-flip {
+        flex: 1 1 100%;
+        max-width: none;
+    }
+}
+
+.aisn-flashcards[data-flashcards-ready] .aisn-flashcard-scene {
+    perspective: 1600px;
+}
+
+.aisn-flashcards[data-flashcards-ready] .aisn-flashcard-pane {
+    display: grid;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.aisn-flashcards[data-flashcards-ready] .aisn-flashcard-face {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    cursor: pointer;
+    grid-area: 1 / 1;
+    margin: 0;
+}
+
+.aisn-flashcards[data-flashcards-ready] .aisn-flashcard-back {
+    transform: rotateY(180deg);
+}
+
+.aisn-flashcards[data-flashcards-ready] .aisn-flashcard-pane.aisn-is-flipped {
+    transform: rotateY(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .aisn-flashcards[data-flashcards-ready] .aisn-flashcard-pane {
+        transition: none;
+    }
+}

@@ -28,6 +28,13 @@ Use a disposable Moodle site and test accounts before a release. Record the Mood
 - Generate and complete an AI quiz.
 - Generate a mind map.
 - Open adaptive review after quiz/assessment data exists.
+- Open Flashcards and confirm the first card, its hidden answer and the counter.
+- Reveal and hide the answer, then move through the deck and back with the card controls.
+- Shuffle the deck and confirm every card is still reachable and the counter restarts.
+- Reach every control with Tab only, use it with Enter or Space, and confirm the focus stays usable at both ends of the deck.
+- Confirm a screen reader announces the revealed answer and the card position.
+- Replace a deck file with malformed JSON and confirm the page reports the failing field instead of an empty deck.
+- Remove every deck file and confirm the page explains where decks belong.
 
 ## Simulator workflow
 

@@ -100,6 +100,7 @@ class block_aiskillnavigator extends block_base {
             $html .= $this->link_button('Adaptive review', '/local/aiskillnavigator/pages/adaptive_review.php', $courseid, 'btn btn-outline-warning btn-block');
             $html .= $this->link_button('Quiz generator', '/local/aiskillnavigator/pages/quizgenerator.php', $courseid, 'btn btn-outline-info btn-block');
             $html .= $this->link_button('Mind map generator', '/local/aiskillnavigator/pages/mindmapgenerator.php', $courseid, 'btn btn-outline-secondary btn-block');
+            $html .= $this->link_button('Flashcards', '/local/aiskillnavigator/pages/flashcards.php', $courseid, 'btn btn-outline-info btn-block');
         }
 
         if (!$isstudent && !$isteacher) {

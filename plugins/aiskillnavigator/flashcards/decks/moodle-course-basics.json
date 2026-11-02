@@ -1,0 +1,86 @@
+{
+  "title": "Moodle course basics",
+  "description": "Terminology and everyday concepts a student or a new teacher meets in a Moodle course. Answers deliberately vary from a few words to a full paragraph.",
+  "cards": [
+    {
+      "question": "What does LMS stand for?",
+      "answer": "Learning Management System."
+    },
+    {
+      "question": "Which license does Moodle use?",
+      "answer": "GNU General Public License."
+    },
+    {
+      "question": "What is a course category?",
+      "answer": "A folder that groups related courses."
+    },
+    {
+      "question": "What is an activity in Moodle?",
+      "answer": "An activity is any course item a student interacts with and that can usually be graded or tracked, such as a quiz, an assignment, a forum or a workshop. It differs from a resource, which the student only reads or downloads."
+    },
+    {
+      "question": "What is the difference between a resource and an activity?",
+      "answer": "A resource delivers content without expecting a response: a page, a file, a book or a link. An activity expects the student to do something and usually records the outcome, so it can appear in the gradebook and in completion tracking. The same material can be offered either way, and the choice depends on whether you need evidence that the student engaged with it."
+    },
+    {
+      "question": "What is enrolment?",
+      "answer": "Enrolment is the link between a user and a course that gives that user a role inside it. Without an enrolment a user is not a participant, even if they can see the course listed. Enrolment can be manual, self-service with an optional enrolment key, or driven by an external source such as a cohort or a student information system."
+    },
+    {
+      "question": "Name the two most common roles inside a course.",
+      "answer": "Teacher and student."
+    },
+    {
+      "question": "What is a capability?",
+      "answer": "A named permission, for example mod/quiz:attempt."
+    },
+    {
+      "question": "How do roles and capabilities work together to decide what a user may do?",
+      "answer": "A capability is a single named permission, such as the right to attempt a quiz or to grade an assignment. A role is a bundle of capabilities, each set to allow, prevent or prohibit. A role is assigned in a context, which may be the whole site, a category, a course or a single activity. When Moodle checks a permission it walks the context chain from the system down to the current context and combines the role assignments it finds, which is why a user can be a teacher in one course and a student in another."
+    },
+    {
+      "question": "What is the gradebook?",
+      "answer": "The place where all grades for a course are collected, calculated and presented to teachers and students."
+    },
+    {
+      "question": "What is completion tracking?",
+      "answer": "A setting that records whether a student has finished an activity, either by ticking it manually or by meeting conditions such as viewing it, submitting work or reaching a grade."
+    },
+    {
+      "question": "What is Moodle cron?",
+      "answer": "A scheduled process the server runs regularly to perform background work: sending notifications and digests, processing queued tasks, running backups, and indexing content for search. Features that depend on it will appear broken if it is not running, because the work is never picked up."
+    },
+    {
+      "question": "What is a scheduled task?",
+      "answer": "A job that cron runs on a fixed schedule."
+    },
+    {
+      "question": "What is an ad hoc task?",
+      "answer": "A one-off job queued by the system and executed by the next cron run, used when work would take too long to do while the user waits."
+    },
+    {
+      "question": "What is a course format?",
+      "answer": "The layout that decides how sections and activities are presented, for example topics, weekly or single activity."
+    },
+    {
+      "question": "What are groups and groupings used for?",
+      "answer": "Groups divide the participants of a course so that an activity can be run separately for each of them. In separate groups mode members see only their own group, while in visible groups mode they see the others but cannot take part. A grouping is a collection of groups, which lets a teacher target an activity at some groups and not at others."
+    },
+    {
+      "question": "What is a plugin?",
+      "answer": "An add-on that extends Moodle without changing its core code."
+    },
+    {
+      "question": "Where is a local plugin installed?",
+      "answer": "In the local directory of the Moodle installation."
+    },
+    {
+      "question": "What is the purpose of the Privacy API?",
+      "answer": "It lets a plugin declare which personal data it stores, export that data for a given user and delete it on request, so the site can answer data protection requests consistently across every installed component."
+    },
+    {
+      "question": "Why does Moodle ask for a site administrator to install a plugin instead of letting a teacher do it?",
+      "answer": "Installing a plugin adds code that runs with the privileges of the whole site and can create database tables, define new capabilities and change behaviour for every course. That is a site-wide decision with security and maintenance consequences, so it belongs to the administrator who manages the server. A teacher works inside a course and can only enable, configure and arrange what is already installed."
+    }
+  ]
+}

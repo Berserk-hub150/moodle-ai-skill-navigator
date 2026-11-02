@@ -55,6 +55,9 @@ jobs:
       - name: Test Simulator Finder material filtering
         run: node tests/simulator_material_filter_test.js
 
+      - name: Test Flashcards study controls
+        run: node tests/flashcards_controls_test.js
+
       - name: Set up PHP for rendered scripts
         uses: shivammathur/setup-php@v2
         with:
