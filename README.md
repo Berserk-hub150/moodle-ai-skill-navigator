@@ -2,6 +2,11 @@
 
 ![AI Skill Navigator: illustrated Moodle course materials, AI workflows, and learning tools](docs/feature-overview.svg)
 
+<div align="center">
+<a href="https://trendshift.io/repositories/142992?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-142992" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/142992/daily?language=PHP" alt="Berserk-hub150%2Fmoodle-ai-skill-navigator | Trendshift" width="250" height="55"/></a>
+<a href="https://trendshift.io/repositories/142992?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-142992" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/142992/weekly?language=PHP" alt="Berserk-hub150%2Fmoodle-ai-skill-navigator | Trendshift" width="250" height="55"/></a>
+</div>
+
 *Illustrated feature overview (not a screenshot of the plugin UI).*
 
 [![Plugin CI](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml/badge.svg)](https://github.com/Berserk-hub150/moodle-ai-skill-navigator/actions/workflows/ci.yml)
