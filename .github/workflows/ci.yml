@@ -53,7 +53,9 @@ jobs:
         run: find plugins -type f -name '*.js' -print0 | xargs -0 -n1 node --check
 
       - name: Test Simulator Finder material filtering
-        run: node tests/simulator_material_filter_test.js
+        run: |
+          node tests/simulator_material_filter_test.js
+          node tests/quiz_generator_test.js
 
       - name: Set up PHP for rendered scripts
         uses: shivammathur/setup-php@v2
